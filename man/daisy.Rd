@@ -17,7 +17,7 @@ daisy(x, metric = "euclidean", stand = FALSE, type = list())
     recognized as nominal variables, and columns of class \code{ordered}
     will be recognized as ordinal variables.  Other variable types
     should be specified with the \code{type} argument.  Missing values
-    (NAs) are allowed.
+    (\code{\link{NA}}s) are allowed.
   }
   \item{metric}{
     character string specifying the metric to be used.
@@ -43,8 +43,9 @@ daisy(x, metric = "euclidean", stand = FALSE, type = list())
     components: \code{"ordratio"} (ratio scaled variables to be treated as
     ordinal variables), \code{"logratio"} (ratio scaled variables that
     must be logarithmically transformed), \code{"asymm"} (asymmetric
-    binary variables). Each component's value is a vector, containing
-    the names or the numbers of the corresponding columns of \code{x}.
+    binary) and \code{"symm"} (symmetric binary variables).  Each
+    component's value is a vector, containing the names or the numbers
+    of the corresponding columns of \code{x}.
     Variables not mentioned in the \code{type} list are interpreted as
     usual (see argument \code{x}).
   }
@@ -60,8 +61,17 @@ daisy(x, metric = "euclidean", stand = FALSE, type = list())
   \code{daisy} is fully described in chapter 1 of Kaufman and Rousseeuw (1990).
   Compared to \code{\link[mva]{dist}} whose input must be numeric
   variables, the main feature of \code{daisy} is its ability to handle
-  other variable types as well (e.g. nominal, ordinal, asymmetric
+  other variable types as well (e.g. nominal, ordinal, (a)symmetric
   binary) even when different types occur in the same dataset.
+
+  Note that setting the type to \code{symm} (symmetric binary) gives the
+  same dissimilarities as using \emph{nominal} (which is chosen for
+  non-ordered factors) only when no missing values are present, and more
+  efficiently.
+
+  Note that \code{daisy} now gives a warning when 2-valued numerical
+  variables don't have an explicit \code{type} specified, because the
+  reference authors recommend to consider using \code{"asymm"}.
 
   In the \code{daisy} algorithm, missing values in a row of x are not
   included in the dissimilarities involving that row.  There are two

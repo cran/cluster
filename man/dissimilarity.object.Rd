@@ -13,7 +13,7 @@
 }
 \section{METHODS}{
   The \code{"dissimilarity"} class has methods for the following generic
-  functions: \code{print}.
+  functions: \code{print}, \code{summary}.
 }
 \value{
   The dissimilarity matrix is symmetric, and hence its lower triangle
@@ -40,11 +40,21 @@
   \item{NA.message}{optionally, if a dissimilarity could not be
     computed, because of too many missing values for some observations
     of the dataset.}
+  \item{Types}{when a mixed metric was used, the types for each
+    variable as one-letter codes (as in the book, e.g. p.54):
+    \describe{
+      \item{A}{Asymmetric binary}
+      \item{S}{Symmetric  binary}
+      \item{N}{Nominal (factor)}
+      \item{O}{Ordinal (ordered factor)}
+      \item{I}{Interval scaled (numeric)}
+      \item{T}{raTio to be log transformed (positive numeric)}
+      }.}
 }
 \seealso{
   \code{\link{daisy}}, \code{\link{dist}},
   \code{\link{pam}}, \code{\link{clara}}, \code{\link{fanny}},
-  \code{\link{agnes}}, \code{\link{diana}}. 
+  \code{\link{agnes}}, \code{\link{diana}}.
 }
 \keyword{cluster}
 

@@ -1,3 +1,34 @@
+2002-06-17  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+        * submit to CRAN -- won't be in 1.5.1-recommended
+
+	* R/daisy.q (daisy): make sure "0","1" factors are valid binary vars
+	                     several extra checks {incl apply(<empty>) `bug'
+
+	* man/diana.object.Rd: show how to use cutree().
+
+2002-05-22  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/daisy.q (daisy): warn if binary variables have non-{0,1} values.
+
+	* src/pam.f (cstat) et al: eliminated many gotos; +comments
+	* src/meet.f (meet): + comment
+
+2002-05-21  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+
+	* DESCRIPTION (Version): 1.5-1
+	  new daisy() behavior for binary variables
+
+	* src/daisy.f (daisy): add comments; use if..else.. instead of goto
+
+	* man/dissimilarity.object.Rd: new "Types" attribute in mixed case.
+	* man/daisy.Rd:
+	* R/daisy.q (daisy): fix data.class "integer",
+	  allow type = "symm"; return types used in mixed case;
+	  correctly modify jtmd[] for binary variables (!)
+
+
 2002-03-30  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* R/plotpart.q: replace `` == "NA" '' by  is.na(.)

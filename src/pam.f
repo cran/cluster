@@ -27,9 +27,10 @@ c       = 1 : distances provided  in x
             return
          endif
       endif
-c
-      s=0.0
+c     nhalf := #{distances} = length(dys)
       nhalf=nn*(nn-1)/2+1
+c     s := max( dys[.] ), the largest distance
+      s=0.0
       l=1
  130  l=l+1
       if(dys(l).gt.s)s=dys(l)
@@ -94,6 +95,8 @@ c
  100  continue
       end
 c     -----------------------------------------------------------
+c
+c bswap(): the clustering algorithm in 2 parts:  I. build,  II. swap
 c
       subroutine bswap(kk,nn,nrepr,dysma,dysmb,beter,hh,dys,sky,s,obj)
 
@@ -198,6 +201,9 @@ C-- Loop :
       end
 c     -----------------------------------------------------------
 c
+c cstat():
+c Compute STATistics (numerical output) concerning each partition
+c
       subroutine cstat(kk,nn,nsend,nrepr,radus,damer,ttd,separ,z,s,
      f     hh,dys,ncluv,nelem,med,nisol)
 
@@ -263,14 +269,18 @@ c
          med(numcl)=m
  160  continue
  230  rnn=nn
-      if(kk.ne.1)go to 240
-      damer(1)=s
-      nrepr(1)=nn
-      go to 300
+
+      if(kk.eq.1) then
+         damer(1)=s
+         nrepr(1)=nn
+         return
+      endif
+c  ELSE   kk > 1 :
 c
 c     numl = number of l-clusters.
 c
  240  numl=0
+
       do 40 k=1,kk
 c
 c     identification of cluster k:
@@ -279,58 +289,61 @@ c     nelem= vector of objects
 c
          nel=0
          do 23 j=1,nn
-            if(ncluv(j).ne.k)go to 23
-            nel=nel+1
-            nelem(nel)=j
+            if(ncluv(j).eq.k) then
+               nel=nel+1
+               nelem(nel)=j
+            endif
  23      continue
          nrepr(k)=nel
-         if(nel.ne.1)go to 24
-         nvn=nelem(1)
-         damer(k)=0.
-         separ(k)=1.1*s+1.0
-         do 250 j=1,nn
-            if(j.eq.nvn)go to 250
-            mevj=meet(nvn,j)
-            if(separ(k).gt.dys(mevj)) separ(k)=dys(mevj)
- 250     continue
+         if(nel.eq.1) then
+            nvn=nelem(1)
+            damer(k)=0.
+            separ(k)=1.1*s+1.0
+            do 250 j=1,nn
+               if(j.eq.nvn)go to 250
+               mevj=meet(nvn,j)
+               if(separ(k).gt.dys(mevj)) separ(k)=dys(mevj)
+ 250        continue
 c
 c Is cluster k
 c	1) an l-cluster  or
 c       2) an l*-cluster ?
-c
-         if(separ(k).eq.0.)go to 400
-         numl=numl+1
- 400     go to 35
- 24      dam=-1.
-         sep=1.1*s+1.0
-         kand=1
-         do 26 ja=1,nel
-            nvna=nelem(ja)
-            aja=-1.
-            ajb=1.1*s+1.0
-            do 25 jb=1,nn
-               jndz=meet(nvna,jb)
-               if(ncluv(jb).eq.k) then
-                  if(dys(jndz).gt.aja) aja=dys(jndz)
-               else
-                  if(dys(jndz).lt.ajb) ajb=dys(jndz)
-               endif
- 25         continue
-            if(aja.ge.ajb) kand=0
-            if(dam.lt.aja) dam=aja
-            if(sep.gt.ajb) sep=ajb
- 26      continue
-         separ(k)=sep
-         damer(k)=dam
-         if(kand.eq.0)go to 35
-         numl=numl+1
-         if(dam.lt.sep)go to 27
-c     l-cluster
-         nisol(k)=1
-         go to 40
-c     l*-cluster
- 27      nisol(k)=2
-         go to 40
+            if(separ(k).eq. 0.) numl=numl+1
+
+         else
+c     nel != 1 :
+            dam=-1.
+            sep=1.1*s+1.0
+            kand=1
+            do 26 ja=1,nel
+               nvna=nelem(ja)
+               aja=-1.
+               ajb=1.1*s+1.0
+               do 25 jb=1,nn
+                  jndz=meet(nvna,jb)
+                  if(ncluv(jb).eq.k) then
+                     if(dys(jndz).gt.aja) aja=dys(jndz)
+                  else
+                     if(dys(jndz).lt.ajb) ajb=dys(jndz)
+                  endif
+ 25            continue
+               if(aja.ge.ajb) kand=0
+               if(dam.lt.aja) dam=aja
+               if(sep.gt.ajb) sep=ajb
+ 26         continue
+            separ(k)=sep
+            damer(k)=dam
+            if(kand.eq.0)go to 35
+            numl=numl+1
+            if(dam.ge.sep) then
+c              l-cluster
+               nisol(k)=1
+            else
+c              l*-cluster
+ 27            nisol(k)=2
+            endif
+               go to 40
+         endif
  35      nisol(k)=0
  40   continue
  300  end
@@ -348,60 +361,74 @@ c function called
       external meet
 c
       integer j,l, lang,lplac, nsylr, nclu,numcl,ntt,nj,njl,nl,nbb,mjl
-      double precision dysa,dysb,db,att,btt,rtt,rnn,symax
+      double precision dysa,dysb,db,btt,rtt,rnn,symax
 
       nsylr=0
       ttsyl=0.0
       do 100 numcl=1,kk
          ntt=0
          do 30 j=1,nn
-            if(ncluv(j).ne.numcl)go to 30
-            ntt=ntt+1
-            nelem(ntt)=j
+            if(ncluv(j).eq.numcl)then
+               ntt=ntt+1
+               nelem(ntt)=j
+            endif
  30      continue
          do 40 j=1,ntt
             nj=nelem(j)
             dysb=1.1*s+1.0
             negbr(j)=-1
             do 41 nclu=1,kk
-               if(nclu.eq.numcl)go to 41
-               nbb=0
-               db=0.0
-               do 43 l=1,nn
-                  if(ncluv(l).ne.nclu)go to 43
-                  nbb=nbb+1
-                  mjl=meet(nj,l)
-                  db=db+dys(mjl)
- 43            continue
-               btt=nbb
-               db=db/btt
-               if(db.ge.dysb)go to 41
-               dysb=db
-               negbr(j)=nclu
+               if(nclu.ne.numcl) then
+                  nbb=0
+                  db=0.0
+                  do 43 l=1,nn
+                     if(ncluv(l).eq.nclu)then
+                        nbb=nbb+1
+                        mjl=meet(nj,l)
+                        db=db+dys(mjl)
+                     endif
+ 43               continue
+                  btt=nbb
+                  db=db/btt
+                  if(db.lt.dysb)then
+                     dysb=db
+                     negbr(j)=nclu
+                  endif
+               endif
  41         continue
-            if(ntt.eq.1)go to 50
-            dysa=0.0
-            do 45 l=1,ntt
-               nl=nelem(l)
-               njl=meet(nj,nl)
-               dysa=dysa+dys(njl)
- 45         continue
-            att=ntt-1
-            dysa=dysa/att
-            if(dysa.gt.0.0)go to 51
-            if(dysb.gt.0.0)go to 52
- 50         syl(j)=0.0
-            go to 40
- 52         syl(j)=1.0
-            go to 40
- 51         if(dysb.le.0.0)go to 53
-            if(dysb.gt.dysa)syl(j)=1.0-dysa/dysb
-            if(dysb.lt.dysa)syl(j)=dysb/dysa-1.0
-            if(dysb.eq.dysa)syl(j)=0.0
-            go to 54
- 53         syl(j)=-1.0
- 54         if(syl(j).le.(-1.0))syl(j)=-1.0
-            if(syl(j).ge.1.0)syl(j)=1.0
+
+            if(ntt.gt.1) then
+               dysa=0.0
+               do 45 l=1,ntt
+                  nl=nelem(l)
+                  njl=meet(nj,nl)
+                  dysa=dysa+dys(njl)
+ 45            continue
+               dysa=dysa/(ntt - 1)
+               if(dysa.gt.0.0)then
+                  if(dysb.gt.0.0) then
+                     if(dysb.gt.dysa) then
+                        syl(j)=1.0-dysa/dysb
+                     else if(dysb.lt.dysa) then
+                        syl(j)=dysb/dysa-1.0
+                     else
+c			dysb == dysa:
+                        syl(j)=0.0
+                     endif
+                     if(syl(j).le. -1.0) syl(j)=-1.0
+                     if(syl(j).ge.  1.0) syl(j)= 1.0
+                  else
+                     syl(j)=-1.0
+                  endif
+               else if(dysb.gt.0.0) then
+                  syl(j)=1.0
+               else
+                  syl(j)=0.0
+               endif
+            else
+c     	       ntt == 1:
+               syl(j)=0.0
+            endif
  40      continue
          avsyl(numcl)=0.0
          do 60 j=1,ntt

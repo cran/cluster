@@ -17,31 +17,33 @@
 \section{INHERITANCE}{
   The class \code{"diana"} inherits from \code{"twins"}.
   Therefore, the generic function \code{pltree} can be used on a
-  \code{diana} object. 
+  \code{diana} object, and an \code{\link{as.hclust}} method is
+    available.
 }
 \value{
   A legitimate \code{diana} object is a list with the following components:
   \item{order}{
-a vector giving a permutation of the original observations to allow for 
-plotting, in the sense that the branches of a clustering tree will not cross.
+    a vector giving a permutation of the original observations to allow for
+    plotting, in the sense that the branches of a clustering tree will
+    not cross.
   }
   \item{order.lab}{
-a vector similar to \code{order}, but containing observation labels instead of 
-observation numbers. This component is only available if the original
-observations were labelled.
+    a vector similar to \code{order}, but containing observation labels
+    instead of observation numbers. This component is only available if
+    the original observations were labelled.
   }
-  \item{height}{a vector with the diameters of the clusters prior to
-    splitting.
+  \item{height}{a vector with the diameters of the clusters prior to splitting.
   }
   \item{dc}{
-the divisive coefficient, measuring the clustering structure of the dataset.
-For each observation i, denote by d(i) the diameter of the last cluster to 
-which it belongs (before being split off as a single observation), 
-divided by the diameter of the whole dataset.
-The \code{dc} is the average of all 1 - d(i). It can also be seen as the average
-width (or the percentage filled) of the banner plot.
-Because \code{dc} grows with the number of observations, this measure should not
-be used to compare datasets of very different sizes.
+    the divisive coefficient, measuring the clustering structure of the
+    dataset.  For each observation i, denote by d(i) the diameter of the
+    last cluster to which it belongs (before being split off as a single
+    observation), divided by the diameter of the whole dataset.  The
+    \code{dc} is the average of all 1 - d(i).  It can also be seen as the
+    average width (or the percentage filled) of the banner plot.
+    Because \code{dc} grows with the number of observations, this
+    measure should not be used to compare datasets of very different
+    sizes.
   }
   \item{merge}{
     an (n-1) by 2 matrix, where n is the number of
@@ -56,13 +58,23 @@ be used to compare datasets of very different sizes.
     dissimilarity matrix of the dataset.
   }
   \item{data}{
-a matrix containing the original or standardized measurements, depending 
-on the \code{stand} option of the function \code{agnes}. If a dissimilarity matrix was 
+a matrix containing the original or standardized measurements, depending
+on the \code{stand} option of the function \code{agnes}. If a dissimilarity matrix was
 given as input structure, then this component is not available.
   }
 }
 \seealso{
-\code{\link{agnes}}, \code{\link{diana}}, \code{\link{plot.diana}}, \code{\link{twins.object}}.
+  \code{\link{agnes}}, \code{\link{diana}}, \code{\link{plot.diana}},
+  \code{\link{twins.object}}.
+}
+\examples{
+## really see example(diana) !   Additionally:
+data(votes.repub)
+dv0 <- diana(votes.repub, stand = TRUE)
+## Cut into 2 groups:
+dv2 <- cutree(as.hclust(dv0), k = 2)
+table(dv2)
+rownames(votes.repub)[dv2 == 1]
 }
 \keyword{cluster}
 % Converted by Sd2Rd version 0.3-2.
