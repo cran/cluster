@@ -10,13 +10,14 @@ daisy(x, metric = "euclidean", stand = FALSE, type = list())
 }
 \arguments{
   \item{x}{
-    data matrix or dataframe.  Dissimilarities will be computed
-    between the rows of \code{x}.  Columns of mode \code{numeric} will
-    be recognized as interval scaled variables, columns of class
-    \code{factor} will be recognized as nominal variables, and columns
-    of class \code{ordered} will be recognized as ordinal variables.
-    Other variable types should be specified with the \code{type}
-    argument.  Missing values (NAs) are allowed.
+    numeric matrix or data frame.  Dissimilarities will be computed
+    between the rows of \code{x}.  Columns of mode \code{numeric}
+    (i.e. all columns when \code{x} is a matrix) will be recognized as
+    interval scaled variables, columns of class \code{factor} will be
+    recognized as nominal variables, and columns of class \code{ordered}
+    will be recognized as ordinal variables.  Other variable types
+    should be specified with the \code{type} argument.  Missing values
+    (NAs) are allowed.
   }
   \item{metric}{
     character string specifying the metric to be used.
@@ -48,7 +49,7 @@ daisy(x, metric = "euclidean", stand = FALSE, type = list())
     usual (see argument \code{x}).
   }
 }% end{arg..}
- 
+
 \value{
   an object of class \code{"dissimilarity"} containing the dissimilarities among
   the rows of x.  This is typically the input for the functions \code{pam},
@@ -61,7 +62,7 @@ daisy(x, metric = "euclidean", stand = FALSE, type = list())
   variables, the main feature of \code{daisy} is its ability to handle
   other variable types as well (e.g. nominal, ordinal, asymmetric
   binary) even when different types occur in the same dataset.
-  
+
   In the \code{daisy} algorithm, missing values in a row of x are not
   included in the dissimilarities involving that row.  There are two
   main cases,
@@ -93,28 +94,28 @@ daisy(x, metric = "euclidean", stand = FALSE, type = list())
   }
 }
 \section{BACKGROUND}{
-  Dissimilarities are used as inputs to cluster analysis and 
+  Dissimilarities are used as inputs to cluster analysis and
   multidimensional scaling.  The choice of metric may have a
   large impact.
 }
 \references{
-  Kaufman, L. and Rousseeuw, P.J. (1990). 
+  Kaufman, L. and Rousseeuw, P.J. (1990).
   \emph{Finding Groups in Data: An Introduction to Cluster Analysis. }
   Wiley, New York.
-  
-  Struyf, A., Hubert, M. and Rousseeuw, P.J. (1997). Integrating Robust 
+
+  Struyf, A., Hubert, M. and Rousseeuw, P.J. (1997). Integrating Robust
   Clustering Techniques in S-PLUS,
   \emph{Computational Statistics and Data Analysis, \bold{26}, 17-37.}
 }
 \seealso{
   \code{\link{dissimilarity.object}}, \code{\link{dist}},
   \code{\link{pam}}, \code{\link{fanny}}, \code{\link{clara}},
-  \code{\link{agnes}}, \code{\link{diana}}. 
+  \code{\link{agnes}}, \code{\link{diana}}.
 }
 \examples{
 data(agriculture)
 ## Example 1 in ref:
-##  Dissimilarities using Euclidean metric and without standardization 
+##  Dissimilarities using Euclidean metric and without standardization
 d.agr <- daisy(agriculture, metric = "euclidean", stand = FALSE)
 d.agr
 as.matrix(d.agr)[,"DK"] # via as.matrix.dist(.)

@@ -11,7 +11,7 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
 }
 \arguments{
   \item{x}{
-    data matrix or dataframe, each row corresponds to an observation,
+    data matrix or data frame, each row corresponds to an observation,
     and each column corresponds to a variable.  All variables must be numeric.
     Missing values (NAs) are allowed. }
   \item{k}{integer, the number of clusters.

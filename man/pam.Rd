@@ -9,10 +9,10 @@ pam(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 }
 \arguments{
   \item{x}{
-    data matrix or dataframe, or dissimilarity matrix, depending on the
+    data matrix or data frame, or dissimilarity matrix, depending on the
     value of the \code{diss} argument.
     
-    In case of a matrix or dataframe, each row corresponds to an observation,
+    In case of a matrix or data frame, each row corresponds to an observation,
     and each column corresponds to a variable.  All variables must be numeric.
     Missing values (\code{\link{NA}}s) \emph{are} allowed.
 

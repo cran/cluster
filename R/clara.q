@@ -21,10 +21,8 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	       rep(1 + cumsum(0:(n - 2)), (n - 1):1))
     }
     ## check type of input matrix and values of input numbers
-    if((!is.data.frame(x) && !is.numeric(x)) ||
-       (!all(sapply(x, data.class) == "numeric")))
-	stop(message = "x is not a numeric dataframe or matrix.")
     x <- data.matrix(x)
+    if(!is.numeric(x)) stop("x is not a numeric dataframe or matrix.")
     n <- nrow(x)
     if((k <- as.integer(k)) < 1 || k > n - 1)
 	stop("The number of cluster should be at least 1 and at most n-1." )
@@ -114,26 +112,21 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     ## add dimnames to Fortran output
     clusinf <- cbind(size = res$size, "max_diss" = res$maxdis,
 		     "av_diss" = res$avdis, isolation = res$ratdis)
+
+    clustering <- list(sample = res$sample, medoids = res$med,
+                       clustering = res$clu, objective = res$obj,
+                       clusinfo = clusinf, diss = disv, call = match.call())
     if(k != 1) {
 	dimnames(res$silinf) <- list(sildim,
 				     c("cluster", "neighbor", "sil_width", ""))
-	clustering <- list(sample = res$sample, medoids = res$med,
-			   clustering = res$clu, objective = res$obj,
-			   clusinfo = clusinf,
-			   silinfo = list(width = res$silinf[, -4],
-			   clus.avg.widths = res$avsil[1:k],
-			   avg.width = res$ttsil),
-			   diss = disv)
-    }
-    else {
-	clustering <- list(sample = res$sample, medoids = res$med,
-			   clustering = res$clu, objective = res$obj,
-			   clusinfo = clusinf, diss = disv)
+	clustering <- c(clustering,
+                        list(silinfo = list(width = res$silinf[, -4],
+                             clus.avg.widths = res$avsil[1:k],
+                             avg.width = res$ttsil)))
     }
     x2[x2 == valmisdat] <- NA
     clustering$data <- x2
     class(clustering) <- c("clara", "partition")
-    attr(clustering, "Call") <- sys.call()
     clustering
 }
 

@@ -2,7 +2,7 @@ daisy <-
 function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 {
     ## check type of input matrix
-    if(!is.data.frame(x) && !is.numeric(x))
+    if(is.null(dim(x)) || !(is.data.frame(x) || is.numeric(x)))
         stop("x is not a dataframe or a numeric matrix.")
     if(!is.null(tA <- type$asymm) &&
        !all(sapply(lapply(as.data.frame(x[,tA]),

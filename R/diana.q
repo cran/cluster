@@ -1,14 +1,13 @@
 diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 {
     meanabsdev <- function(y)
-    {
 	mean(abs(y - mean(y, na.rm = TRUE)), na.rm = TRUE)
-    }
+
     size <- function(d)
     {
 	discr <- 1 + 8 * length(d)
 	sqrtdiscr <- round(sqrt(discr))
-	if(round(sqrtdiscr)^2 != discr)
+	if(sqrtdiscr^2 != discr)
 	    return(0)
 	(1 + sqrtdiscr)/2
     }
@@ -25,64 +24,54 @@ diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 	       rep(1 + cumsum(0:(n - 2)), (n - 1):1))
     }
     if(diss) {
-	##check type of input vector
+	## check type of input vector
 	if(is.na(min(x)))
 	    stop("NA-values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") {
 	    if(!is.numeric(x) || size(x) == 0)
-		stop("x is not of class dissimilarity and can not be converted to this class."
-		     )
-	    ##convert input vector to class "dissimilarity"
+		stop("x is not of class dissimilarity and can not be converted to it.")
+	    ## convert input vector to class "dissimilarity"
 	    class(x) <- "dissimilarity"
 	    attr(x, "Size") <- size(x)
 	    attr(x, "Metric") <- "unspecified"
 	}
-	n <- attr(x, "Size")
+	n <- as.integer(attr(x, "Size"))
 	dv <- x[lower.to.upper.tri.inds(n)]
-	##prepare arguments for the Fortran call
-	dv <- c(0, dv)
-	jp <- 1
+	## prepare arguments for the Fortran call
+	dv <- c(0., dv)# double
+	jp <- as.integer(1)
 	valmd <- double(1)
 	jtmd <- integer(1)
 	ndyst <- 0
 	x2 <- double(n)
-	jdyss <- 1
 	dv2 <- double(1 + (n * (n - 1))/2)
     }
     else {
-	##check type of input matrix
-	if((!is.data.frame(x) && !is.numeric(x)) ||
-	   (!all(sapply(x, data.class) == "numeric")))
-	    stop("x is not a numeric dataframe or matrix.")
-	x <- data.matrix(x) # standardize, if necessary
-	x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
+        ## check input matrix and standardize, if necessary
+	x <- data.matrix(x)
+	if(!is.numeric(x)) stop("x is not a numeric dataframe or matrix.")
+        x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
 	ndyst <- if(metric == "manhattan") 2 else 1
 	n <- nrow(x2)
 	jp <- ncol(x2)
-	jtmd <- ifelse(is.na(rep(1, n) %*% x2), -1, 1)
-	valmisdat <- min(x2, na.rm = TRUE) - 0.5
+	jtmd <- as.integer(ifelse(is.na(rep(1, n) %*% x2), -1, 1))
+	valmisdat <- min(x2, na.rm = TRUE) - 0.5# double!
 	x2[is.na(x2)] <- valmisdat
 	valmd <- rep(valmisdat, jp)
-	jdyss <- 0
 	dv <- double(1 + (n * (n - 1))/2)
 	dv2 <- double(1 + (n * (n - 1))/2)
     }
+    jdyss <- as.integer(diss)
     jalg <- 2
-    ## call Fortran routine
-    storage.mode(dv) <- "double"
-    storage.mode(dv2) <- "double"
-    storage.mode(x2) <- "double"
-    storage.mode(valmd) <- "double"
-    storage.mode(jtmd) <- "integer"
     merge <- matrix(0, n - 1, 2)
     storage.mode(merge) <- "integer"
     res <- .Fortran("twins",
-		    as.integer(n),
-		    as.integer(jp),
+		    n,
+		    jp,
 		    x2,
 		    dv,
 		    dis = dv2,
-		    ok = as.integer(jdyss),
+		    ok = jdyss,
 		    valmd,
 		    jtmd,
 		    as.integer(ndyst),
@@ -97,8 +86,7 @@ diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
     if(!diss) {
 	## give warning if some dissimilarities are missing.
 	if(res$ok == -1)
-	    stop("No clustering performed, NA-values in the dissimilarity matrix.\n"
-		 )
+	    stop("No clustering performed, NA's in dissimilarity matrix.\n")
 	## adapt Fortran output to S:
 	## convert lower matrix, read by rows, to upper matrix, read by rows.
 	disv <- res$dis[-1]
@@ -108,20 +96,18 @@ diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 	attr(disv, "Size") <- nrow(x)
 	attr(disv, "Metric") <- metric
 	attr(disv, "Labels") <- dimnames(x)[[1]]
-	##add labels to Fortran output
-	if(length(dimnames(x)[[1]]) != 0) {
+	## add labels to Fortran output
+	if(length(dimnames(x)[[1]]) != 0)
 	    order.lab <- dimnames(x)[[1]][res$ner]
-	}
     }
     else {
 	disv <- x
-	##add labels to Fortran output
-	if(length(attr(x, "Labels")) != 0) {
+	## add labels to Fortran output
+	if(length(attr(x, "Labels")) != 0)
 	    order.lab <- attr(x, "Labels")[res$ner]
-	}
     }
     clustering <- list(order = res$ner, height = res$ban[-1], dc = res$dc,
-		       merge = res$merge, diss = disv)
+		       merge = res$merge, diss = disv, call = match.call())
     if(exists("order.lab"))
 	clustering$order.lab <- order.lab
     if(!diss) {
@@ -129,7 +115,6 @@ diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 	clustering$data <- x2
     }
     class(clustering) <- c("diana", "twins")
-    attr(clustering, "Call") <- sys.call()
     clustering
 }
 

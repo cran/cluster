@@ -14,7 +14,7 @@ mona(x)
 }
 \arguments{
 \item{x}{
-data matrix or dataframe in which each row corresponds to an observation,
+data matrix or data frame in which each row corresponds to an observation,
 and each column corresponds to a variable. All variables must be binary.
 A limited number of missing values (NAs) is allowed. Every observation
 must have at least one value different from NA. No variable should have

@@ -50,11 +50,9 @@ agnes <- function(x, diss = FALSE, metric = "euclidean",
         dv2 <- double(1 + (n * (n - 1))/2)
     }
     else {
-        ##check type of input matrix
-        if((!is.data.frame(x) && !is.numeric(x)) ||
-           (!all(sapply(x, data.class) == "numeric")))
-            stop("x is not a numeric dataframe or matrix.")
-        x <- data.matrix(x)             #standardize, if necessary
+        ## check input matrix and standardize, if necessary
+	x <- data.matrix(x)
+	if(!is.numeric(x)) stop("x is not a numeric dataframe or matrix.")
         x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
         ndyst <- if(metric == "manhattan") 2 else 1
         n <- nrow(x2)
@@ -126,7 +124,7 @@ agnes <- function(x, diss = FALSE, metric = "euclidean",
             order.lab <- attr(x, "Labels")[res$ner]
     }
     clustering <- list(order = res$ner, height = res$ban[-1], ac = res$ac,
-                       merge = res$merge, diss = disv)
+                       merge = res$merge, diss = disv, call = match.call())
     if(exists("order.lab"))
         clustering$order.lab <- order.lab
     if(!diss) {
@@ -134,7 +132,6 @@ agnes <- function(x, diss = FALSE, metric = "euclidean",
         clustering$data <- x2
     }
     class(clustering) <- c("agnes", "twins")
-    attr(clustering, "Call") <- sys.call()
     clustering
 }
 

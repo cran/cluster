@@ -15,7 +15,7 @@ clusplot.default(x, clus, diss = FALSE, cor = TRUE, stand = FALSE,
                  span = TRUE, xlim = NULL, ylim = NULL, \dots)
 }
 \arguments{
-  \item{x}{matrix or dataframe, or dissimilarity matrix, depending on
+  \item{x}{matrix or data frame, or dissimilarity matrix, depending on
     the value of the \code{diss} argument.
 
     In case of a matrix (alike), each row corresponds to an observation,
@@ -188,7 +188,7 @@ if(interactive()) #  uses identify() *interactively* :
   clusplot(votes.diss, votes.clus, diss = TRUE, shade = TRUE,
            labels = 1)
 
-## plotting iris (dataframe) in a 2-dimensional plot and partitioning
+## plotting iris (data frame) in a 2-dimensional plot and partitioning
 ## into 3 clusters.
 data(iris)
 iris.x <- iris[, 1:4]

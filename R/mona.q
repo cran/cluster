@@ -56,11 +56,11 @@ mona <- function(x)
     }
     ## construct "mona" object
     clustering <- list(data = res$x2, order = res$ner,
-                       variable = res$lava[ -1 ], step = res$nban[-1])
+                       variable = res$lava[ -1 ], step = res$nban[-1],
+                       call = match.call())
     if(length(dnx[[1]]) != 0)
         clustering$order.lab <- dnx[[1]][res$ner]
     class(clustering) <- "mona"
-    attr(clustering, "Call") <- sys.call()
     clustering
 }
 

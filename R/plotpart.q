@@ -18,7 +18,7 @@ function(x, ask = FALSE, which.plots = NULL,
                 xlim = c(min(0, min(s)), 1), horiz = TRUE,
                 mgp = c(2.5, 1, 0), ...)
         title(main = paste("Silhouette plot of ",
-              deparse(attr(x, "Call"))),
+              deparse(x$call)),
               sub = paste("Average silhouette width : ",
               round(x$ silinfo$avg.width, digits = 2)), adj = 0)
     }
@@ -26,14 +26,17 @@ function(x, ask = FALSE, which.plots = NULL,
     if(is.null(which.plots) && !ask)
         which.plots <- 1:2
     if(ask && is.null(which.plots)) { ## Use `menu' ..
-        tmenu <- paste("plot:", ## choices :
+        tmenu <- paste("plot ", ## choices :
                        c("All", "Clusplot", "Silhouette Plot"))
-        pick <- 0
-        while(pick <= length(tmenu) + 1) {
-            pick <- menu(tmenu, title =
-                         "\nMake a plot selection (or 0 to exit):\n") + 1
+        do.all <- FALSE
+        repeat {
+            if(!do.all)
+                pick <- menu(tmenu, title =
+                             "\nMake a plot selection (or 0 to exit):\n") + 1
             switch(pick,
-                   return(invisible())
+                   return(invisible())# 0 -> exit loop
+                   ,
+                   do.all <- TRUE# 1 : All
                    ,
                    clusplot(x, cor = cor, stand = stand, lines = lines,
                             shade = shade, color = color, labels = labels,
@@ -42,6 +45,7 @@ function(x, ask = FALSE, which.plots = NULL,
                    ,
                    silhouPlot(x, nmax.lab, max.strlen)
                    )
+            if(do.all) { pick <- pick + 1; do.all <- pick <= length(tmenu) + 1}
         }
     }
     else {

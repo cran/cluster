@@ -2,7 +2,7 @@ pltree <- function(x, ...) UseMethod("pltree")
 
 pltree.twins <- function(x, main = paste("Dendrogram of ", deparse(call)), ...)
 {
-    call <- attr(x, "Call")
+    call <- x$call
     labels <- NULL
     if(length(x$order.lab) != 0) {
         names(x$order) <- names(x$order.lab) <- 1:length(x$order)
@@ -57,29 +57,31 @@ plot.agnes <- function(x, ask = FALSE, which.plots = NULL,
 
     if(is.null(main)) {
         ## Different default for banner & pltree:
-        cl <- deparse(attr(x, "Call"))
+        cl <- deparse(x$call)
         main1 <- paste("Banner of ", cl)
         main2 <- paste("Dendrogram of ", cl)
     }
     else { # same title for both
-        main1 <- .Alias(main)
-        main2 <- .Alias(main)
+        main1 <- main2 <- main
     }
 
     if(is.null(which.plots) && !ask)
         which.plots <- 1:2
     if(ask && is.null(which.plots)) { ## Use `menu' ..
-        tmenu <- paste("plot:", ## choices :
+        tmenu <- paste("plot ", ## choices :
                        c("All", "Banner", "Clustering Tree"))
-        pick <- 0
-        while(pick <= length(tmenu) + 1) {
-            pick <- menu(tmenu, title =
-                         "\nMake a plot selection (or 0 to exit):\n") + 1
+        do.all <- FALSE
+        repeat {
+            if(!do.all)
+                pick <- menu(tmenu, title =
+                             "\nMake a plot selection (or 0 to exit):\n") + 1
             switch(pick,
-                   return(invisible()),
-                   bannerplot(x, ...),
+                   return(invisible()), # 0 -> exit loop
+                   do.all <- TRUE,# 1 : All
+                   bannerplot(x, ...),# 2
                    pltree(x, main = main2, sub = sub, ...)
                    )
+            if(do.all) { pick <- pick + 1; do.all <- pick <= length(tmenu) + 1}
         }
     }
     else {
@@ -98,8 +100,7 @@ plot.agnes <- function(x, ask = FALSE, which.plots = NULL,
 }
 
 plot.diana <-
-function(x, ask = FALSE, which.plots = NULL,
-         main = paste("Banner of ", deparse(attr(x, "Call"))),
+function(x, ask = FALSE, which.plots = NULL, main = NULL,
          sub  = paste("Divisive Coefficient = ", round(x$dc, digits = 2)),
          adj = 0, nmax.lab = 35, max.strlen = 5, ...)
 {
@@ -127,29 +128,31 @@ function(x, ask = FALSE, which.plots = NULL,
 
     if(is.null(main)) {
         ## Different default for banner & pltree:
-        cl <- deparse(attr(x, "Call"))
+        cl <- deparse(x$call)
         main1 <- paste("Banner of ", cl)
         main2 <- paste("Dendrogram of ", cl)
     }
     else { # same title for both
-        main1 <- .Alias(main)
-        main2 <- .Alias(main)
+        main1 <- main2 <- main
     }
 
     if(is.null(which.plots) && !ask)
         which.plots <- 1:2
     if(ask && is.null(which.plots)) { ## Use `menu' ..
-        tmenu <- paste("plot:", ## choices :
+        tmenu <- paste("plot ", ## choices :
                        c("All", "Banner", "Clustering Tree"))
-        pick <- 0
-        while(pick <= length(tmenu) + 1) {
-            pick <- menu(tmenu, title =
-                         "\nMake a plot selection (or 0 to exit):\n") + 1
+        do.all <- FALSE
+        repeat {
+            if(!do.all)
+                pick <- menu(tmenu, title =
+                             "\nMake a plot selection (or 0 to exit):\n") + 1
             switch(pick,
-                   return(invisible()),
-                   bannerplot(x, ...),
+                   return(invisible()), # 0 -> exit loop
+                   do.all <- TRUE,# 1 : All
+                   bannerplot(x, ...),# 2
                    pltree(x, main = main2, sub = sub, ...)
                    )
+            if(do.all) { pick <- pick + 1; do.all <- pick <= length(tmenu) + 1}
         }
     }
     else {
@@ -167,7 +170,7 @@ function(x, ask = FALSE, which.plots = NULL,
     invisible()
 }
 
-plot.mona <- function(x, main = paste("Banner of ", deparse(attr(x, "Call"))),
+plot.mona <- function(x, main = paste("Banner of ", deparse(x$call)),
                       col = 2, axes = TRUE, adj = 0,
                       nmax.lab = 35, max.strlen = 5, ...)
 {

@@ -37,13 +37,10 @@ fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	jdyss <- 1
     }
     else {
-	##check type of input matrix
-	if((!is.data.frame(x) && !is.numeric(x)) ||
-	   (!all(sapply(x, data.class) == "numeric")))
-	    stop("x is not a numeric dataframe or matrix.")
+        ## check input matrix and standardize, if necessary
 	x <- data.matrix(x)
-	## standardize, if necessary
-	x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
+	if(!is.numeric(x)) stop("x is not a numeric dataframe or matrix.")
+        x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
 	##put info about metric, size and NAs in arguments for the Fortran call
 	ndyst <- if(metric == "manhattan") 2 else 1
 	n <- nrow(x2)
@@ -123,28 +120,23 @@ fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
     names(res$obj) <- c("iterations", "objective")
     res$coeff <- c(res$eda, res$edb)
     names(res$coeff) <- c("dunn_coeff", "normalized")
+
+    clustering <- list(membership = res$p, coeff = res$coeff,
+                       clustering = res$clu, objective = res$obj,
+                       diss = disv, call = match.call())
     if(k != 1) {
 	dimnames(res$silinf) <- list(sildim,
 				     c("cluster", "neighbor", "sil_width", ""))
-	clustering <- list(membership = res$p, coeff = res$coeff,
-			   clustering = res$clu, objective = res$obj,
-			   silinfo =
-			   list(widths = res$silinf[, -4],
-				clus.avg.widths = res$avsil[1:k],
-				avg.width = res$ttsil),
-			   diss = disv)
-    }
-    else {
-	clustering <- list(membership = res$p, coeff = res$coeff,
-			   clustering = res$clu, objective = res$obj,
-			   diss = disv)
+	clustering <- c(clustering,
+                        list(silinfo = list(widths = res$silinf[, -4],
+                             clus.avg.widths = res$avsil[1:k],
+                             avg.width = res$ttsil)))
     }
     if(!diss) {
 	x2[x2 == valmisdat] <- NA
 	clustering$data <- x2
     }
     class(clustering) <- c("fanny", "partition")
-    attr(clustering, "Call") <- sys.call()
     clustering
 }
 

@@ -1,3 +1,35 @@
+2001-11-06  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+        * DESCRIPTION (Version): 1.3-5
+
+	* R/plothier.q: Fix menu() bug thanks to Richard Rowe.
+	* R/plotpart.q: ditto
+
+	* R/agnes.q: properly allow integer matrix input:
+	   don't use  all(sapply(x, data.class) == "numeric") anymore.
+	* R/clara.q, R/diana.q, R/fanny.q, R/pam.q: ditto
+
+2001-11-05  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/pam.q: `call' via match.call() instead of sys.call, and as
+	list component instead of attribute. [R philosophy compatibility]
+	* R/mona.q:  ditto
+	* R/fanny.q, R/diana.q, R/clara.q, R/agnes.q,
+	* R/plothier.q, R/plotpart.q: ditto
+
+
+2001-10-09  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.3-5b (beta) for sending to Robert G
+
+	* R/plothier.q: plot.diana() must have main=NULL
+
+	* R/diana.q: minor code cleanup
+
+2001-08-27  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* README.orig: renamed from R/README-splus
+
 2001-08-22  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): New version is 1.3-4
