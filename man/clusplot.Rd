@@ -17,10 +17,10 @@ clusplot(x, \dots)
 \section{Side Effects}{
   a 2-dimensional clusplot is created on the current graphics device.
 }
-\seealso{
+\seealso{(for references and examples)
   \code{\link{clusplot.default}}, \code{\link{clusplot.partition}},
   \code{\link{partition.object}}, \code{\link{pam}}, \code{\link{fanny}},
-  \code{\link{clara}}. 
+  \code{\link{clara}}.
 }
 \keyword{cluster}
 \keyword{hplot}

@@ -5,13 +5,13 @@
 Return a partitioning (clustering) of the data into \code{k} clusters.
 }
 \usage{
-pam(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
+pam(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
 }
 \arguments{
   \item{x}{
-    data matrix or data frame, or dissimilarity matrix, depending on the
-    value of the \code{diss} argument.
-    
+    data matrix or data frame, or dissimilarity matrix or object,
+    depending on the value of the \code{diss} argument.
+
     In case of a matrix or data frame, each row corresponds to an observation,
     and each column corresponds to a variable.  All variables must be numeric.
     Missing values (\code{\link{NA}}s) \emph{are} allowed.
@@ -20,12 +20,13 @@ pam(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
     of \code{\link{daisy}} or \code{\link{dist}}.  Also a vector of
     length n*(n-1)/2 is allowed (where n is the number of observations),
     and will be interpreted in the same way as the output of the
-    above-mentioned functions. Missing values (NAs) are \emph{not} allowed. 
+    above-mentioned functions. Missing values (NAs) are \emph{not} allowed.
   }
   \item{k}{positive integer specifying the number of clusters, less than
     the number of observations.}
   \item{diss}{
-    logical flag: if TRUE, then \code{x} will be considered as a
+    logical flag: if TRUE (default for \code{dist} or
+    \code{dissimilarity} objects), then \code{x} will be considered as a
     dissimilarity matrix.  If FALSE, then \code{x} will be considered as
     a matrix of observations by variables.
   }
@@ -47,7 +48,7 @@ pam(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 }
 \value{
   an object of class \code{"pam"} representing the clustering.  See
-  \code{pam.object} for details. 
+  \code{pam.object} for details.
 }
 \details{
   \code{pam} is fully described in chapter 2 of Kaufman and Rousseeuw (1990).
@@ -60,11 +61,11 @@ which also allows to select the number of clusters.
 
 
 The \code{pam}-algorithm is based on the search for \code{k} representative objects or
-medoids among the observations of the dataset. These observations should 
-represent the structure of the data. After finding a set of \code{k} medoids, 
-\code{k} clusters are constructed by assigning each observation to the nearest 
-medoid. The goal is to find \code{k} representative objects which minimize the 
-sum of the dissimilarities of the observations to their closest representative 
+medoids among the observations of the dataset. These observations should
+represent the structure of the data. After finding a set of \code{k} medoids,
+\code{k} clusters are constructed by assigning each observation to the nearest
+medoid. The goal is to find \code{k} representative objects which minimize the
+sum of the dissimilarities of the observations to their closest representative
 object.
 The algorithm first looks for a good initial set of medoids (this is called
 the BUILD phase). Then it finds a local minimum for the objective function,
@@ -91,12 +92,12 @@ the number of observations.
   Kaufman, L. and Rousseeuw, P.J. (1990)
   \emph{Finding Groups in Data: An Introduction to Cluster Analysis}.
   Wiley, New York.
-  
+
   Anja Struyf, Mia Hubert & Peter J. Rousseeuw (1996)
   Clustering in an Object-Oriented Environment.
   \emph{Journal of Statistical Software}, \bold{1}.
   \url{http://www.stat.ucla.edu/journals/jss/}
-  
+
   Struyf, A., Hubert, M. and Rousseeuw, P.J. (1997)
   Integrating Robust Clustering Techniques in S-PLUS,
   \emph{Computational Statistics and Data Analysis}, \bold{26}, 17--37.

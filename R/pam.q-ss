@@ -1,25 +1,45 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q,v 1.9 2002/01/18 19:05:56 maechler Exp $
-pam <- function(x, k, diss = inherits(x, "dist"),
-                metric = "euclidean", stand = FALSE)
+
+pam <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 {
+    meanabsdev <- function(y) mean(abs(y - mean(y, na.rm=TRUE)), na.rm=TRUE)
+    size <- function(d)
+    {
+	discr <- 1 + 8 * length(d)
+	sqrtdiscr <- round(sqrt(discr))
+	if(round(sqrtdiscr)^2 != discr)
+	    return(0)
+	(1 + sqrtdiscr)/2
+    }
+    lower.to.upper.tri.inds <- function(n)
+    {
+	return(c(0, unlist(lapply(2:(n - 1), function(x, n)
+				  cumsum(c(0, (n - 2):(n - x))), n = n))) +
+	       rep(1:(n - 1), 1:(n - 1)))
+    }
+    upper.to.lower.tri.inds <- function(n)
+    {
+	return(unlist(lapply(0:(n - 2), function(x, n)
+			     cumsum(x:(n - 2)), n = n)) +
+	       rep(1 + cumsum(0:(n - 2)), (n - 1):1))
+    }
     if(diss) {
 	## check type of input vector
 	if(is.na(min(x)))
 	    stop("NA-values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") {
-	    if(!is.numeric(x) || is.na(sizeDiss(x)))
+	    if(!is.numeric(x) || size(x) == 0)
 		stop("x is not of class dissimilarity and can not be converted to this class." )
 	    ## convert input vector to class "dissimilarity"
 	    class(x) <- "dissimilarity"
-	    attr(x, "Size") <- sizeDiss(x)
+	    attr(x, "Size") <- size(x)
 	    attr(x, "Metric") <- "unspecified"
 	}
 	## adapt S dissimilarities to Fortran:
 	## convert upper matrix, read by rows, to lower matrix, read by rows.
 	n <- attr(x, "Size")
-	if(k < 1 || k >= n)
-	    stop("The number of clusters `k' must be in {1,2, .., n-1}.")
+	if((k < 1) || (k > n - 1))
+	    stop("The number of cluster should be at least 1 and at most n-1.")
 	dv <- x[lower.to.upper.tri.inds(n)]
 	## prepare arguments for the Fortran call
 	dv <- c(0, dv)

@@ -16,12 +16,19 @@ diana.object             Divisive Analysis (DIANA) Object
 fanny.object             Fuzzy Analysis (FANNY) Object
 mona.object              Monothetic Analysis (MONA) Object
 pam.object               Partitioning Around Medoids (PAM) Object
+sizeDiss                 Sample Size of Dissimilarity Like Object
 
 clusplot                 Cluster Plot - Generic Function
 clusplot.default         Bivariate Cluster Plot (clusplot)
 clusplot.partition       Bivariate clusplot of a partitioning object
 pltree                   Clustering Trees - Generic Function
 pltree.twins             Clustering Tree of a Hierarchical Clustering
+
+ellipsoidhull            Compute the Ellipsoid Hull or Spanning Ellipsoid
+                         of a Point Set
+predict.ellipsoid        Predict Method for Ellipsoid Objects
+volume.ellipsoid         Compute the Volume of Planar Object
+lower.to.upper.tri.inds  Permute Indices for Triangular Matrices
 
 plot.agnes               Plots of an Agglomerative Hierarchical Clustering
 plot.diana               Plots of a Divisive Hierarchical Clustering
@@ -47,7 +54,7 @@ summary.pam              Summary Method for `pam'   Objects
 agriculture              European Union Agricultural Workforces
 animals                  Attributes of Animals
 flower                   Flower Characteristics
+pluton			 Plutonium Isotope Compositions
 ruspini                  Ruspini Data
-votes.repub              Votes for Republican Candidate in Presidential
-                         Elections
+votes.repub              Votes for Republican Candidate in Presidential Elections
 xclara                   Bivariate Data Set with 3 Clusters

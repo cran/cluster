@@ -1,40 +1,17 @@
-### $Id: diana.q,v 1.6 2001/11/07 10:45:44 maechler Exp maechler $
+### $Id: diana.q,v 1.7 2002/01/12 14:10:58 maechler Exp $
 
 diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 {
-    meanabsdev <- function(y)
-	mean(abs(y - mean(y, na.rm = TRUE)), na.rm = TRUE)
-
-    size <- function(d)
-    {
-	discr <- 1 + 8 * length(d)
-	sqrtdiscr <- round(sqrt(discr))
-	if(sqrtdiscr^2 != discr)
-	    return(0)
-	(1 + sqrtdiscr)/2
-    }
-    lower.to.upper.tri.inds <- function(n)
-    {
-	return(c(0, unlist(lapply(2:(n - 1), function(x, n)
-				  cumsum(c(0, (n - 2):(n - x))), n = n))) +
-	       rep(1:(n - 1), 1:(n - 1)))
-    }
-    upper.to.lower.tri.inds <- function(n)
-    {
-	return(unlist(lapply(0:(n - 2), function(x, n)
-			     cumsum(x:(n - 2)), n = n)) +
-	       rep(1 + cumsum(0:(n - 2)), (n - 1):1))
-    }
     if(diss) {
 	## check type of input vector
 	if(is.na(min(x)))
 	    stop("NA-values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") {
-	    if(!is.numeric(x) || size(x) == 0)
+	    if(!is.numeric(x) || is.na(sizeDiss(x)))
 		stop("x is not of class dissimilarity and can not be converted to it.")
 	    ## convert input vector to class "dissimilarity"
 	    class(x) <- "dissimilarity"
-	    attr(x, "Size") <- size(x)
+	    attr(x, "Size") <- sizeDiss(x)
 	    attr(x, "Metric") <- "unspecified"
 	}
 	n <- as.integer(attr(x, "Size"))
@@ -46,7 +23,6 @@ diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 	jtmd <- integer(1)
 	ndyst <- 0
 	x2 <- double(n)
-	dv2 <- double(1 + (n * (n - 1))/2)
     }
     else {
         ## check input matrix and standardize, if necessary
@@ -61,29 +37,24 @@ diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 	x2[is.na(x2)] <- valmisdat
 	valmd <- rep(valmisdat, jp)
 	dv <- double(1 + (n * (n - 1))/2)
-	dv2 <- double(1 + (n * (n - 1))/2)
     }
-    jdyss <- as.integer(diss)
-    jalg <- 2
-    merge <- matrix(0, n - 1, 2)
-    storage.mode(merge) <- "integer"
     res <- .Fortran("twins",
 		    n,
 		    jp,
 		    x2,
 		    dv,
-		    dis = dv2,
-		    ok = jdyss,
+		    dis = double(1 + (n * (n - 1))/2),
+		    ok = as.integer(diss), # = jdyss
 		    valmd,
 		    jtmd,
 		    as.integer(ndyst),
-		    as.integer(jalg),
-		    as.integer(0),
+                    as.integer(2),# jalg = 2 <==> DIANA
+		    as.integer(0),# ~ method
 		    integer(n),
 		    ner = integer(n),
 		    ban = double(n),
 		    dc = as.double(0),
-		    merge = merge,
+                    merge = matrix(0:0, n - 1, 2), # integer
 		    PACKAGE = "cluster")
     if(!diss) {
 	## give warning if some dissimilarities are missing.

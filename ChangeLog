@@ -1,6 +1,77 @@
+2002-01-23  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.4-0
+
+	* man/ellipsoidhull.Rd: example
+
+	* tests/ellipsoid-ex.R and *.Rout: finalized
+
+	* man/pluton.Rd: work around Rdconv \eqn{.}{.} bug.
+
+2002-01-22  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/ellipsehull.R (ellipsehull) et al:
+	  generalized from 2 to p dimensions. -- points generation: not yet!
+
+	* tests/ellipsehull.R: new test file
+
+	* man/clusplot.partition.Rd: clean up
+	* man/clusplot.default.Rd: proper reference to Pison et al
+	* man/clusplot.Rd: clean
+
+2002-01-21  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/ellipsehull.R (ellipsehull) and others: new functions
+	* R/plotpart.q (clusplot.default) use new ellipsePoints();
+	  simplification by using "d2" (= dist^2) instead of "dist".
+
+2002-01-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/plotpart.q (clusplot.default) re-scale cov.wt() result:
+	  Finally return the smallest possible ellipses.
+
+	  NOTA BENE ===>  (numerical) results are *different* !
+
+2002-01-18  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/plotpart.q (clusplot.default) {spannel}: Finally found why our
+	ellipses are not quite ok : R's cov.wt() differs from S-plus' !
+
+	* src/spannel.f (spannel): new argument `maxit' (was 5000).
+
+	* R/plotpart.q (cusplot.default): cleanup, eliminating internal
+	  kleur() & plotje(); and "spannel" arguments; new maxit; lower eps
+	  use which.min() and which.max(); ...
+
+	* R/pam.q (pam): diss has new default  = inherits(x, "dist") which
+	  is TRUE therefore for dissimilarity or dist objects.
+
+2002-01-12  Martin Maechler  <maechler@stat.math.ethz.ch>
+	 |
+2002-01-18  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/agnes.q, R/diana.q : a bit of cleanup in the two twins
+	calling functions.
+
+	* man/lower.to.upper.tri.inds.Rd,
+	* man/cluster-internal.Rd: new for formerly local functions, now in
+	* R/internal.R (sizeDiss),
+	* R/internal.R (lower.to.upper.tri.inds), and upper.to...:
+	new functions instead of local functions in several places, e.g.,
+	* R/diana.q, R/fanny.q, ...
+
+	* R/plotpart.q (clusplot.default):
+	fix bug PR#1249: cmd() != cmdscale(); use new cmdscale(*, add=TRUE)
+	 ---> (slightly) different result sometimes
+	fix long-standing typo in NA case + more cleanup
+
+	* R/plotpart.q (clusplot.partition):
+		explicit `main' argument with better default.
+
+
 2001-12-06  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-        * DESCRIPTION (Version): 1.3-6
+	* DESCRIPTION (Version): 1.3-6
 
 	* R/plotpart.q: enable `density =' for polygon shading.
 
@@ -11,7 +82,7 @@
 
 2001-11-06  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-        * DESCRIPTION (Version): 1.3-5
+	* DESCRIPTION (Version): 1.3-5
 
 	* R/plothier.q: Fix menu() bug thanks to Richard Rowe.
 	* R/plotpart.q: ditto

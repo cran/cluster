@@ -1,0 +1,214 @@
+
+R : Copyright 2001, The R Development Core Team
+Version 1.4.0  (2001-12-19)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type `license()' or `licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type `contributors()' for more information.
+
+Type `demo()' for some demos, `help()' for on-line help, or
+`help.start()' for a HTML browser interface to help.
+Type `q()' to quit R.
+
+> library(cluster)
+Loading required package: mva 
+> 
+> ellipsoidhull(cbind(x=1:4, y = 1:4)) #singular
+`ellipsoid' in 2 dimensions:
+ center = ( 2.5 2.5 ); squared ave.radius d^2 =  NaN 
+ and shape matrix =
+   
+       x    y
+  x 1.25 1.25
+  y 1.25 1.25
+  hence, area  =  NaN 
+> 
+> set.seed(157)
+> for(n in 2:10) {
++     x2 <- rnorm(n)
++     print(ellipsoidhull(cbind(1:n, x2)))
++     print(ellipsoidhull(cbind(1:n, x2, 4*x2 + rnorm(n))))
++ }
+`ellipsoid' in 2 dimensions:
+ center = ( 1.50000 0.63454 ); squared ave.radius d^2 =  1.25 
+ and shape matrix =
+    
+                    x2
+      0.25000 -0.33686
+  x2 -0.33686  0.45391
+  hence, area  =  NaN 
+`ellipsoid' in 3 dimensions:
+ center = ( 1.50000 0.63454 1.81831 ); squared ave.radius d^2 =  NaN 
+ and shape matrix =
+    
+                    x2        
+      0.25000 -0.33686 -1.0074
+  x2 -0.33686  0.45391  1.3575
+     -1.00743  1.35747  4.0597
+  hence, volume  =  NaN 
+`ellipsoid' in 2 dimensions:
+ center = ( 2.0000 1.3475 ); squared ave.radius d^2 =  2 
+ and shape matrix =
+    
+                  x2
+     0.66667 0.13931
+  x2 0.13931 1.20501
+  hence, area  =  5.5631 
+`ellipsoid' in 3 dimensions:
+ center = ( 2.0000 1.3475 4.7018 ); squared ave.radius d^2 =  0.34173 
+ and shape matrix =
+    
+                  x2        
+     0.66667 0.13931  0.8856
+  x2 0.13931 1.20501  4.4350
+     0.88559 4.43496 16.5362
+  hence, volume  =  8.9857e-08 
+`ellipsoid' in 2 dimensions:
+ center = ( 2.66799 0.88612 ); squared ave.radius d^2 =  2 
+ and shape matrix =
+    
+                  x2
+      1.5557 -1.7648
+  x2 -1.7648  2.3694
+  hence, area  =  4.75 
+`ellipsoid' in 3 dimensions:
+ center = ( 2.5000 1.1458 4.1482 ); squared ave.radius d^2 =  3 
+ and shape matrix =
+    
+                  x2        
+      1.2500 -1.4518 -5.8349
+  x2 -1.4518  1.9749  7.8572
+     -5.8349  7.8572 31.5658
+  hence, volume  =  3.0294 
+`ellipsoid' in 2 dimensions:
+ center = ( 2.66934 0.21754 ); squared ave.radius d^2 =  2 
+ and shape matrix =
+    
+                x2
+     2.8783 1.2208
+  x2 1.2208 1.2465
+  hence, area  =  9.0995 
+`ellipsoid' in 3 dimensions:
+ center = ( 2.99836 0.21518 0.45513 ); squared ave.radius d^2 =  3 
+ and shape matrix =
+    
+                  x2        
+     2.49201 0.91504  2.5125
+  x2 0.91504 0.93642  3.3989
+     2.51245 3.39892 13.2888
+  hence, volume  =  8.4896 
+`ellipsoid' in 2 dimensions:
+ center = (  3.8628 -0.5835 ); squared ave.radius d^2 =  2 
+ and shape matrix =
+    
+                  x2
+     4.24462 0.36405
+  x2 0.36405 0.87243
+  hence, area  =  11.873 
+`ellipsoid' in 3 dimensions:
+ center = (  3.63043 -0.33158 -1.69826 ); squared ave.radius d^2 =  3 
+ and shape matrix =
+    
+                  x2         
+     3.23627 0.06181  0.71022
+  x2 0.06181 0.79888  3.02200
+     0.71022 3.02200 12.78043
+  hence, volume  =  17.123 
+`ellipsoid' in 2 dimensions:
+ center = ( 4.320769 0.015990 ); squared ave.radius d^2 =  2 
+ and shape matrix =
+    
+                    x2
+      6.04328 -0.20927
+  x2 -0.20927  1.04022
+  hence, area  =  15.699 
+`ellipsoid' in 3 dimensions:
+ center = (  4.08563 -0.28783 -1.00447 ); squared ave.radius d^2 =  3 
+ and shape matrix =
+    
+                    x2         
+     3.673553 0.071283  0.71792
+  x2 0.071283 1.077372  4.56974
+     0.717925 4.569738 19.84562
+  hence, volume  =  12.082 
+`ellipsoid' in 2 dimensions:
+ center = ( 4.50629 0.37388 ); squared ave.radius d^2 =  2 
+ and shape matrix =
+    
+                  x2
+     7.56498 0.45908
+  x2 0.45908 1.67776
+  hence, area  =  22.198 
+`ellipsoid' in 3 dimensions:
+ center = ( 4.81400 0.28258 1.33966 ); squared ave.radius d^2 =  3 
+ and shape matrix =
+    
+                   x2         
+      7.05249 0.47211 -0.54535
+  x2  0.47211 1.45262  5.55174
+     -0.54535 5.55174 22.48863
+  hence, volume  =  20.46 
+`ellipsoid' in 2 dimensions:
+ center = (  4.162237 -0.052809 ); squared ave.radius d^2 =  2 
+ and shape matrix =
+    
+                   x2
+     12.57421 0.17355
+  x2  0.17355 3.01982
+  hence, area  =  38.702 
+`ellipsoid' in 3 dimensions:
+ center = (  4.384500  0.032583 -0.137090 ); squared ave.radius d^2 =  3 
+ and shape matrix =
+    
+                 x2        
+     9.1910  1.0828  3.7419
+  x2 1.0828  2.5475 11.1929
+     3.7419 11.1929 50.8307
+  hence, volume  =  55.075 
+`ellipsoid' in 2 dimensions:
+ center = ( 5.329143 0.052108 ); squared ave.radius d^2 =  2 
+ and shape matrix =
+    
+                   x2
+     13.49387 0.12245
+  x2  0.12245 1.29585
+  hence, area  =  26.263 
+`ellipsoid' in 3 dimensions:
+ center = ( 5.416860 0.041835 0.370480 ); squared ave.radius d^2 =  3 
+ and shape matrix =
+    
+                    x2         
+     10.50196 -0.34653  0.74795
+  x2 -0.34653  0.89929  3.44177
+      0.74795  3.44177 13.73863
+  hence, volume  =  11.195 
+Warning messages: 
+1: NaNs produced in: sqrt(det(A)) 
+2: NaNs produced in: sqrt(det(A)) 
+> 
+> x <- rt(100, df = 4)
+> y <- 100 + 5 * x + rnorm(100)
+> ellipsoidhull(cbind(x,y))
+`ellipsoid' in 2 dimensions:
+ center = ( -0.23167 98.46337 ); squared ave.radius d^2 =  2 
+ and shape matrix =
+   
+         x       y
+  x 10.953  55.625
+  y 55.625 285.399
+  hence, area  =  35.531 
+> z <- 10  - 8 * x + y + rnorm(100)
+> ellipsoidhull(cbind(x,y,z))
+`ellipsoid' in 3 dimensions:
+ center = (  -0.17421  98.72393 110.06814 ); squared ave.radius d^2 =  3 
+ and shape matrix =
+   
+          x        y        z
+  x   9.195   46.322  -27.211
+  y  46.322  235.310 -135.551
+  z -27.211 -135.551   83.861
+  hence, volume  =  58.318 
+> 

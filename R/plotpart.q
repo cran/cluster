@@ -1,4 +1,4 @@
-### $Id: plotpart.q,v 1.7 2001/11/07 10:42:08 maechler Exp maechler $
+### $Id: plotpart.q,v 1.12 2002/01/23 18:20:33 maechler Exp $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
          nmax.lab = 40, max.strlen = 5,
@@ -67,99 +67,95 @@ function(x, ask = FALSE, which.plots = NULL,
 
 clusplot <- function(x, ...) UseMethod("clusplot")
 
+
 clusplot.default <-
 function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
          shade = FALSE, color = FALSE, labels = 0, plotchar = TRUE,
          col.p = "dark green", # was 5 (= shaded col)
          col.txt = col.p,
-         span = TRUE, xlim = NULL, ylim = NULL, ...)
+         span = TRUE, xlim = NULL, ylim = NULL,
+         main = paste("CLUSPLOT(", deparse(substitute(x)),")"),
+         verbose = getOption("verbose"),
+         ...)
 {
-    size <- function(d)
-    {
-        discr <- 1 + 8 * length(d)
-        sqrtdiscr <- round(sqrt(discr))
-        if(round(sqrtdiscr)^2 != discr) 0 else (1 + sqrtdiscr)/2
-    }
-    ellipse <- function(A, dist, loc, n = 201)
-    {
-        ## Return (x,y) points on ellipse boundary
-        detA <- A[1, 1] * A[2, 2] - A[1, 2]^2
-        yl2 <- A[2, 2] * dist^2
-        y <- seq( - sqrt(yl2), sqrt(yl2), leng = n)
-        sqrt.discr <- sqrt(detA/A[2, 2]^2 * pmax(0, yl2 - y^2))
-        sqrt.discr[c(1, n)] <- 0
-        b <- loc[1] + A[1, 2]/A[2, 2] * y
-        x1 <- b - sqrt.discr
-        x2 <- b + sqrt.discr
-        y <- loc[2] + y
-        return(rbind(cbind(x1, y), cbind(rev(x2), rev(y))))
-    }
+    if(paste(R.version$major, R.version$minor, sep=".") < 1.5) {
+        ## a simplified (add = T) version of R 1.5's cmdscale():
+        cmdscale <- function (d, k = 2, add = TRUE, ...) {
+            if (any(is.na(d)))
+                stop("NA values not allowed in d")
+            if (is.null(n <- attr(d, "Size"))) {
+                d <- as.matrix(d)
+                x <- d^2
+                if ((n <- nrow(x)) != ncol(x))
+                    stop("Distances must be result of dist or a square matrix")
+            }
+            else {
+                x <- matrix(0, n, n)
+                if(add) d0 <- x
+                x[row(x) > col(x)] <- d^2
+                x <- x + t(x)
+                if(add) {
+                    d0[row(x) > col(x)] <- d
+                    d <- d0 + t(d0)
+                }
+            }
+            storage.mode(x) <- "double"
+            x <- .C("dblcen", x=x, as.integer(n), PACKAGE="mva")$x
+            if(add) { ## solve the additive constant problem
+                i2 <- n + (i <- 1:n)
+                Z <- matrix(0, 2*n, 2*n)
+                Z[cbind(i2,i)] <- -1
+                Z[ i, i2] <- -x
+                Z[i2, i2] <- .C("dblcen", x= 2*d, as.integer(n),PACKAGE="mva")$x
+                e <- La.eigen(Z,symmetric = FALSE, only.val = TRUE)$values
+                add.c <- max(Re(e))
+                x <- matrix(double(n*n), n, n)
+                non.diag <- row(d) != col(d)
+                x[non.diag] <- (d[non.diag] + add.c)^2
+            }
+            e <- La.eigen(-x/2, symmetric = TRUE)
+            ev <- e$values[1:k]
+            points <- e$vectors[, 1:k] %*% diag(sqrt(ev), k)
+            rn <- if(is.matrix(d)) rownames(d) else names(d)
+            dimnames(points) <- list(rn, NULL)
+            evalus <- e$values[-n]
+            list(points = points, eig = ev, ac = if(add) add.c else 0,
+                 GOF = sum(ev)/c(sum(abs(evalus)),
+                                 sum(evalus[evalus > 0])))
+        }
+    }## cmdscale() -- if R version < 1.5
 
-    kleur <- function(n, verhoud, z, dens, col, ...)
-    {
-        verhoud1 <- order(verhoud)
-        if(n <= 4) {
-            for(i in 1:n) {
-                j <- verhoud1[i]
-                polygon(z[[j]], density = dens[j], col = col[i], ...)
-            }
-        }
-        else {
-## if(exists("pam", mode = "function") == FALSE) {
-##   print("Looking for function pam in library(cluster) to compute the color effect for more than 4 clusters." )
-##   library(cluster)
-## }
-            j <- pam(sort(verhoud), 4)$clustering
-            for(i in 1:n) {
-                q <- verhoud1[i]
-                polygon(z[[q]], density = dens[q], col = col[j[i]], ...)
-            }
-        }
-    }
     clas.snijpunt <- function(x, loc, m, n, p)
     {
         if(     loc[n, m] <= x[1, m] && x[1, m] <= loc[p, m]) x[1, ]
         else if(loc[n, m] <= x[2, m] && x[2, m] <= loc[p, m]) x[2, ]
         else NA
     }
-    plotje <- function(x, ...)
-    {
-        polygon(x, density = 0, col = 5, ...)
-    }
-    notavail <- function(x)
-    {
-        x[x == "NA"] <- median(x, na.rm = TRUE)
-        return(x)
-    }
     coord.snijp1 <- function(x, gemid)
-    {
         x[2, 2] - 2 * x[1, 2] * gemid + x[1, 1] * gemid^2
-    }
-    coord.snijp2 <- function(x, dist, y)
+    coord.snijp2 <- function(x, d2, y)
+        ((x[1, 1] * x[2, 2] - x[1, 2]^2) * d2)/y
+    coord.snijp3 <- function(xx, y, gemid)
     {
-        ((x[1, 1] * x[2, 2] - x[1, 2]^2) * dist^2)/y
-    }
-    coord.snijp3 <- function(x, y, n, gemid)
-    {
-        matrix(c(x[n, 1] + sqrt(y), x[n, 1] - sqrt(y),
-                 x[n, 2] + gemid * sqrt(y),
-                 x[n, 2] - gemid * sqrt(y)), ncol = 2)
+        sy <- sqrt(y)
+        sy <- c(sy, -sy)
+        cbind(xx[1] + sy,
+              xx[2] + gemid*sy)
     }
 
     ## BEGIN ----
 
-    namx <- deparse(substitute(x))
+    (main)# eval
     if(is.data.frame(x))
         x <- data.matrix(x)
     if(!is.numeric(x))
         stop("x is not numeric")
 
-    labels1 <- NULL
     if(diss) {
         if(is.na(min(x)))
             stop(message = "NA-values in x are not allowed.")
         if((data.class(x)) != "dissimilarity") {
-            if((size(x)) == 0) {
+            if(is.na(sizeDiss(x))) {
                 if((n <- nrow(x)) != ncol(x))
                     stop("Distances must be result of dist or a square matrix.")
                 if(all.equal(x, t(x)) != TRUE)
@@ -170,8 +166,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
             }
             else {
                 if(!is.vector(x)) {
-                    if(length(attr(x, "Labels")) != 0)
-                        labels1 <- attr(x, "Labels")
+                    labels1 <- attr(x, "Labels") # possibly NULL
                     x <- as.matrix(x)
                     if((n <- nrow(x)) == ncol(x) &&
                        all.equal(x, t(x)) == TRUE) {
@@ -181,13 +176,13 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
                     }
                     else {
                         if(is.null(labels1))
-                            labels1 <- 1:size(x)
-                        attr(x, "Size") <- size(x)
+                            labels1 <- 1:sizeDiss(x)
+                        attr(x, "Size") <- sizeDiss(x)
                     }
                 }
                 else {
-                    attr(x, "Size") <- size(x)
-                    labels1 <- 1:size(x)
+                    attr(x, "Size") <- sizeDiss(x)
+                    labels1 <- 1:sizeDiss(x)
                 }
             }
         }
@@ -197,35 +192,28 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
                     1:attr(x, "Size")
                 else attr(x, "Labels")
         }
-        ##x1 <- cmd(x, k = 2, eig = T, add = T)
-        ##if(x1$ac < 0)
-        ##	x1 <- cmd(x, k = 2, eig = T)
-        x1 <- cmdscale(x, k = 2, eig = TRUE)
-        var.dec <- sum(x1$eig)/sum(diag(x1$x))
-        if (var.dec < 0) var.dec <- 0
-        if (var.dec > 1) var.dec <- 1
+        x1 <- cmdscale(x, k = 2, eig = TRUE, add = TRUE)
+        if(x1$ac < 0)
+            x1 <- cmdscale(x, k = 2, eig = TRUE)
+        var.dec <- x1$GOF[2] # always in [0,1]
         x1 <- x1$points
     }
     else { ## Not (diss)
-
-        if(is.na(min(x))) {
+        if(!is.matrix(x)) stop("x is not a data matrix")
+        if(is.na(min(x))) { ## any(is.na(x))
             y <- is.na(x)
             y1 <- apply(y, 1, sum)
             y2 <- apply(y, 2, sum)
-            if((sum(y1 == ncol(x)) != 0) && (sum(y2 == nrow(x)) != 0))
-                stop("some objects and some variables contain only missing values"
-                     )
-            if(sum(y1 == nrow(x)) != 0)
+            if(any(y1 == ncol(x)))
                 stop("one or more objects contain only missing values")
-            if(sum(y2 == nrow(x)) != 0)
+            if(any(y2 == nrow(x)))
                 stop("one or more variables contain only missing values")
-            print("There were missing values and they were displaced by the median of the corresponding variable(s)"
-                  )
-            x <- apply(x, 2, notavail)
+            x <- apply(x, 2, function(x)
+                   { x[is.na(x)] <- median(x, na.rm = TRUE); x } )
+            cat("Missing values were displaced by the median of the corresponding variable(s)\n")
+
         }
-        if(!is.matrix(x))
-            stop("x is not allowed")
-        ## ELSE
+
         labels1 <-
             if(length(dimnames(x)[[1]]) == 0) 1:nrow(x)
             else dimnames(x)[[1]]
@@ -237,12 +225,14 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
         }
         else {
             prim.pr <- princomp(x, scores = TRUE, cor = ncol(x) != 2)
-            x1 <- prim.pr$scores
-
             var.dec <- cumsum(prim.pr$sdev^2/sum(prim.pr$ sdev^2))[2]
+            x1 <- prim.pr$scores
             x1 <- cbind(x1[, 1], x1[, 2])
         }
     }
+
+    ## --- The 2D space is setup and points are in x1[,]  (aantal x 2) ---
+
     clus <- as.vector(clus)
     if(length(clus) != length(x1[, 1]))
         stop("The clustering vector has not the good length")
@@ -259,47 +249,45 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
     miny <- rangy[1]
     maxy <- rangy[2]
     levclus <- levels(clus)
-    n <- length(levclus)
-    z <- A <- as.list(0)
-    maxima <- loc <- matrix(0, ncol = 2, nrow = n)
-    dist <- verhoud <- as.vector(0)
+    n <- length(levclus) # the number of clusters
+    z <- A <- vector("list", n)
+    maxima <- loc <- matrix(0, nrow = n, ncol = 2)
+    d2 <- verhoud <- numeric(n)
     verhouding <- 0
-    num1 <- 10
-    num2 <- 40
+    ## num1 .. num6 : all used only once -- there are more constants anyway
     num3 <- 90
-    num4 <- 37
-    num5 <- 3
     num6 <- 70
 
-    for(i in 1:n) {
-        x <- x1[clus == levclus[i], ]
-        cov <-
-          if(is.vector(x)) {
-            x <- matrix(x, ncol = 2, byrow = TRUE)
-            var(rbind(x, c(0, 0)))
-          }
-          else var(x)
-        aantal <- nrow(x)
+    for(i in 1:n) { ##-------------  i-th cluster  --------------
+	x <- x1[clus == levclus[i],, drop = FALSE ]
+        aantal <- nrow(x) # number of observations in cluster [i]
+        cov <- var(if(aantal == 1) {
+                     if(verbose)
+                         cat("cluster",i," has only one observation ..\n")
+                     rbind(x, c(0, 0))
+                   } else x)
         x.1 <- range(x[, 1])
         y.1 <- range(x[, 2])
         notrank2 <- qr(cov, tol = 0.001)$rank != 2
         if(!span && notrank2) {
-            dist[i] <- 1
+            d2[i] <- 1
             if((abs(diff(x.1)) > (diff(rangx)/70)) ||
                (abs(diff(y.1)) > (diff(rangy)/50))) {
                 loc[i, ] <- c(x.1[1] + diff(x.1)/2, y.1[1] + diff(y.1)/2)
-                a <- sqrt((loc[i, 1] - x.1[1])^2 + (loc[i, 2] - y.1[1])^2)
+                a <- sqrt((loc[i, 1] - x.1[1])^2 +
+                          (loc[i, 2] - y.1[1])^2)
                 a <- a + 0.05 * a
-                if(abs(diff(x.1)) > (diff(rangx)/70)) {
-                    ind1 <- (1:aantal)[x[,1]==max(x[,1])][1]
-                    ind2 <- (1:aantal)[x[,1]==min(x[,1])][1]
+                num2 <- 40
+                if(abs(diff(x.1)) > diff(rangx)/70 ) {
+                    ind1 <- which.max(x[,1])
+                    ind2 <- which.min(x[,1])
                     q <- atan((x[ind1, 2] - x[ind2, 2])/
                               (x[ind1, 1] - x[ind2, 1]))
                     b <-
                         if(diff(rangy) == 0)
                             1
-                        else if(abs(diff(y.1)) > (diff(rangy)/50))
-                            diff(y.1)/num1
+                        else if(abs(diff(y.1)) > diff(rangy)/50)
+                            diff(y.1)/10 ## num1 <- 10
                         else diff(rangy)/num2
                 }
                 else {
@@ -307,8 +295,8 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
                     q <- pi/2
                 }
                 D <- diag(c(a^2, b^2))
-                R <- cbind(c(  cos(q), sin(q)),
-                           c(- sin(q), cos(q)))
+                R <- rbind(c(cos(q), -sin(q)),
+                           c(sin(q),  cos(q)))
                 A[[i]] <- (R %*% D) %*% t(R)
             }
             else {
@@ -322,16 +310,16 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
             oppervlak <- pi * a * b
         }
         else if(span && notrank2) {
-            dist[i] <- 1
+            d2[i] <- 1
             if(sum(x[, 1] != x[1, 1]) != 0 ||
                sum(x[, 2] != x[1, 2]) != 0) {
                 loc[i, ] <- c(x.1[1] + diff(x.1)/2,
                               y.1[1] + diff(y.1)/2)
                 a <- sqrt((loc[i, 1] - x.1[1])^2 +
                           (loc[i, 2] - y.1[1])^2)
-                if(sum(x[, 1] != x[1, 1]) != 0) {
-                    ind1 <- (1:aantal)[x[,1]==max(x[,1])][1]
-                    ind2 <- (1:aantal)[x[,1]==min(x[,1])][1]
+                if(any(x[, 1] != x[1, 1])) {
+                    ind1 <- which.max(x[,1])
+                    ind2 <- which.min(x[,1])
                     q <- atan((x[ind1, 2] - x[ind2, 2])/
                               (x[ind1, 1] - x[ind2, 1]))
                 }
@@ -340,8 +328,8 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
                 }
                 b <- 1e-7
                 D <- diag(c(a^2, b^2))
-                R <- cbind(c(  cos(q), sin(q)),
-                           c(- sin(q), cos(q)))
+                R <- rbind(c(cos(q), -sin(q)),
+                           c(sin(q),  cos(q)))
                 A[[i]] <- (R %*% D) %*% t(R)
             }
             else {
@@ -358,62 +346,72 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
         else { ## rank2
             if(!span) {
                 loc[i, ] <- apply(x, 2, mean)
-                dist[i] <- sqrt(max(mahalanobis(x, loc[i, ], cov)))
-                dist[i] <- dist[i] + 0.01 * dist[i]
+                d2[i] <- max(mahalanobis(x, loc[i, ], cov))
+                ## * (1+ 0.01)^2  --- dropped factor for back-compatibility
             }
             else { ## span and rank2
-                x2 <- cbind(matrix(1, aantal, 1), x)
-                l1 <- matrix(0, 3, 3)
-                sqdist <- prob <- rep(0, aantal)
-                storage.mode(sqdist) <- "double"
-                storage.mode(prob) <- "double"
-                storage.mode(l1) <- "double"
-                storage.mode(x2) <- "double"
+                if(verbose)
+                    cat("span & rank2 : calling \"spannel\" ..\n")
+                k <- as.integer(2)
                 res <- .Fortran("spannel",
-                                as.integer(aantal),
-                                ndep= as.integer(2),
-                                dat = x2,
-                                eps = as.double(0.01),
-                                sqdist = sqdist,
-                                l1,
-                                double(2),
-                                double(2),
-                                prob = prob,
-                                double(3),
+                                aantal,
+                                ndep= k,
+                                dat = cbind(1., x),
+                                sqdist = double(aantal),
+                                l1 = double((k+1) ^ 2),
+                                double(k),
+                                double(k),
+                                prob = double(aantal),
+                                double(k+1),
+                                eps = as.double(0.01),## convergence tol.
+                                maxit = as.integer(5000),
                                 ierr = as.integer(0),
                                 PACKAGE = "cluster")
                 if(res$ierr != 0)
-                    print("Error in Fortran routine computing the MVE-ellipsoid, please use the option exactmve=F"
-                          )
-                cov <- cov.wt(x, res$prob)$cov
-                loc[i, ] <- cov.wt(x, res$prob)$center
-                dist[i] <- sqrt(weighted.mean(res$sqdist, res$prob))
+                    ## MM : exactmve not available here !
+                    cat("Error in Fortran routine for the spanning ellipsoid,",
+                        "\n rank problem??\n", sep="")
+
+                cov <- cov.wt(x, res$prob)
+                loc[i, ] <- cov$center
+                ## NB: cov.wt() in R has extra wt[] scaling; revert here:
+                cov <- cov$cov * (1 - sum(cov$wt^2))
+                d2[i] <- weighted.mean(res$sqdist, res$prob)
+
+                if(verbose)
+                    cat("ellipse( A= (", format(cov[1,]),"*", format(cov[2,2]),
+                        "),\n\td2=", format(d2[i]),
+                        ", loc[]=", format(loc[i, ]), ")\n")
             }
             A[[i]] <- cov
-            oppervlak <- pi * dist[i]^2 *
-                sqrt(cov[1, 1] * cov[2, 2] - cov[1, 2]^2)
+            ## oppervlak (flam.)  =  area (Engl.)
+            oppervlak <- pi * d2[i] * sqrt(cov[1, 1] * cov[2, 2] - cov[1, 2]^2)
         }
-        z[[i]] <- ellipse(A[[i]], dist[i], loc[i, ])
-        rang <- c(range(z[[i]][, 1]), range(z[[i]][, 2]))
+
+        z[[i]] <- ellipsoidPoints(A[[i]], d2[i], loc[i, ], n= 201)
         maxima[i, ] <- z[[i]][201, ]
-        minx <- min(minx, rang[1])
-        maxx <- max(maxx, rang[2])
-        miny <- min(miny, rang[3])
-        maxy <- max(maxy, rang[4])
+        rx <- range(z[[i]][, 1])
+        ry <- range(z[[i]][, 2])
+        minx <- min(minx, rx[1])
+        maxx <- max(maxx, rx[2])
+        miny <- min(miny, ry[1])
+        maxy <- max(maxy, ry[2])
         verhoud[i] <- aantal/oppervlak
         if(verhoud[i] < 1e7)
             verhouding <- verhouding + verhoud[i]
-    }
+    } ## end for( i-th cluster )
+
     if(verhouding == 0)
         verhouding <- 1
-    density <- (verhoud * num4)/verhouding + num5
+    ## num4 <- 37 ; num5 <- 3 --- but `41' is another constant
+    density <- 3 + (verhoud * 37)/verhouding
     density[density > 41] <- 41
     if (span) {
-        if (rangx[1]==rangx[2]) {
+        if (rangx[1] == rangx[2]) { ## diff(rangx)==0 : x-coords all the same
             minx <- x1[1, 1] - 1
             maxx <- x1[1, 1] + 1
         }
-        if (rangy[1]==rangy[2]) {
+        if (rangy[1] == rangy[2]) { ## diff(rangy)==0 : y-coords all the same
             miny <- x1[1, 2] - 1
             maxy <- x1[1, 2] + 1
         }
@@ -431,33 +429,32 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
 
     plot(x1[, 1], x1[, 2], xlim = c(minx, maxx), ylim = c(miny, maxy),
          xlab = "Component 1", ylab = "Component 2",
-         main = paste("CLUSPLOT(", namx,")"),
+         main = main,
          type = if(plotchar) "n" else "p", # if(plotchar) add points later
          col = col.p, ...)
     title(sub = paste("These two components explain",
           round(100 * var.dec, digits = 2), "% of the point variability."),
           adj = 0)
 
-    color1 <- c(2, 4, 6, 3)
-
-    if(shade && color) {
-        kleur(n, verhoud, z, density, color1, ...)
-    }
-    else if(shade) {
-        for(i in 1:n)
-            polygon(z[[i]], density = density[i], col = 5, ...)
-    }
-    else if(color) {
-        dens <- vector(mode = "numeric", length = n)
-        kleur(n, verhoud, z, dens, color1, ...)
+    if(color) {
+        color1 <- c(2, 4, 6, 3)
+        i.verh <- order(verhoud)
+        jInd <- if(n > 4) pam(verhoud[i.verh], 4)$clustering else 1:n
+        for(i in 1:n) {
+            k <- i.verh[i]
+            polygon(z[[k]], density = if(shade) density[k] else 0,
+                    col = color1[jInd[i]], ...)
+        }
     }
     else {
-        sapply(z, plotje, ...)
+        for(i in 1:n)
+            polygon(z[[i]], density = if(shade) density[i] else 0,
+                    col = 5, ...)
     }
 
     ## points after polygon in order to write ON TOP:
     if(plotchar) {
-        karakter <- c(1:19)
+        karakter <- 1:19
         for(i in 1:n) {
             x <- x1[clus == levclus[i],  , drop = FALSE]
             kar <- 1+(i-1) %% 19
@@ -466,16 +463,17 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
     }
 
     if((lines == 1 || lines == 2) && n > 1) {
+        ## Draw lines between all pairs of the  n  cluster (centers)
         afstand <- matrix(0, ncol = n, nrow = n)
         for(i in 1:(n - 1)) {
             for(j in (i + 1):n) {
                 gemid <- (loc[j, 2] - loc[i, 2])/(loc[j, 1] - loc[i, 1])
                 s0 <- coord.snijp1(A[[i]], gemid)
-                b0 <- coord.snijp2(A[[i]], dist[i], s0)
-                snijp.1 <- coord.snijp3(loc, b0, i, gemid)
+                b0 <- coord.snijp2(A[[i]], d2[i], s0)
+                snijp.1 <- coord.snijp3(loc[i,], y=b0, gemid)
                 s1 <- coord.snijp1(A[[j]], gemid)
-                b1 <- coord.snijp2(A[[j]], dist[j], s1)
-                snijp.2 <- coord.snijp3(loc, b1, j, gemid)
+                b1 <- coord.snijp2(A[[j]], d2[j], s1)
+                snijp.2 <- coord.snijp3(loc[j,], y=b1, gemid)
                 if(loc[i, 1] != loc[j, 1]) {
                     if(loc[i, 1] < loc[j, 1]) {
                         punt.1 <- clas.snijpunt(snijp.1, loc, 1, i, j)
@@ -512,7 +510,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
                     segments(loc[i, 1], loc[i, 2],
                              loc[j, 1], loc[j, 2], col = 6, ...)
                 }
-                else {
+                else { ## lines == 2
                     afstand[i, j] <- sqrt((punt.1[1] - punt.2[1])^2 +
                                           (punt.1[2] - punt.2[2])^2)
                     segments(punt.1[1], punt.1[2],
@@ -554,14 +552,13 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
     invisible(list(Distances = afstand, Shading = density))
 }
 
-clusplot.partition <- function(x, ...)
+clusplot.partition <- function(x, main = NULL, ...)
 {
+    if(is.null(main) && !is.null(x$call))
+	main <- paste("clusplot(",format(x$call),")", sep="")
     if(length(x$data) != 0 &&
        (!is.na(min(x$data)) || data.class(x) == "clara"))
-         invisible(clusplot.default(x$data, x$clustering, diss = FALSE, ...))
-    else invisible(clusplot.default(x$diss, x$clustering, diss = TRUE, ...))
+	clusplot.default(x$data, x$clustering, diss = FALSE, main = main, ...)
+    else clusplot.default(x$diss, x$clustering, diss = TRUE, main = main, ...)
+
 }
-
-
-
-

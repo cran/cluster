@@ -1,4 +1,4 @@
-### $Id: clara.q,v 1.8 2001/11/07 10:44:16 maechler Exp maechler $
+### $Id: clara.q,v 1.9 2002/01/12 14:10:12 maechler Exp $
 
 #### CLARA := Clustering LARge Applications
 ####
@@ -14,14 +14,6 @@
 clara <- function(x, k, metric = "euclidean", stand = FALSE,
 		  samples = 5, sampsize = 40 + 2 * k)
 {
-    meanabsdev <- function(y)
-	mean(abs(y - mean(y, na.rm = TRUE)), na.rm = TRUE)
-    upper.to.lower.tri.inds <- function(n)
-    {
-	return(unlist(lapply(0:(n - 2), function(x, n)
-			     cumsum(x:(n - 2)), n = n)) +
-	       rep(1 + cumsum(0:(n - 2)), (n - 1):1))
-    }
     ## check type of input matrix and values of input numbers
     x <- data.matrix(x)
     if(!is.numeric(x)) stop("x is not a numeric dataframe or matrix.")

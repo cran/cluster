@@ -1,27 +1,15 @@
 fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 {
-    meanabsdev <- function(y)
-    {
-	mean(abs(y - mean(y, na.rm = TRUE)), na.rm = TRUE)
-    }
-    size <- function(d)
-    {
-	discr <- 1 + 8 * length(d)
-	sqrtdiscr <- round(sqrt(discr))
-	if(round(sqrtdiscr)^2 != discr)
-	    return(0)
-	(1 + sqrtdiscr)/2
-    }
     if(diss) {
 	## check type of input vector
 	if(is.na(min(x)))
 	    stop("NA-values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") {
-	    if(!is.numeric(x) || size(x) == 0)
+	    if(!is.numeric(x) || is.na(sizeDiss(x)))
 		stop("x is not of class dissimilarity and can not be converted to this class." )
 	    ## convert input vector to class "dissimilarity"
 	    class(x) <- "dissimilarity"
-	    attr(x, "Size") <- size(x)
+	    attr(x, "Size") <- sizeDiss(x)
 	    attr(x, "Metric") <- "unspecified"
 	}
 	## prepare arguments for the Fortran call
