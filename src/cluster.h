@@ -1,9 +1,10 @@
 /* At least for the things in C */
 
 #include <R_ext/Boolean.h>
+#include <R_ext/RS.h>
 
 /* in ./meet.f --- called from most source files: */
-int meet_(int *, int *);
+int F77_NAME(meet)(int *, int *);
 
 /* --------- ./clara.c ------------------*/
 

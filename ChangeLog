@@ -1,3 +1,26 @@
+2002-12-05  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Date, Version): 1.6-3
+
+	* src/cluster.h: F77_NAME(meet)
+	* src/clara.c:   F77_CALL(meet)
+
+2002-10-28  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/pam.f (pam): comments, (bswap): variable renaming
+
+2002-10-26  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.6-003 := pre-1.6-3
+
+2002-10-23  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/agnes.q (print.summary.agnes): oops: had "clara" there!
+
+2002-10-23  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* Version 1.6-2 ==> released to CRAN
+
 2002-10-21  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* R/daisy.q (daisy): allow "+- Inf" in `x' (gave error from Fortran)

@@ -337,7 +337,7 @@ void bswap2(int kk, int nsam, int *nrepr,
     --nrepr;
     --beter;
 
-    --dys;/*index via meet_() */
+    --dys;/*index via meet() */
     --dysma;	--dysmb;
 
 
@@ -353,7 +353,7 @@ void bswap2(int kk, int nsam, int *nrepr,
 	    if (nrepr[ja] == 0) {
 		beter[ja] = 0.;
 		for (j = 1; j <= nsam; ++j) {
-		    njaj = meet_(&ja, &j);
+		    njaj = F77_CALL(meet)(&ja, &j);
 		    cmd = dysma[j] - dys[njaj];
 		    if (cmd > 0.)
 			beter[ja] += cmd;
@@ -369,7 +369,7 @@ void bswap2(int kk, int nsam, int *nrepr,
 	}
 	nrepr[nmax] = 1;
 	for (j = 1; j <= nsam; ++j) {
-	    njn = meet_(&nmax, &j);
+	    njn = F77_CALL(meet)(&nmax, &j);
 	    if (dysma[j] > dys[njn])
 		dysma[j] = dys[njn];
 	}
@@ -394,7 +394,7 @@ L60:
 	dysmb[j] = s * 1.1 + 1.;
 	for (ja = 1; ja <= nsam; ++ja) {
 	    if (nrepr[ja] != 0) {
-		njaj = meet_(&ja, &j);
+		njaj = F77_CALL(meet)(&ja, &j);
 		if (dys[njaj] < dysma[j]) {
 		    dysmb[j] = dysma[j];
 		    dysma[j] = dys[njaj];
@@ -411,8 +411,8 @@ L60:
 		if (nrepr[ja] != 0) {
 		    dz = 0.;
 		    for (j = 1; j <= nsam; ++j) {
-			njaj = meet_(&ja, &j);
-			nkj  = meet_(&k, &j);
+			njaj = F77_CALL(meet)(&ja, &j);
+			nkj  = F77_CALL(meet)(&k, &j);
 			if (dys[njaj] == dysma[j]) {
 			    small = dysmb[j];
 			    if (small > dys[njaj])
@@ -614,7 +614,7 @@ void selec(int kk, int n, int jpp, int diss_kind,
 		    continue /* next kb */;
 
 		npb = np[kb];
-		npab = meet_(&npa, &npb);
+		npab = F77_CALL(meet)(&npa, &npb);
 		if (nstrt == 0)
 		    nstrt = 1;
 		else if (dys[npab] >= ratt[ka])
@@ -793,7 +793,7 @@ void black(int kk, int jpp, int nsam, int *nbest,
 		    for (l = 1; l <= nsam; ++l) {
 			if (ncluv[l] == nclu) {
 			    ++nbb;
-			    db += dys[meet_(&nj, &l)];
+			    db += dys[F77_CALL(meet)(&nj, &l)];
 			}
 		    }
 		    btt = (double) nbb;
@@ -811,7 +811,7 @@ void black(int kk, int jpp, int nsam, int *nbest,
 	    dysa = 0.;
 	    for (l = 1; l <= ntt; ++l) {
 		nl = nelem[l];
-		dysa += dys[meet_(&nj, &nl)];
+		dysa += dys[F77_CALL(meet)(&nj, &nl)];
 	    }
 	    att = (double) (ntt - 1);
 	    dysa /= att;

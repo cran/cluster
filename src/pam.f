@@ -1,4 +1,4 @@
-c $Id: pam.f,v 1.11 2002/09/12 15:37:53 maechler Exp $
+c $Id: pam.f,v 1.13 2002/10/28 21:25:37 maechler Exp $
 c
 c PAM := Partitioning Around Medoids
 c
@@ -11,7 +11,7 @@ c
       integer nn,jpp,kk, jdyss,ndyst
 
       double precision x(nn,jpp), dys(1+nn*(nn-1)/2), valmd(jpp)
-      integer jtmd(jpp), nsend(nn),nrepr(nn),nelem(nn),
+      integer jtmd(jpp), nsend(nn), nrepr(nn), nelem(nn),
      +	   ncluv(nn), nisol(kk), med(kk)
       double precision radus(nn),damer(nn),ttd(nn),separ(nn),ttsyl
       double precision clusinf(kk,5),sylinf(nn,4),obj(2)
@@ -37,8 +37,10 @@ c     s := max( dys[.] ), the largest distance
 	 if(s .lt. dys(l)) s=dys(l)
  10   continue
 
+c     Build + Swap :
       call bswap(kk,nn,	     nrepr,radus,damer,ttd, nhalf,dys,sky,s,obj)
-      call cstat(kk,nn,nsend,nrepr,radus,damer,ttd, separ,    sky,s,
+c     Compute STATs :
+      call cstat(kk,nn,nsend,nrepr,radus,damer,ttd, separ,   sky,s,
      f	   nhalf,dys,ncluv,nelem,med,nisol)
       do 135 k=1,kk
 	 clusinf(k,1)=nrepr(k)
@@ -48,6 +50,7 @@ c     s := max( dys[.] ), the largest distance
 	 clusinf(k,5)=separ(k)
  135  continue
       if(1 .lt. kk .and. kk .lt. nn) then
+c	 Compute Silhouette info :
 	 call dark(kk,nn,nhalf,ncluv,nsend,nelem,nrepr,
      f	      radus,damer,ttd,ttsyl,dys,s,sylinf)
       endif
@@ -105,14 +108,15 @@ c     bswap(): the clustering algorithm in 2 parts:  I. build,	II. swap
 c
       subroutine bswap(kk,nn,nrepr,dysma,dysmb,beter,hh,dys,sky,s,obj)
 
-      integer kk,nn,nrepr(nn),hh
+      integer kk,nn, nrepr(nn), hh
+c     nrepr[]: here is boolean (0/1): 1 = "is representative object"
       double precision dysma(nn),dysmb(nn),beter(nn),dys(hh), sky,s,
      +	   obj(2)
 c     function called
       integer meet
       external meet
 c
-      integer nny, j,ja,k,nkj, njn,njaj,nmax, nbest,kbest
+      integer i,j,k,kj, njn,ij,nmax, nbest,kbest
       double precision cmd, ammax, dz,dzsky,small
 c     -Wall:
       nbest=-1
@@ -120,31 +124,31 @@ c     -Wall:
 c
 c     first algorithm: build.
 c
-      do 17 j=1,nn
-	 nrepr(j)=0
-	 dysma(j)=1.1*s+1.0
+      do 17 i=1,nn
+	 nrepr(i)=0
+	 dysma(i)=1.1*s+1.0
  17   continue
 
-      do 20 nny=1,kk
-	 do 22 ja=1,nn
-	    if(nrepr(ja).eq.0) then
-	       beter(ja)=0.
+      do 20 k=1,kk
+	 do 22 i=1,nn
+	    if(nrepr(i) .eq. 0) then
+	       beter(i)=0.
 	       do 21 j=1,nn
-		  njaj=meet(ja,j)
-		  cmd=dysma(j)-dys(njaj)
-		  if(cmd.gt.0.0) beter(ja)=beter(ja)+cmd
+		  ij=meet(i,j)
+		  cmd=dysma(j)-dys(ij)
+		  if(cmd.gt.0.0) beter(i)=beter(i)+cmd
  21	       continue
 	    endif
  22	 continue
 	 ammax=0.
-	 do 31 ja=1,nn
-	    if(nrepr(ja).eq.0 .and. ammax .le. beter(ja)) then
+	 do 31 i=1,nn
+	    if(nrepr(i).eq.0 .and. ammax .le. beter(i)) then
 c		    does .lt. (instead of .le.) work too? -- NO!
-	       ammax=beter(ja)
-	       nmax=ja
+	       ammax=beter(i)
+	       nmax=i
 	    endif
  31	 continue
-	 nrepr(nmax)=1
+	 nrepr(nmax)= 1 ! = .true. : *is* a representative
 	 do 41 j=1,nn
 	    njn=meet(nmax,j)
 	    if(dysma(j).gt.dys(njn)) dysma(j)=dys(njn)
@@ -165,40 +169,40 @@ C--   Loop :
  60	 do 63 j=1,nn
 	    dysma(j)=1.1*s+1.0
 	    dysmb(j)=1.1*s+1.0
-	    do 62 ja=1,nn
-	       if(nrepr(ja).ne.0) then
-		  njaj=meet(ja,j)
-		  if(dys(njaj).lt.dysma(j)) then
+	    do 62 i=1,nn
+	       if(nrepr(i) .eq. 1) then
+		  ij=meet(i,j)
+		  if(dys(ij).lt.dysma(j)) then
 		     dysmb(j)=dysma(j)
-		     dysma(j)=dys(njaj)
+		     dysma(j)=dys(ij)
 		  else
-		     if(dys(njaj).lt.dysmb(j)) dysmb(j)=dys(njaj)
+		     if(dys(ij).lt.dysmb(j)) dysmb(j)=dys(ij)
 		  endif
 	       endif
  62	    continue
  63	 continue
 	 dzsky=1.0
 	 do 73 k=1,nn
-	    if(nrepr(k).ne.1) then
-	       do 72 ja=1,nn
-		  if(nrepr(ja).ne.0) then
+	    if(nrepr(k) .eq. 0) then
+	       do 72 i=1,nn
+		  if(nrepr(i) .eq. 1) then
 		     dz=0.
 		     do 71 j=1,nn
-			njaj=meet(ja,j)
-			nkj=meet(k,j)
-			if(dys(njaj).eq.dysma(j))then
+			ij=meet(i,j)
+			kj=meet(k,j)
+			if(dys(ij).eq.dysma(j))then
 			   small=dysmb(j)
-			   if(small.gt.dys(nkj)) small=dys(nkj)
+			   if(small.gt.dys(kj)) small=dys(kj)
 			   dz=dz-dysma(j)+small
 			else
- 70			   if(dys(nkj).lt.dysma(j))
-     +				dz=dz-dysma(j)+dys(nkj)
+ 70			   if(dys(kj).lt.dysma(j))
+     +				dz=dz-dysma(j)+dys(kj)
 			endif
  71		     continue
 		     if(dz.lt.dzsky) then
 			dzsky=dz
 			kbest=k
-			nbest=ja
+			nbest=i
 		     endif
 		  endif
  72	       continue
@@ -236,10 +240,10 @@ c
       double precision dsmal, ttt,rtt,rnn,dam,sep,aja,ajb
 
       do 130 j=1,nn
-	 if(nrepr(j).ne.1) then
+	 if(nrepr(j).eq.0) then
 	    dsmal=1.1*s+1.0
 	    do 110 k=1,nn
-	       if(nrepr(k).ne.0) then
+	       if(nrepr(k) .eq. 1) then
 		  njaj=meet(k,j)
 		  if(dys(njaj).lt.dsmal) then
 		     dsmal=dys(njaj)

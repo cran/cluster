@@ -60,7 +60,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 		    if(mdata) jtmd else integer(1),
 		    as.integer(ndyst),
 		    integer(n),# nsend[]
-		    integer(n),# nrepr[]
+		    logical(n),# isrepr[]
 		    integer(n),# nelem[]
 		    double(n),#	 radus[]
 		    double(n),#	 damer[]
