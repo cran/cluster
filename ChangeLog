@@ -1,3 +1,51 @@
+2003-12-22  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.8.0 for R versions <= 1.8.1
+	                         1.9.0 for R versions >= 1.9.0
+
+2003-12-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* NAMESPACE: Finally make a namespaced package
+
+2003-12-01  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/pam.q (print.summary.pam): readable indication *no* L/L*
+	clusters.
+	(print.pam): improve as well.
+
+	* man/pam.Rd: documenting `cluster.only'
+
+2003-11-29  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/pam.q (pam): new argument `cluster.only = FALSE'.  If true,
+	  only return the clustering vector, no other info.
+
+	* src/pam.c: translated from src/pam.f and "cleaned";
+	 `all_stats' := NOT(cluster_only).
+
+	* src/cluster.h: new pam.c related headers
+	* src/dysta.f (dysta): new file: part of former src/pam.f
+	* R/pam.q (pam): use .C
+
+2003-11-28  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/daisy.q (daisy): fix the new scale 0 code (from 11-17)
+
+2003-11-17  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.7.7 -- (not released)
+
+	* tests/daisy-ex.R: new test for this:
+
+	* R/daisy.q (daisy): scale 0 does not give NaN dissimilarities
+	anymore.  Use pColl() in messages
+
+	* R/zzz.R (sQuote): & dQuote() for R version < 1.8
+
+2003-10-25  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/fanny.Rd: typo in the text-part of \deqn{}
+
 2003-09-24  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Date): Sept.24: 20th anniversary w/ Lilo! -- release

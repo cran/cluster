@@ -8,9 +8,11 @@ nm2 <- c("medoids", nms)
 stopifnot(identical(x,x0))# DUP=FALSE ..
 pd <-  pam(dist(x,"manhattan"), 2)
 px2 <- pam(x,2, metric="manhattan", keep.diss=FALSE, keep.data=FALSE)
+pdC <- pam(x,2, metric="manhattan", cluster.only = TRUE)
 
 stopifnot(identical(px[nms], pd[nms]),
           identical(px[nms], px2[nms]),
+          identical(pdC, px2$clustering),
 	  ## and for default dist "euclidean":
 	  identical(pam(x,	2)[nms],
 		    pam(dist(x),2)[nms])

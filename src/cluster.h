@@ -64,6 +64,26 @@ void black(int kk, int jpp, int nsam, int *nbest,
 	   int *ncluv, int *nsend, int *nelem, int *negbr,
 	   double *syl, double *srank);
 
+/* -------- ./dysta.f --- (was in pam.f) -------------------- */
+int F77_NAME(dysta)(int *nn, int *jpp, double *x, double *dys, int *ndyst,
+		    int *jtmd, double *valmd, int *jhalt);
+
+/* --------- ./pam.c ------------------*/
+
+void bswap(int *kk, int *nn, int *nrepr,
+	   double *dysma, double *dysmb, double *beter,
+	   double *dys, double *sky, double *s, double *obj);
+
+void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
+	   double *radus, double *damer, double *ttd, double *separ, double *s,
+	   double *dys, int *ncluv, int *nelem, int *med, int *nisol);
+
+void dark(int *kk, int *nn, int *hh, int *ncluv,
+	  int *nsend, int *nelem, int *negbr,
+	  double *syl, double *srank, double *avsyl, double *ttsyl,
+	  double *dys, double *s, double *sylinf);
+
+
 /* --------- ./spannel.c ------------------*/
 
 void sweep(double *, int *, int *, int *, double *);

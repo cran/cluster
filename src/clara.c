@@ -861,15 +861,15 @@ void black(int kk, int jpp, int nsam, int *nbest,
 		    syl[j] = dysb / dysa - 1.;
 		else /* (dysb == dysa) */
 		    syl[j] = 0.;
+
+		if (syl[j] < -1.)
+		    syl[j] = -1.;
+		else if (syl[j] > 1.)
+		    syl[j] = 1.;
 	    }
 	    else {
 		syl[j] = -1.;
 	    }
-
-	    if (syl[j] < -1.)
-		syl[j] = -1.;
-	    else if (syl[j] > 1.)
-		syl[j] = 1.;
 
 	} /* for(j ..) */
 

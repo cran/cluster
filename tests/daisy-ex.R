@@ -11,6 +11,10 @@ if(interactive()) {
 daisy(cbind(1))
 (d10 <- daisy(matrix(0., 1,0))); str(d10)
 (d01 <- daisy(matrix(0., 0,1))); str(d01)
+d32 <- data.frame(eins=c("A"=1,"B"=1,"C"=1), zwei=c(2,2,2))
+daisy(d32)
+daisy(d32, stand = TRUE)
+daisy(d32, type = list(ordratio="zwei"))
 
 
 str(d5 <- data.frame(a= c(0, 0, 0,1,0,0, 0,0,1, 0,NA),

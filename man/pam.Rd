@@ -7,8 +7,10 @@
   medoids'', a more robust version of K-means.
 }
 \usage{
-pam(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE,
-    keep.diss = !diss && n < 100, keep.data = !diss)
+pam(x, k, diss = inherits(x, "dist"),
+    metric = "euclidean", stand = FALSE, cluster.only = FALSE,
+    keep.diss = !diss && !cluster.only && n < 100,
+    keep.data = !diss && !cluster.only)
 }
 \arguments{
   \item{x}{
@@ -51,6 +53,8 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE,
     variable's mean value and dividing by the variable's mean absolute
     deviation.  If \code{x} is already a dissimilarity matrix, then this
     argument will be ignored.}
+  \item{cluster.only}{logical; if true, only the clustering will be
+    computed and returned, see details.}
   \item{keep.diss, keep.data}{logicals indicating if the dissimilarities
     and/or input data \code{x} should be kept in the result.  Setting
     these to \code{FALSE} can give much smaller results and hence even save
@@ -71,6 +75,11 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE,
   using \code{mean(\link{silhouette}(pr))} on the result
   \code{pr <- pam(..)}, or directly its component
   \code{pr$silinfo$avg.width}, see also \code{\link{pam.object}}.
+
+  When \code{cluster.only} is true, the result is simply a (possibly
+  named) integer vector specifying the clustering, i.e.,\cr
+  \code{pam(x,k, cluster.only=TRUE)} is the same as \cr
+  \code{pam(x,k)$clustering} but computed more efficiently.
 
   The \code{pam}-algorithm is based on the search for \code{k}
   representative objects or medoids among the observations of the

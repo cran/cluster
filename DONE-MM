@@ -1,6 +1,14 @@
 Things that were on my TODO list and have been accomplished
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Dec, 2003:
+
+o cutree(diana(), h = h0)
+	gives complete non-sense without a warning
+  -- the same as in S-plus ..
+
+
+
 For R 1.7.0 :
 
   o agnes(), diana() and pam() have a new argument  `keep.diss'

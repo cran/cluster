@@ -67,7 +67,7 @@ fanny(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
   \deqn{\sum_{v=1}^k
     \frac{\sum_{i=1}^n\sum_{j=1}^n u_{iv}^2 u_{jv}^2 d(i,j)}{
       2 \sum_{j=1}^n u_{jv}^2}}{%
-    SUM_v (SUM_(i,j) u(i,v)^2 u(j,v)^2 d(i,j)) / (2 SUM_j u(j,v)^2)}
+    SUM_[v=1..k] (SUM_(i,j) u(i,v)^2 u(j,v)^2 d(i,j)) / (2 SUM_j u(j,v)^2)}
   where \eqn{n} is the number of observations, \eqn{k} is the number of
   clusters and \eqn{d(i,j)} is the dissimilarity between observations
   \eqn{i} and \eqn{j}.

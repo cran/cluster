@@ -1,17 +1,18 @@
 
-R : Copyright 2003, The R Development Core Team
-Version 1.7.0 Patched (2003-05-28)
+R : Copyright 2003, The R Foundation for Statistical Computing
+Version 1.9.0 Under development (unstable) (2003-11-28), ISBN 3-900051-00-3
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
-Type `license()' or `licence()' for distribution details.
+Type 'license()' or 'licence()' for distribution details.
 
 R is a collaborative project with many contributors.
-Type `contributors()' for more information.
+Type 'contributors()' for more information and
+'citation()' on how to cite R in publications.
 
-Type `demo()' for some demos, `help()' for on-line help, or
-`help.start()' for a HTML browser interface to help.
-Type `q()' to quit R.
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
 
 > library(cluster)
 > ## Compare on these:
@@ -45,9 +46,11 @@ Available components:
 > stopifnot(identical(x,x0))# DUP=FALSE ..
 > pd <-  pam(dist(x,"manhattan"), 2)
 > px2 <- pam(x,2, metric="manhattan", keep.diss=FALSE, keep.data=FALSE)
+> pdC <- pam(x,2, metric="manhattan", cluster.only = TRUE)
 > 
 > stopifnot(identical(px[nms], pd[nms]),
 +           identical(px[nms], px2[nms]),
++           identical(pdC, px2$clustering),
 + 	  ## and for default dist "euclidean":
 + 	  identical(pam(x,	2)[nms],
 + 		    pam(dist(x),2)[nms])
@@ -1023,6 +1026,6 @@ null device
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  11.92 0.27 13.72 0 0 
+Time elapsed:  12.17 0.32 12.93 0 0 
 > 
 > 

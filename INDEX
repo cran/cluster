@@ -44,11 +44,11 @@ print.diana		Print Method for DIANA Objects
 print.fanny		Print Method for FANNY Objects
 print.mona		Print Method for MONA Objects
 print.pam		Print Method for PAM Objects
-summary.agnes		Summary Method for `agnes' Objects
-summary.clara		Summary Method for `clara' Objects
-summary.diana		Summary method for `diana' Objects
-summary.fanny		Summary Method for `fanny' Objects
-summary.mona		Summary Method for `mona'  Objects
+summary.agnes		Summary Method for 'agnes' Objects
+summary.clara		Summary Method for 'clara' Objects
+summary.diana		Summary Method for 'diana' Objects
+summary.fanny		Summary Method for 'fanny' Objects
+summary.mona		Summary Method for 'mona'  Objects
 summary.pam		Summary Method for PAM Objects
 cluster-internal        Internal cluster functions
 

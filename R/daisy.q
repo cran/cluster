@@ -8,9 +8,10 @@ function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
     n <- dx[1]# nrow
     p <- dx[2]# ncol
     varnms <- dimnames(x)[[2]]
+    pColl <- function(n) paste(n, collapse = ", ")
     if(length(type)) {
 	if(!is.list(type) || is.null(ntyp <- names(type)) || any(ntyp == ""))
-            stop("invalid `type'; must be named list")
+            stop("invalid ", sQuote("type"),"; must be named list")
         ## check each component to be valid column names or numbers:
         for(nt in ntyp) {
             cvec <- type[[nt]]
@@ -63,22 +64,28 @@ function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
     type2[tI <- type2 %in% c("numeric", "integer") ] <- "I"
     if(any(tI) && any(iBin <- apply(x[,tI, drop = FALSE],2,
 				    function(v) length(table(v)) == 2)))
-	warning("binary variable(s) ", paste(which(tI)[iBin], collapse=","),
+	warning("binary variable(s) ", pColl(which(tI)[iBin]),
 		" treated as interval scaled")
 
     type2[type2 == "ordered"] <- "O"
     type2[type2 == "factor"] <- "N"
     if(any(ilog <- type2 == "logical")) {
 	warning("setting `logical' variable",if(sum(ilog)>1)"s " else " ",
-		which(ilog), " to type `asymm'")
+		pColl(which(ilog)), " to type `asymm'")
 	type2[ilog] <- "A"
     }
     ## standardize, if necessary
     if(all(type2 == "I")) {
-	if(stand)
-	    x <- scale(x, scale = apply(x, 2,
-			  function(y)
-			  mean(abs(y - mean(y, na.rm = TRUE)), na.rm = TRUE)))
+	if(stand) {
+            x <- scale(x, center = TRUE, scale = FALSE) #-> 0-means
+            sx <- colMeans(abs(x))
+            if(any(sx == 0)) {
+                warning(sQuote("x"), " has constant columns ",
+                        pColl(which(sx == 0)), "; these are standardized to 0")
+                sx[sx == 0] <- 1
+            }
+	    x <- scale(x, center = FALSE, scale = sx)
+        }
 	jdat <- 2
 	metric <- match.arg(metric)
 	ndyst <- if(metric == "manhattan") 2 else 1
@@ -86,9 +93,12 @@ function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
     else { ## mixed case
 	if(!missing(metric))
 	    warning("`metric' is not used with mixed variables")
-	colmin	 <- apply(x, 2, min, na.rm = TRUE)
-	colrange <- apply(x, 2, max, na.rm = TRUE) - colmin
-	x <- scale(x, center = colmin, scale = colrange)
+        colR <- apply(x, 2, range, na.rm = TRUE)
+	colmin <- colR[1,]
+	sx <- colR[2,] - colmin
+        if(any(sx == 0))
+            sx[sx == 0] <- 1
+	x <- scale(x, center = colmin, scale = sx)
 	jdat <- 1
 	ndyst <- 0
     }
@@ -96,7 +106,8 @@ function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
     typeCodes <- c('A','S','N','O','I','T')
     type3 <- match(type2, typeCodes)# integer
     if(any(ina <- is.na(type3)))
-	stop("invalid type", type2[ina],"  for column numbers", which(is.na))
+	stop("invalid type ", type2[ina],
+             " for column numbers ", pColl(which(is.na)))
     if((mdata <- any(inax <- is.na(x)))) { # TRUE if x[] has any NAs
 	jtmd <- as.integer(ifelse(apply(inax, 2, any), -1, 1))
 	## VALue for MISsing DATa
