@@ -1,4 +1,5 @@
-agnes <- function(x, diss = FALSE, metric = "euclidean",
+#### $Id: agnes.q,v 1.8 2002/03/04 10:44:45 maechler Exp maechler $
+agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
                   stand = FALSE, method = "average")
 {
     if(diss) {
@@ -33,7 +34,7 @@ agnes <- function(x, diss = FALSE, metric = "euclidean",
         n <- nrow(x2)
         jp <- ncol(x2)
         jtmd <- ifelse(is.na(rep(1, n) %*% x2), -1, 1)
-        valmisdat <- min(x2, na.rm = TRUE) - 0.5
+	valmisdat <- min(x2, na.rm=TRUE) - 0.5 #(double) VALue for MISsing DATa
         x2[is.na(x2)] <- valmisdat
         valmd <- rep(valmisdat, jp)
         dv <- double(1 + (n * (n - 1))/2)

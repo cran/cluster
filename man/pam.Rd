@@ -48,7 +48,7 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
 }
 \value{
   an object of class \code{"pam"} representing the clustering.  See
-  \code{pam.object} for details.
+  \code{?\link{pam.object}} for details.
 }
 \details{
   \code{pam} is fully described in chapter 2 of Kaufman and Rousseeuw (1990).
@@ -59,50 +59,24 @@ instead of a sum of squared euclidean distances; (c) it provides a novel
 graphical display, the silhouette plot (see \code{plot.partition})
 which also allows to select the number of clusters.
 
-
 The \code{pam}-algorithm is based on the search for \code{k} representative objects or
 medoids among the observations of the dataset. These observations should
 represent the structure of the data. After finding a set of \code{k} medoids,
 \code{k} clusters are constructed by assigning each observation to the nearest
 medoid. The goal is to find \code{k} representative objects which minimize the
 sum of the dissimilarities of the observations to their closest representative
-object.
+object.\cr
 The algorithm first looks for a good initial set of medoids (this is called
 the BUILD phase). Then it finds a local minimum for the objective function,
 that is, a solution such that there is no single switch of an observation with
 a medoid that will decrease the objective (this is called the SWAP phase).
-
-
-}
-\section{BACKGROUND}{
-Cluster analysis divides a dataset into groups (clusters) of observations that
-are similar to each other. Partitioning methods like \code{pam}, \code{clara}, and
-\code{fanny} require that the number of clusters be given by the user.
-Hierarchical methods like \code{agnes}, \code{diana}, and \code{mona} construct a
-hierarchy of clusterings, with the number of clusters ranging from one to
-the number of observations.
-
-
 }
 \note{
   For datasets larger than (say) 200 observations, \code{pam} will take a lot of
   computation time.  Then the function \code{\link{clara}} is preferable.
 }
-\references{
-  Kaufman, L. and Rousseeuw, P.J. (1990)
-  \emph{Finding Groups in Data: An Introduction to Cluster Analysis}.
-  Wiley, New York.
-
-  Anja Struyf, Mia Hubert & Peter J. Rousseeuw (1996)
-  Clustering in an Object-Oriented Environment.
-  \emph{Journal of Statistical Software}, \bold{1}.
-  \url{http://www.stat.ucla.edu/journals/jss/}
-
-  Struyf, A., Hubert, M. and Rousseeuw, P.J. (1997)
-  Integrating Robust Clustering Techniques in S-PLUS,
-  \emph{Computational Statistics and Data Analysis}, \bold{26}, 17--37.
-}
 \seealso{
+  \code{\link{agnes}} for background and references;
   \code{\link{pam.object}}, \code{\link{clara}}, \code{\link{daisy}},
   \code{\link{partition.object}}, \code{\link{plot.partition}},
   \code{\link{dist}}.

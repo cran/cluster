@@ -1,5 +1,5 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q,v 1.9 2002/01/18 19:05:56 maechler Exp $
+#### --- $Id: pam.q,v 1.11 2002/03/04 10:44:45 maechler Exp maechler $
 pam <- function(x, k, diss = inherits(x, "dist"),
                 metric = "euclidean", stand = FALSE)
 {
@@ -18,8 +18,6 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	## adapt S dissimilarities to Fortran:
 	## convert upper matrix, read by rows, to lower matrix, read by rows.
 	n <- attr(x, "Size")
-	if(k < 1 || k >= n)
-	    stop("The number of clusters `k' must be in {1,2, .., n-1}.")
 	dv <- x[lower.to.upper.tri.inds(n)]
 	## prepare arguments for the Fortran call
 	dv <- c(0, dv)
@@ -37,15 +35,15 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	## put info about metric, size and NAs in arguments for the Fortran call
 	ndyst <- if(metric == "manhattan") 2 else 1
 	n <- nrow(x2)
-	if((k < 1) || (k > n - 1))
-	    stop("The number of cluster should be at least 1 and at most n-1.")
 	jp <- ncol(x2)
 	jtmd <- as.integer(ifelse(is.na(rep(1, n) %*% x2), -1, 1))
-	valmisdat <- min(x2, na.rm = TRUE) - 0.5
+	valmisdat <- min(x2, na.rm=TRUE) - 0.5 #(double) VALue for MISsing DATa
 	x2[is.na(x2)] <- valmisdat
 	valmd <- rep(valmisdat, jp)
 	dv <- double(1 + (n * (n - 1))/2)
     }
+    if((k <- as.integer(k)) < 1 || k >= n)
+        stop("The number of clusters `k' must be in {1,2, .., n-1}.")
     ## call Fortran routine
     storage.mode(dv) <- "double"
     storage.mode(x2) <- "double"
@@ -53,7 +51,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
     res <- .Fortran("pam",
 		    as.integer(n),
 		    as.integer(jp),
-		    as.integer(k),
+		    k,
 		    x = x2,
 		    dys = dv,
                     jdyss = as.integer(diss),# 0/1
@@ -71,8 +69,8 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 		    med = integer(k),
 		    obj = double(2),
 		    clu = integer(n),
-		    clusinf = matrix(0, k, 5),
-		    silinf = matrix(0, n, 4),
+		    clusinf = matrix(0., k, 5),
+		    silinf = matrix(0., n, 4),
 		    isol = integer(k),
 		    PACKAGE = "cluster")
     sildim <- res$silinf[, 4]

@@ -1,4 +1,4 @@
-C $Id: clara.f,v 1.7 2001/11/07 10:53:58 maechler Exp maechler $
+C $Id: clara.f,v 1.8 2002/03/04 10:43:17 maechler Exp $
 
 c     Clustering LARge Applications
 c     ~          ~~~   ~

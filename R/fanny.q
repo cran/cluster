@@ -1,4 +1,6 @@
-fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
+#### $Id: fanny.q,v 1.8 2002/03/04 10:44:45 maechler Exp maechler $
+fanny <- function(x, k, diss = inherits(x, "dist"),
+                  metric = "euclidean", stand = FALSE)
 {
     if(diss) {
 	## check type of input vector
@@ -14,9 +16,7 @@ fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	}
 	## prepare arguments for the Fortran call
 	n <- attr(x, "Size")
-	if((k < 1) || (k > floor(n/2) - 1))
-	    stop("The number of cluster should be at least 1 and at most n/2 - 1." )
-	dv <- c(x, 0)
+	dv <- as.double(c(x, 0))
 	jp <- 1
 	valmd <- double(1)
 	jtmd <- integer(1)
@@ -29,29 +29,26 @@ fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	x <- data.matrix(x)
 	if(!is.numeric(x)) stop("x is not a numeric dataframe or matrix.")
         x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
-	##put info about metric, size and NAs in arguments for the Fortran call
+	## put info about metric, size and NAs in arguments for the Fortran call
 	ndyst <- if(metric == "manhattan") 2 else 1
 	n <- nrow(x2)
-	if((k < 1) || (k > floor(n/2) - 1))
-	    stop("The number of cluster should be at least 1 and at most n/2 - 1."
-		 )
 	jp <- ncol(x2)
 	jtmd <- ifelse(is.na(rep(1, n) %*% x2), -1, 1)
-	valmisdat <- min(x2, na.rm = TRUE) - 0.5
+	valmisdat <- min(x2, na.rm=TRUE) - 0.5 #(double) VALue for MISsing DATa
 	x2[is.na(x2)] <- valmisdat
 	valmd <- rep(valmisdat, jp)
 	jdyss <- 0
 	dv <- double(1 + (n * (n - 1))/2)
     }
-    ##call Fortran routine
-    storage.mode(dv) <- "double"
+    if((k <- as.integer(k)) < 1 || k > n%/%2 - 1)
+        stop("`k' (number of clusters) must be in {1,2, .., n/2 -1}")
+    ## call Fortran routine
     storage.mode(x2) <- "double"
-    storage.mode(valmd) <- "double"
     storage.mode(jtmd) <- "integer"
     res <- .Fortran("fanny",
 		    as.integer(n),
 		    as.integer(jp),
-		    as.integer(k),
+		    k,
 		    x2,
 		    dis = dv,
 		    ok = as.integer(jdyss),
@@ -62,8 +59,8 @@ fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 		    integer(n),
 		    integer(n),
 		    double(n),
-		    p = matrix(0, n, k),
-		    matrix(0, n, k),
+		    p = matrix(0., n, k),
+		    matrix(0., n, k),
 		    avsil = double(k),
 		    integer(k),
 		    double(k),
@@ -74,13 +71,13 @@ fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 		    edb = as.double(0),
 		    obj = double(2),
 		    clu = integer(n),
-		    silinf = matrix(0, n, 4),
+		    silinf = matrix(0., n, 4),
 		    as.double(1e-15),
 		    PACKAGE = "cluster")
     sildim <- res$silinf[, 4]
     if(diss) {
 	disv <- x
-	##add labels to Fortran output
+	## add labels to Fortran output
 	if(length(attr(x, "Labels")) != 0) {
 	    sildim <- attr(x, "Labels")[sildim]
 	    dimnames(res$p) <- list(attr(x, "Labels"), NULL)
@@ -88,7 +85,7 @@ fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	}
     }
     else {
-	##give warning if some dissimilarities are missing.
+	## give warning if some dissimilarities are missing.
 	if(res$ok == -1)
 	    stop("No clustering performed, NA-values in the dissimilarity matrix.")
 	disv <- res$dis[ - (1 + (n * (n - 1))/2)]
@@ -97,14 +94,14 @@ fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	attr(disv, "Size") <- nrow(x)
 	attr(disv, "Metric") <- metric
 	attr(disv, "Labels") <- dimnames(x)[[1]]
-	##add labels to Fortran output
+	## add labels to Fortran output
 	if(length(dimnames(x)[[1]]) != 0) {
 	    sildim <- dimnames(x)[[1]][sildim]
 	    dimnames(res$p) <- list(dimnames(x)[[1]], NULL)
 	    names(res$clu) <- dimnames(x)[[1]]
 	}
     }
-    ##add dimnames to Fortran output
+    ## add dimnames to Fortran output
     names(res$obj) <- c("iterations", "objective")
     res$coeff <- c(res$eda, res$edb)
     names(res$coeff) <- c("dunn_coeff", "normalized")

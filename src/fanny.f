@@ -1,376 +1,379 @@
-      SUBROUTINE FANNY(NN,JPP,KK,X,DSS,JDYSS,VALMD,JTMD,NDYST,NSEND,
-     F NELEM,NEGBR,SYL,P,DP,PT,NFUZZ,ESP,EF,DVEC,
-     F TTSYL,EDA,EDB,OBJ,NCLUV,SYLINF,EPS)
-CC
-CC   PROGRAM FOR FUZZY CLUSTER ANALYSIS
-CC
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-CC  dimension of NSEND,NEGBR,NELEM,NCLUV,DVEC,SYL is MAXNN:
-      DIMENSION NSEND(NN),NEGBR(NN),NELEM(NN),NCLUV(NN)
-      DIMENSION DVEC(NN),SYL(NN)
-CC  dim. X(MAXNN,MAXPP),P(MAXNN,MAXKK),DP(MAXNN,MAXKK),DSS(MAXHH):
-      DIMENSION X(NN,JPP),P(NN,KK),DP(NN,KK),DSS(NN*(NN-1)/2+1)
-CC  dim. VALMD,JTMD,ESP,EF,PT,NFUZZ(MAXKK):
-      DIMENSION VALMD(JPP),JTMD(JPP),OBJ(2)
-      DIMENSION PT(KK),NFUZZ(KK),ESP(KK),EF(KK)
-      DIMENSION SYLINF(NN,4)
-CC
-CC   WHERE: 
-CC         NN = NUMBER OF OBJECTS
-CC         JPP = NUMBER OF VARIABLES FOR CLUSTERING
-CC         KK = NUMBER OF CLUSTERS 
-CC         MAXHH = (MAXNN*(MAXNN-1))/2 + 1
-CC
-      IF(JDYSS.EQ.1)GO TO 125
-      JHALT=0
-      CALL DYSTA3(NN,JPP,X,DSS,NDYST,JTMD,VALMD,JHALT)
-      IF(JHALT.EQ.0)GO TO 125
-      JDYSS=-1
-      RETURN
-CC
-  125 S=0.0 
-      NHALF=NN*(NN-1)/2+1 
-      L=1 
-  130 L=L+1 
-      IF(DSS(L).GT.S)S=DSS(L)
-      IF(L.LT.NHALF)GO TO 130 
-      CALL FUZZY(NN,NHALF,P,DP,PT,DSS,ESP,EF,EDA,EDB,KK,OBJ,EPS)
-      CALL CADDY(NN,P,KK,KTRUE,NFUZZ,NCLUV,PT,NELEM)
-      IF(KTRUE.LE.1)GO TO 140
-      IF(KTRUE.GE.NN)GO TO 140
-      CALL FYGUR(KTRUE,NN,KK,NHALF,NCLUV,NSEND,NELEM
-     F,NEGBR,SYL,DVEC,PT,TTSYL,DSS,S,SYLINF)
-  140 END
-CC
-CC
-CC
-      SUBROUTINE DYSTA3(NN,JPP,X,DSS,NDYST,JTMD,VALMD,JHALT)
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION X(NN,JPP),DSS(1+NN*(NN-1)/2),JTMD(JPP),VALMD(JPP)
-      PP=JPP
-      NNSUB=NN-1
-      NLK=0 
-      DO 100 L=1,NNSUB
-      LPLUS=L+1 
-      DO 20 K=LPLUS,NN  
-      CLK=0.0 
-      NLK=NLK+1 
-      NPRES=0 
-      DO 30 J=1,JPP 
-      IF(JTMD(J).GE.0)GOTO 40 
-      IF(X(L,J).EQ.VALMD(J))GOTO 30 
-      IF(X(K,J).EQ.VALMD(J))GOTO 30 
-   40 NPRES=NPRES+1 
-      IF(NDYST.NE.1)GOTO 50 
-      CLK=CLK+(X(L,J)-X(K,J))*(X(L,J)-X(K,J)) 
-      GOTO 30 
-   50 CLK=CLK+DABS(X(L,J)-X(K,J))
-   30 CONTINUE
-      RPRES=NPRES 
-      IF(NPRES.NE.0)GOTO 60 
-      JHALT=1 
-      DSS(NLK)=-1.0
-      GOTO 20 
-   60 IF(NDYST.NE.1)GOTO 70 
-      DSS(NLK)=DSQRT(CLK*(PP/RPRES)) 
-      GOTO 20 
-   70 DSS(NLK)=CLK*(PP/RPRES) 
-   20 CONTINUE
-  100 CONTINUE
-      END 
-CC  
-CC  
-      SUBROUTINE FUZZY(NN,HH,P,DP,PT,DSS,ESP,EF,EDA,EDB,K,OBJ,EPS)
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      INTEGER HH
-      DIMENSION P(NN,K),DP(NN,K),DSS(HH)
-      DIMENSION PT(K),ESP(K),EF(K),OBJ(2)
-CC
-CC     R IS THE EXPONENT, STRICTLY LARGER THAN 1.0
-CC     EPS IS THE PRECISION FOR THE ITERATIONS
-CC     NYT IS THE MAXIMAL NUMBER OF ITERATIONS
-CC
-      R=2.0
-      NYT=500
-CC
-CC   INITIAL FUZZY CLUSTERING 
-CC
-      NNSUB=NN-1
-      RVERS=1./R
-      RKME=K-1
-      DO 30 M=1,NN
-      DO 20 L=1,K
-      DP(M,L)=0.
-      P(M,L)=0.1/RKME 
-   20 CONTINUE
-   30 CONTINUE
-      NDK=NN/K
-      ND=NDK
-      L=1 
-      DO 50 M=1,NN
-      P(M,L)=0.9
-      IF(M.LT.ND)GO TO 35
-      ND=ND+NDK 
-      L=L+1 
-      IF(L.EQ.K)ND=NN 
-   35 DO 40 LX=1,K
-      P(M,LX)=P(M,LX)**R
-   40 CONTINUE
-   50 CONTINUE
-CC
-CC   INITIAL CRITERION VALUE
-CC
-      CRYT=0. 
-      DO 100 L=1,K
-      ESP(L)=0.
-      EF(L)=0.
-      DO 90 M=1,NN
-      ESP(L)=ESP(L)+P(M,L)
-      DO 80 J=1,NN
-      IF(J.EQ.M)GO TO 80
-      J2=MIN0(M,J)
-      J1=(J2-1)*NN-(J2*(J2+1))/2+MAX0(M,J)
-      DP(M,L)=DP(M,L)+P(J,L)*DSS(J1)
-      EF(L)=EF(L)+P(J,L)*P(M,L)*DSS(J1)
-   80 CONTINUE
-   90 CONTINUE
-      CRYT=CRYT+EF(L)/(ESP(L)*2.)
-  100 CONTINUE
-      CRT=CRYT
-      REEN=1./(R-1.)
-CC
-CC   START OF ITERATIONS
-CC
-      KAUNT=1 
-      M=0 
-CC
-CC   THE NEW MEMBERSHIP COEFFICIENTS OF THE OBJECTS ARE CALCULATED, 
-CC   AND THE RESULTING VALUE OF THE CRITERION IS COMPUTED.
-CC
-  200 M=M+1 
-      DT=0. 
-      DO 210 L=1,K
-      PT(L)=((2.*ESP(L)*ESP(L))/(2.*ESP(L)*DP(M,L)-EF(L)))**REEN
-      DT=DT+PT(L) 
-  210 CONTINUE
-      XX=0.
-      DO 220 L=1,K
-      PT(L)=PT(L)/DT
-      IF(PT(L).LE.0.)XX=XX+PT(L)
-  220 CONTINUE
-      DO 240 L=1,K
-      IF(PT(L).LE.0.)PT(L)=0.
-      PT(L)=(PT(L)/(1-XX))**R
-      ESP(L)=ESP(L)+PT(L)-P(M,L)
-      DO 230 J=1,NN
-      IF(J.EQ.M)GO TO 230
-      J2=MIN0(M,J)
-      J1=(J2-1)*NN-(J2*(J2+1))/2+MAX0(M,J)
-      DDD=(PT(L)-P(M,L))*DSS(J1)
-      DP(J,L)=DP(J,L)+DDD
-      EF(L)=EF(L)+2.*P(J,L)*DDD
-  230 CONTINUE
-      P(M,L)=PT(L)
-  240 CONTINUE
-      IF(M.LT.NN)GO TO 200
-      CRYT=0.
-      EDA=0.
-      DO 250 L=1,K
-      ANN=NN
-      EDA=EDA+ESP(L)/ANN
-      CRYT=CRYT+EF(L)/(ESP(L)*2.)
-  250 CONTINUE
-CC  
-CC   CRITERION IS PRINTED AND TESTED FOR CONVERGENCE
-CC  
-      IF((CRT/CRYT-1.).LE.EPS)GO TO 500
-      IF(KAUNT.LT.NYT)GO TO 300
-      GO TO 500
-  300 M=0
-      KAUNT=KAUNT+1
-      CRT=CRYT
-      GO TO 200
-CC
-CC   NON-FUZZYNESS INDEX OF LIBERT IS COMPUTED
-CC  
-  500 OBJ(1)=KAUNT
-      OBJ(2)=CRYT
-      ZK=K
-      EDB=(ZK*EDA-1.)/(ZK-1.)
-      DO 520 M=1,NN
-      DO 510 L=1,K
-      P(M,L)=P(M,L)**RVERS
-  510 CONTINUE
-  520 CONTINUE
-      RETURN
-      END
-CC  
-CC
-      SUBROUTINE CADDY(NN,P,K,KTRUE,NFUZZ,NCLUV,RDRAW,NELEM)
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION NCLUV(NN),NELEM(NN),P(NN,K)
-      DIMENSION NFUZZ(K),RDRAW(K)
-      PBEST=P(1,1)
-      NBEST=1 
-      DO 10 L=2,K 
-      IF(P(1,L).LE.PBEST)GO TO 10 
-      PBEST=P(1,L)
-      NBEST=L 
-   10 CONTINUE
-      NFUZZ(1)=NBEST
-      NCLUV(1)=1
-      KTRUE=1 
-      DO 20 M=2,NN
-      PBEST=P(M,1)
-      NBEST=1 
-      DO 30 L=2,K 
-      IF(P(M,L).LE.PBEST)GO TO 30 
-      PBEST=P(M,L)
-      NBEST=L 
-   30 CONTINUE
-      JSTAY=0 
-      DO 40 KTRY=1,KTRUE
-      IF(NFUZZ(KTRY).NE.NBEST)GO TO 40
-      NCLUV(M)=KTRY 
-      JSTAY=1 
-   40 CONTINUE
-      IF(JSTAY.EQ.1)GO TO 20
-      KTRUE=KTRUE+1 
-      NFUZZ(KTRUE)=NBEST
-      NCLUV(M)=KTRUE
-   20 CONTINUE
-      IF(KTRUE.GE.K)GO TO 100 
-      KNEXT=KTRUE+1 
-      DO 60 KWALK=KNEXT,K 
-      DO 70 KLEFT=1,K 
-      JSTAY=0 
-      KSUP=KWALK-1
-      DO 80 KTRY=1,KSUP 
-      IF(NFUZZ(KTRY).NE.KLEFT)GO TO 80
-      JSTAY=1 
-   80 CONTINUE
-      IF(JSTAY.EQ.1)GO TO 70
-      NFUZZ(KWALK)=KLEFT
-      GO TO 60
-   70 CONTINUE
-   60 CONTINUE
-  100 DO 110 M=1,NN 
-      DO 120 L=1,K
-      LFUZZ=NFUZZ(L)
-      RDRAW(L)=P(M,LFUZZ) 
-  120 CONTINUE
-      DO 130 L=1,K
-      P(M,L)=RDRAW(L)
-  130 CONTINUE
-  110 CONTINUE
-      END
-CC  
-CC  
-      SUBROUTINE FYGUR(KTRUE,NN,KK,HH,NCLUV,NSEND,NELEM 
-     F,NEGBR,SYL,SRANK,AVSYL,TTSYL,DSS,S,SYLINF) 
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      INTEGER HH
-      DIMENSION NCLUV(NN),NSEND(NN),NELEM(NN),NEGBR(NN) 
-      DIMENSION SYL(NN),SRANK(NN),AVSYL(KK),DSS(HH)
-      DIMENSION SYLINF(NN,4)
-      NSYLR=0
-      TTSYL=0.0 
-      DO 100 NUMCL=1,KTRUE
-      NTT=0 
-      DO 30 J=1,NN
-      IF(NCLUV(J).NE.NUMCL)GO TO 30 
-      NTT=NTT+1 
-      NELEM(NTT)=J
-   30 CONTINUE
-      DO 40 J=1,NTT 
-      NJ=NELEM(J) 
-      DYSB=1.1*S+1.0
-      NEGBR(J)=-1 
-      DO 41 NCLU=1,KTRUE
-      IF(NCLU.EQ.NUMCL)GO TO 41 
-      NBB=0 
-      DB=0.0
-      DO 43 L=1,NN
-      IF(NCLUV(L).NE.NCLU)GO TO 43
-      NBB=NBB+1 
-      IF(L.LT.NJ)GO TO 42 
-      IF(L.GT.NJ)GO TO 44 
-      GO TO 43
-   42 MJL=NN*(L-1)+NJ-L*(L+1)/2 
-      DB=DB+DSS(MJL)
-      GO TO 43
-   44 MJL=NN*(NJ-1)+L-NJ*(NJ+1)/2 
-      DB=DB+DSS(MJL)  
-   43 CONTINUE
-      BTT=NBB 
-      DB=DB/BTT 
-      IF(DB.GE.DYSB)GO TO 41
-      DYSB=DB 
-      NEGBR(J)=NCLU 
-   41 CONTINUE
-      IF(NTT.EQ.1)GO TO 50
-      DYSA=0.0
-      DO 45 L=1,NTT 
-      NL=NELEM(L) 
-      IF(NJ.LT.NL)GO TO 46
-      IF(NJ.GT.NL)GO TO 47
-      GO TO 45
-   46 NJL=NN*(NJ-1)+NL-NJ*(NJ+1)/2
-      DYSA=DYSA+DSS(NJL)
-      GO TO 45
-   47 NJL=NN*(NL-1)+NJ-NL*(NL+1)/2
-      DYSA=DYSA+DSS(NJL)
-   45 CONTINUE
-      ATT=NTT-1 
-      DYSA=DYSA/ATT 
-      IF(DYSA.GT.0.0)GO TO 51 
-      IF(DYSB.GT.0.0)GO TO 52 
-   50 SYL(J)=0.0
-      GO TO 40
-   52 SYL(J)=1.0
-      GO TO 40
-   51 IF(DYSB.LE.0.0)GO TO 53 
-      IF(DYSB.GT.DYSA)SYL(J)=1.0-DYSA/DYSB
-      IF(DYSB.LT.DYSA)SYL(J)=DYSB/DYSA-1.0
-      IF(DYSB.EQ.DYSA)SYL(J)=0.0
-      GO TO 54
-   53 SYL(J)=-1.0 
-   54 IF(SYL(J).LE.(-1.0))SYL(J)=-1.0 
-      IF(SYL(J).GE.1.0)SYL(J)=1.0 
-   40 CONTINUE
-      AVSYL(NUMCL)=0.0
-      DO 60 J=1,NTT 
-      SYMAX=-2.0
-      DO 70 L=1,NTT 
-      IF(SYL(L).LE.SYMAX)GO TO 70 
-      SYMAX=SYL(L)
-      LANG=L
-   70 CONTINUE
-      NSEND(J)=LANG 
-      SRANK(J)=SYL(LANG)
-      AVSYL(NUMCL)=AVSYL(NUMCL)+SRANK(J)
-      SYL(LANG)=-3.0
-   60 CONTINUE
-      TTSYL=TTSYL+AVSYL(NUMCL)
-      RTT=NTT 
-      AVSYL(NUMCL)=AVSYL(NUMCL)/RTT 
+      subroutine fanny(nn,jpp,kk,x,dss,jdyss,valmd,jtmd,ndyst,nsend,
+     1	   nelem,negbr,syl,p,dp,pt,nfuzz,esp,ef,dvec,
+     2	   ttsyl,eda,edb,obj,ncluv,sylinf,eps)
+C
+C   program for Fuzzy cluster ANalysis
+C
+      implicit double precision (a-h,o-z)
+C  dimension of nsend,negbr,nelem,ncluv,dvec,syl is maxnn:
+      dimension nsend(nn),negbr(nn),nelem(nn),ncluv(nn)
+      dimension dvec(nn),syl(nn)
+C  dim. x(maxnn,maxpp),p(maxnn,maxkk),dp(maxnn,maxkk),dss(maxhh):
+      dimension x(nn,jpp),p(nn,kk),dp(nn,kk),dss(nn*(nn-1)/2+1)
+C  dim. valmd,jtmd,esp,ef,pt,nfuzz(maxkk):
+      dimension valmd(jpp),jtmd(jpp),obj(2)
+      dimension pt(kk),nfuzz(kk),esp(kk),ef(kk)
+      dimension sylinf(nn,4)
+C
+C   where:
+C	  nn   = number of objects
+C	  jpp  = number of variables for clustering
+C	  kk   = number of clusters
+C	  maxhh= (maxnn*(maxnn-1))/2 + 1
+C
+      if(jdyss.ne.1) then
+c	 compute dissimilarities from data
+	 jhalt=0
+	 call dysta3(nn,jpp,x,dss,ndyst,jtmd,valmd,jhalt)
+	 if(jhalt.ne.0) then
+	    jdyss=-1
+	    return
+	 endif
+      endif
+C
+      s=0.0
+      nhalf=nn*(nn-1)/2+1
+      l=1
+ 130  l=l+1
+      if(dss(l).gt.s)s=dss(l)
+      if(l.lt.nhalf)go to 130
+      call fuzzy(nn,nhalf,p,dp,pt,dss,esp,ef,eda,edb,kk,obj,eps)
+      call caddy(nn,p,kk,ktrue,nfuzz,ncluv,pt,nelem)
+      if(ktrue.le.1)go to 140
+      if(ktrue.ge.nn)go to 140
+      call fygur(ktrue,nn,kk,nhalf,ncluv,nsend,nelem,
+     1	   negbr,syl,dvec,pt,ttsyl,dss,s,sylinf)
+ 140  end
+C     --- fanny
 
-      IF(NTT.GE.2)GOTO 75 
-      NSYLR=NSYLR+1
-      SYLINF(NSYLR,1)=NUMCL
-      SYLINF(NSYLR,2)=NEGBR(1)
-      SYLINF(NSYLR,3)=0.0
-      SYLINF(NSYLR,4)=NELEM(1)
-      GOTO 100
-   75 DO 80 L=1,NTT 
-      NSYLR=NSYLR+1
-      LPLAC=NSEND(L)
-      SYLINF(NSYLR,1)=NUMCL
-      SYLINF(NSYLR,2)=NEGBR(LPLAC)
-      SYLINF(NSYLR,3)=SRANK(L)
-      SYLINF(NSYLR,4)=NELEM(LPLAC)
-   80 CONTINUE
-  100 CONTINUE
-      RNN=NN
-      TTSYL=TTSYL/RNN 
-      END
+C
+      subroutine dysta3(nn,jpp,x,dss,ndyst,jtmd,valmd,jhalt)
+      implicit double precision (a-h,o-z)
+      dimension x(nn,jpp),dss(1+nn*(nn-1)/2),jtmd(jpp),valmd(jpp)
+      pp=jpp
+      nnsub=nn-1
+      nlk=0
+      do 100 l=1,nnsub
+	 lplus=l+1
+	 do 20 k=lplus,nn
+	    clk=0.0
+	    nlk=nlk+1
+	    npres=0
+	    do 30 j=1,jpp
+	       if(jtmd(j).ge.0)goto 40
+	       if(x(l,j).eq.valmd(j))goto 30
+	       if(x(k,j).eq.valmd(j))goto 30
+ 40	       npres=npres+1
+	       if(ndyst.ne.1)goto 50
+	       clk=clk+(x(l,j)-x(k,j))*(x(l,j)-x(k,j))
+	       goto 30
+ 50	       clk=clk+dabs(x(l,j)-x(k,j))
+ 30	    continue
+	    rpres=npres
+	    if(npres.ne.0)goto 60
+	    jhalt=1
+	    dss(nlk)=-1.0
+	    goto 20
+ 60	    if(ndyst.ne.1)goto 70
+	    dss(nlk)=dsqrt(clk*(pp/rpres))
+	    goto 20
+ 70	    dss(nlk)=clk*(pp/rpres)
+ 20	 continue
+ 100  continue
+      end
+C
+C
+      subroutine fuzzy(nn,hh,p,dp,pt,dss,esp,ef,eda,edb,k,obj,eps)
+      implicit double precision (a-h,o-z)
+      integer hh
+      dimension p(nn,k),dp(nn,k),dss(hh)
+      dimension pt(k),esp(k),ef(k),obj(2)
+C
+C     r	  is the exponent, strictly larger than 1.0
+C     eps is the precision for the iterations
+C     nyt is the maximal number of iterations
+C
+      r=2.0
+      nyt=500
+C
+C   initial fuzzy clustering
+C
+      nnsub=nn-1
+      rvers=1./r
+      rkme=k-1
+      do 30 m=1,nn
+	 do 20 l=1,k
+	    dp(m,l)=0.
+	    p(m,l)=0.1/rkme
+ 20	 continue
+ 30   continue
+      ndk=nn/k
+      nd=ndk
+      l=1
+      do 50 m=1,nn
+	 p(m,l)=0.9
+	 if(m.lt.nd)go to 35
+	 nd=nd+ndk
+	 l=l+1
+	 if(l.eq.k)nd=nn
+ 35	 do 40 lx=1,k
+	    p(m,lx)=p(m,lx)**r
+ 40	 continue
+ 50   continue
+C
+C   initial criterion value
+C
+      cryt=0.
+      do 100 l=1,k
+	 esp(l)=0.
+	 ef(l)=0.
+	 do 90 m=1,nn
+	    esp(l)=esp(l)+p(m,l)
+	    do 80 j=1,nn
+	       if(j.eq.m)go to 80
+	       j2=min0(m,j)
+	       j1=(j2-1)*nn-(j2*(j2+1))/2+max0(m,j)
+	       dp(m,l)=dp(m,l)+p(j,l)*dss(j1)
+	       ef(l)=ef(l)+p(j,l)*p(m,l)*dss(j1)
+ 80	    continue
+ 90	 continue
+	 cryt=cryt+ef(l)/(esp(l)*2.)
+ 100  continue
+      crt=cryt
+      reen=1./(r-1.)
+C
+C   start of iterations
+C
+      kaunt=1
+      m=0
+C
+C   the new membership coefficients of the objects are calculated,
+C   and the resulting value of the criterion is computed.
+C
+ 200  m=m+1
+      dt=0.
+      do 210 l=1,k
+	 pt(l)=((2.*esp(l)*esp(l))/(2.*esp(l)*dp(m,l)-ef(l)))**reen
+	 dt=dt+pt(l)
+ 210  continue
+      xx=0.
+      do 220 l=1,k
+	 pt(l)=pt(l)/dt
+	 if(pt(l).le.0.)xx=xx+pt(l)
+ 220  continue
+      do 240 l=1,k
+	 if(pt(l).le.0.)pt(l)=0.
+	 pt(l)=(pt(l)/(1-xx))**r
+	 esp(l)=esp(l)+pt(l)-p(m,l)
+	 do 230 j=1,nn
+	    if(j.eq.m)go to 230
+	    j2=min0(m,j)
+	    j1=(j2-1)*nn-(j2*(j2+1))/2+max0(m,j)
+	    ddd=(pt(l)-p(m,l))*dss(j1)
+	    dp(j,l)=dp(j,l)+ddd
+	    ef(l)=ef(l)+2.*p(j,l)*ddd
+ 230	 continue
+	 p(m,l)=pt(l)
+ 240  continue
+      if(m.lt.nn)go to 200
+      cryt=0.
+      eda=0.
+      do 250 l=1,k
+	 ann=nn
+	 eda=eda+esp(l)/ann
+	 cryt=cryt+ef(l)/(esp(l)*2.)
+ 250  continue
+C
+C   criterion is printed and tested for convergence
+C
+      if((crt/cryt-1.).le.eps)go to 500
+      if(kaunt.lt.nyt)go to 300
+      go to 500
+ 300  m=0
+      kaunt=kaunt+1
+      crt=cryt
+      go to 200
+C
+C   non-fuzzyness index of libert is computed
+C
+ 500  obj(1)=kaunt
+      obj(2)=cryt
+      zk=k
+      edb=(zk*eda-1.)/(zk-1.)
+      do 520 m=1,nn
+	 do 510 l=1,k
+	    p(m,l)=p(m,l)**rvers
+ 510	 continue
+ 520  continue
+      return
+      end
+C
+C
+      subroutine caddy(nn,p,k,ktrue,nfuzz,ncluv,rdraw,nelem)
+      implicit double precision (a-h,o-z)
+      dimension ncluv(nn),nelem(nn),p(nn,k)
+      dimension nfuzz(k),rdraw(k)
+      pbest=p(1,1)
+      nbest=1
+      do 10 l=2,k
+	 if(p(1,l).le.pbest)go to 10
+	 pbest=p(1,l)
+	 nbest=l
+ 10   continue
+      nfuzz(1)=nbest
+      ncluv(1)=1
+      ktrue=1
+      do 20 m=2,nn
+	 pbest=p(m,1)
+	 nbest=1
+	 do 30 l=2,k
+	    if(p(m,l).le.pbest)go to 30
+	    pbest=p(m,l)
+	    nbest=l
+ 30	 continue
+	 jstay=0
+	 do 40 ktry=1,ktrue
+	    if(nfuzz(ktry).ne.nbest)go to 40
+	    ncluv(m)=ktry
+	    jstay=1
+ 40	 continue
+	 if(jstay.eq.1)go to 20
+	 ktrue=ktrue+1
+	 nfuzz(ktrue)=nbest
+	 ncluv(m)=ktrue
+ 20   continue
+      if(ktrue.ge.k)go to 100
+      knext=ktrue+1
+      do 60 kwalk=knext,k
+	 do 70 kleft=1,k
+	    jstay=0
+	    ksup=kwalk-1
+	    do 80 ktry=1,ksup
+	       if(nfuzz(ktry).ne.kleft)go to 80
+	       jstay=1
+ 80	    continue
+	    if(jstay.eq.1)go to 70
+	    nfuzz(kwalk)=kleft
+	    go to 60
+ 70	 continue
+ 60   continue
+ 100  do 110 m=1,nn
+	 do 120 l=1,k
+	    lfuzz=nfuzz(l)
+	    rdraw(l)=p(m,lfuzz)
+ 120	 continue
+	 do 130 l=1,k
+	    p(m,l)=rdraw(l)
+ 130	 continue
+ 110  continue
+      end
+C
+C
+      subroutine fygur(ktrue,nn,kk,hh,ncluv,nsend,nelem,
+     1	   negbr,syl,srank,avsyl,ttsyl,dss,s,sylinf)
+      implicit double precision (a-h,o-z)
+      integer hh
+      dimension ncluv(nn),nsend(nn),nelem(nn),negbr(nn)
+      dimension syl(nn),srank(nn),avsyl(kk),dss(hh)
+      dimension sylinf(nn,4)
+      nsylr=0
+      ttsyl=0.0
+      do 100 numcl=1,ktrue
+	 ntt=0
+	 do 30 j=1,nn
+	    if(ncluv(j).ne.numcl)go to 30
+	    ntt=ntt+1
+	    nelem(ntt)=j
+ 30	 continue
+	 do 40 j=1,ntt
+	    nj=nelem(j)
+	    dysb=1.1*s+1.0
+	    negbr(j)=-1
+	    do 41 nclu=1,ktrue
+	       if(nclu.eq.numcl)go to 41
+	       nbb=0
+	       db=0.0
+	       do 43 l=1,nn
+		  if(ncluv(l).ne.nclu)go to 43
+		  nbb=nbb+1
+		  if(l.lt.nj)go to 42
+		  if(l.gt.nj)go to 44
+		  go to 43
+ 42		  mjl=nn*(l-1)+nj-l*(l+1)/2
+		  db=db+dss(mjl)
+		  go to 43
+ 44		  mjl=nn*(nj-1)+l-nj*(nj+1)/2
+		  db=db+dss(mjl)
+ 43	       continue
+	       btt=nbb
+	       db=db/btt
+	       if(db.ge.dysb)go to 41
+	       dysb=db
+	       negbr(j)=nclu
+ 41	    continue
+	    if(ntt.eq.1)go to 50
+	    dysa=0.0
+	    do 45 l=1,ntt
+	       nl=nelem(l)
+	       if(nj.lt.nl)go to 46
+	       if(nj.gt.nl)go to 47
+	       go to 45
+ 46	       njl=nn*(nj-1)+nl-nj*(nj+1)/2
+	       dysa=dysa+dss(njl)
+	       go to 45
+ 47	       njl=nn*(nl-1)+nj-nl*(nl+1)/2
+	       dysa=dysa+dss(njl)
+ 45	    continue
+	    att=ntt-1
+	    dysa=dysa/att
+	    if(dysa.gt.0.0)go to 51
+	    if(dysb.gt.0.0)go to 52
+ 50	    syl(j)=0.0
+	    go to 40
+ 52	    syl(j)=1.0
+	    go to 40
+ 51	    if(dysb.le.0.0)go to 53
+	    if(dysb.gt.dysa)syl(j)=1.0-dysa/dysb
+	    if(dysb.lt.dysa)syl(j)=dysb/dysa-1.0
+	    if(dysb.eq.dysa)syl(j)=0.0
+	    go to 54
+ 53	    syl(j)=-1.0
+ 54	    if(syl(j).le.(-1.0))syl(j)=-1.0
+	    if(syl(j).ge.1.0)syl(j)=1.0
+ 40	 continue
+	 avsyl(numcl)=0.0
+	 do 60 j=1,ntt
+	    symax=-2.0
+	    do 70 l=1,ntt
+	       if(syl(l).le.symax)go to 70
+	       symax=syl(l)
+	       lang=l
+ 70	    continue
+	    nsend(j)=lang
+	    srank(j)=syl(lang)
+	    avsyl(numcl)=avsyl(numcl)+srank(j)
+	    syl(lang)=-3.0
+ 60	 continue
+	 ttsyl=ttsyl+avsyl(numcl)
+	 rtt=ntt
+	 avsyl(numcl)=avsyl(numcl)/rtt
+
+	 if(ntt.ge.2)goto 75
+	 nsylr=nsylr+1
+	 sylinf(nsylr,1)=numcl
+	 sylinf(nsylr,2)=negbr(1)
+	 sylinf(nsylr,3)=0.0
+	 sylinf(nsylr,4)=nelem(1)
+	 goto 100
+ 75	 do 80 l=1,ntt
+	    nsylr=nsylr+1
+	    lplac=nsend(l)
+	    sylinf(nsylr,1)=numcl
+	    sylinf(nsylr,2)=negbr(lplac)
+	    sylinf(nsylr,3)=srank(l)
+	    sylinf(nsylr,4)=nelem(lplac)
+ 80	 continue
+ 100  continue
+      rnn=nn
+      ttsyl=ttsyl/rnn
+      end

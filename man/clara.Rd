@@ -83,14 +83,8 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
   later, the authors said \emph{``small (say with fewer than 200
   observations)''}..
 }
-\references{
-  Kaufman, L. and Rousseeuw, P.J. (1990)
-  \emph{Finding Groups in Data: An Introduction to Cluster Analysis}.
-  Wiley, New York.
-
-  Further, see the references in \code{\link{plot.agnes}}.
-}
 \seealso{
+  \code{\link{agnes}} for background and references;
   \code{\link{clara.object}}, \code{\link{pam}},
   \code{\link{partition.object}}, \code{\link{plot.partition}}.
 }

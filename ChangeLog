@@ -1,3 +1,30 @@
+2002-03-04  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.4-1
+
+	* R/zzz.R (.First.lib),
+	* R/plothier.q: replace plclust() by plot[.hclust]() everywhere.
+
+2002-01-29  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/pam.q (pam): comment on "valmisdat"; same in
+	* R/fanny.q, R/agnes.q, R/clara.q, R/diana.q
+
+	* src/pam.f (dysta): comment + white space
+	* src/fanny.f (fanny): lowercase and indent + comments
+
+2002-01-24  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/agnes.Rd, diana.Rd, pam.Rd, clara.Rd, mona.Rd, fanny.Rd :
+	  Reference and BACKGROUND section only in agnes.Rd;
+	  the others refer to agnes.
+
+	* man/fanny.Rd: clean
+
+	* R/agnes.q (agnes): \  ``diss = inherits(x, "dist")''
+	* R/diana.q (diana):  > instead of "diss = FALSE"
+	* R/fanny.q (fanny): /   as we have changed pam() already in 1.4-0
+
 2002-01-23  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.4-0

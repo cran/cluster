@@ -1,15 +1,15 @@
       subroutine pam(nn,jpp,kk,x,dys,jdyss,valmd,jtmd,ndyst,nsend,
      f     nrepr,nelem,radus,damer,ttd,separ,ttsyl,med,obj,ncluv,
      f     clusinf,sylinf,nisol)
-c     
+c
 c     partitioning around medoids
-c     
+c
 c     carries out a clustering using the k-medoid approach.
-c     
+c
       integer nn,jpp,kk, jdyss,ndyst
 
       double precision x(nn,jpp), dys(1+nn*(nn-1)/2), valmd(jpp)
-      integer jtmd(jpp), nsend(nn),nrepr(nn),nelem(nn), 
+      integer jtmd(jpp), nsend(nn),nrepr(nn),nelem(nn),
      +     ncluv(nn), nisol(kk), med(kk)
       double precision radus(nn),damer(nn),ttd(nn),separ(nn),ttsyl
       double precision clusinf(kk,5),sylinf(nn,4),obj(2)
@@ -17,8 +17,8 @@ c
       integer jhalt, nhalf, k,l
       double precision sky,s
 
-c jdyss = 0 : compute distances from x 
-c       = 1 : distances provided  in x      
+c jdyss = 0 : compute distances from x
+c       = 1 : distances provided  in x
       if(jdyss.ne.1) then
          jhalt=0
          call dysta(nn,jpp,x,dys,ndyst,jtmd,valmd,jhalt)
@@ -27,7 +27,7 @@ c       = 1 : distances provided  in x
             return
          endif
       endif
-c     
+c
       s=0.0
       nhalf=nn*(nn-1)/2+1
       l=1
@@ -51,7 +51,9 @@ c
       endif
       end
 c     -----------------------------------------------------------
-c     
+
+c     Compute Distances from X matrix
+c
       subroutine dysta(nn,jpp,x,dys,ndyst,jtmd,valmd,jhalt)
 
       integer nn, jpp, ndyst, jtmd(jpp), jhalt
@@ -61,38 +63,38 @@ c
       double precision pp, clk, rpres
 
       pp=jpp
-      nlk=1 
+      nlk=1
       dys(1)=0.0
-      do 100 l=2,nn 
-         lsubt=l-1 
-         do 20 k=1,lsubt 
-            clk=0.0 
-            nlk=nlk+1 
-            npres=0 
-            do 30 j=1,jpp 
-               if(jtmd(j).ge.0)goto 40 
-               if(x(l,j).eq.valmd(j))goto 30 
-               if(x(k,j).eq.valmd(j))goto 30 
- 40            npres=npres+1 
-               if(ndyst.ne.1)goto 50 
-               clk=clk+(x(l,j)-x(k,j))*(x(l,j)-x(k,j)) 
-               goto 30 
+      do 100 l=2,nn
+         lsubt=l-1
+         do 20 k=1,lsubt
+            clk=0.0
+            nlk=nlk+1
+            npres=0
+            do 30 j=1,jpp
+               if(jtmd(j).ge.0)goto 40
+               if(x(l,j).eq.valmd(j))goto 30
+               if(x(k,j).eq.valmd(j))goto 30
+ 40            npres=npres+1
+               if(ndyst.ne.1)goto 50
+               clk=clk+(x(l,j)-x(k,j))*(x(l,j)-x(k,j))
+               goto 30
  50            clk=clk+dabs(x(l,j)-x(k,j))
  30         continue
-            rpres=npres 
-            if(npres.ne.0)goto 60 
-            jhalt=1 
+            rpres=npres
+            if(npres.ne.0)goto 60
+            jhalt=1
             dys(nlk)=-1.0
-            goto 20 
- 60         if(ndyst.ne.1)goto 70 
-            dys(nlk)=dsqrt(clk*(pp/rpres)) 
-            goto 20 
- 70         dys(nlk)=clk*(pp/rpres) 
+            goto 20
+ 60         if(ndyst.ne.1)goto 70
+            dys(nlk)=dsqrt(clk*(pp/rpres))
+            goto 20
+ 70         dys(nlk)=clk*(pp/rpres)
  20      continue
  100  continue
-      end 
+      end
 c     -----------------------------------------------------------
-c     
+c
       subroutine bswap(kk,nn,nrepr,dysma,dysmb,beter,hh,dys,sky,s,obj)
 
       integer kk,nn,nrepr(nn),hh
@@ -104,9 +106,9 @@ c function called
 c
       integer nny, j,ja,k,nkj, njn,njaj,nmax, nbest,kbest
       double precision cmd, ammax, rnn,dz,dzsky,small
-c     
+c
 c     first algorithm: build.
-c     
+c
       nny=0
       do 17 j=1,nn
          nrepr(j)=0
@@ -145,9 +147,9 @@ C-- Loop :
       rnn=nn
       obj(1)=sky/rnn
       if(kk.eq.1)goto 75
-c     
+c
 c     second algorithm: swap.
-c     
+c
 C-- Loop :
  60   do 63 j=1,nn
          dysma(j)=1.1*s+1.0
@@ -195,7 +197,7 @@ C-- Loop :
       obj(2)=sky/rnn
       end
 c     -----------------------------------------------------------
-c     
+c
       subroutine cstat(kk,nn,nsend,nrepr,radus,damer,ttd,separ,z,s,
      f     hh,dys,ncluv,nelem,med,nisol)
 
@@ -240,9 +242,9 @@ c
  140     continue
          if(jk.eq.kk)go to 148
  145  continue
-c     
+c
 c     analysis of the clustering.
-c     
+c
  148  do 160 numcl=1,kk
          ntt=0
          radus(numcl)=-1.0
@@ -265,16 +267,16 @@ c
       damer(1)=s
       nrepr(1)=nn
       go to 300
-c     
+c
 c     numl = number of l-clusters.
-c     
+c
  240  numl=0
       do 40 k=1,kk
-c     
+c
 c     identification of cluster k:
 c     nel  = number of objects
 c     nelem= vector of objects
-c     
+c
          nel=0
          do 23 j=1,nn
             if(ncluv(j).ne.k)go to 23
@@ -291,11 +293,11 @@ c
             mevj=meet(nvn,j)
             if(separ(k).gt.dys(mevj)) separ(k)=dys(mevj)
  250     continue
-c     
-c Is cluster k     
+c
+c Is cluster k
 c	1) an l-cluster  or
 c       2) an l*-cluster ?
-c     
+c
          if(separ(k).eq.0.)go to 400
          numl=numl+1
  400     go to 35
@@ -327,13 +329,13 @@ c     l-cluster
          nisol(k)=1
          go to 40
 c     l*-cluster
- 27      nisol(k)=2 
+ 27      nisol(k)=2
          go to 40
  35      nisol(k)=0
  40   continue
  300  end
 c     -----------------------------------------------------------
-c     
+c
       subroutine dark(kk,nn,hh,ncluv,nsend,nelem,negbr,
      f     syl,srank,avsyl,ttsyl,dys,s,sylinf)
 
@@ -349,74 +351,74 @@ c
       double precision dysa,dysb,db,att,btt,rtt,rnn,symax
 
       nsylr=0
-      ttsyl=0.0 
-      do 100 numcl=1,kk 
-         ntt=0 
+      ttsyl=0.0
+      do 100 numcl=1,kk
+         ntt=0
          do 30 j=1,nn
             if(ncluv(j).ne.numcl)go to 30
             ntt=ntt+1
             nelem(ntt)=j
  30      continue
-         do 40 j=1,ntt 
-            nj=nelem(j) 
+         do 40 j=1,ntt
+            nj=nelem(j)
             dysb=1.1*s+1.0
             negbr(j)=-1
             do 41 nclu=1,kk
                if(nclu.eq.numcl)go to 41
-               nbb=0 
+               nbb=0
                db=0.0
                do 43 l=1,nn
                   if(ncluv(l).ne.nclu)go to 43
-                  nbb=nbb+1 
+                  nbb=nbb+1
                   mjl=meet(nj,l)
                   db=db+dys(mjl)
  43            continue
-               btt=nbb 
-               db=db/btt 
+               btt=nbb
+               db=db/btt
                if(db.ge.dysb)go to 41
-               dysb=db 
-               negbr(j)=nclu 
+               dysb=db
+               negbr(j)=nclu
  41         continue
             if(ntt.eq.1)go to 50
             dysa=0.0
-            do 45 l=1,ntt 
-               nl=nelem(l) 
-               njl=meet(nj,nl) 
+            do 45 l=1,ntt
+               nl=nelem(l)
+               njl=meet(nj,nl)
                dysa=dysa+dys(njl)
  45         continue
             att=ntt-1
             dysa=dysa/att
-            if(dysa.gt.0.0)go to 51 
+            if(dysa.gt.0.0)go to 51
             if(dysb.gt.0.0)go to 52
  50         syl(j)=0.0
             go to 40
  52         syl(j)=1.0
             go to 40
- 51         if(dysb.le.0.0)go to 53 
+ 51         if(dysb.le.0.0)go to 53
             if(dysb.gt.dysa)syl(j)=1.0-dysa/dysb
             if(dysb.lt.dysa)syl(j)=dysb/dysa-1.0
             if(dysb.eq.dysa)syl(j)=0.0
             go to 54
- 53         syl(j)=-1.0 
- 54         if(syl(j).le.(-1.0))syl(j)=-1.0 
-            if(syl(j).ge.1.0)syl(j)=1.0 
+ 53         syl(j)=-1.0
+ 54         if(syl(j).le.(-1.0))syl(j)=-1.0
+            if(syl(j).ge.1.0)syl(j)=1.0
  40      continue
          avsyl(numcl)=0.0
-         do 60 j=1,ntt 
+         do 60 j=1,ntt
             symax=-2.0
             do 70 l=1,ntt
-               if(syl(l).le.symax)go to 70 
+               if(syl(l).le.symax)go to 70
                symax=syl(l)
                lang=l
  70         continue
-            nsend(j)=lang 
+            nsend(j)=lang
             srank(j)=syl(lang)
             avsyl(numcl)=avsyl(numcl)+srank(j)
             syl(lang)=-3.0
  60      continue
          ttsyl=ttsyl+avsyl(numcl)
-         rtt=ntt 
-         avsyl(numcl)=avsyl(numcl)/rtt 
+         rtt=ntt
+         avsyl(numcl)=avsyl(numcl)/rtt
 
          if(ntt.ge.2)goto 75
          nsylr=nsylr+1
@@ -425,7 +427,7 @@ c
          sylinf(nsylr,3)=0.0
          sylinf(nsylr,4)=nelem(1)
          goto 100
- 75      do 80 l=1,ntt 
+ 75      do 80 l=1,ntt
             nsylr=nsylr+1
             lplac=nsend(l)
             sylinf(nsylr,1)=numcl
@@ -435,5 +437,5 @@ c
  80      continue
  100  continue
       rnn=nn
-      ttsyl=ttsyl/rnn 
+      ttsyl=ttsyl/rnn
  96   end

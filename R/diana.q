@@ -1,6 +1,7 @@
-### $Id: diana.q,v 1.7 2002/01/12 14:10:58 maechler Exp $
+### $Id: diana.q,v 1.9 2002/03/04 10:44:45 maechler Exp maechler $
 
-diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
+diana <- function(x, diss = inherits(x, "dist"),
+                  metric = "euclidean", stand = FALSE)
 {
     if(diss) {
 	## check type of input vector
@@ -33,7 +34,7 @@ diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 	n <- nrow(x2)
 	jp <- ncol(x2)
 	jtmd <- as.integer(ifelse(is.na(rep(1, n) %*% x2), -1, 1))
-	valmisdat <- min(x2, na.rm = TRUE) - 0.5# double!
+	valmisdat <- min(x2, na.rm=TRUE) - 0.5 #(double) VALue for MISsing DATa
 	x2[is.na(x2)] <- valmisdat
 	valmd <- rep(valmisdat, jp)
 	dv <- double(1 + (n * (n - 1))/2)

@@ -1,3 +1,4 @@
+#### $Id: daisy.q,v 1.6 2002/03/04 10:44:45 maechler Exp maechler $
 daisy <-
 function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 {

@@ -1,4 +1,4 @@
-### $Id: clara.q,v 1.9 2002/01/12 14:10:12 maechler Exp $
+### $Id: clara.q,v 1.10 2002/03/04 10:44:45 maechler Exp maechler $
 
 #### CLARA := Clustering LARge Applications
 ####
@@ -36,7 +36,7 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     mdata <- is.na(min(x2))
 
     ## FIXME: The following will go wrong as soon as  min(x2) < -5e15
-    valmisdat <- min(x2, na.rm = TRUE) - 0.5
+    valmisdat <- min(x2, na.rm=TRUE) - 0.5 #(double) VALue for MISsing DATa
     x2[is.na(x2)] <- valmisdat
 
     x3 <- as.double(as.vector(t(x2)))# transposing LARGE x ..not efficient ....

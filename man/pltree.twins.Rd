@@ -31,7 +31,7 @@ pltree.twins(x, main = paste("Dendrogram of ", deparse(call)), \dots)
 \seealso{
   \code{\link{agnes}}, \code{\link{agnes.object}}, \code{\link{diana}},
   \code{\link{diana.object}}, \code{\link{hclust}}, \code{\link{par}},
-  \code{\link{plot.agnes}}, \code{\link{plot.diana}}.% \code{\link{plclust}}
+  \code{\link{plot.agnes}}, \code{\link{plot.diana}}.
 }
 \keyword{cluster}
 \keyword{hplot}
