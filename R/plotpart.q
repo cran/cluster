@@ -494,7 +494,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
                         punt.2 <- clas.snijpunt(snijp.2, loc, 2, j, i)
                     }
                 }
-                if((punt.1[1] == "NA") || (punt.2[1] == "NA") ||
+                if(is.na(punt.1[1]) || is.na(punt.2[1]) ||
                    (sqrt((punt.1[1] - loc[i, 1])^2 +
                          (punt.1[2] - loc[i, 2])^2) +
                     sqrt((punt.2[1] - loc[j, 1])^2 +

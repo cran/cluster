@@ -1,3 +1,8 @@
+2002-03-30  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/plotpart.q: replace `` == "NA" '' by  is.na(.)
+	* R/mona.q (mona): <ditto>
+
 2002-03-04  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.4-1

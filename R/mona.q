@@ -13,7 +13,7 @@ mona <- function(x)
     x2 <- apply(as.matrix(x), 2, factor)
     x2[x2 == "1"] <- "0"
     x2[x2 == "2"] <- "1"
-    x2[x2 == "NA"] <- "2"
+    x2[is.na(x2)] <- "2"
     ##	x2 <- paste(x2, collapse = "")
     ##	storage.mode(x2) <- "character"
     ## call Fortran routine
