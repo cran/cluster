@@ -61,7 +61,8 @@ sortSilhouette <- function(object, ...) {
         stop("invalid silhouette structure")
     if(is.null(rownames(object)))
         rownames(object) <- as.character(1:n)
-    k <- length(clid <- sort(unique(cl <- object[,"cluster"]))) # cluster ID s
+    ## k <- length(clid <- sort(unique(cl <- object[,"cluster"])))# cluster ID s
+    cl <- object[,"cluster"]
     r <- object[iOrd <- order(cl, - object[,"sil_width"]) , , drop = FALSE]
     attributes(r) <- attributes(object) # but:
     attr(r,"iOrd") <- iOrd # the ordering
@@ -72,7 +73,6 @@ sortSilhouette <- function(object, ...) {
 summary.silhouette <- function(object, FUN = mean, ...)
 {
     if(ncol(object) != 3) stop("invalid `silhouette' object")
-    n <- nrow(object)
     cl <- object[, "cluster"]
     si <- object[, "sil_width"]
     r <- list(si.summary = summary(si, ...),
@@ -151,7 +151,6 @@ plot.silhouette <-
 	mtext(expression(paste(j," :  ", n[j]," | ", ave[i %in% Cj] ~~ s[i])),
 	      adj = 1.04, line = -1.2)
 	y <- rev(y)
-	clw <-
 	for(j in 1:k) {
 	    yj <- mean(y[cli == j])
 	    text(1, yj, paste(j,":  ", nj[j]," | ",

@@ -100,7 +100,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
                         ## Hmm, when does this ever happen :
                         ## numeric, not-dist, non-vector, not symmetric matrix ?
                         warning(">>>>> funny case in clusplot.default() -- please report!\n")
-                        if(n != sizeDiss(s))
+                        ## if(n != sizeDiss(x)) ...
                         if(is.null(labels1))
                             labels1 <- 1:sizeDiss(x)
                         attr(x, "Size") <- sizeDiss(x)

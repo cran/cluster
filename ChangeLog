@@ -1,3 +1,25 @@
+2003-09-03  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Date): -> release
+
+2003-08-27  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/flower.Rd: use V1-V8 in doc (since can't change the data).
+
+2003-08-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.7.5 -- not yet released
+
+2003-08-13  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+  __ All these are thanks to Luke Tierney's checkUsagePackage() !! __
+
+	* R/silhouette.R (plot.silhouette): `clw'
+	                 (sortSilhouette): `clid' & `k'
+			 (summary.silhouette): `n'
+	* R/ellipsoidhull.R (ellipsoidhull): `ina' unneeded
+	* R/plotpart.q (clusplot.default): extraneous if() in "funny case"
+
 2003-07-18  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Date): updated --> release to CRAN

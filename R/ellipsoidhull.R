@@ -6,14 +6,13 @@
 
 ### Author: Martin Maechler, Date: 21 Jan 2002, 15:41
 
-
 ellipsoidhull <-
     function(x, tol = 0.01, maxit = 5000,
              ret.wt = FALSE, ret.sqdist = FALSE, ret.pr = FALSE)
 {
     if(!is.matrix(x) || !is.numeric(x))
         stop("`x' must be numeric  n x p matrix")
-    if(any(ina <- is.na(x))) {
+    if(any(is.na(x))) {
         warning("omitting NAs")
         x <- na.omit(x)
     }
