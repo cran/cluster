@@ -34,7 +34,7 @@ plot.agnes(x, ask = FALSE, which.plots = NULL, main = NULL,
     \code{\link{pltree}()}, respectively.}
 }
 \section{Side Effects}{
-  An appropriate plot is produced on the current graphics device. This  can
+  Appropriate plots are produced on the current graphics device. This can
   be one or both of the following choices:
   \cr Banner
   \cr Clustering tree

@@ -38,7 +38,7 @@ daisy(x, metric = "euclidean", stand = FALSE, type = list())
     If not all columns of
     \code{x} are numeric, then this argument will be ignored.
   }
-  \item{type}{list containing some (or all) of the types of the
+  \item{type}{list for specifying some (or all) of the types of the
     variables (columns) in \code{x}.  The list may contain the following
     components: \code{"ordratio"} (ratio scaled variables to be treated as
     ordinal variables), \code{"logratio"} (ratio scaled variables that
@@ -134,5 +134,8 @@ data(flower)
 ## Example 2 in ref
 summary(dfl1 <- daisy(flower, type = list(asymm = 3)))
 summary(dfl2 <- daisy(flower, type = list(asymm = c(1, 3), ordratio = 7)))
+## this failed earlier:
+summary(dfl3 <- daisy(flower,
+        type = list(asymm = c("V1", "V3"), symm= 2, ordratio= 7, logratio= 8)))
 }
 \keyword{cluster}

@@ -20,8 +20,8 @@ sortSilhouette(object, \dots)
 \method{summary}{silhouette}(object, FUN = mean, \dots)
 \method{plot}{silhouette}(x, nmax.lab = 40, max.strlen = 5,
      main = NULL, sub = NULL, xlab = expression("Silhouette width "* s[i]),
-     col = "gray", border = 0, cex.names = par("cex.axis"),
-     do.n.k = TRUE, do.clus.stat = TRUE, \dots)
+     col = "gray",  do.col.sort = length(col) > 1, border = 0,
+     cex.names = par("cex.axis"), do.n.k = TRUE, do.clus.stat = TRUE, \dots)
 }
 \arguments{
   \item{x}{an object of appropriate class; for the \code{default}
@@ -43,8 +43,13 @@ sortSilhouette(object, \dots)
     sensible non-NULL default here.}
   \item{col, border, cex.names}{arguments passed
     \code{\link{barplot}()}; note that the default used to be \code{col
-      = heat.colors(n), border = par("fg")} instead.
+      = heat.colors(n), border = par("fg")} instead.\cr
+    \code{col} can also be a color vector of length \eqn{k} for
+    clusterwise coloring, see also \code{do.col.sort}:
   }
+  \item{do.col.sort}{logical indicating if the colors \code{col} should
+    be sorted ``along'' the silhouette; this is useful for casewise or
+    clusterwise coloring.}
   \item{do.n.k}{logical indicating if \eqn{n} and \eqn{k} ``title text''
     should be written.}
   \item{do.clus.stat}{logical indicating if cluster size and averages
@@ -105,7 +110,8 @@ sortSilhouette(object, \dots)
   \cr
   \code{attr(sil, "Ordered")} is a logical indicating if \code{sil} \emph{is}
   ordered as by \code{sortSilhouette()}. In that case,
-  \code{rownames(sil)} will contain case labels or numbers.
+  \code{rownames(sil)} will contain case labels or numbers, and \cr
+  \code{attr(sil, "iOrd")} the ordering index vector.
 }
 \references{
   Rousseeuw, P.J. (1987)

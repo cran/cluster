@@ -2,8 +2,9 @@
 \alias{pltree}
 \title{Clustering Trees - Generic Function}
 \description{
-  Generic function drawing a clustering tree on the current graphics device.
-  Functions with names beginning in \code{pltree.} will be
+  Generic function drawing a clustering tree (``dendrogram'') on the
+  current graphics device.
+  There is Functions with names beginning in \code{pltree.} will be
   methods for this function.
 }
 \usage{

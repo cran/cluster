@@ -24,6 +24,14 @@ str(d5 <- data.frame(a= c(0, 0, 0,1,0,0, 0,0,1, 0,NA),
 (d2.<- daisy(d5, type = list(     asymm= 3:5)))
 stopifnot(identical(c(d2), c(d2.)))
 
+d5[,4] <- 1 # binary with only one instead of two values
+(d0 <- daisy(d5))
+(d1 <- daisy(d5, type = list(asymm = 1:5)))# 2 NAs
+(d2 <- daisy(d5, type = list(symm = 1:2, asymm= 3:5)))
+(d2.<- daisy(d5, type = list(     asymm= 3:5)))
+## better leave away the constant variable: it has no effect:
+stopifnot(identical(c(d1), c(daisy(d5[,-4], type = list(asymm = 1:4)))))
+
 data(flower)
 data(agriculture)
 

@@ -1,6 +1,6 @@
 
-R : Copyright 2002, The R Development Core Team
-Version 1.6.0 Under development (unstable) (2002-09-03)
+R : Copyright 2003, The R Development Core Team
+Version 1.8.0 Under development (unstable) (2003-07-15)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -17,7 +17,6 @@ Type `q()' to quit R.
 > 
 > require(cluster)
 Loading required package: cluster 
-Loading required package: mva 
 [1] TRUE
 > 
 > if(interactive()) {
@@ -119,6 +118,70 @@ Number of objects : 11
 Warning message: 
 binary variable(s) 1,2 treated as interval scaled in: daisy(d5, type = list(asymm = 3:5)) 
 > stopifnot(identical(c(d2), c(d2.)))
+> 
+> d5[,4] <- 1 # binary with only one instead of two values
+> (d0 <- daisy(d5))
+Dissimilarities :
+ [1] 1.290994 1.581139 1.118034 1.581139 1.290994 1.581139 1.118034 1.825742
+ [9] 0.000000 0.000000 1.118034 1.936492 0.000000 1.290994 0.000000 1.581139
+[17] 1.118034 1.581139 0.000000 1.732051 1.000000 0.000000 1.000000 1.000000
+[25] 1.581139 1.414214 1.825742 2.000000 1.581139 2.000000 1.414214 1.581139
+[33] 1.000000 1.290994 1.118034 0.000000 1.414214 1.118034 1.732051 1.290994
+[41] 1.118034 0.000000 1.825742 1.118034 1.825742 1.414214 1.118034 1.732051
+[49] 1.290994 1.936492 1.000000 1.825742 1.936492 0.000000 1.290994
+
+Metric :  euclidean 
+Number of objects : 11
+Warning message: 
+binary variable(s) 1,2,3,5 treated as interval scaled in: daisy(d5) 
+> (d1 <- daisy(d5, type = list(asymm = 1:5)))# 2 NAs
+Dissimilarities :
+ [1] 1.0000000 1.0000000 0.5000000 1.0000000 1.0000000 1.0000000 1.0000000
+ [8] 1.0000000 0.0000000 0.0000000 0.5000000 1.0000000 0.0000000 1.0000000
+[15] 0.0000000 1.0000000 0.5000000 1.0000000        NA 0.7500000 0.5000000
+[22] 0.0000000 0.5000000 0.5000000 0.6666667 0.6666667 1.0000000 1.0000000
+[29] 0.6666667 1.0000000 0.6666667 0.6666667 0.3333333 0.5000000 1.0000000
+[36] 0.0000000 1.0000000 0.5000000 1.0000000 1.0000000 1.0000000 0.0000000
+[43] 1.0000000 0.5000000 1.0000000 1.0000000 0.5000000 1.0000000 1.0000000
+[50] 1.0000000 0.5000000 1.0000000 1.0000000        NA 0.5000000
+
+Metric :  mixed ;  Types = A, A, A, A, A 
+Number of objects : 11
+Warning message: 
+at least one binary variable has not 2 different levels. in: daisy(d5, type = list(asymm = 1:5)) 
+> (d2 <- daisy(d5, type = list(symm = 1:2, asymm= 3:5)))
+Dissimilarities :
+ [1] 0.5000000 0.6666667 0.5000000 0.6666667 0.5000000 0.6666667 0.5000000
+ [8] 1.0000000 0.0000000 0.0000000 0.3333333 1.0000000 0.0000000 0.5000000
+[15] 0.0000000 0.6666667 0.3333333 0.6666667 0.0000000 0.7500000 0.3333333
+[22] 0.0000000 0.3333333 0.3333333 0.6666667 0.5000000 1.0000000 1.0000000
+[29] 0.6666667 1.0000000 0.6666667 0.6666667 0.3333333 0.5000000 0.5000000
+[36] 0.0000000 0.6666667 0.3333333 0.7500000 0.5000000 0.5000000 0.0000000
+[43] 1.0000000 0.3333333 1.0000000 0.6666667 0.3333333 0.7500000 0.5000000
+[50] 1.0000000 0.3333333 1.0000000 1.0000000 0.0000000 0.5000000
+
+Metric :  mixed ;  Types = S, S, A, A, A 
+Number of objects : 11
+Warning message: 
+at least one binary variable has not 2 different levels. in: daisy(d5, type = list(symm = 1:2, asymm = 3:5)) 
+> (d2.<- daisy(d5, type = list(     asymm= 3:5)))
+Dissimilarities :
+ [1] 0.5000000 0.6666667 0.5000000 0.6666667 0.5000000 0.6666667 0.5000000
+ [8] 1.0000000 0.0000000 0.0000000 0.3333333 1.0000000 0.0000000 0.5000000
+[15] 0.0000000 0.6666667 0.3333333 0.6666667 0.0000000 0.7500000 0.3333333
+[22] 0.0000000 0.3333333 0.3333333 0.6666667 0.5000000 1.0000000 1.0000000
+[29] 0.6666667 1.0000000 0.6666667 0.6666667 0.3333333 0.5000000 0.5000000
+[36] 0.0000000 0.6666667 0.3333333 0.7500000 0.5000000 0.5000000 0.0000000
+[43] 1.0000000 0.3333333 1.0000000 0.6666667 0.3333333 0.7500000 0.5000000
+[50] 1.0000000 0.3333333 1.0000000 1.0000000 0.0000000 0.5000000
+
+Metric :  mixed ;  Types = I, I, A, A, A 
+Number of objects : 11
+Warning messages: 
+1: at least one binary variable has not 2 different levels. in: daisy(d5, type = list(asymm = 3:5)) 
+2: binary variable(s) 1,2 treated as interval scaled in: daisy(d5, type = list(asymm = 3:5)) 
+> ## better leave away the constant variable: it has no effect:
+> stopifnot(identical(c(d1), c(daisy(d5[,-4], type = list(asymm = 1:4)))))
 > 
 > data(flower)
 > data(agriculture)

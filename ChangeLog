@@ -1,3 +1,26 @@
+2003-07-18  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Date): updated --> release to CRAN
+
+	* R/daisy.q (daisy): checking "> 2 levels" for binary vars
+		(gave wrong error when only 1 level; thanks to
+		 Duncan.Mackay@flinders.edu.au).
+		Now allow "only 1 level" for binary vars
+
+2003-07-10  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Date): update; not released, but put up on FTP
+	* R/silhouette.R (sortSilhouette): keep ordering; use it to
+	* R/silhouette.R (plot.silhouette): order colors, allow cluster colors
+
+2003-07-09  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.7.4 -- not yet released
+
+	* R/daisy.q (daisy): better error message for invalid type
+	components; now also works for
+	* man/daisy.Rd: new example `dfl3'
+
 2003-06-10  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.7.3

@@ -1,37 +1,57 @@
-#### $Id: daisy.q,v 1.13 2003/06/03 13:39:28 maechler Exp $
+#### $Id: daisy.q,v 1.14 2003/07/09 14:04:46 maechler Exp $
 daisy <-
 function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 {
     ## check type of input matrix
     if(length(dx <- dim(x)) != 2 || !(is.data.frame(x) || is.numeric(x)))
 	stop("x is not a dataframe or a numeric matrix.")
+    n <- dx[1]# nrow
+    p <- dx[2]# ncol
+    varnms <- dimnames(x)[[2]]
     if(length(type)) {
+	if(!is.list(type) || is.null(ntyp <- names(type)) || any(ntyp == ""))
+            stop("invalid `type'; must be named list")
+        ## check each component to be valid column names or numbers:
+        for(nt in ntyp) {
+            cvec <- type[[nt]]
+            if(is.character(cvec)) {
+                if(!is.null(varnms) && !all(cvec %in% varnms))
+                    stop("type$", nt, " has invalid column names")
+            }
+            else if(is.numeric(cvec)) {
+                if(!all(1 <= cvec & cvec <= p))
+                    stop("type$", nt, " must be in 1:ncol(x)")
+            }
+            else stop("type$", nt, " must contain column names or numbers")
+        }
 	tA <- type$asymm
 	tS <- type$symm
 	if((!is.null(tA) || !is.null(tS))) {
-	    d.bin <- as.data.frame(x[,c(tA,tS), drop = FALSE])
-	    if(!all(sapply(lapply(d.bin, function(y)
-				  levels(as.factor(y))), length) == 2))
+            ## tA and tS might be character and integer!
+	    d.bin <- cbind(as.data.frame(x[, tA, drop= FALSE]),
+                                         x[, tS, drop= FALSE])
+            lenB <- sapply(lapply(d.bin, function(y)
+                                 levels(as.factor(y))), length)
+	    if(any(lenB > 2))
 		stop("at least one binary variable has more than 2 levels.")
+	    if(any(lenB < 2))
+		warning("at least one binary variable has not 2 different levels.")
 	    ## Convert factors to integer, such that ("0","1") --> (0,1):
 	    if(any(is.f <- sapply(d.bin, is.factor)))
 		d.bin[is.f] <- lapply(d.bin[is.f],
 				      function(f) as.integer(as.character(f)))
 	    if(!all(sapply(d.bin, function(y)
 			   is.logical(y) ||
-			   all(sort(unique(as.numeric(y[!is.na(y)])))==0:1))))
+			   all(sort(unique(as.numeric(y[!is.na(y)])))%in% 0:1))))
 		stop("at least one binary variable has values other than 0,1, and NA")
 	}
     }
     ## transform variables and construct `type' vector
-    n <- dx[1]# nrow
-    p <- dx[2]# ncol
     if(is.data.frame(x)) {
 	type2 <- sapply(x, data.class)
 	x <- data.matrix(x)
     } else type2 <- rep("numeric", p)
     if(length(type)) {
-	if(!is.list(type)) stop("invalid `type'; must be named list")
 	tT <- type$ ordratio
 	tL <- type$ logratio
 	x[, names(type2[tT])] <- unclass(as.ordered(x[, names(type2[tT])]))
