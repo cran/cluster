@@ -1,6 +1,6 @@
 
-R : Copyright 2002, The R Development Core Team
-Version 1.6.2 beta (2002-12-21)
+R : Copyright 2003, The R Development Core Team
+Version 1.7.0 Under development (unstable) (2003-03-25)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -14,9 +14,11 @@ Type `demo()' for some demos, `help()' for on-line help, or
 Type `q()' to quit R.
 
 > library(cluster)
-Loading required package: mva 
 > options(digits = 6)
 > data(votes.repub)
+> 
+> .proctime00 <- proc.time()
+> 
 > agn1 <- agnes(votes.repub, metric = "manhattan", stand = TRUE)
 > summary(agn1)
 Object of class `agnes' from call:
@@ -101,11 +103,12 @@ Number of objects : 50
 
 Available components:
 [1] "order"     "height"    "ac"        "merge"     "diss"      "call"     
-[7] "order.lab" "data"     
-> agn2 <- agnes(daisy(votes.repub), diss = TRUE, method = "complete")
+[7] "method"    "order.lab" "data"     
+> Dvr <- daisy(votes.repub)
+> agn2 <- agnes(Dvr, method = "complete")
 > summary(agn2)
 Object of class `agnes' from call:
- agnes(x = daisy(votes.repub), diss = TRUE, method = "complete") 
+ agnes(x = Dvr, method = "complete") 
 Agglomerative coefficient:  0.88084 
 Order of objects:
  [1] Alabama        Georgia        Louisiana      Arkansas       Florida       
@@ -186,7 +189,34 @@ Number of objects : 50
 
 Available components:
 [1] "order"     "height"    "ac"        "merge"     "diss"      "call"     
-[7] "order.lab"
+[7] "method"    "order.lab"
+> ## almost same:
+> (ag2. <- agnes(Dvr, method= "complete", keep.diss=FALSE))
+Call:	 agnes(x = Dvr, method = "complete", keep.diss = FALSE) 
+Agglomerative coefficient:  0.88084 
+Order of objects:
+ [1] Alabama        Georgia        Louisiana      Arkansas       Florida       
+ [6] Texas          Mississippi    South Carolina Alaska         Michigan      
+[11] Connecticut    New York       New Hampshire  Indiana        Ohio          
+[16] Illinois       New Jersey     Pennsylvania   Minnesota      North Dakota  
+[21] Wisconsin      Iowa           South Dakota   Kansas         Nebraska      
+[26] Arizona        Nevada         Montana        Oklahoma       Colorado      
+[31] Idaho          Wyoming        Utah           California     Oregon        
+[36] Washington     Missouri       New Mexico     West Virginia  Delaware      
+[41] Kentucky       Maryland       North Carolina Tennessee      Virginia      
+[46] Hawaii         Maine          Massachusetts  Rhode Island   Vermont       
+Height (summary):
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   17.2    28.1    39.2    52.3    58.8   282.0 
+
+Available components:
+[1] "order"     "height"    "ac"        "merge"     "diss"      "call"     
+[7] "method"    "order.lab"
+> ag22  <- agnes(votes.repub, method= "complete", keep.diss=FALSE,keep.data=FALSE)
+> stopifnot(identical(agn2[-5:-6], ag2.[-5:-6]),
++           identical(Dvr, daisy(votes.repub)), # DUP=FALSE (!)
++           identical(ag2.[-6], ag22[-6])
++          )
 > 
 > data(agriculture)
 > summary(agnes(agriculture))
@@ -220,12 +250,12 @@ Number of objects : 12
 
 Available components:
 [1] "order"     "height"    "ac"        "merge"     "diss"      "call"     
-[7] "order.lab" "data"     
+[7] "method"    "order.lab" "data"     
 > 
 > data(ruspini)
-> summary(agnes(ruspini))
+> summary(ar0 <- agnes(ruspini, keep.diss=FALSE, keep.data=FALSE))
 Object of class `agnes' from call:
- agnes(x = ruspini) 
+ agnes(x = ruspini, keep.diss = FALSE, keep.data = FALSE) 
 Agglomerative coefficient:  0.947954 
 Order of objects:
  [1] 1  2  3  5  4  6  8  7  9  10 14 15 17 16 18 19 11 12 13 20 61 62 66 63 64
@@ -320,16 +350,10 @@ Height:
 [64]   3.16228   3.81721  15.20808   2.00000   5.19258   8.51123   2.82843
 [71]  12.62990  34.72475   9.14005   4.47214
 
-2775 dissimilarities, summarized :
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   1.41   40.10   75.60   71.50   99.20  154.00 
-Metric :  euclidean 
-Number of objects : 75
-
 Available components:
 [1] "order"     "height"    "ac"        "merge"     "diss"      "call"     
-[7] "order.lab" "data"     
-> summary(agnes(ruspini, metric = "manhattan"))
+[7] "method"    "order.lab"
+> summary(ar1 <- agnes(ruspini, metric = "manhattan"))
 Object of class `agnes' from call:
  agnes(x = ruspini, metric = "manhattan") 
 Agglomerative coefficient:  0.946667 
@@ -434,6 +458,10 @@ Number of objects : 75
 
 Available components:
 [1] "order"     "height"    "ac"        "merge"     "diss"      "call"     
-[7] "order.lab" "data"     
+[7] "method"    "order.lab" "data"     
+> c(object.size(ar0),object.size(ar1))
+[1]  3356 29232
 > 
+> cat('Time elapsed: ', proc.time() - .proctime00,'\n')
+Time elapsed:  0.49 0.02 0.85 0 0 
 > 

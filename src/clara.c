@@ -15,6 +15,7 @@
 #include <math.h>
 
 #include <R_ext/Print.h>/* for diagnostics */
+#include <R_ext/Random.h>/* when R's RNG is used */
 
 #include "cluster.h"
 
@@ -31,7 +32,9 @@ void clara(int *n,  /* = number of objects */
 	   int *mdata,	/*= {0,1}; 1: min(x) is missing value (NA);  0: no NA */
 	   double *valmd,/*[j]= missing value code (instead of NA) for x[,j]*/
 	   int *jtmd,	/* [j]= {-1,1};	 -1: x[,j] has NA; 1: no NAs in x[,j] */
-	   int *diss_kind,/* = {1,2};  1 : euclidean;  2 : manhattan*/
+	   int *diss_kind,/*= {1,2};  1 : euclidean;  2 : manhattan*/
+	   int *rng_R,	/*  = {0,1};  0 : use clara's internal weak RNG;
+			 *	      1 : use R's RNG (and seed) */
 	   int *nrepr,
 	   int *nsel,
 	   int *nbest,/* x[nbest[j]] will be the j-th obs in the final sample */
@@ -64,14 +67,10 @@ void clara(int *n,  /* = number of objects */
     int n_dys, nsamb, nunfs;
     double rnn, sky, zb, s, sx = -1., zba = -1.;/* Wall */
 
-    /* Parameter adjustments */
-    --nsel;
-
     *jstop = 0;
     rnn = (double) (*n);
     /* n_dys := size of distance array dys[] */
     n_dys = *nsam * (*nsam - 1) / 2 + 1;/* >= 1 */
-
     full_sample = (*n == *nsam);/* only one sub sample == full data */
     nsamb = *nsam * 2;
     lrg_sam = (*n < nsamb);/* sample more than *n/2 */
@@ -82,7 +81,10 @@ void clara(int *n,  /* = number of objects */
     nunfs = 0;
     kall = FALSE;
 
-    nrun = 0; /* << initialize `random seed' of the very simple randm() below */
+    if(*rng_R)
+	GetRNGstate();
+    else /* << initialize `random seed' of the very simple randm() below */
+	nrun = 0;
 
 /* __LOOP__ :  random subsamples are drawn and partitioned into kk clusters */
 
@@ -93,11 +95,12 @@ void clara(int *n,  /* = number of objects */
 	    if (kall/*was jran != 1 */ && nunfs != jran && !lrg_sam) {
 		/* nsel[] := sort(nrx[])   for the first j=1:k	?? */
 		for (jk = 0; jk < *kk; ++jk)
-		    nsel[jk+1] = nrx[jk];
-		for (jk = 1; jk < *kk; ++jk) {
+		    nsel[jk] = nrx[jk];
+		for (jk = 0; jk < *kk-1; ++jk) {
+		    /* FIXME: nsel[] is 0-indexed, but *contains* 1-indices*/
 		    nsm = nsel[jk];
 		    jsm = jk;
-		    for (jkk = jk + 1; jkk <= *kk; ++jkk) {
+		    for (jkk = jk + 1; jkk < *kk; ++jkk) {
 			if (nsel[jkk] < nsm) {
 			    nsm = nsel[jkk];
 			    jsm = jkk;
@@ -111,19 +114,21 @@ void clara(int *n,  /* = number of objects */
 	    else {
 		/* Loop finding random index `kran' not yet in nrx[] : */
 	    L180:
-		kran = (int) (rnn * randm(&nrun) + 1.);
-		if(*trace_lev >= 3)
-		    Rprintf("... {180} nrun=%d -> k{ran}=%d\n", nrun,kran);
-		if (kran > *n) kran = *n;
-
+		kran = 1 + (int)(rnn * ((*rng_R)? unif_rand(): randm(&nrun)));
+		if(*trace_lev >= 3) {
+		    if(*rng_R)
+			Rprintf("... R unif_rand() -> k{ran}=%d\n", kran);
+		    else
+			Rprintf("... {180} nrun=%d -> k{ran}=%d\n", nrun,kran);
+		}
 		if (kall/*jran != 1*/) {
 		    for (jk = 0; jk < *kk; ++jk)
 			if (kran == nrx[jk])
 			    goto L180;
 		}
 		/* end Loop */
-		nsel[++ntt] = kran;
-		if (ntt == n_sam)
+		nsel[ntt] = kran;
+		if (++ntt == n_sam)
 		    goto L295;
 	    }
 
@@ -156,20 +161,20 @@ void clara(int *n,  /* = number of objects */
 		    }
 		}
 		/* insert kran into nsel[1:ntt] or after  and increase ntt : */
-		for (kans = 1; kans <= ntt; ++kans)
+		for (kans = 0; kans < ntt; ++kans)
 		    if (nsel[kans] >= kran) {
 			if (nsel[kans] == kran)
 			    goto L210;
 			else {
 			    for (nad = kans; nad <= ntt; ++nad) {
 				nadv = ntt - nad + kans;
-				nsel[nadv + 1] = nsel[nadv];
+				nsel[nadv] = nsel[nadv-1];
 			    }
 			    nsel[kans] = kran;
 			    /* continue _outer_ loop */ goto L290;
 			}
 		    }
-		nsel[ntt+1] = kran;
+		nsel[ntt] = kran;
 
 	    L290:
 		++ntt;
@@ -178,25 +183,25 @@ void clara(int *n,  /* = number of objects */
 	L295:
 	    if (lrg_sam) {
 		/* have indices for smaller _nonsampled_ half; revert this: */
-		for (j = 1, nexap = 1, nexbp = 0; j <= *n; j++) {
+		for (j = 1, nexap = 0, nexbp = 0; j <= *n; j++) {
 		    if (nsel[nexap] == j)
 			++nexap;
 		    else
 			nrepr[nexbp++] = j;
 		}
 		for (j = 0; j < *nsam; ++j)
-		    nsel[j+1] = nrepr[j];
+		    nsel[j] = nrepr[j];
 	    }
 	    if(*trace_lev)
 		Rprintf("C clara(): sample %d [ntt=%d, nunfs=%d] -> dysta2()\n",
 			jran, ntt, nunfs);
 	}
 	else { /* full_sample : *n = *nsam -- one sample is enough ! */
-	    for (j = 1; j <= *nsam; ++j)
-		nsel[j] = j;
+	    for (j = 0; j < *nsam; ++j)
+		nsel[j] = j+1;/* <- still uses 1-indices for its *values*! */
 	}
 
-	dysta2(*nsam, *jpp, &nsel[1], x, *n, dys, *diss_kind,
+	dysta2(*nsam, *jpp, nsel, x, *n, dys, *diss_kind,
 	       jtmd, valmd, &jhalt);
 	if (jhalt == 1) {
 	    if(*trace_lev)
@@ -220,7 +225,7 @@ void clara(int *n,  /* = number of objects */
 	       /* beter[], only used here */&tmp[nsamb]);
 
 	selec(*kk, *n, *jpp, *diss_kind, &zb, *nsam, has_NA, jtmd, valmd,
-	      nrepr, &nsel[1], dys, x, nr, &nafs, ttd, radus, ratt,
+	      nrepr, nsel, dys, x, nr, &nafs, ttd, radus, ratt,
 	      ntmp1, ntmp2, ntmp3, ntmp4, ntmp5, ntmp6, tmp1, tmp2);
 
 	if (nafs) {
@@ -236,7 +241,7 @@ void clara(int *n,  /* = number of objects */
 		nrx  [jk] = nr	 [jk];
 	    }
 	    for (js = 0; js < *nsam; ++js)
-		nbest[js] = nsel[js+1];
+		nbest[js] = nsel[js];
 	    sx = s;
 	}
 
@@ -245,6 +250,8 @@ void clara(int *n,  /* = number of objects */
 	if(full_sample) break; /* out of resampling */
     }
 /* --- end random sampling loop */
+    if(*rng_R)
+	PutRNGstate();
 
     if (nunfs >= *nran) { *jstop = 1; return; }
 
@@ -304,8 +311,8 @@ void dysta2(int nsam, int jpp, int *nsel,
 	    ++nlk;
 	    npres = 0;
 	    for (j = 0; j < jpp; ++j) {
-		lj = (lsel - 1) * jpp + j;
-		kj = (ksel - 1) * jpp + j;
+		lj = lsel-1 + j * n;
+		kj = ksel-1 + j * n;
 		if (jtmd[j] < 0) {
 		    /* in the following line (Fortran!), x[-2] ==> seg.fault
 		       {BDR to R-core, Sat, 3 Aug 2002} */
@@ -524,8 +531,8 @@ void selec(int kk, int n, int jpp, int diss_kind,
 		nrjk = nr[jk];
 		if (nrjk != jj) {
 		    for (jp = 0; jp < jpp; ++jp) {
-			na = (nrjk - 1) * jpp + jp;
-			nb = (jj   - 1) * jpp + jp;
+			na = (nrjk - 1) + jp * n;
+			nb = (jj   - 1) + jp * n;
 			tra = fabs(x[na] - x[nb]);
 			if (diss_kind == 1)
 			    tra *= tra;
@@ -547,8 +554,8 @@ void selec(int kk, int n, int jpp, int diss_kind,
 		if (nrjk != jj) {
 		    nobs = 0;
 		    for (jp = 0; jp < jpp; ++jp) {
-			na = (nrjk - 1) * jpp + jp;
-			nb = (jj   - 1) * jpp + jp;
+			na = (nrjk - 1) + jp * n;
+			nb = (jj   - 1) + jp * n;
 			if (jtmd[jp] < 0) {
 			    if (x[na] == valmd[jp] || x[nb] == valmd[jp])
 				continue /* next jp */;
@@ -674,16 +681,14 @@ void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
 	    if (nrx[jk] == jj + 1)/* 1-indexing */
 		goto L220; /* continue next jj (i.e., outer loop) */
 	}
-	njnb = jj * jpp;
+	njnb = jj;
 
 	if (!has_NA) {
 	    for (jk = 0; jk < kk; ++jk) {
 		dsum = 0.;
-		nrjk = (nrx[jk] - 1) * jpp;
+		nrjk = (nrx[jk] - 1);
 		for (j = 0; j < jpp; ++j) {
-		    na = nrjk + j;
-		    nb = njnb + j;
-		    tra = fabs(x[na] - x[nb]);
+		    tra = fabs(x[nrjk + j * n] - x[njnb + j * n]);
 		    if (diss_kind == 1)
 			tra *= tra;
 		    dsum += tra;
@@ -701,11 +706,11 @@ void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
 	else { /* _has_ missing data */
 	    for (jk = 0; jk < kk; ++jk) {
 		dsum = 0.;
-		nrjk = (nrx[jk] - 1) * jpp;
+		nrjk = (nrx[jk] - 1);
 		abc = 0.;
 		for (j = 0; j < jpp; ++j) {
-		    na = nrjk + j;
-		    nb = njnb + j;
+		    na = nrjk + j * n;
+		    nb = njnb + j * n;
 		    if (jtmd[j] < 0) {
 			if (x[na] == valmd[j] || x[nb] == valmd[j])
 			    continue /* next j */;
@@ -732,16 +737,17 @@ void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
 
     L220:
 	;
-    } /* for(jj)  while (jj < n);*/
+    } /* for(jj = 0; jj < n ..)*/
 
-    for (jk = 0; jk < kk; ++jk) {
-	nrjk = nrx[jk];
-	x[(nrjk - 1) * jpp] = (double) jk + 1;/* 1-indexing */
-    }
+
+    for (jk = 0; jk < kk; ++jk)
+	x[nrx[jk] - 1] = (double) jk + 1;/* 1-indexing */
+
+    /* mtt[k] := size(k-th cluster) : */
     for (ka = 0; ka < kk; ++ka) {
 	mtt[ka] = 0;
 	for(j = 0; j < n; j++) {
-	    if (((int) (x[j * jpp] + .1f)) == ka + 1)/* 1-indexing */
+	    if (((int) x[j]) == ka + 1)/* 1-indexing */
 		++mtt[ka];
 	}
     }
@@ -790,7 +796,7 @@ void black(int kk, int jpp, int nsam, int *nbest,
     /* Function Body */
     for (l = 1; l <= nsam; ++l) {
 	ncase = nbest[l];
-	ncluv[l] = (int) (x[(ncase - 1) * jpp] + .1f);
+	ncluv[l] = (int) x[ncase - 1];
     }
 
 /*     drawing of the silhouettes */

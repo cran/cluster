@@ -1,8 +1,8 @@
 c -*- mode: Fortran; kept-new-versions: 15; kept-old-versions: 10 -*-
 c
 c     This program performs agglomerative nesting (AGNES) using the
-c     group average method of Sokal and Michener (1958), as well as
-c     divisive analysis (DIANA) using the method of
+c     group average method (_or others_) of Sokal and Michener (1958),
+c     as well as divisive analysis (DIANA) using the method of
 c     Mcnaughton-Smith, Williams, Dale, and Mockett (1964).
 c
       subroutine twins(nn,jpp,x,dys,dys2,jdyss,valmd,jtmd,ndyst,jalg,
@@ -12,36 +12,43 @@ c Arguments
       integer nn, jpp
 c	nn  = maximal number of objects
 c	jpp = maximal number of variables used in the analysis
-c
       integer jdyss, jtmd(jpp), ndyst,jalg,method, kwan(nn), ner(nn)
+c	jdyss (in/out): initially, jdyss mod 10 = 1 : <==> diss = TRUE
+c			jdyss < 10 : don't save dissimilarities
       double precision x(nn,jpp), valmd(jpp)
       double precision dys((nn*(nn-1))/2 + 1), dys2((nn*(nn-1))/2 + 1)
+c     dys2(.) can have length 1, if(!keep.diss)
       double precision ban(nn), coef
       integer merge(nn-1,2)
 C VARs
       integer i,jhalt
 
-      if(jdyss.ne.0) then
+      if(mod(jdyss,10) .eq. 1) then
 	 jpp=1
       else
+c     compute distances
 	 jhalt=0
 	 call dysta(nn,jpp,x,dys,ndyst,jtmd,valmd,jhalt)
+c     	      ----- in ./pam.f
 	 if(jhalt.ne.0) then
 	    jdyss=-1
 	    return
 	 endif
       endif
 
-      do 10 i=1,(nn*(nn-1))/2 + 1
-	 dys2(i)=dys(i)
- 10   continue
+      if(jdyss .ge. 10) then
+C        save distances for S
+         do 10 i=1,(nn*(nn-1))/2 + 1
+            dys2(i)=dys(i)
+ 10      continue
+      endif
 
       if(jalg.ne.2) then
 c	AGNES
 	 call averl(nn,kwan,ner,ban,dys,method,merge)
       else
 c	DIANA
-	 call splyt(nn,kwan,ner,ban,dys,merge)
+	 call splyt(nn,kwan,ner,ban,dys,       merge)
       endif
       call bncoef(nn,ban,ner,coef)
       end

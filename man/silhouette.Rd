@@ -13,7 +13,7 @@
 }
 \usage{
 silhouette(x, \dots)
-silhouette.default  (x, dist, \dots)
+silhouette.default  (x, dist, dmatrix, \dots)
 silhouette.partition(x, \dots)
 
 sortSilhouette(object, \dots)
@@ -28,7 +28,10 @@ sortSilhouette(object, \dots)
     method an integer vector with cluster codes in \code{1:k} or a list
     with such an \code{x$clustering} component.}
   \item{dist}{a dissimilarity object inheriting from class
-    \code{\link{dist}} or coercible to one.}
+    \code{\link{dist}} or coercible to one.  If not specified,
+    \code{dmatrix} must be.}
+  \item{dmatrix}{a symmetric dissimilarity matrix (\eqn{n \times n}{n * n}),
+    specified instead of \code{dist}, which can be more efficient.}
   \item{object}{an object of class \code{silhouette}.}
   \item{\dots}{further arguments passed to and from methods.}
   \item{FUN}{function used summarize silhouette widths.}
@@ -136,6 +139,8 @@ sortSilhouette(object, \dots)
  si3 <- silhouette(cutree(ar, k = 5), # k = 4 gave the same as pam() above
      	           daisy(ruspini))
  plot(si3, nmax = 80, cex.names = 0.5)
+ ## 2 groups: Agnes() wasn't too good:
+ si4 <- silhouette(cutree(ar, k = 2), daisy(ruspini))
+ plot(si4, nmax = 80, cex.names = 0.5)
 }
 \keyword{cluster}
-

@@ -3,9 +3,10 @@ library(cluster)
 
 ###--- An extension of  example(fanny) : -------------------
 
+if(paste(R.version$major, R.version$minor, sep=".") >= 1.7)  RNGversion(1.6)
+set.seed(171)
 ## generate 25 objects, divided into two clusters, and 3 objects lying
 ## between those clusters.
-set.seed(171)
 x <- rbind(cbind(rnorm(10, 0, 0.5), rnorm(10, 0, 0.5)),
            cbind(rnorm(15, 5, 0.5), rnorm(15, 5, 0.5)),
            cbind(rnorm( 3,3.5,0.5), rnorm( 3,3.5,0.5)))

@@ -6,7 +6,8 @@
 }
 \usage{
 agnes(x, diss = inherits(x, "dist"),
-      metric = "euclidean", stand = FALSE, method = "average")
+      metric = "euclidean", stand = FALSE, method = "average",
+      keep.diss = n < 100, keep.data = !diss)
 }
 \arguments{
   \item{x}{
@@ -54,6 +55,10 @@ agnes(x, diss = inherits(x, "dist"),
     "ward" (Ward's method), and "weighted" (weighted average linkage).
     Default is "average".
   }
+  \item{keep.diss, keep.data}{logicals indicating if the dissimilarities
+    and/or input data \code{x} should be kept in the result.  Setting
+    these to \code{FALSE} can give much smaller results and hence even save
+    memory allocation \emph{time}.}
 }
 \value{
   an object of class \code{"agnes"} representing the clustering.

@@ -76,7 +76,7 @@ c		binary variable x(*,j)
 
       else
 c Case II : jdat != 1:	all variables are interval scaled
-
+c -------   ~~~~~~~~~ { basically === dysta() in ./pam.f <== FIXME! }
 	 pp=jpp
 	 do 600 l=2,nn
 	    lsubt=l-1

@@ -29,7 +29,7 @@ c	= 1 : distances provided  in x
 	    return
 	 endif
       endif
-c     nhalf := #{distances} = length(dys)
+c     nhalf := #{distances}+1 = length(dys)
       nhalf=nn*(nn-1)/2+1
 c     s := max( dys[.] ), the largest distance
       s=0.0
@@ -57,19 +57,22 @@ c	 Compute Silhouette info :
       end
 c     -----------------------------------------------------------
 
-c     Compute Distances from X matrix
+c     Compute Distances from X matrix {also for agnes() and diana()}:
 c
       subroutine dysta(nn,jpp,x,dys,ndyst,jtmd,valmd,jhalt)
 
       integer nn, jpp, ndyst, jtmd(jpp), jhalt
       double precision x(nn,jpp), dys(1+nn*(nn-1)/2), valmd(jpp)
+c ndyst = 1 : euclidean
+c "else"    : manhattan
+
 c VARs
       integer nlk,j,l,k, lsubt, npres
       double precision pp, clk, rpres
 
-      pp=jpp
       nlk=1
       dys(1)=0.0
+      pp=jpp
       do 100 l=2,nn
 	 lsubt=l-1
 	 do 20 k=1,lsubt

@@ -24,6 +24,17 @@ July 2002:
 
    --> now using something more sensible
 
+  o	Generally:  clara(), pam(), agnes(), diana(),... should *not* keep the
+	  "diss" component (with all n^2/2 dissimilarities) in the result,
+	  by default when  n >= 50
+	  {i.e. get a new argument  `` keep.diss =  n < 50 '' }
+        (done for 1.7.0, but default = n < 100)
+
+
+  clara():  R/clara.q :  we transpose *large* x[,] and in Fortran
+            src/clara.c  deal with x[] as vector anyway -- change this
+	    (done for 1.7.0)
+
 
 May 2002:
 

@@ -1,4 +1,4 @@
-#### $Id: daisy.q,v 1.10 2002/09/03 17:00:17 maechler Exp maechler $
+#### $Id: daisy.q,v 1.12 2003/03/17 17:10:21 maechler Exp $
 daisy <-
 function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 {
@@ -109,7 +109,7 @@ function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
     if(any(is.na(disv))) attr(disv, "NA.message") <-
 	"NA-values in the dissimilarity matrix !"
     ## construct S object -- "dist" methods are *there* !
-    class(disv) <- c("dissimilarity", "dist")
+    class(disv) <- ..dClass
     attr(disv, "Labels") <- dimnames(x)[[1]]
     attr(disv, "Size") <- n
     attr(disv, "Metric") <- ifelse(!ndyst, "mixed", metric)

@@ -1,4 +1,4 @@
-#### $Id: fanny.q,v 1.11 2002/09/09 09:38:27 maechler Exp $
+#### $Id: fanny.q,v 1.13 2003/03/17 17:11:26 maechler Exp $
 fanny <- function(x, k, diss = inherits(x, "dist"),
 		  metric = "euclidean", stand = FALSE)
 {
@@ -10,7 +10,7 @@ fanny <- function(x, k, diss = inherits(x, "dist"),
 	    if(!is.numeric(x) || is.na(sizeDiss(x)))
 		stop("x is not of class dissimilarity and can not be converted to this class." )
 	    ## convert input vector to class "dissimilarity"
-	    class(x) <- "dissimilarity"
+	    class(x) <- ..dClass
 	    attr(x, "Size") <- sizeDiss(x)
 	    attr(x, "Metric") <- "unspecified"
 	}
@@ -91,7 +91,7 @@ fanny <- function(x, k, diss = inherits(x, "dist"),
 	    stop("No clustering performed, NA-values in the dissimilarity matrix.")
 	disv <- res$dis[ - (1 + (n * (n - 1))/2)]
 	disv[disv == -1] <- NA
-	class(disv) <- "dissimilarity"
+	class(disv) <- ..dClass
 	attr(disv, "Size") <- nrow(x)
 	attr(disv, "Metric") <- metric
 	attr(disv, "Labels") <- dimnames(x)[[1]]

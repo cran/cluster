@@ -1,6 +1,6 @@
 
-R : Copyright 2002, The R Development Core Team
-Version 1.6.2 beta (2002-12-28)
+R : Copyright 2003, The R Development Core Team
+Version 1.7.0 Under development (unstable) (2003-03-26)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -14,16 +14,15 @@ Type `demo()' for some demos, `help()' for on-line help, or
 Type `q()' to quit R.
 
 > library(cluster)
-Loading required package: mva 
 > 
 > ## generate 1500 objects, divided into 2 clusters.
+> if(paste(R.version$major, R.version$minor, sep=".") >= 1.7)  RNGversion(1.6)
 > set.seed(264)
 > x <- rbind(cbind(rnorm(700, 0,8), rnorm(700, 0,8)),
 +            cbind(rnorm(800,50,8), rnorm(800,10,8)))
 > 
 > isEq <- function(x,y, epsF = 100)
 +     is.logical(r <- all.equal(x,y, tol = epsF * .Machine$double.eps)) && r
-> 
 > 
 > .proctime00 <- proc.time()
 > 
@@ -887,6 +886,40 @@ Available components:
 [1] "sample"     "medoids"    "clustering" "objective"  "clusinfo"  
 [6] "diss"       "call"       "silinfo"    "data"      
 > 
+> ###--- Start a version of  example(clara) -------
+> 
+> ## xclara : artificial data with 3 clusters of 1000 bivariate objects each.
+> data(xclara)
+> (clx3 <- clara(xclara, 3))
+Call:	 clara(x = xclara, k = 3) 
+Medoids:
+            V1        V2
+450   5.553391 13.306260
+1791 43.198760 60.360720
+2797 74.591890 -6.969018
+Objective function:	 13.22500
+Clustering vector: 	 Named int [1:3000] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ...
+ - attr(*, "names")= chr [1:3000] "1" "2" "3" "4" "5" "6" "7" ...
+Cluster sizes:	    	 900 1148 952 
+Best sample:
+ [1] 20   30   46   91   92   169  179  187  209  223  382  450  555  971  1004
+[16] 1025 1058 1277 1281 1302 1319 1361 1362 1513 1591 1623 1628 1729 1752 1791
+[31] 1907 1917 1946 2064 2089 2498 2527 2537 2545 2591 2672 2722 2729 2790 2797
+[46] 2852
+
+Available components:
+[1] "sample"     "medoids"    "clustering" "objective"  "clusinfo"  
+[6] "diss"       "call"       "silinfo"    "data"      
+> ## Plot similar to Figure 5 in Struyf et al (1996)
+> plot(clx3)
+> 
+> ## The  rngR = TRUE case is currently in the non-strict tests
+> ## ./clara-ex.R
+> ## ~~~~~~~~~~~~
+> 
+> ###--- End version of example(clara) -------
+> 
+> 
 > 
 > ##  small example(s):
 > data(ruspini)
@@ -1387,7 +1420,7 @@ $sample
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  29.11 0.05 29.28 0 0 
-> ## Lynne (P IV, 1.6 GHz):  7.5
-> ## nb-mm (P III,700 MHz): 29.2
+Time elapsed:  17.36 0.19 18.94 0 0 
+> ## Lynne (P IV, 1.6 GHz): 18.81
+> ## nb-mm (P III,700 MHz): 27.97
 > 

@@ -5,16 +5,15 @@
   Generic function drawing a clustering tree on the current graphics device.
   Functions with names beginning in \code{pltree.} will be
   methods for this function.
-%?? \code{twins}.
 }
 \usage{
 pltree(x, \dots)
 }
 \arguments{
-  \item{x}{an S object.}
-  \item{...}{methods may have additional arguments.
-    Graphical parameters (see \code{\link{par}}) may also
-    be supplied as arguments to this function.}
+  \item{x}{an \R object (for which a \code{pltree} method is defined).}
+  \item{...}{methods may have additional arguments.  Graphical
+    parameters (see \code{\link{par}}) may also be supplied as arguments
+    to this function.}
 }
 \section{Side Effects}{
   a clustering tree is created on the current graphics device.

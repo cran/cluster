@@ -7,7 +7,8 @@
   medoids'', a more robust version of K-means.
 }
 \usage{
-pam(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
+pam(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE,
+    keep.diss = !diss && n < 100, keep.data = !diss)
 }
 \arguments{
   \item{x}{
@@ -50,6 +51,10 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
     variable's mean value and dividing by the variable's mean absolute
     deviation.  If \code{x} is already a dissimilarity matrix, then this
     argument will be ignored.}
+  \item{keep.diss, keep.data}{logicals indicating if the dissimilarities
+    and/or input data \code{x} should be kept in the result.  Setting
+    these to \code{FALSE} can give much smaller results and hence even save
+    memory allocation \emph{time}.}
 }
 \value{
   an object of class \code{"pam"} representing the clustering.  See

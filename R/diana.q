@@ -1,9 +1,10 @@
-### $Id: diana.q,v 1.12 2002/12/21 22:22:44 maechler Exp $
+### $Id: diana.q,v 1.14 2003/03/17 17:10:53 maechler Exp $
 
 diana <- function(x, diss = inherits(x, "dist"),
-		  metric = "euclidean", stand = FALSE)
+		  metric = "euclidean", stand = FALSE,
+                  keep.diss = n < 100, keep.data = !diss)
 {
-    if(diss) {
+    if((diss <- as.logical(diss))) {
 	## check type of input vector
 	if(any(is.na(x)))
 	    stop("NA-values in the dissimilarity matrix not allowed.")
@@ -11,7 +12,7 @@ diana <- function(x, diss = inherits(x, "dist"),
 	    if(!is.numeric(x) || is.na(sizeDiss(x)))
 		stop("x is not of class dissimilarity and can not be converted to it.")
 	    ## convert input vector to class "dissimilarity"
-	    class(x) <- "dissimilarity"
+	    class(x) <- ..dClass
 	    attr(x, "Size") <- sizeDiss(x)
 	    attr(x, "Metric") <- "unspecified"
 	}
@@ -22,7 +23,7 @@ diana <- function(x, diss = inherits(x, "dist"),
 	jp <- as.integer(1)
 	mdata <- FALSE
 	ndyst <- 0
-	x2 <- double(n)
+	x2 <- double(1)
     }
     else {
 	## check input matrix and standardize, if necessary
@@ -46,8 +47,8 @@ diana <- function(x, diss = inherits(x, "dist"),
 		    jp,
 		    as.double(x2),
 		    dv,
-		    dis = double(1 + (n * (n - 1))/2),
-		    ok = as.integer(diss), # = jdyss
+		    dis = double(if(keep.diss) length(dv) else 1),
+		    ok = as.integer(if(keep.diss) diss + 10 else diss),
 		    if(mdata)valmd else double(1),
 		    if(mdata) jtmd else integer(1),
 		    as.integer(ndyst),
@@ -58,35 +59,39 @@ diana <- function(x, diss = inherits(x, "dist"),
 		    ban = double(n),
 		    dc = as.double(0),
 		    merge = matrix(0:0, n - 1, 2), # integer
+                    DUP = FALSE,
 		    PACKAGE = "cluster")
     if(!diss) {
 	## give warning if some dissimilarities are missing.
 	if(res$ok == -1)
 	    stop("No clustering performed, NA's in dissimilarity matrix.\n")
-	## adapt Fortran output to S:
-	## convert lower matrix, read by rows, to upper matrix, read by rows.
-	disv <- res$dis[-1]
-	disv[disv == -1] <- NA
-	disv <- disv[upper.to.lower.tri.inds(n)]
-	class(disv) <- "dissimilarity"
-	attr(disv, "Size") <- nrow(x)
-	attr(disv, "Metric") <- metric
-	attr(disv, "Labels") <- dimnames(x)[[1]]
+        if(keep.diss) {
+            ## adapt Fortran output to S:
+            ## convert lower matrix, read by rows, to upper matrix, read by rows.
+            disv <- res$dis[-1]
+            disv[disv == -1] <- NA
+            disv <- disv[upper.to.lower.tri.inds(n)]
+            class(disv) <- ..dClass
+            attr(disv, "Size") <- nrow(x)
+            attr(disv, "Metric") <- metric
+            attr(disv, "Labels") <- dimnames(x)[[1]]
+        }
 	## add labels to Fortran output
 	if(length(dimnames(x)[[1]]) != 0)
 	    order.lab <- dimnames(x)[[1]][res$ner]
     }
     else {
-	disv <- x
+        if(keep.diss) disv <- x
 	## add labels to Fortran output
 	if(length(attr(x, "Labels")) != 0)
 	    order.lab <- attr(x, "Labels")[res$ner]
     }
     clustering <- list(order = res$ner, height = res$ban[-1], dc = res$dc,
-		       merge = res$merge, diss = disv, call = match.call())
+		       merge = res$merge, diss = if(keep.diss)disv,
+                       call = match.call())
     if(exists("order.lab"))
 	clustering$order.lab <- order.lab
-    if(!diss) {
+    if(keep.data && !diss) {
 	if(mdata) x2[x2 == valmisdat] <- NA
 	clustering$data <- x2
     }

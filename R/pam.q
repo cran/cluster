@@ -1,9 +1,10 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q,v 1.14 2002/09/12 14:39:36 maechler Exp $
+#### --- $Id: pam.q,v 1.16 2003/03/17 17:09:53 maechler Exp $
 pam <- function(x, k, diss = inherits(x, "dist"),
-		metric = "euclidean", stand = FALSE)
+		metric = "euclidean", stand = FALSE,
+                keep.diss = !diss && n < 100, keep.data = !diss)
 {
-    if(diss) {
+    if(diss <- as.logical(diss)) {
 	## check type of input vector
 	if(any(is.na(x)))
 	    stop("NA-values in the dissimilarity matrix not allowed.")
@@ -11,7 +12,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	    if(!is.numeric(x) || is.na(sizeDiss(x)))
 		stop("x is not of class dissimilarity and can not be converted to this class." )
 	    ## convert input vector to class "dissimilarity"
-	    class(x) <- "dissimilarity"
+	    class(x) <- ..dClass
 	    attr(x, "Size") <- sizeDiss(x)
 	    attr(x, "Metric") <- "unspecified"
 	}
@@ -55,7 +56,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 		    k,
 		    x = x2,
 		    dys = dv,
-		    jdyss = as.integer(diss),# 0/1
+		    jdyss = as.integer(if(keep.diss) diss + 10 else diss),
 		    if(mdata)valmd else double(1),
 		    if(mdata) jtmd else integer(1),
 		    as.integer(ndyst),
@@ -73,35 +74,38 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 		    clusinf = matrix(0., k, 5),
 		    silinf = matrix(0., n, 4),
 		    isol = integer(k),
+                    DUP = FALSE,# care!!
 		    PACKAGE = "cluster")
     sildim <- res$silinf[, 4]
     if(diss) {
 	disv <- x
 	## add labels to Fortran output
-	if(length(attr(x, "Labels")) != 0) {
-	    sildim <- attr(x, "Labels")[sildim]
-	    names(res$clu) <- attr(x, "Labels")
-	    res$med <- attr(x, "Labels")[res$med]
+	if(length(xLab <- attr(x, "Labels")) > 0) {
+	    sildim <- xLab[sildim]
+	    names(res$clu) <- xLab
+	    res$med <- xLab[res$med]
 	}
     }
     else {
 	## give warning if some dissimilarities are missing.
 	if(res$jdyss == -1)
 	    stop("No clustering performed, NAs in the computed dissimilarity matrix.")
-	## adapt Fortran output to S:
-	## convert lower matrix, read by rows, to upper matrix, read by rows.
-	disv <- res$dys[-1]
-	disv[disv == -1] <- NA
-	disv <- disv[upper.to.lower.tri.inds(n)]
-	class(disv) <- "dissimilarity"
-	attr(disv, "Size") <- nrow(x)
-	attr(disv, "Metric") <- metric
-	attr(disv, "Labels") <- dimnames(x)[[1]]
+        if(keep.diss) {
+            ## adapt Fortran output to S:
+            ## convert lower matrix, read by rows, to upper matrix, read by rows.
+            disv <- res$dys[-1]
+            disv[disv == -1] <- NA
+            disv <- disv[upper.to.lower.tri.inds(n)]
+            class(disv) <- ..dClass
+            attr(disv, "Size") <- nrow(x)
+            attr(disv, "Metric") <- metric
+            attr(disv, "Labels") <- dimnames(x)[[1]]
+        }
 	## add labels to Fortran output
 	res$med <- x[res$med,  , drop =FALSE]
-	if(length((dimnames(x)[[1]])) != 0) {
-	    sildim <- dimnames(x)[[1]][sildim]
-	    names(res$clu) <- dimnames(x)[[1]]
+	if(length((xLab <- dimnames(x)[[1]])) > 0) {
+	    sildim <- xLab[sildim]
+	    names(res$clu) <- xLab
 	}
     }
     ## add dimnames to Fortran output
@@ -122,9 +126,9 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 		      clus.avg.widths = res$avsil[1:k],
 		      avg.width = res$ttsil)
 	     },
-	     diss = disv,
+	     diss = if(keep.diss)disv,
 	     call = match.call())
-    if(!diss) {
+    if(keep.data && !diss) {
 	if(mdata) x2[x2 == valmisdat] <- NA
 	clustering$data <- x2
     }

@@ -6,8 +6,7 @@
   Creates plots for visualizing an \code{agnes} object.
 }
 \usage{
-plot.agnes(x, ask = FALSE, which.plots = NULL,
-           main = paste("Banner of ", deparse(attr(x, "Call"))),
+plot.agnes(x, ask = FALSE, which.plots = NULL, main = NULL,
            sub = paste("Agglomerative Coefficient = ",round(x$ac, digits = 2)),
            adj = 0, nmax.lab = 35, max.strlen = 5, xax.pretty = TRUE, \dots)
 }
@@ -20,9 +19,8 @@ plot.agnes(x, ask = FALSE, which.plots = NULL,
     producing both plots.  Otherwise, \code{which.plots}
     must contain integers of \code{1} for a \emph{banner} plot or \code{2} for a
     dendrogramm or ``clustering tree''.}
-  \item{main, sub}{main and sub title for the plot, with a convenient
-    default.  See documentation for these arguments in
-    \code{\link{plot.default}}.}
+  \item{main, sub}{main and sub title for the plot, with convenient
+    defaults.  See documentation for these arguments in \code{\link{plot.default}}.}
   \item{adj}{for label adjustment in \code{\link{bannerplot}()}.}
   \item{nmax.lab}{integer indicating the number of labels which is
     considered too large for single-name labelling the banner plot.}
@@ -36,7 +34,7 @@ plot.agnes(x, ask = FALSE, which.plots = NULL,
     \code{\link{pltree}()}, respectively.}
 }
 \section{Side Effects}{
-  An appropriate plot is produced on the current graphics device. This can
+  An appropriate plot is produced on the current graphics device. This  can
   be one or both of the following choices:
   \cr Banner
   \cr Clustering tree
@@ -54,16 +52,18 @@ plot.agnes(x, ask = FALSE, which.plots = NULL,
   and the numbers in the \code{height} vector are represented as bars
   between the observations.
 
-  The leaves of the clustering tree are the original observations.
-  Two branches come together at the distance between the two clusters being
-  merged.
+  The leaves of the clustering tree are the original observations.  Two
+  branches come together at the distance between the two clusters being merged.
+
+  For more customization of the plots, rather call
+  \code{\link{bannerplot}} and \code{\link{pltree}} directly with
+  corresponding arguments, e.g., \code{xlab} or \code{ylab}.
 }
 \note{
-  In the banner plot,
-  observation labels are only printed when the number of observations is
-  limited less than \code{nmax.lab} (35, by default), for readability.
-  Moreover, observation labels are truncated to maximally
-  \code{max.strlen} (5) characters.
+  In the banner plot, observation labels are only printed when the
+  number of observations is limited less than \code{nmax.lab} (35, by
+  default), for readability.  Moreover, observation labels are truncated
+  to maximally \code{max.strlen} (5) characters.
 }
 \references{
   Kaufman, L. and Rousseeuw, P.J. (1990)
@@ -80,8 +80,8 @@ plot.agnes(x, ask = FALSE, which.plots = NULL,
   \emph{Computational Statistics and Data Analysis}, \bold{26}, 17-37.
 }
 \seealso{
-  \code{\link{agnes}}, \code{\link{agnes.object}},
-  \code{\link{twins.object}}, \code{\link{par}}.
+  \code{\link{agnes}} and \code{\link{agnes.object}};
+  \code{\link{bannerplot}}, \code{\link{pltree}}, and \code{\link{par}}.
 }
 \examples{
 ## Can also pass `labels' to pltree() and bannerplot():

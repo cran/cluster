@@ -1,16 +1,28 @@
 library(cluster)
 
-(x <- cbind((-3:4)^2, c(0:6,NA), c(1,2,NA,7,NA,8:9,8)))
-pam(x,2, metric="manhattan")
+(x <- x0 <- cbind(V1 = (-3:4)^2, V2 = c(0:6,NA), V3 = c(1,2,NA,7,NA,8:9,8)))
+(px <- pam(x,2, metric="manhattan"))
+stopifnot(identical(x,x0))# DUP=FALSE ..
+pd <-  pam(dist(x,"manhattan"), 2)
+px2 <- pam(x,2, metric="manhattan", keep.diss=FALSE, keep.data=FALSE)
+nms <- c("clustering", "objective", "isolation", "clusinfo", "silinfo")
+stopifnot(identical(px[nms], pd[nms]),
+          identical(px[nms], px2[nms]),
+	  ## and for default dist "euclidean":
+	  identical(pam(x,	2)[nms],
+		    pam(dist(x),2)[nms])
+	  )
 
-## generate 250 objects, divided into 2 clusters.
+if(paste(R.version$major, R.version$minor, sep=".") >= 1.7)  RNGversion(1.6)
 set.seed(625)
+## generate 250 objects, divided into 2 clusters.
 x <- rbind(cbind(rnorm(120, 0,8), rnorm(120, 0,8)),
-           cbind(rnorm(130,50,8), rnorm(130,10,8)))
+	   cbind(rnorm(130,50,8), rnorm(130,10,8)))
 
 .proctime00 <- proc.time()
 
 summary(px2 <- pam(x, 2))
+all.equal(px2[nms], pam(dist(x), 2)[nms], tol = 1e-12) ## TRUE
 
 data(ruspini)
 summary(pr4 <- pam(ruspini, 4))

@@ -7,7 +7,8 @@
 }
 \usage{
 clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
-      sampsize = 40 + 2 * k, trace = 0, keepdata = TRUE)
+      sampsize = 40 + 2 * k, trace = 0, keep.data = TRUE, keepdata,
+      rngR = FALSE)
 }
 \arguments{
   \item{x}{
@@ -36,10 +37,16 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
     (\code{k}) and at most the number of observations (n = \code{nrow(x)}).}
   \item{trace}{integer indicating a \emph{trace level} for diagnostic
     output during the algorithm.}
-  \item{keepdata}{logical indicating if the (\emph{scaled} if
+  \item{keep.data,keepdata}{logical indicating if the (\emph{scaled} if
     \code{stand} is true) data should be kept in the result.
+    (\code{keepdata} is equivalent to \code{keep.data} where the former
+    is deprecated.)
     Setting this to \code{FALSE} saves memory (and hence time), but
     disables \code{\link{clusplot}()}ing of the result.}
+  \item{rngR}{logical indicating if \R's random number generator should
+    be used instead of the primitive clara()-builtin one.  If true, this
+    also means that each call to \code{clara()} returns a different result
+    -- though only slightly different in good situations.}
 }
 \value{
   an object of class \code{"clara"} representing the clustering.  See
@@ -69,10 +76,10 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
 }
 \note{
 %% mostly by Martin Mächler :
-  The random sampling is implemented with a \emph{very} simple scheme
-  (with period \eqn{2^{16} = 65536}) inside the Fortran code,
-  independently of \R's random number generation, and as a matter of
-  fact, deterministically.
+  By default, the random sampling is implemented with a \emph{very}
+  simple scheme (with period \eqn{2^{16} = 65536}) inside the Fortran
+  code, independently of \R's random number generation, and as a matter of
+  fact, deterministically.  Alternatively, we recommend
 
   The storage requirement of \code{clara} computation (for small
   \code{k}) is about
@@ -88,6 +95,11 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
   Originally (1990), ``small'' meant less than 100 observations;
   later, the authors said \emph{``small (say with fewer than 200
   observations)''}..
+}
+\author{
+  Kaufman and Rousseuw, originally.
+  All arguments from \code{trace} on, and most \R documentation and all
+  tests by Martin Maechler.
 }
 \seealso{
   \code{\link{agnes}} for background and references;
@@ -106,9 +118,26 @@ plot(clarax)
 ## `xclara' is an artificial data set with 3 clusters of 1000 bivariate
 ## objects each.
 data(xclara)
+(clx3 <- clara(xclara, 3))
 ## Plot similar to Figure 5 in Struyf et al (1996)
-\dontrun{plot(clara(xclara, 3), ask = TRUE)}
-\testonly{plot(clara(xclara, 3))}
+\dontrun{plot(clx3, ask = TRUE)}
+\testonly{plot(clx3)}
+
+## Try 100 times *different* random samples -- for reliability:
+
+set.seed(421)# (reproducibility)
+cl <- matrix(NA,nrow(xclara), 100)
+for(i in 1:100) cl[,i] <- clara(xclara, 3, rngR = TRUE)$cluster
+rcl <- apply(cl,1, range)
+## those that are not always in same cluster (5 out of 3000 for this seed):
+(iDoubt <- which(rcl[1,] != rcl[2,]))
+if(length(iDoubt)) { # (not for all seeds)
+  tabD <- apply(cl[iDoubt, , drop = FALSE], 1, table)
+  colnames(tabD) <- format(iDoubt)
+  names(dimnames(tabD)) <- c("cluster", "obs")
+  t(tabD) # how many times in which clusters
+}
+
 }
 \keyword{cluster}
-% Converted by Sd2Rd version 0.3-2.
+

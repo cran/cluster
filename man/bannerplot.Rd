@@ -12,7 +12,7 @@ bannerplot(x, w = rev(x$height), fromLeft = TRUE,
            col = c(2, 0), border = 0, axes = TRUE, frame.plot = axes,
            rev.xax = !fromLeft, xax.pretty = TRUE,
            labels = NULL, nmax.lab = 35, max.strlen = 5,
-           yax.do = axes && length(x$order) < nmax.lab,
+           yax.do = axes && length(x$order) <= nmax.lab,
            yaxRight = fromLeft, y.mar = 2.4 + max.strlen/2.5, \dots)
 }
 \arguments{

@@ -2,8 +2,9 @@
 
 pltree <- function(x, ...) UseMethod("pltree")
 
+## note: pltree() can have an `xlab' in "..." (plot.hclust has an explicit one)a
 pltree.twins <- function(x, main = paste("Dendrogram of ", deparse(call)),
-			 labels = NULL, ...)
+			 labels = NULL, ylab = "Height", ...)
 {
     call <- x$call
     if(is.null(labels) && length(x$order.lab) != 0) {
@@ -14,8 +15,8 @@ pltree.twins <- function(x, main = paste("Dendrogram of ", deparse(call)),
 
     ## this clause needed for R versions <= 1.4.1:
     if(is.null(labels))
-	 plot.hclust(x,			 main = main, ylab = "Height", ...)
-    else plot.hclust(x, labels = labels, main = main, ylab = "Height", ...)
+	 plot.hclust(x,			 main = main, ylab = ylab, ...)
+    else plot.hclust(x, labels = labels, main = main, ylab = ylab, ...)
     invisible()
 }
 
@@ -88,7 +89,7 @@ function(x, w = rev(x$height), fromLeft = TRUE,
 plot.agnes <-
 function(x, ask = FALSE, which.plots = NULL, main = NULL,
 	 sub = paste("Agglomerative Coefficient = ", round(x$ac, digits = 2)),
-	 adj = 0, nmax.lab = 35, max.strlen = 5, xax.pretty = TRUE, ...)
+         adj = 0, nmax.lab = 35, max.strlen = 5, xax.pretty = TRUE, ...)
 {
     if(is.null(main)) {
 	## Different default for banner & pltree:

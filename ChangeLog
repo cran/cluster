@@ -1,3 +1,63 @@
+2003-03-26  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/clara-ex.R: new, because of unclear non-reproducibility
+	* tests/clara.R: not example(clara) and smaller, moved some to above
+
+	* DESCRIPTION (Version): 1.7.0 (for R 1.7.0)
+	* DESCRIPTION (Depends): at least R 1.4
+	* R/zzz.R: requiring 1.4 needs much less
+
+	* R/zzz.R: define colSums() substitute for old R versions
+	* tests/ : updated *.Rout.save files
+	* .Rbuildignore: R/README-Splus is way outdated and irrelevant
+
+2003-03-17  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/0aaa.R: Make sure assigning class c("dissimilarity", "dist")
+	  (had many cases where only "dissim.." was used!).
+	* R/*.q: assign (dissim.., dist) class
+
+2003-03-11  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/clara.q (clara): new argument `rngR' allowing to use R's RNG
+		instead of the primitive builtin randm().
+	* man/clara.Rd: example showing its use.
+	* src/clara.c (clara):
+
+	* R/pam.q (pam): new `keep.data' and DUP=FALSE in .Fortran
+
+
+2003-03-05  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/agnes.q (agnes): use  DUP = FALSE
+	* R/diana.q (diana): for both "twins()" routines --> 3x less memory!
+
+2003-02-22  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/clara.q (clara): do *not* transpose the x[,] matrix anymore
+	* src/clara.c (clara): C code accesses un-transposed x[,] \
+	--> + 10% speed
+
+2003-02-07  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/silhouette.R (silhouette.default): fixed k=2 case;
+	* man/silhouette.Rd:		       new argument `dmatrix'.
+
+2003-02-06  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/plot.partition.Rd: new `main' argument (instead of "...")
+	* R/plotpart.q:		 passed to plot.silhouette().
+
+2003-01-27  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/agnes.q (agnes): store `method' with object for as.hclust.twins()!
+			      \	 new logical args `keep.diss' and `keep.data'
+	* R/diana.q (diana):   > if (!keep.diss), do not need "dis2"
+	* src/twins.f (twins):/	 and don't copy the dist()s here.
+
+	* man/pltree.twins.Rd: mention new `ylab' argument.
+	* R/plothier.q:	     __unfinished__ : xlab/ylab depend on "which.plot"!
+
 2002-12-30  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* man/bannerplot.Rd: and
@@ -19,7 +79,7 @@
 
 2002-12-21  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-	* DESCRIPTION (Version): 1.6-4  {for R 1.6.2}
+	* DESCRIPTION (Version): 1.6-4	{for R 1.6.2}
 
 	* R/diana.q (diana): since 1.6-1, integer x was not coerced
 
@@ -43,7 +103,7 @@
 	* DESCRIPTION (Date, Version): 1.6-3
 
 	* src/cluster.h: F77_NAME(meet)
-	* src/clara.c:   F77_CALL(meet)
+	* src/clara.c:	 F77_CALL(meet)
 
 2002-10-28  Martin Maechler  <maechler@stat.math.ethz.ch>
 
@@ -90,7 +150,7 @@
 
 	* R/plothier.q (bannerplot): finally working for all three;
 	  argument `xax.pretty = TRUE' (set to FALSE for old behavior).
-        (plot.mona): using bannerplot(); {and is.na(.) <- .}
+	(plot.mona): using bannerplot(); {and is.na(.) <- .}
 
 2002-10-16  Martin Maechler  <maechler@stat.math.ethz.ch>
 
@@ -144,7 +204,7 @@
 
 2002-09-04  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-        * man/agnes.object.Rd: mention as.hclust() properly
+	* man/agnes.object.Rd: mention as.hclust() properly
 
 	* src/spannel.c (spannel): bail out also when *last* deter became <= 0
 	* tests/ellipsoid-ex.R (and *.Rout.save): updated
@@ -162,7 +222,7 @@
 	* R/daisy.q (summary.dissimilarity): fix ``number of dissim''
 
 	* R/*.q: 1) use apply(inax,2, any)--- really want colNAs()
-	         2) use better "valmisdat" (missing value).
+		 2) use better "valmisdat" (missing value).
 
 	* tests/dysta-ex.R (dysta): new file, explore "dysta" & "dysta3"
 	in Fortran
@@ -177,7 +237,7 @@
 
 2002-08-31  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-	* DESCRIPTION (Version): 1.5-4  -- have achieved something {want more}
+	* DESCRIPTION (Version): 1.5-4	-- have achieved something {want more}
 
 	* src/clara.c (clara): finally found and fixed the rare segfault bug:
 	   jran == 1 was wrong test (when 1st sample was unusable)
@@ -186,7 +246,7 @@
 
 	* src/spannel.c: new translated from src/spannel.f
 	  in order to debug the compiler-dependent outputs in
-	* tests/ellipsoid-ex.Rout.save  etc
+	* tests/ellipsoid-ex.Rout.save	etc
 	* tests/sweep-ex.R (.C)
 
 2002-08-30  Martin Maechler  <maechler@stat.math.ethz.ch>
@@ -260,10 +320,10 @@
 
 2002-06-17  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-        * submit to CRAN -- won't be in R's 1.5.1-recommended
+	* submit to CRAN -- won't be in R's 1.5.1-recommended
 
 	* R/daisy.q (daisy): make sure "0","1" factors are valid binary vars
-	                     several extra checks {incl apply(<empty>) `bug'
+			     several extra checks {incl apply(<empty>) `bug'
 
 	* man/diana.object.Rd: show how to use cutree().
 
@@ -317,9 +377,9 @@
 
 	* man/fanny.Rd: clean
 
-	* R/agnes.q (agnes): \  ``diss = inherits(x, "dist")''
+	* R/agnes.q (agnes): \	``diss = inherits(x, "dist")''
 	* R/diana.q (diana):  > instead of "diss = FALSE"
-	* R/fanny.q (fanny): /   as we have changed pam() already in 1.4-0
+	* R/fanny.q (fanny): /	 as we have changed pam() already in 1.4-0
 
 2002-01-23  Martin Maechler  <maechler@stat.math.ethz.ch>
 

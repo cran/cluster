@@ -1,6 +1,6 @@
 
-R : Copyright 2002, The R Development Core Team
-Version 1.6.0 Under development (unstable) (2002-09-03)
+R : Copyright 2003, The R Development Core Team
+Version 1.7.0 Under development (unstable) (2003-03-11)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -14,23 +14,22 @@ Type `demo()' for some demos, `help()' for on-line help, or
 Type `q()' to quit R.
 
 > library(cluster)
-Loading required package: mva 
 > 
-> (x <- cbind((-3:4)^2, c(0:6,NA), c(1,2,NA,7,NA,8:9,8)))
-     [,1] [,2] [,3]
-[1,]    9    0    1
-[2,]    4    1    2
-[3,]    1    2   NA
-[4,]    0    3    7
-[5,]    1    4   NA
-[6,]    4    5    8
-[7,]    9    6    9
-[8,]   16   NA    8
-> pam(x,2, metric="manhattan")
+> (x <- x0 <- cbind(V1 = (-3:4)^2, V2 = c(0:6,NA), V3 = c(1,2,NA,7,NA,8:9,8)))
+     V1 V2 V3
+[1,]  9  0  1
+[2,]  4  1  2
+[3,]  1  2 NA
+[4,]  0  3  7
+[5,]  1  4 NA
+[6,]  4  5  8
+[7,]  9  6  9
+[8,] 16 NA  8
+> (px <- pam(x,2, metric="manhattan"))
 Medoids:
-     [,1] [,2] [,3]
-[1,]    4    1    2
-[2,]    4    5    8
+     V1 V2 V3
+[1,]  4  1  2
+[2,]  4  5  8
 Clustering vector:
 [1] 1 1 1 2 2 2 2 2
 Objective function:
@@ -40,11 +39,22 @@ build  swap
 Available components:
 [1] "medoids"    "clustering" "objective"  "isolation"  "clusinfo"  
 [6] "silinfo"    "diss"       "call"       "data"      
+> stopifnot(identical(x,x0))# DUP=FALSE ..
+> pd <-  pam(dist(x,"manhattan"), 2)
+> px2 <- pam(x,2, metric="manhattan", keep.diss=FALSE, keep.data=FALSE)
+> nms <- c("clustering", "objective", "isolation", "clusinfo", "silinfo")
+> stopifnot(identical(px[nms], pd[nms]),
++           identical(px[nms], px2[nms]),
++ 	  ## and for default dist "euclidean":
++ 	  identical(pam(x,	2)[nms],
++ 		    pam(dist(x),2)[nms])
++ 	  )
 > 
-> ## generate 250 objects, divided into 2 clusters.
+> if(paste(R.version$major, R.version$minor, sep=".") >= 1.7)  RNGversion(1.6)
 > set.seed(625)
+> ## generate 250 objects, divided into 2 clusters.
 > x <- rbind(cbind(rnorm(120, 0,8), rnorm(120, 0,8)),
-+            cbind(rnorm(130,50,8), rnorm(130,10,8)))
++ 	   cbind(rnorm(130,50,8), rnorm(130,10,8)))
 > 
 > .proctime00 <- proc.time()
 > 
@@ -331,15 +341,11 @@ Average silhouette width per cluster:
 Average silhouette width of total data set:
 [1] 0.7310283
 
-31125 dissimilarities, summarized :
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  0.022  13.060  32.140  33.060  52.110  86.380 
-Metric :  euclidean 
-Number of objects : 250
-
 Available components:
 [1] "medoids"    "clustering" "objective"  "isolation"  "clusinfo"  
 [6] "silinfo"    "diss"       "call"       "data"      
+> all.equal(px2[nms], pam(dist(x), 2)[nms], tol = 1e-12) ## TRUE
+[1] TRUE
 > 
 > data(ruspini)
 > summary(pr4 <- pam(ruspini, 4))
@@ -728,6 +734,6 @@ Available components:
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  0.31 0.04 0.4 0 0 
+Time elapsed:  0.44 0.05 0.9 0 0 
 > 
 > 

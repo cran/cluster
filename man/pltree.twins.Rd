@@ -8,7 +8,7 @@
 }
 \usage{
 pltree.twins(x, main = paste("Dendrogram of ", deparse(call)),
-             labels = NULL, \dots)
+             labels = NULL, ylab = "Height", \dots)
 }
 \arguments{
   \item{x}{
@@ -16,6 +16,7 @@ pltree.twins(x, main = paste("Dendrogram of ", deparse(call)),
     \code{\link{agnes}()} or \code{\link{diana}()}.}
   \item{main}{main title.}
   \item{labels}{labels to use; the default is constructed from \code{x}.}
+  \item{ylab}{label for y-axis.}
   \item{\dots}{
     Graphical parameters (see \code{\link{par}}) may also
     be supplied as arguments to this function.}
@@ -35,6 +36,10 @@ pltree.twins(x, main = paste("Dendrogram of ", deparse(call)),
   \code{\link{diana.object}}, \code{\link{hclust}}, \code{\link{par}},
   \code{\link{plot.agnes}}, \code{\link{plot.diana}}.
 }
+\examples{
+}
 \keyword{cluster}
 \keyword{hplot}
-% Converted by Sd2Rd version 0.3-2.
+
+
+

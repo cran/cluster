@@ -1,10 +1,10 @@
-### $Id: plotpart.q,v 1.17 2002/09/09 09:39:34 maechler Exp $
+### $Id: plotpart.q,v 1.18 2003/02/06 10:36:45 maechler Exp $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
          nmax.lab = 40, max.strlen = 5, data = x$data,
          cor = TRUE, stand = FALSE, lines = 2,
          shade = FALSE, color = FALSE, labels = 0, plotchar = TRUE,
-         span = TRUE, xlim = NULL, ylim = NULL, ...)
+         span = TRUE, xlim = NULL, ylim = NULL, main = NULL, ...)
 {
     if(is.null(x$data))# data not kept
         x$data <- data
@@ -30,9 +30,9 @@ function(x, ask = FALSE, which.plots = NULL,
                    clusplot(x, cor = cor, stand = stand, lines = lines,
                             shade = shade, color = color, labels = labels,
                             plotchar = plotchar, span = span,
-                            xlim = xlim, ylim = ylim, ...)
+                            xlim = xlim, ylim = ylim, main = main, ...)
                    ,
-                   plot(silhouette(x), nmax.lab, max.strlen)
+                   plot(silhouette(x), nmax.lab, max.strlen, main = main)
                    )
             if(do.all) { pick <- pick + 1; do.all <- pick <= length(tmenu) + 1}
         }
@@ -45,9 +45,9 @@ function(x, ask = FALSE, which.plots = NULL,
                clusplot(x, cor = cor, stand = stand, lines = lines,
                         shade = shade, color = color, labels = labels,
                         plotchar = plotchar, span = span,
-                        xlim = xlim, ylim = ylim, ...)
+                        xlim = xlim, ylim = ylim, main = main, ...)
                ,
-               plot(silhouette(x), nmax.lab, max.strlen)
+               plot(silhouette(x), nmax.lab, max.strlen, main = main)
                )
     }
     invisible()

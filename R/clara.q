@@ -1,17 +1,13 @@
-### $Id: clara.q,v 1.17 2002/12/30 22:45:58 maechler Exp $
+### $Id: clara.q,v 1.20 2003/03/17 17:11:10 maechler Exp $
 
 #### CLARA := Clustering LARge Applications
 ####
 #### Note that the algorithm is O(n), but O(ns^2) where ns == sampsize
 
-### FIXME :
-##  should not necessarily keep data in result, because "large" !
-##  OTOH, data is used for clusplot.partition() :
-## Note:  ./plotpart.q	is also working with clara() objects
-
 clara <- function(x, k, metric = "euclidean", stand = FALSE,
 		  samples = 5, sampsize = 40 + 2 * k,
-		  trace = 0, keepdata = TRUE)
+		  trace = 0, keep.data = TRUE, keepdata,
+                  rngR = FALSE)
 {
     ## check type of input matrix and values of input numbers
     x <- data.matrix(x)
@@ -29,6 +25,12 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     if((samples <- as.integer(samples)) < 1)
 	stop("'samples' should be at least 1")
 
+    ## `keepdata' is just for back-compatibility; "keep.*" is R-like
+    if(!missing(keepdata) && missing(keep.data)) {
+        warning("argument name `keepdata' is deprecated;",
+                " use `keep.data' instead")
+        keep.data <- keepdata
+    }
     namx <- dimnames(x)[[1]]
     ## standardize, if necessary
     data <- x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
@@ -48,7 +50,7 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	      n,
 	      jp,
 	      k,
-	      clu = as.double(t(x2)),# transposing LARGE x[n,jp] ..fixme?..
+	      clu = as.double(x2),
 	      nran  = samples,
 	      nsam  = sampsize,
 	      dis   = double(1 + (sampsize * (sampsize - 1))/2),
@@ -56,6 +58,7 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	      valmd = if(mdata) rep(valmisdat, jp) else -1.,
 	      jtmd  = if(mdata) jtmd else integer(1),
 	      ndyst = as.integer(if(metric == "manhattan") 2 else 1),
+              as.logical(rngR),
 	      integer(sampsize),# = nrepr
 	      integer(sampsize),# = nsel
 	      sample= integer(sampsize),# = nbest
@@ -86,24 +89,24 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	stop("Each of the random samples contains objects between which\n",
 	     " no distance can be computed.")
     sildim <- res$silinf[, 4]
-    ## adapt Fortran output to S:
+    ## adapt C output to S:
     ## convert lower matrix, read by rows, to upper matrix, read by rows.
     disv <- res$dis[-1]
     disv[disv == -1] <- NA
     disv <- disv[upper.to.lower.tri.inds(sampsize)]
-    class(disv) <- "dissimilarity"
+    class(disv) <- ..dClass
     attr(disv, "Size") <- sampsize
     attr(disv, "Metric") <- metric
     attr(disv, "Labels") <- namx[res$sample]
-    ## add labels to Fortran output
+    ## add labels to C output
     res$med <- x[res$med, , drop = FALSE]
-    res$clu <- as.integer(matrix(res$clu, nrow= n, ncol= jp, byrow= TRUE)[, 1])
+    res$clu <- as.integer(res$clu[1:n])
     if(!is.null(namx)) {
 	sildim <- namx[sildim]
 	res$sample <- namx[res$sample]
 	names(res$clu) <- namx
     }
-    ## add dimnames to Fortran output
+    ## add dimnames to C output
     r <- list(sample = res$sample, medoids = res$med,
 	      clustering = res$clu, objective = res$obj,
 	      clusinfo = cbind(size = res$size, "max_diss" = res$maxdis,
@@ -116,7 +119,7 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 			  clus.avg.widths = res$avsil,
 			  avg.width = res$ttsil)
     }
-    if(keepdata) r$data <- data
+    if(keep.data) r$data <- data
     class(r) <- c("clara", "partition")
     r
 }

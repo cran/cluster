@@ -1,12 +1,18 @@
 library(cluster)
 options(digits = 6)
 data(votes.repub)
+
+.proctime00 <- proc.time()
+
 summary(diana(votes.repub, metric = "manhattan", stand = TRUE))
-summary(diana(daisy(votes.repub), diss = TRUE))
+summary(diana(daisy(votes.repub), keep.diss = FALSE))
 
 data(agriculture)
 summary(diana(agriculture))
 
 data(ruspini)
-summary(diana(ruspini))
-summary(diana(ruspini, metric = "manhattan"))
+summary(dr0 <- diana(ruspini, keep.diss=FALSE, keep.data=FALSE))
+summary(dr1 <- diana(ruspini, metric = "manhattan"))
+c(object.size(dr0),object.size(dr1))
+
+cat('Time elapsed: ', proc.time() - .proctime00,'\n')

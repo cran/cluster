@@ -7,7 +7,7 @@ plot.partition(x, ask = FALSE, which.plots = NULL,
                nmax.lab = 40, max.strlen = 5, data = x$data,
 	       cor = TRUE, stand = FALSE, lines = 2,
 	       shade = FALSE, color = FALSE, labels = 0, plotchar = TRUE,
-	       span = TRUE, xlim = NULL, ylim = NULL, \dots)
+	       span = TRUE, xlim = NULL, ylim = NULL, main = NULL, \dots)
 }
 \arguments{
   \item{x}{an object of class \code{"partition"}, typically created by the
@@ -19,16 +19,15 @@ plot.partition(x, ask = FALSE, which.plots = NULL,
     integers of \code{1} for a \emph{clusplot} or \code{2} for
     \emph{silhouette}.}
   \item{nmax.lab}{integer indicating the number of labels which is
-    considered too large for single-name labeling the banner plot.}
+    considered too large for single-name labeling the silhouette plot.}
+  \item{max.strlen}{positive integer giving the length to which
+    strings are truncated in silhouette plot labeling.}
   \item{data}{numeric matrix with the scaled data; per default taken
     from the partition object \code{x}, but can be specified explicitly.}
-  \item{max.strlen}{positive integer giving the length to which
-    strings are truncated in banner plot labeling.}
-  \item{cor,stand,lines,shade,color,labels,plotchar,span,xlim,ylim, \dots}{
+  \item{cor,stand,lines,shade,color,labels,plotchar,span,xlim,ylim,main, \dots}{
     All optional arguments available for the \code{\link{clusplot.default}}
-    function (except for the \code{diss} one) may also be supplied to
-    this function.  Graphical parameters (see \code{\link{par}}) may
-    also be supplied as arguments to this function.}
+    function (except for the \code{diss} one) and graphical parameters
+    (see \code{\link{par}}) may also be supplied as arguments to this function.}
 }
 \section{Side Effects}{
   An appropriate plot is produced on the current graphics device.  This
@@ -67,7 +66,9 @@ plot.partition(x, ask = FALSE, which.plots = NULL,
   In the silhouette plot, observation labels are only printed when the
   number of observations is less than \code{nmax.lab} (40, by default),
   for readability.  Moreover, observation labels are truncated to
-  maximally \code{max.strlen} (5) characters.
+  maximally \code{max.strlen} (5) characters.  \cr
+  For more flexibility, use \code{plot(silhouette(x), ...)}, see
+  \code{\link{plot.silhouette}}.
 }
 \references{
   Rousseeuw, P.J. (1987)

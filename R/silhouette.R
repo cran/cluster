@@ -11,27 +11,37 @@ silhouette.partition <- function(x, ...) {
     r
 }
 
-silhouette.default <- function(x, dist, ...) {
-    if(missing(dist)) stop("Need a dissimilarity (as 2nd argument)")
+silhouette.default <- function(x, dist, dmatrix, ...) {
     cll <- match.call()
-    dist <- as.dist(dist) # hopefully
     if(!is.null(cl <- x$clustering)) x <- cl
     n <- length(x)
-    if(n != attr(dist, "Size"))
-        stop("clustering `x' and dissimilarity `dist' are incompatible")
     if(!all(x == round(x))) stop("`x' must only have integer codes")
     k <- length(clid <- sort(unique(x)))
     if(k <= 1 || k >= n)
         return(NA)
-    dmat <- as.matrix(dist)# so we can apply(.) below
+    ## check dist/dmatrix
+    if(missing(dist)) {
+        if(missing(dmatrix))
+            stop("Need either a dissimilarity `dist' or diss.matrix `dmatrix'")
+        if(is.null(dm <- dim(dmatrix)) || length(dm) != 2 || !all(n == dm))
+            stop("`dmatrix' is not a dissimilarity matrix compatible to `x'")
+    } else { # `dist'
+        dist <- as.dist(dist) # hopefully
+        if(n != attr(dist, "Size"))
+            stop("clustering `x' and dissimilarity `dist' are incompatible")
+        dmatrix <- as.matrix(dist)# so we can apply(.) below
+    }
     wds <- matrix(NA, n,3, dimnames =
                   list(names(x), c("cluster","neighbor","sil_width")))
-    for(j in 1:k) {
+    for(j in 1:k) { # j-th cluster:
         Nj <- sum(iC <- x == clid[j])
-        wds[iC, 1] <- j
-        a.i <- if(Nj > 1) colSums(dmat[iC, iC])/(Nj - 1) else 0
-        diC <- apply(dmat[!iC, iC], 2, function(r) tapply(r, x[!iC], mean))
-        wds[iC,"neighbor"]  <- clid[-j][minC <- max.col(-t(diC))]
+        wds[iC, "cluster"] <- j
+        a.i <- if(Nj > 1) colSums(dmatrix[iC, iC])/(Nj - 1) else 0 # length(a.i)= Nj
+        ## minimal distances to points in all other clusters:
+        diC <- rbind(apply(dmatrix[!iC, iC], 2,
+                           function(r) tapply(r, x[!iC], mean)))# (k-1) x Nj
+        minC <- max.col(-t(diC))
+        wds[iC,"neighbor"] <- clid[-j][minC]
         b.i <- diC[cbind(minC, seq(minC))]
         s.i <- (b.i - a.i) / pmax(b.i, a.i)
         wds[iC,"sil_width"] <- s.i

@@ -1,13 +1,13 @@
 library(cluster)
 
 ## generate 1500 objects, divided into 2 clusters.
+if(paste(R.version$major, R.version$minor, sep=".") >= 1.7)  RNGversion(1.6)
 set.seed(264)
 x <- rbind(cbind(rnorm(700, 0,8), rnorm(700, 0,8)),
            cbind(rnorm(800,50,8), rnorm(800,10,8)))
 
 isEq <- function(x,y, epsF = 100)
     is.logical(r <- all.equal(x,y, tol = epsF * .Machine$double.eps)) && r
-
 
 .proctime00 <- proc.time()
 
@@ -54,6 +54,21 @@ clara(x5, 5, samples = 1001)
 
 clara(x5, 5, samples = 2000)#full sample
 
+###--- Start a version of  example(clara) -------
+
+## xclara : artificial data with 3 clusters of 1000 bivariate objects each.
+data(xclara)
+(clx3 <- clara(xclara, 3))
+## Plot similar to Figure 5 in Struyf et al (1996)
+plot(clx3)
+
+## The  rngR = TRUE case is currently in the non-strict tests
+## ./clara-ex.R
+## ~~~~~~~~~~~~
+
+###--- End version of example(clara) -------
+
+
 
 ##  small example(s):
 data(ruspini)
@@ -85,5 +100,5 @@ for(ss in 4:nrow(ru3)){
 
 ## Last Line:
 cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-## Lynne (P IV, 1.6 GHz):  7.5
-## nb-mm (P III,700 MHz): 29.2
+## Lynne (P IV, 1.6 GHz): 18.81
+## nb-mm (P III,700 MHz): 27.97

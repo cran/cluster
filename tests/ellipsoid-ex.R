@@ -3,6 +3,7 @@ library(cluster)
 eh <- ellipsoidhull(cbind(x=1:4, y = 1:4)) #singular
 eh
 
+if(paste(R.version$major, R.version$minor, sep=".") >= 1.7)  RNGversion(1.6)
 set.seed(157)
 for(n in 4:10) { ## n=2 and 3 still differ -- platform dependently!
     cat("n = ",n,"\n")
