@@ -1,3 +1,22 @@
+2003-04-30  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.7.1
+
+	* man/pam.object.Rd: add example about assessing #{clusters} via
+	  	silhouette widths from Ch.Hennig.
+
+	* R/plotpart.q (plot.partition): new argument `dist'
+	  It doesn't try a clusplot if `keep.diss' was FALSE and no `dist'
+	  is specified.
+	* R/plotpart.q (clusplot.partition): new `dist' argument
+
+	* R/pam.q (pam): keep.diss passed wrong `jdyss' to Fortran!
+
+2003-04-08  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/plothier.q (pltree.twins): simplified label construction;
+	call plot( <hclust object> ) instead of plot.hclust().
+
 2003-03-26  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* tests/clara-ex.R: new, because of unclear non-reproducibility

@@ -68,8 +68,9 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE,
   of dissimilarities instead of a sum of squared euclidean distances;
   (c) it provides a novel graphical display, the silhouette plot (see
   \code{plot.partition}) (d) it allows to select the number of clusters
-  using \code{\link{silhouette}()$avg.width} on the result (or its
-  component \code{silinfo}, see also \code{\link{pam.object}}).
+  using \code{mean(\link{silhouette}(pr))} on the result
+  \code{pr <- pam(..)}, or directly its component
+  \code{pr$silinfo$avg.width}, see also \code{\link{pam.object}}.
 
   The \code{pam}-algorithm is based on the search for \code{k}
   representative objects or medoids among the observations of the

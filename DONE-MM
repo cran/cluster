@@ -1,6 +1,21 @@
 Things that were on my TODO list and have been accomplished
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+For R 1.7.0 :
+
+  o agnes(), diana() and pam() have a new argument  `keep.diss'
+    with a smart default.  If FALSE, the new behavior is  *NOT* to keep the
+    dissimilarities !
+     --> save space in result object
+     --> somewhat changed summary/print output , i.e. minor NON-compatibility!
+
+  o plot(ylab / xlab) -- for agnes -> bannerplot() & pltree()
+    ./R/plothier.q   ===> NOT DONE -- rather tell people {on the help()} to
+    use the two underlying plot functions separately !
+
+o Robert G:  " silhouette.default() is wrong "
+  --> ok, I found this was on R-help, Feb.7 and fixed in my sources subsequently
+
 Oct. 2002 {for "banner"; silhouette was earlier}:
 
  1) Silhouette und Banner Plot :

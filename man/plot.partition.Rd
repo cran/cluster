@@ -4,7 +4,7 @@
 \description{Creates plots for visualizing a \code{partition} object.}
 \usage{
 plot.partition(x, ask = FALSE, which.plots = NULL,
-               nmax.lab = 40, max.strlen = 5, data = x$data,
+               nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
 	       cor = TRUE, stand = FALSE, lines = 2,
 	       shade = FALSE, color = FALSE, labels = 0, plotchar = TRUE,
 	       span = TRUE, xlim = NULL, ylim = NULL, main = NULL, \dots)
@@ -24,6 +24,9 @@ plot.partition(x, ask = FALSE, which.plots = NULL,
     strings are truncated in silhouette plot labeling.}
   \item{data}{numeric matrix with the scaled data; per default taken
     from the partition object \code{x}, but can be specified explicitly.}
+  \item{dist}{when \code{x} does not have a \code{diss} component as for
+    \code{\link{pam}(*, keep.diss=FALSE)}, \code{dist} must be the
+    dissimilarity if a clusplot is desired.}
   \item{cor,stand,lines,shade,color,labels,plotchar,span,xlim,ylim,main, \dots}{
     All optional arguments available for the \code{\link{clusplot.default}}
     function (except for the \code{diss} one) and graphical parameters
@@ -92,7 +95,7 @@ plot(pam(x, 2))
 
 ## Save space not keeping data in clus.object, and still clusplot() it:
 data(xclara)
-cx <- clara(xclara, 3, keepdata = FALSE)
+cx <- clara(xclara, 3, keep.data = FALSE)
 cx$data # is NULL
 plot(cx, data = xclara)
 }

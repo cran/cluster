@@ -5,7 +5,7 @@
   Clusplot (Clustering Plot) method for an object of class \code{partition}.
 }
 \usage{
-\method{clusplot}{partition}(x, main = NULL, \dots)
+\method{clusplot}{partition}(x, main = NULL, dist = NULL, \dots)
 }
 \arguments{
   \item{x}{
@@ -13,6 +13,10 @@
     \code{\link{pam}}, \code{\link{clara}}, or \code{\link{fanny}}.}
   \item{main}{title for the plot; when \code{NULL} (by default), a title
     is constructed, using \code{x$call}.}
+  \item{dist}{when \code{x} does not have a \code{diss} nor a
+    \code{data} component, e.g., for \code{\link{pam}(dist(*),
+      keep.diss=FALSE)}, \code{dist} must specify the dissimilarity for the
+    clusplot.}
   \item{\dots}{all optional arguments available for the
     \code{\link{clusplot.default}} function (except for the \code{diss}
     one) may also be supplied to this function.  Graphical parameters

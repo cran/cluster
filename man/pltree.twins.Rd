@@ -7,14 +7,13 @@
   \code{diana}.
 }
 \usage{
-pltree.twins(x, main = paste("Dendrogram of ", deparse(call)),
+pltree.twins(x, main = paste("Dendrogram of ", deparse(x$call)),
              labels = NULL, ylab = "Height", \dots)
 }
 \arguments{
-  \item{x}{
-    an object of class \code{"twins"}, typically created by either
+  \item{x}{an object of class \code{"twins"}, typically created by either
     \code{\link{agnes}()} or \code{\link{diana}()}.}
-  \item{main}{main title.}
+  \item{main}{main title with a sensible default.}
   \item{labels}{labels to use; the default is constructed from \code{x}.}
   \item{ylab}{label for y-axis.}
   \item{\dots}{

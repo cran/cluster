@@ -1,22 +1,20 @@
-### $Id: plothier.q,v 1.13 2002/12/30 23:27:46 maechler Exp $
+### $Id: plothier.q,v 1.14 2003/04/30 14:12:11 maechler Exp $
 
 pltree <- function(x, ...) UseMethod("pltree")
 
-## note: pltree() can have an `xlab' in "..." (plot.hclust has an explicit one)a
-pltree.twins <- function(x, main = paste("Dendrogram of ", deparse(call)),
+## note: pltree() can have an `xlab' in "..." (plot.hclust has an explicit one)
+pltree.twins <- function(x, main = paste("Dendrogram of ", deparse(x$call)),
 			 labels = NULL, ylab = "Height", ...)
 {
-    call <- x$call
-    if(is.null(labels) && length(x$order.lab) != 0) {
-	names(x$order) <- names(x$order.lab) <- 1:length(x$order)
-	labels <- x$order.lab[names(sort(x$order))]
-    }
-    x <- list(order = x$order, height = sort(x$height), merge = x$merge)
+    if(is.null(labels) && length(x$order.lab) != 0)
+	labels <- x$order.lab[sort.list(x$order)]
 
-    ## this clause needed for R versions <= 1.4.1:
-    if(is.null(labels))
-	 plot.hclust(x,			 main = main, ylab = ylab, ...)
-    else plot.hclust(x, labels = labels, main = main, ylab = ylab, ...)
+    ## calling plot.hclust() via generic :
+    plot(structure(list(merge = x$merge, order = x$order,
+                        height = sort(x$height), labels = labels,
+                        call = x$call, method = x$method),
+                   class = "hclust"),
+         main = main, ylab = ylab, ...)
     invisible()
 }
 

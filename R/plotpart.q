@@ -1,17 +1,19 @@
 ### $Id: plotpart.q,v 1.18 2003/02/06 10:36:45 maechler Exp $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
-         nmax.lab = 40, max.strlen = 5, data = x$data,
+         nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
          cor = TRUE, stand = FALSE, lines = 2,
          shade = FALSE, color = FALSE, labels = 0, plotchar = TRUE,
          span = TRUE, xlim = NULL, ylim = NULL, main = NULL, ...)
 {
     if(is.null(x$data))# data not kept
         x$data <- data
+    if(is.null(x$data) && !is.null(dist))
+        x$diss <- dist
     if(is.null(which.plots) && !ask)
-        which.plots <- { ## Default: no clusplot if data not kept nor specified:
-            if(inherits(x, "clara") && is.null(x$data))
-                2
+        which.plots <- {
+            if(is.null(x$data) && (is.null(x$diss) || inherits(x, "clara")))
+                2 ## no clusplot
             else 1:2
         }
     if(ask && is.null(which.plots)) { ## Use `menu' ..
@@ -65,56 +67,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
          verbose = getOption("verbose"),
          ...)
 {
-    if(paste(R.version$major, R.version$minor, sep=".") < 1.5) {
-        ## a simplified (add = T) version of R 1.5's cmdscale(), s/La.eigen/eigen/
-        cmdscale <- function (d, k = 2, add = TRUE, ...) {
-            if (any(is.na(d)))
-                stop("NA values not allowed in d")
-            if (is.null(n <- attr(d, "Size"))) {
-                d <- as.matrix(d)
-                x <- d^2
-                if ((n <- nrow(x)) != ncol(x))
-                    stop("Distances must be result of dist or a square matrix")
-            }
-            else {
-                x <- matrix(0, n, n)
-                if(add) d0 <- x
-                x[row(x) > col(x)] <- d^2
-                x <- x + t(x)
-                if(add) {
-                    d0[row(x) > col(x)] <- d
-                    d <- d0 + t(d0)
-                }
-            }
-            storage.mode(x) <- "double"
-            x <- .C("dblcen", x=x, as.integer(n), PACKAGE="mva")$x
-            if(add) { ## solve the additive constant problem
-                i2 <- n + (i <- 1:n)
-                Z <- matrix(0, 2*n, 2*n)
-                Z[cbind(i2,i)] <- -1
-                Z[ i, i2] <- -x
-                Z[i2, i2] <- .C("dblcen", x= 2*d, as.integer(n),PACKAGE="mva")$x
-                e <- eigen(Z,symmetric = FALSE, only.val = TRUE)$values
-                add.c <- max(Re(e))
-                x <- matrix(double(n*n), n, n)
-                non.diag <- row(d) != col(d)
-                x[non.diag] <- (d[non.diag] + add.c)^2
-            }
-            e <- eigen(-x/2, symmetric = TRUE)
-            ev <- e$values[1:k]
-            points <- e$vectors[, 1:k] %*% diag(sqrt(ev), k)
-            rn <- if(is.matrix(d)) rownames(d) else names(d)
-            dimnames(points) <- list(rn, NULL)
-            evalus <- e$values[-n]
-            list(points = points, eig = ev, ac = if(add) add.c else 0,
-                 GOF = sum(ev)/c(sum(abs(evalus)),
-                                 sum(evalus[evalus > 0])))
-        }
-    }## cmdscale() -- if R version < 1.5
-
-    ## BEGIN ----
-
-    (main)# eval
+    force(main)
     if(is.data.frame(x))
         x <- data.matrix(x)
     if(!is.numeric(x))
@@ -122,43 +75,92 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
 
     if(diss) {
         if(any(is.na(x)))
-            stop(message = "NA-values in x are not allowed.")
-        if((data.class(x)) != "dissimilarity") {
-            if(is.na(sizeDiss(x))) {
+            stop("NA-values are not allowed in dist-like `x'.")
+        if(inherits(x, "dist")) {
+            n <- attr(x, "Size")
+            labels1 <- attr(x, "Labels")
+        }
+        else { # x (num.vector or square matrix) must be transformed into diss.
+            siz <- sizeDiss(x)
+            if(is.na(siz)) {
                 if((n <- nrow(x)) != ncol(x))
                     stop("Distances must be result of dist or a square matrix.")
                 if(all.equal(x, t(x)) != TRUE)
                     stop("the square matrix is not symmetric.")
                 labels1 <- dimnames(x)[[1]]
-                if(is.null(labels1)) labels1 <- 1:n
             }
             else {
                 if(!is.vector(x)) {
                     labels1 <- attr(x, "Labels") # possibly NULL
                     x <- as.matrix(x)
-                    if((n <- nrow(x)) == ncol(x) &&
-                       all.equal(x, t(x)) == TRUE) {
+                    if((n <- nrow(x)) == ncol(x) && all.equal(x, t(x)) == TRUE) {
                         labels1 <- dimnames(x)[[1]]
-                        if(is.null(labels1)) labels1 <- 1:n
                     }
                     else {
+                        ## Hmm, when does this ever happen :
+                        ## numeric, not-dist, non-vector, not symmetric matrix ?
+                        warning(">>>>> funny case in clusplot.default() -- please report!\n")
+                        if(n != sizeDiss(s))
                         if(is.null(labels1))
                             labels1 <- 1:sizeDiss(x)
                         attr(x, "Size") <- sizeDiss(x)
                     }
                 }
                 else {
-                    attr(x, "Size") <- n <- sizeDiss(x)
-                    labels1 <- 1:sizeDiss(x)
+                    attr(x, "Size") <- n <- siz
+                    labels1 <- 1:n
                 }
             }
         }
-        else {
-            n <- attr(x, "Size")
-            labels1 <- attr(x, "Labels")
-            if(is.null(labels1))
-                labels1 <- 1:n
-        }
+        if(is.null(labels1)) labels1 <- 1:n
+
+        if(paste(R.version$major, R.version$minor, sep=".") < 1.5) {
+            ## a simplified (add = T) version of R 1.5's cmdscale()
+            cmdscale <- function (d, k = 2, add = TRUE, ...) {
+                if (any(is.na(d)))
+                    stop("NA values not allowed in d")
+                if (is.null(n <- attr(d, "Size"))) {
+                    d <- as.matrix(d)
+                    x <- d^2
+                    if ((n <- nrow(x)) != ncol(x))
+                        stop("Distances must be result of dist or a square matrix")
+                }
+                else {
+                    x <- matrix(0, n, n)
+                    if(add) d0 <- x
+                    x[row(x) > col(x)] <- d^2
+                    x <- x + t(x)
+                    if(add) {
+                        d0[row(x) > col(x)] <- d
+                        d <- d0 + t(d0)
+                    }
+                }
+                storage.mode(x) <- "double"
+                x <- .C("dblcen", x=x, as.integer(n), PACKAGE="mva")$x
+                if(add) { ## solve the additive constant problem
+                    i2 <- n + (i <- 1:n)
+                    Z <- matrix(0, 2*n, 2*n)
+                    Z[cbind(i2,i)] <- -1
+                    Z[ i, i2] <- -x
+                    Z[i2, i2] <- .C("dblcen", x= 2*d, as.integer(n),PACKAGE="mva")$x
+                    e <- eigen(Z,symmetric = FALSE, only.val = TRUE)$values
+                    add.c <- max(Re(e))
+                    x <- matrix(double(n*n), n, n)
+                    non.diag <- row(d) != col(d)
+                    x[non.diag] <- (d[non.diag] + add.c)^2
+                }
+                e <- eigen(-x/2, symmetric = TRUE)
+                ev <- e$values[1:k]
+                points <- e$vectors[, 1:k] %*% diag(sqrt(ev), k)
+                rn <- if(is.matrix(d)) rownames(d) else names(d)
+                dimnames(points) <- list(rn, NULL)
+                evalus <- e$values[-n]
+                list(points = points, eig = ev, ac = if(add) add.c else 0,
+                     GOF = sum(ev)/c(sum(abs(evalus)),
+                     sum(evalus[evalus > 0])))
+            }
+        } ## cmdscale() -- if R version < 1.5
+
         x1 <- cmdscale(x, k = 2, eig = TRUE, add = TRUE)
         if(x1$ac < 0)
             x1 <- cmdscale(x, k = 2, eig = TRUE)
@@ -536,12 +538,27 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
     invisible(list(Distances = afstand, Shading = density))
 }
 
-clusplot.partition <- function(x, main = NULL, ...)
+clusplot.partition <- function(x, main = NULL, dist = NULL, ...)
 {
     if(is.null(main) && !is.null(x$call))
 	main <- paste("clusplot(",format(x$call),")", sep="")
     if(length(x$data) != 0 &&
        (!any(is.na(x$data)) || data.class(x) == "clara"))
 	clusplot.default(x$data, x$clustering, diss = FALSE, main = main, ...)
-    else clusplot.default(x$diss, x$clustering, diss = TRUE, main = main, ...)
+    else if(!is.null(dist))
+        clusplot.default(dist, x$clustering, diss = TRUE, main = main, ...)
+    else if(!is.null(x$diss))
+        clusplot.default(x$diss, x$clustering, diss = TRUE, main = main, ...)
+    else { ## try to find "x$diss" by looking at the pam() call:
+        if(!is.null(x$call)) {
+            tryx <- try(eval(x$call[[2]]))
+            if(inherits(tryx, "try-error"))
+                stop("no diss nor data found, nor the original argument of ",
+                     x$call)
+            ## else
+            warning("both `x$diss' and `dist' are empty; ",
+                    "trying to find the first argument of ", x$call)
+        }
+        else stop("no diss nor data found for clusplot()'")
+    }
 }
