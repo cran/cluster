@@ -3,7 +3,7 @@
 \title{Plot of a Partition of the Data Set}
 \description{Creates plots for visualizing a \code{partition} object.}
 \usage{
-plot.partition(x, ask = FALSE, which.plots = NULL,
+\method{plot}{partition}(x, ask = FALSE, which.plots = NULL,
                nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
 	       cor = TRUE, stand = FALSE, lines = 2,
 	       shade = FALSE, color = FALSE, labels = 0, plotchar = TRUE,

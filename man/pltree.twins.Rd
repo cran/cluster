@@ -7,7 +7,7 @@
   \code{diana}.
 }
 \usage{
-pltree.twins(x, main = paste("Dendrogram of ", deparse(x$call)),
+\method{pltree}{twins}(x, main = paste("Dendrogram of ", deparse(x$call)),
              labels = NULL, ylab = "Height", \dots)
 }
 \arguments{

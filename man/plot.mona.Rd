@@ -5,7 +5,7 @@
   Creates the banner of a \code{mona} object.
 }
 \usage{
-plot.mona(x, main = paste("Banner of ", deparse(attr(x, "Call"))),
+\method{plot}{mona}(x, main = paste("Banner of ", deparse(x$call)),
           sub = NULL, xlab = "Separation step",
 	  col = c(2,0), axes = TRUE, adj = 0,
           nmax.lab = 35, max.strlen = 5, \dots)

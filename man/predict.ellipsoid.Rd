@@ -6,7 +6,7 @@
   Compute points on the ellipsoid boundary, mostly for drawing.
 }
 \usage{
-predict.ellipsoid(object, n.out=201, \dots)
+\method{predict}{ellipsoid}(object, n.out=201, \dots)
 ellipsoidPoints(A, d2, loc, n=201)
 }
 \arguments{

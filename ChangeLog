@@ -1,3 +1,26 @@
+2003-09-24  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Date): Sept.24: 20th anniversary w/ Lilo! -- release
+
+	* man/plot.mona.Rd: yet another codoc
+
+2003-09-23  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.7.6 (for R 1.8.0)
+
+	* man/daisy.Rd:         codoc difference for argument *defaults*
+	* man/ellipsoidhull.Rd:   "       "       "     "
+	* man/plot.mona.Rd:       "       "       "     "
+	* man/plot.diana.Rd:      "       "       "     "
+			         use \method{..}{..} (more!) also for these:
+	* man/predict.ellipsoid.Rd
+	* man/silhouette.Rd:
+	* man/plot.agnes.Rd:
+	* man/plot.partition.Rd:
+	* man/ellipsoidhull.Rd:
+
+
+
 2003-09-03  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Date): -> release

@@ -10,7 +10,7 @@
 \usage{
 ellipsoidhull(x, tol=0.01, maxit=5000,
               ret.wt = FALSE, ret.sqdist = FALSE, ret.pr = FALSE)
-\method{print}{ellipsoid}(x, digits = NULL, \dots)
+\method{print}{ellipsoid}(x, digits = max(1, getOption("digits") - 2), \dots)
 }
 \arguments{
   \item{x}{the \eqn{n} \eqn{p}-dimensional points  asnumeric

@@ -6,7 +6,7 @@
   Creates plots for visualizing an \code{agnes} object.
 }
 \usage{
-plot.agnes(x, ask = FALSE, which.plots = NULL, main = NULL,
+\method{plot}{agnes}(x, ask = FALSE, which.plots = NULL, main = NULL,
            sub = paste("Agglomerative Coefficient = ",round(x$ac, digits = 2)),
            adj = 0, nmax.lab = 35, max.strlen = 5, xax.pretty = TRUE, \dots)
 }

@@ -1,6 +1,6 @@
 Package: cluster
-Version: 1.7.5
-Date: 2003-09-03
+Version: 1.7.6
+Date: 2003-09-24
 Priority: recommended
 Author: S original by Peter Rousseeuw <rousse@uia.ua.ac.be>, Anja Struyf
 	<Anja.Struyf@uia.ua.ac.be> and Mia Hubert <Mia.Hubert@uia.ua.ac.be>.

@@ -13,8 +13,8 @@
 }
 \usage{
 silhouette(x, \dots)
-silhouette.default  (x, dist, dmatrix, \dots)
-silhouette.partition(x, \dots)
+\method{silhouette}{default}  (x, dist, dmatrix, \dots)
+\method{silhouette}{partition}(x, \dots)
 
 sortSilhouette(object, \dots)
 \method{summary}{silhouette}(object, FUN = mean, \dots)

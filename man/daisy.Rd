@@ -6,7 +6,7 @@
   in the dataset.  The original variables may be of mixed types.
 }
 \usage{
-daisy(x, metric = "euclidean", stand = FALSE, type = list())
+daisy(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 }
 \arguments{
   \item{x}{

@@ -6,8 +6,7 @@
   Creates plots for visualizing a \code{diana} object.
 }
 \usage{
-plot.diana(x, ask = FALSE, which.plots = NULL,
-           main = paste("Banner of ", deparse(attr(x, "Call"))),
+\method{plot}{diana}(x, ask = FALSE, which.plots = NULL, main = NULL,
            sub = paste("Divisive Coefficient = ", round(x$dc, digits = 2)),
            adj = 0, nmax.lab = 35, max.strlen = 5, xax.pretty = TRUE, \dots)
 }
@@ -20,7 +19,7 @@ plot.diana(x, ask = FALSE, which.plots = NULL,
     producing both plots.  Otherwise, \code{which.plots}
     must contain integers of \code{1} for a \emph{banner} plot or \code{2} for a
     dendrogramm or ``clustering tree''.}
-  \item{main, sub}{main and sub title for the plot, with a convenient
+  \item{main, sub}{main and sub title for the plot, each with a convenient
     default.  See documentation for these arguments in
     \code{\link{plot.default}}.}
   \item{adj}{for label adjustment in \code{\link{bannerplot}()}.}
