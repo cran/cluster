@@ -1,11 +1,11 @@
-### $Id: clara.q,v 1.20 2003/03/17 17:11:10 maechler Exp $
+### $Id: clara.q,v 1.23 2004/03/11 16:29:19 maechler Exp $
 
 #### CLARA := Clustering LARge Applications
 ####
 #### Note that the algorithm is O(n), but O(ns^2) where ns == sampsize
 
 clara <- function(x, k, metric = "euclidean", stand = FALSE,
-		  samples = 5, sampsize = 40 + 2 * k,
+		  samples = 5, sampsize = min(n, 40 + 2 * k),
 		  trace = 0, keep.data = TRUE, keepdata,
                   rngR = FALSE)
 {
@@ -82,19 +82,32 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	      DUP = FALSE,
 	      PACKAGE = "cluster")
     ## give a warning when errors occured
-    if(res$jstop == 1)
-	stop("For each sample at least one object was found which\n",
-	     " could not be assigned to a cluster (because of missing values).")
-    if(res$jstop == 2)
-	stop("Each of the random samples contains objects between which\n",
-	     " no distance can be computed.")
+    if(res$jstop) {
+	if(mdata && any(aNA <- apply(inax,1, all))) {
+	    i <- which(aNA)
+	    stop("Observation",
+		 if(length(i) > 1)
+		 paste("s  c(",paste(i, collapse=","),")  have", sep='')
+		 else paste("", i, "has"),
+		 " *only* NAs --> omit for clustering")
+	} ## else
+	if(res$jstop == 1)
+	    stop("Each of the random samples contains objects between which\n",
+		 " no distance can be computed.")
+	if(res$jstop == 2)
+	    stop("For each of the ", samples,
+		 " samples, at least one object was found which\n could not",
+		 " be assigned to a cluster (because of missing values).")
+	## else {cannot happen}
+	stop("invalid 'jstop' from .C(\"clara\",.): ", res$jstop)
+    }
     sildim <- res$silinf[, 4]
     ## adapt C output to S:
     ## convert lower matrix, read by rows, to upper matrix, read by rows.
     disv <- res$dis[-1]
     disv[disv == -1] <- NA
     disv <- disv[upper.to.lower.tri.inds(sampsize)]
-    class(disv) <- ..dClass
+    class(disv) <- dissiCl
     attr(disv, "Size") <- sampsize
     attr(disv, "Metric") <- metric
     attr(disv, "Labels") <- namx[res$sample]

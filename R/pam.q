@@ -1,21 +1,24 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q,v 1.17 2003/04/30 14:24:00 maechler Exp $
+#### --- $Id: pam.q,v 1.19 2004/03/11 16:26:40 maechler Exp maechler $
 pam <- function(x, k, diss = inherits(x, "dist"),
 		metric = "euclidean", stand = FALSE, cluster.only = FALSE,
                 keep.diss = !diss && !cluster.only && n < 100,
                 keep.data = !diss && !cluster.only)
 {
-    if(diss <- as.logical(diss)) {
+   if((diss <- as.logical(diss))) {
 	## check type of input vector
-	if(any(is.na(x)))
-	    stop("NA-values in the dissimilarity matrix not allowed.")
-	if(data.class(x) != "dissimilarity") {
-	    if(!is.numeric(x) || is.na(sizeDiss(x)))
-		stop("x is not of class dissimilarity and can not be converted to this class." )
-	    ## convert input vector to class "dissimilarity"
-	    class(x) <- ..dClass
-	    attr(x, "Size") <- sizeDiss(x)
-	    attr(x, "Metric") <- "unspecified"
+	if(any(is.na(x))) stop(..msg$error["NAdiss"])
+	if(data.class(x) != "dissimilarity") { # try to convert to
+	    if(!is.null(dim(x))) {
+		x <- as.dist(x) # or give an error
+	    } else {
+		## possibly convert input *vector*
+		if(!is.numeric(x) || is.na(n <- sizeDiss(x)))
+		    stop(..msg$error["non.diss"])
+		attr(x, "Size") <- n
+	    }
+	    class(x) <- dissiCl
+	    if(is.null(attr(x,"Metric"))) attr(x, "Metric") <- "unspecified"
 	}
 	## adapt S dissimilarities to Fortran:
 	## convert upper matrix, read by rows, to lower matrix, read by rows.
@@ -104,7 +107,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
             disv <- res$dys[-1]
             disv[disv == -1] <- NA
             disv <- disv[upper.to.lower.tri.inds(n)]
-            class(disv) <- ..dClass
+            class(disv) <- dissiCl
             attr(disv, "Size") <- nrow(x)
             attr(disv, "Metric") <- metric
             attr(disv, "Labels") <- dimnames(x)[[1]]

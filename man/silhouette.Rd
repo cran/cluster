@@ -25,8 +25,10 @@ sortSilhouette(object, \dots)
 }
 \arguments{
   \item{x}{an object of appropriate class; for the \code{default}
-    method an integer vector with cluster codes in \code{1:k} or a list
-    with such an \code{x$clustering} component.}
+    method an integer vector with \eqn{k} different integer cluster
+    codes or a list with such an \code{x$clustering}
+    component.  Note that silhouette statistics are only defined if
+    \eqn{2 \le k \le n-1}{2 <= k <= n-1}.}
   \item{dist}{a dissimilarity object inheriting from class
     \code{\link{dist}} or coercible to one.  If not specified,
     \code{dmatrix} must be.}

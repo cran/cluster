@@ -1,17 +1,18 @@
 
-R : Copyright 2003, The R Development Core Team
-Version 1.7.0 Under development (unstable) (2003-03-25)
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 1.9.0 alpha (2004-03-08), ISBN 3-900051-00-3
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
-Type `license()' or `licence()' for distribution details.
+Type 'license()' or 'licence()' for distribution details.
 
 R is a collaborative project with many contributors.
-Type `contributors()' for more information.
+Type 'contributors()' for more information and
+'citation()' on how to cite R in publications.
 
-Type `demo()' for some demos, `help()' for on-line help, or
-`help.start()' for a HTML browser interface to help.
-Type `q()' to quit R.
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
 
 > library(cluster)
 > options(digits = 6)
@@ -459,9 +460,25 @@ Number of objects : 75
 Available components:
 [1] "order"     "height"    "ac"        "merge"     "diss"      "call"     
 [7] "method"    "order.lab" "data"     
-> c(object.size(ar0),object.size(ar1))
-[1]  3356 29232
+> str(ar1)
+List of 9
+ $ order    : int [1:75] 1 2 3 5 4 6 8 7 9 10 ...
+ $ height   : num [1:74] 11.5  9.0 16.0 26.2 10.0 ...
+ $ ac       : num 0.947
+ $ merge    : int [1:74, 1:2] -55 -27 -18 -49 -36 -33 -32 -23 -67 -59 ...
+ $ diss     :Classes 'dissimilarity', 'dist'  atomic [1:2775] 11 12 29 13 25 43 33 22 27 39 ...
+  .. ..- attr(*, "Size")= int 75
+  .. ..- attr(*, "Metric")= chr "manhattan"
+  .. ..- attr(*, "Labels")= chr [1:75] "1" "2" "3" "4" ...
+ $ call     : language agnes(x = ruspini, metric = "manhattan")
+ $ method   : chr "average"
+ $ order.lab: chr [1:75] "1" "2" "3" "5" ...
+ $ data     : num [1:75, 1:2] 4 5 10 9 13 13 12 15 18 19 ...
+  ..- attr(*, "dimnames")=List of 2
+  .. ..$ : chr [1:75] "1" "2" "3" "4" ...
+  .. ..$ : chr [1:2] "x" "y"
+ - attr(*, "class")= chr [1:2] "agnes" "twins"
 > 
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  0.49 0.02 0.85 0 0 
+Time elapsed:  0.23 0.02 0.31 0 0 
 > 

@@ -79,7 +79,7 @@ void bswap(int *kk, int *nn, int *nrepr,
 	   double *dysma, double *dysmb, double *beter,
 	   double *dys, double *sky, double *s, double *obj)
 {
-    int i, j, ij, k, kj, kbest, nbest, njn, nmax;
+    int i, j, ij, k, kj, kbest = -1, nbest = -1, njn, nmax = -1;/* init: -Wall*/
     double ammax, small, cmd, dz, dzsky;
 
      /* Parameter adjustments */
@@ -87,11 +87,7 @@ void bswap(int *kk, int *nn, int *nrepr,
     --dysmb;
     --dysma;
     --nrepr;
-    --dys;
 
-    /* -Wall: */
-    nbest = -1;
-    kbest = -1;
 
 /*     first algorithm: build. */
 
@@ -104,11 +100,9 @@ void bswap(int *kk, int *nn, int *nrepr,
 	    if (nrepr[i] == 0) {
 		beter[i] = 0.;
 		for (j = 1; j <= *nn; ++j) {
-		    ij = F77_CALL(meet)(&i, &j);
-		    cmd = dysma[j] - dys[ij];
-		    if (cmd > 0.) {
+		    cmd = dysma[j] - dys[ind_2(i, j)];
+		    if (cmd > 0.)
 			beter[i] += cmd;
-		    }
 		}
 	    }
 	}
@@ -122,7 +116,7 @@ void bswap(int *kk, int *nn, int *nrepr,
 	}
 	nrepr[nmax] = 1;/* = .true. : *is* a representative */
 	for (j = 1; j <= *nn; ++j) {
-	    njn = F77_CALL(meet)(&nmax, &j);
+	    njn = ind_2(nmax, j);
 	    if (dysma[j] > dys[njn])
 		dysma[j] = dys[njn];
 	}
@@ -143,7 +137,7 @@ L60:
 	    dysmb[j] = *s * 1.1f + 1.;
 	    for (i = 1; i <= *nn; ++i) {
 		if (nrepr[i] == 1) {
-		    ij = F77_CALL(meet)(&i, &j);
+		    ij = ind_2(i, j);
 		    if (dys[ij] < dysma[j]) {
 			dysmb[j] = dysma[j];
 			dysma[j] = dys[ij];
@@ -159,8 +153,8 @@ L60:
 	    for (i = 1; i <= *nn; ++i) if (nrepr[i] == 1) {
 		dz = 0.;
 		for (j = 1; j <= *nn; ++j) {
-		    ij = F77_CALL(meet)(&i, &j);
-		    kj = F77_CALL(meet)(&k, &j);
+		    ij = ind_2(i, j);
+		    kj = ind_2(k, j);
 		    if (dys[ij] == dysma[j]) {
 			small = dysmb[j];
 			if (small > dys[kj])
@@ -196,9 +190,9 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
 	   double *dys, int *ncluv, int *nelem, int *med, int *nisol)
 {
     Rboolean kand;
-    int j, k, m, ja, jb, jk, jndz, ksmal = -1/* -Wall */;
-    int mevj, njaj, nel, njm, nvn, ntt, nvna, numl, nplac;
-    double aja, ajb, dam, dsmal, sep, ttt;
+    int j, k, m = -1, ja, jb, jk, jndz, ksmal = -1/* -Wall */;
+    int mevj, njaj, nel, nvn, ntt, nvna, numl, nplac;
+    double aja, ajb, dam, djm, dsmal, sep, ttt;
 
     /* Parameter adjustments */
     --nisol;
@@ -211,15 +205,14 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
     --radus;
     --nrepr;
     --nsend;
-    --dys;
 
-    /* nsend[] := ... */
+    /* nsend[j] := i,  where x[i,] is the medoid to which x[j,] belongs */
     for (j = 1; j <= *nn; ++j) {
 	if (nrepr[j] == 0) {
 	    dsmal = *s * 1.1f + 1.;
 	    for (k = 1; k <= *nn; ++k) {
 		if (nrepr[k] == 1) {
-		    njaj = F77_CALL(meet)(&k, &j);
+		    njaj = ind_2(k, j);
 		    if (dsmal > dys[njaj]) {
 			dsmal = dys[njaj];
 			ksmal = k;
@@ -231,7 +224,7 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
 	    nsend[j] = j;
 	}
     }
-    /* ncluv[] := ... */
+    /* ncluv[j] := k , the cluster number  (k = 1..*kk) */
     jk = 1;
     nplac = nsend[1];
     for (j = 1; j <= *nn; ++j) {
@@ -252,7 +245,7 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
 	}
     }
 
-    if(all_stats) { /*     analysis of the clustering. */
+    if(all_stats) { /*	   analysis of the clustering. */
 
 	for (k = 1; k <= *kk; ++k) {
 	    ntt = 0;
@@ -263,10 +256,10 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
 		    ++ntt;
 		    m = nsend[j];
 		    nelem[ntt] = j;
-		    njm = F77_CALL(meet)(&j, &m);
-		    ttt += dys[njm];
-		    if (radus[k] < dys[njm])
-			radus[k] = dys[njm];
+		    djm = dys[ind_2(j, m)];
+		    ttt += djm;
+		    if (radus[k] < djm)
+			radus[k] = djm;
 		}
 	    }
 	    ttd[k] = ttt / ntt;
@@ -301,7 +294,7 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
 		separ[k] = *s * 1.1f + 1.;
 		for (j = 1; j <= *nn; ++j) {
 		    if (j != nvn) {
-			mevj = F77_CALL(meet)(&nvn, &j);
+			mevj = ind_2(nvn, j);
 			if (separ[k] > dys[mevj])
 			    separ[k] = dys[mevj];
 		    }
@@ -323,7 +316,7 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
 		    aja = -1.;
 		    ajb = *s * 1.1f + 1.;
 		    for (jb = 1; jb <= *nn; ++jb) {
-			jndz = F77_CALL(meet)(&nvna, &jb);
+			jndz = ind_2(nvna, jb);
 			if (ncluv[jb] == k) {
 			    if (aja < dys[jndz])
 				aja = dys[jndz];
@@ -378,7 +371,6 @@ void dark(int *kk, int *nn, int *hh, int *ncluv,
     /* Parameter adjustments */
     --avsyl;
     --ncluv;
-    --dys;
 
     nsylr = 0;
     *ttsyl = 0.;
@@ -400,7 +392,7 @@ void dark(int *kk, int *nn, int *hh, int *ncluv,
 		for (l = 1; l <= *nn; ++l) if (ncluv[l] == k_) {
 		    ++nbb;
 		    if (l != nj)
-			db += dys[F77_CALL(meet)(&nj, &l)];
+			db += dys[ind_2(nj, l)];
 		}
 		db /= nbb;
 		if (dysb > db) {
@@ -413,7 +405,7 @@ void dark(int *kk, int *nn, int *hh, int *ncluv,
 		for (l = 0; l < ntt; ++l) {
 		    nl = nelem[l];
 		    if (nj != nl)
-			dysa += dys[F77_CALL(meet)(&nj, &nl)];
+			dysa += dys[ind_2(nj, nl)];
 		}
 		dysa /= ntt - 1;
 		if (dysa > 0.) {

@@ -1,4 +1,4 @@
-#### $Id: agnes.q,v 1.15 2003/03/17 17:10:05 maechler Exp $
+#### $Id: agnes.q,v 1.17 2004/03/11 16:26:40 maechler Exp maechler $
 agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		  stand = FALSE, method = "average",
                   keep.diss = n < 100, keep.data = !diss)
@@ -10,17 +10,20 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 	stop("invalid clustering method")
     if(meth == -1)
 	stop("ambiguous clustering method")
-    if(diss) {
+    if((diss <- as.logical(diss))) {
 	## check type of input vector
-	if(any(is.na(x)))
-	    stop("NA-values in the dissimilarity matrix not allowed." )
-	if(data.class(x) != "dissimilarity") {
-	    if(!is.numeric(x) || is.na(sizeDiss(x)))
-		stop("x is not and cannot be converted to class dissimilarity")
-	    ## convert input vector to class "dissimilarity"
-	    class(x) <- ..dClass
-	    attr(x, "Size") <- sizeDiss(x)
-	    attr(x, "Metric") <- "unspecified"
+	if(any(is.na(x))) stop(..msg$error["NAdiss"])
+	if(data.class(x) != "dissimilarity") { # try to convert to
+	    if(!is.null(dim(x))) {
+		x <- as.dist(x) # or give an error
+	    } else {
+		## possibly convert input *vector*
+		if(!is.numeric(x) || is.na(n <- sizeDiss(x)))
+		    stop(..msg$error["non.diss"])
+		attr(x, "Size") <- n
+	    }
+	    class(x) <- dissiCl
+	    if(is.null(attr(x,"Metric"))) attr(x, "Metric") <- "unspecified"
 	}
 	n <- attr(x, "Size")
 	dv <- x[lower.to.upper.tri.inds(n)]
@@ -82,7 +85,7 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
             disv <- res$dis[-1]
             disv[disv == -1] <- NA
             disv <- disv[upper.to.lower.tri.inds(n)]
-            class(disv) <- ..dClass
+            class(disv) <- dissiCl
             attr(disv, "Size") <- nrow(x)
             attr(disv, "Metric") <- metric
             attr(disv, "Labels") <- dimnames(x)[[1]]

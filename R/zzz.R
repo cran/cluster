@@ -1,10 +1,10 @@
+## no S4 methodology here; speedup :
+.noGenerics <- TRUE
+
 .First.lib <- function(lib, pkg) {
   require(mva)
   library.dynam("cluster", pkg, lib)
 }
-
-## no S4 methodology here; speedup :
-.noGenerics <- TRUE
 
 ## for R versions < 1.8:
 if(paste(R.version$major, R.version$minor, sep=".") < 1.8) {

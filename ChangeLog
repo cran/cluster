@@ -1,3 +1,46 @@
+2004-03-11  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/clara.c (clara): fixed second NA-handling bug:
+		the test should be "nunfs+1 != jran"
+	  Fixed "rngR = TRUE" bug: accidentally still used internal RNG.
+	  Fixed 3rd bug if (lrg_sam) : need jk < n_sam for nsel[jk].
+	  More & nicer printing for 'trace > 0'.
+
+	* R/clara.q (clara): more useful error msg for too many NAs (jstop=1)
+
+
+2004-03-10  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/clara.c (clara): finally fixed longstanding bug which could
+		cause wrong results and segmentation faults, instead of ending
+		with the following error:
+
+	* tests/clara-NAs.R: new file w/ former seg.fault
+
+	* src/cluster.h (ind_2): new function instead of F77_CALL(meet)
+	* src/clara.c (clara): defined here (and used).
+	* src/pam.c (pam): used here
+
+2004-03-09  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/clara.q (clara): sampsize = min(n, <old_default>)
+
+2004-03-08  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/agnes-ex.R: do not use object.size(), since
+	* tests/diana-ex.R: it's different on 64 bit, e.g.
+
+	* R/agnes.q (agnes): \	when diss = TRUE,
+	* R/diana.q (diana):  \ but 'x' is not a "dissimilarity",
+	* R/fanny.q (fanny):  / try  as.dist(x)
+	* R/pam.q (pam):     /	and be consistent in all 4 functions
+
+2004-01-23  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/silhouette.R (silhouette.default): do not require cluster
+	codes in 1:k (Murad Nayal <mn216@columbia.edu>).
+	* man/silhouette.Rd: accordingly; mention 2 <= k <= n-1
+
 2003-12-22  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.8.0 for R versions <= 1.8.1
@@ -16,6 +59,8 @@
 	* man/pam.Rd: documenting `cluster.only'
 
 2003-11-29  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/daisy.q (daisy): better checking & handling  if(stand)
 
 	* R/pam.q (pam): new argument `cluster.only = FALSE'.  If true,
 	  only return the clustering vector, no other info.

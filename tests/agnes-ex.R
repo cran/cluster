@@ -23,6 +23,6 @@ summary(agnes(agriculture))
 data(ruspini)
 summary(ar0 <- agnes(ruspini, keep.diss=FALSE, keep.data=FALSE))
 summary(ar1 <- agnes(ruspini, metric = "manhattan"))
-c(object.size(ar0),object.size(ar1))
+str(ar1)
 
 cat('Time elapsed: ', proc.time() - .proctime00,'\n')

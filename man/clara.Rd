@@ -7,7 +7,7 @@
 }
 \usage{
 clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
-      sampsize = 40 + 2 * k, trace = 0, keep.data = TRUE, keepdata,
+      sampsize = min(n, 40 + 2 * k), trace = 0, keep.data = TRUE, keepdata,
       rngR = FALSE)
 }
 \arguments{

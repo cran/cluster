@@ -4,7 +4,11 @@
 #include <R_ext/RS.h>
 
 /* in ./meet.f --- called from most source files: */
-int F77_NAME(meet)(int *, int *);
+/* NO LONGER:
+ * int F77_NAME(meet)(int *, int *);
+
+ * but this instead: */
+int ind_2(int l, int j);
 
 /* --------- ./clara.c ------------------*/
 
@@ -41,7 +45,7 @@ void clara(int *n,  /* = number of objects */
 
 void dysta2(int nsam, int jpp, int *nsel,
 	    double *x, int n, double *dys, int diss_kind,
-	    int *jtmd, double *valmd, int *jhalt);
+	    int *jtmd, double *valmd, Rboolean *toomany_NA);
 
 void bswap2(int kk, int nsam, int *nrepr,
 	    double *dys, double *sky, double s,

@@ -35,7 +35,7 @@ silhouette.default <- function(x, dist, dmatrix, ...) {
                   list(names(x), c("cluster","neighbor","sil_width")))
     for(j in 1:k) { # j-th cluster:
         Nj <- sum(iC <- x == clid[j])
-        wds[iC, "cluster"] <- j
+        wds[iC, "cluster"] <- clid[j]
         a.i <- if(Nj > 1) colSums(dmatrix[iC, iC])/(Nj - 1) else 0
                                         # length(a.i)= Nj
         ## minimal distances to points in all other clusters:

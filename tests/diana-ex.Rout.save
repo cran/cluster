@@ -1,17 +1,18 @@
 
-R : Copyright 2003, The R Development Core Team
-Version 1.7.0 Under development (unstable) (2003-03-25)
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 1.9.0 alpha (2004-03-08), ISBN 3-900051-00-3
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
-Type `license()' or `licence()' for distribution details.
+Type 'license()' or 'licence()' for distribution details.
 
 R is a collaborative project with many contributors.
-Type `contributors()' for more information.
+Type 'contributors()' for more information and
+'citation()' on how to cite R in publications.
 
-Type `demo()' for some demos, `help()' for on-line help, or
-`help.start()' for a HTML browser interface to help.
-Type `q()' to quit R.
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
 
 > library(cluster)
 > options(digits = 6)
@@ -411,9 +412,24 @@ Number of objects : 75
 Available components:
 [1] "order"     "height"    "dc"        "merge"     "diss"      "call"     
 [7] "order.lab" "data"     
-> c(object.size(dr0),object.size(dr1))
-[1]  3304 28564
+> str(dr1)
+List of 8
+ $ order    : int [1:75] 1 2 3 5 9 10 14 16 18 19 ...
+ $ height   : num [1:74] 12 9 22 36 5 24 11 5 2 12 ...
+ $ dc       : num 0.958
+ $ merge    : int [1:74, 1:2] -55 -27 -18 -49 -33 -32 -23 -59 -50 -29 ...
+ $ diss     :Classes 'dissimilarity', 'dist'  atomic [1:2775] 11 12 29 13 25 43 33 22 27 39 ...
+  .. ..- attr(*, "Size")= int 75
+  .. ..- attr(*, "Metric")= chr "manhattan"
+  .. ..- attr(*, "Labels")= chr [1:75] "1" "2" "3" "4" ...
+ $ call     : language diana(x = ruspini, metric = "manhattan")
+ $ order.lab: chr [1:75] "1" "2" "3" "5" ...
+ $ data     : int [1:75, 1:2] 4 5 10 9 13 13 12 15 18 19 ...
+  ..- attr(*, "dimnames")=List of 2
+  .. ..$ : chr [1:75] "1" "2" "3" "4" ...
+  .. ..$ : chr [1:2] "x" "y"
+ - attr(*, "class")= chr [1:2] "diana" "twins"
 > 
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  0.19 0.02 0.64 0 0 
+Time elapsed:  0.17 0.02 0.22 0 0 
 > 

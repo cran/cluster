@@ -1,18 +1,21 @@
-#### $Id: fanny.q,v 1.13 2003/03/17 17:11:26 maechler Exp $
+#### $Id: fanny.q,v 1.15 2004/03/11 16:26:40 maechler Exp maechler $
 fanny <- function(x, k, diss = inherits(x, "dist"),
 		  metric = "euclidean", stand = FALSE)
 {
-    if(diss) {
+   if((diss <- as.logical(diss))) {
 	## check type of input vector
-	if(any(is.na(x)))
-	    stop("NA-values in the dissimilarity matrix not allowed.")
-	if(data.class(x) != "dissimilarity") {
-	    if(!is.numeric(x) || is.na(sizeDiss(x)))
-		stop("x is not of class dissimilarity and can not be converted to this class." )
-	    ## convert input vector to class "dissimilarity"
-	    class(x) <- ..dClass
-	    attr(x, "Size") <- sizeDiss(x)
-	    attr(x, "Metric") <- "unspecified"
+	if(any(is.na(x))) stop(..msg$error["NAdiss"])
+	if(data.class(x) != "dissimilarity") { # try to convert to
+	    if(!is.null(dim(x))) {
+		x <- as.dist(x) # or give an error
+	    } else {
+		## possibly convert input *vector*
+		if(!is.numeric(x) || is.na(n <- sizeDiss(x)))
+		    stop(..msg$error["non.diss"])
+		attr(x, "Size") <- n
+	    }
+	    class(x) <- dissiCl
+	    if(is.null(attr(x,"Metric"))) attr(x, "Metric") <- "unspecified"
 	}
 	## prepare arguments for the Fortran call
 	n <- attr(x, "Size")
@@ -91,7 +94,7 @@ fanny <- function(x, k, diss = inherits(x, "dist"),
 	    stop("No clustering performed, NA-values in the dissimilarity matrix.")
 	disv <- res$dis[ - (1 + (n * (n - 1))/2)]
 	disv[disv == -1] <- NA
-	class(disv) <- ..dClass
+	class(disv) <- dissiCl
 	attr(disv, "Size") <- nrow(x)
 	attr(disv, "Metric") <- metric
 	attr(disv, "Labels") <- dimnames(x)[[1]]

@@ -1,6 +1,11 @@
 Things that were on my TODO list and have been accomplished
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Mar, 2004:
+
+o  When using a NAMESPACE, can rename `..dClass' in R/0aaa.R (and *.q):
+   Renamed to 'dissiCl'
+
 Dec, 2003:
 
 o cutree(diana(), h = h0)

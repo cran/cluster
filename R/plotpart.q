@@ -1,4 +1,4 @@
-### $Id: plotpart.q,v 1.21 2003/06/03 13:39:52 maechler Exp $
+### $Id: plotpart.q,v 1.22 2004/03/08 10:56:34 maechler Exp maechler $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
          nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,

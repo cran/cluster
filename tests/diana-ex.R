@@ -13,6 +13,6 @@ summary(diana(agriculture))
 data(ruspini)
 summary(dr0 <- diana(ruspini, keep.diss=FALSE, keep.data=FALSE))
 summary(dr1 <- diana(ruspini, metric = "manhattan"))
-c(object.size(dr0),object.size(dr1))
+str(dr1)
 
 cat('Time elapsed: ', proc.time() - .proctime00,'\n')
