@@ -51,7 +51,7 @@ mona <- function(x)
         lava[lava == "0"] <- "NULL"
         res$lava <- lava
     }
-    ##construct S-Plus object
+    ##construct S object
     clustering <- list(data = res$x2, order = res$ner,
                        variable = res$lava[ -1 ], step = res$nban[-1])
     if(exists("order.lab"))
@@ -72,7 +72,7 @@ print.mona <- function(x, ...)
     print(x$variable, quote = FALSE, ...)
     cat("Separation step:\n")
     print(x$step, ...)
-    cat("\nAvailable arguments:\n")
+    cat("\nAvailable components:\n")
     print(names(x), ...)
     invisible(x)
 }

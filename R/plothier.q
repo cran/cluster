@@ -70,7 +70,7 @@ plot.agnes <- function(x, ask = FALSE, which.plots = NULL,
         choices <- c("All", "Banner", "Clustering Tree")
         choices <- substring(choices, 1, 40)
         tmenu <- paste("plot:", choices)
-        pick <- 3
+        pick <- 2
         ask.now <- ask
         while(pick <= length(tmenu) + 2) {
             if(ask.now)

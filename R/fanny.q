@@ -157,7 +157,7 @@ print.fanny <- function(x, ...)
     print(x$coeff, ...)
     cat("Closest hard clustering:\n")
     print(x$clustering, ...)
-    cat("\nAvailable arguments:\n")
+    cat("\nAvailable components:\n")
     print(names(x), ...)
     invisible(x)
 }
@@ -188,7 +188,7 @@ print.summary.fanny <- function(x, ...)
     }
     cat("\n")
     print(x$diss, ...)
-    cat("\nAvailable arguments:\n")
+    cat("\nAvailable components:\n")
     print(names(x), ...)
     invisible(x)
 }

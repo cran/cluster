@@ -124,7 +124,7 @@ c
  110     continue
  120  continue
 c     
-c     merge-structure for plotting tree in s-plus
+c     merge-structure for plotting tree in S
 c     
       l1=-la
       l2=-lb
@@ -410,7 +410,7 @@ c
       if(kwan(ja).eq.1)go to 420
       go to 30
 c     
-c     merge-structure for plotting tree in s-plus
+c     merge-structure for plotting tree in S
 c     
  500  do 550 nmerge=1,(nn-1)
          dmin=cs

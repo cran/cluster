@@ -99,7 +99,7 @@ diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 	if(res$ok == -1)
 	    stop("No clustering performed, NA-values in the dissimilarity matrix.\n"
 		 )
-	## adapt Fortran output to S-Plus:
+	## adapt Fortran output to S:
 	## convert lower matrix, read by rows, to upper matrix, read by rows.
 	disv <- res$dis[-1]
 	disv[disv == -1] <- NA
@@ -144,7 +144,7 @@ print.diana <- function(x, ...)
     print(x$height, ...)
     cat("Divisive coefficient:\n")
     print(x$dc, ...)
-    cat("\nAvailable arguments:\n")
+    cat("\nAvailable components:\n")
     print(names(x), ...)
     invisible(x)
 }
@@ -169,7 +169,7 @@ print.summary.diana <- function(x, ...)
     print(x$dc, ...)
     cat("\n")
     print(x$diss, ...)
-    cat("\nAvailable arguments:\n")
+    cat("\nAvailable components:\n")
     print(names(x), ...)
     invisible(x)
 }

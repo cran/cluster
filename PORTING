@@ -17,7 +17,7 @@ by
 * R/plothier.q:
 
 Replace `pick <- 2' by `pick <- 3'.
-(Undo when plclust is available.)
+(Undo when plclust is available.)	-- undone for version 1.3-2
 
 Replace
   invisible(return(x))

@@ -1,7 +1,7 @@
 ### SETUP
 library(cluster)
 
-### Clusplot() RESULT checking ...
+### clusplot() & pam() RESULT checking ...
 
 ## plotting votes.diss(dissimilarity) in a bivariate plot and
 ## partitioning into 2 clusters

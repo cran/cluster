@@ -11,14 +11,14 @@
   or \code{summary} for the general behavior of these.
 }
 \usage{
-  print.dissimilarity(x, \dots)
-summary.dissimilarity(x, \dots)
+  \method{print}{dissimilarity}(x, \dots)
+\method{summary}{dissimilarity}(x, \dots)
 }
 \seealso{
-\code{\link{daisy}}, \code{\link{dissimilarity.object}},
-\code{\link{print}}, \code{\link{print.default}}. 
+  \code{\link{daisy}}, \code{\link{dissimilarity.object}},
+  \code{\link{print}}, \code{\link{print.default}}. 
 }
 \keyword{cluster}
 \keyword{print}
-% Converted by Sd2Rd version 0.3-2.
+
  

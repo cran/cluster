@@ -1,19 +1,17 @@
-      FUNCTION MEET(L,J)
-      IF(L.GT.J)GO TO 10
-      IF(L.EQ.J)GO TO 20
-CC
-CC   L LESS THAN J
-CC
-      MEET=(J-2)*(J-1)/2+L+1
-      RETURN
-CC
-CC   J LESS THAN L
-CC
-   10 MEET=(L-2)*(L-1)/2+J+1
-      RETURN
-CC
-CC   J EQUALS L
-CC
-   20 MEET=1
-      RETURN
-      END
+c Utility called from CLARA, PAM & TWINS
+c original had MEET(), MEET2(), and MEET3() in the corresponding 3 source files
+
+      integer function meet(l,j)
+      integer l,j
+
+      if(l.gt.j) then
+c     			l > j
+         meet= (l-2)*(l-1)/2 + j+1
+      else if(l.eq.j) then
+         meet= 1
+      else
+c   			l < j
+         meet= (j-2)*(j-1)/2 + l+1
+      endif
+      return
+      end

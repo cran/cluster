@@ -1,52 +1,53 @@
 agnes                    Agglomerative Nesting
-agnes.object             Agglomerative Nesting Object
-agriculture              European Union Agricultural Workforces
-animals                  Attributes of Animals
 clara                    Clustering Large Applications
+daisy                    Dissimilarity Matrix Calculation
+diana                    Divisive Analysis
+fanny                    Fuzzy Analysis
+mona                     Monothetic Analysis
+pam                      Partitioning Around Medoids
+
+dissimilarity.object     Dissimilarity Matrix Object
+partition.object         Partitioning Object
+twins.object             Hierarchical Clustering Object
+
+agnes.object             Agglomerative Nesting (AGNES) Object
 clara.object             Clustering Large Applications (CLARA) Object
+diana.object             Divisive Analysis (DIANA) Object
+fanny.object             Fuzzy Analysis (FANNY) Object
+mona.object              Monothetic Analysis (MONA) Object
+pam.object               Partitioning Around Medoids (PAM) Object
+
 clusplot                 Cluster Plot - Generic Function
 clusplot.default         Bivariate Cluster Plot (clusplot)
 clusplot.partition       Bivariate clusplot of a partitioning object
-daisy                    Dissimilarity Matrix Calculation
-diana                    Divisive Analysis
-diana.object             Divisive Analysis (DIANA) Object
-dissimilarity.object     Dissimilarity Matrix Object
-fanny                    Fuzzy Analysis
-fanny.object             Fuzzy Analysis (FANNY) Object
-flower                   Flower Characteristics
-mona                     Monothetic Analysis
-mona.object              Monothetic Analysis (MONA) Object
-pam                      Partitioning Around Medoids
-pam.object               Partitioning Around Medoids (PAM) Object
-partition.object         Partitioning Object
+pltree                   Clustering Trees - Generic Function
+pltree.twins             Clustering Tree of a Hierarchical Clustering
+
 plot.agnes               Plots of an Agglomerative Hierarchical Clustering
 plot.diana               Plots of a Divisive Hierarchical Clustering
 plot.mona                Banner of Monothetic Divisive Hierarchical Clusterings
 plot.partition           Plot of a Partition of the Data Set
-pltree                   Clustering Trees - Generic Function
-pltree.twins             Clustering Tree of a Hierarchical Clustering
-print.agnes              Use `print()' on an `agnes' object
+print.dissimilarity      Print and Summary Methods for Dissimilarity Objects
+print.agnes              Print Method for AGNES Objects
 print.clara              Print Method for CLARA Objects
 print.diana              Print Method for DIANA Objects
-print.dissimilarity      Print and Summary Methods for Dissimilarity
-                         Objects
 print.fanny              Print Method for FANNY Objects
 print.mona               Print Method for MONA Objects
 print.pam                Print Method for PAM Objects
-print.summary.agnes      Print Method for Summary.AGNES Objects
-print.summary.clara      Print Method for Summary.CLARA Objects
-print.summary.diana      Print Method for Summary.DIANA Objects
-print.summary.fanny      Print Method for Summary.FANNY Objects
-print.summary.mona       Print Method for Summary.MONA Objects
-print.summary.pam        Print Method for Summary.PAM Objects
+summary.agnes            Summary Method for `agnes' Objects
+summary.clara            Summary Method for `clara' Objects
+summary.diana            Summary method for `diana' Objects
+summary.fanny            Summary Method for `fanny' Objects
+summary.mona             Summary Method for `mona'  Objects
+summary.pam              Summary Method for `pam'   Objects
+
+
+          DATASETS
+
+agriculture              European Union Agricultural Workforces
+animals                  Attributes of Animals
+flower                   Flower Characteristics
 ruspini                  Ruspini Data
-summary.agnes            Summary method for `agnes' objects
-summary.clara            Summary method for `clara' objects
-summary.diana            Summary method for `diana' objects
-summary.fanny            Summary Method for FANNY Objects
-summary.mona             Summary Method for MONA Objects
-summary.pam              Summary Method for PAM Objects
-twins.object             Hierarchical Clustering Object
 votes.repub              Votes for Republican Candidate in Presidential
                          Elections
 xclara                   Bivariate Data Set with 3 Clusters

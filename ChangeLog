@@ -1,3 +1,40 @@
+2001-05-26  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/*.Rd: indenting in all dataset examples
+	* man/votes.repub.Rd: usage fix
+
+2001-05-23  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* INDEX: structured logically, rather than alphabetically
+	* tests/clara.R: new test
+	* src/clara.f (clara): added comments 
+	* R/clara.q (clara)  : comments and cleanup
+
+2001-05-22  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): New version is 1.3-3.
+
+	* R/agnes.q and all others: `components' not `arguments' in print.*() 
+	* src/meet.f (meet): use [if then else] instead of goto
+	* src/clara.f (clara): all declarations explicit; some cleanup
+
+2001-05-21  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Package): licence changed to GPL (Rousseeuw's e-mail)
+
+	* R/pam.q: minor code cleanup for Fortran interface
+	* src/pam.f (pam): all declarations explicit
+
+	* README: integrated former ./README_MM
+	* src/twins.f, many R/*.q and
+	* man/pltree.Rd: replace  s/S-plus/S/ in many places
+
+
+2001-03-21  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/print.summary.FOO.Rd: drop these files, move some to FOO.Rd
+	* man/print*.Rd: cleanup, use \method{}
+	
 2001-01-04  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): New version is 1.3-2.

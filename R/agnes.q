@@ -106,7 +106,7 @@ agnes <- function(x, diss = FALSE, metric = "euclidean",
         ##give warning if some dissimilarities are missing.
         if(res$ok == -1)
             stop("No clustering performed, NA-values in the dissimilarity matrix.\n" )
-        ## adapt Fortran output to S-Plus:
+        ## adapt Fortran output to S:
         ##convert lower matrix, read by rows, to upper matrix, read by rows.
         disv <- res$dis[-1]
         disv[disv == -1] <- NA
@@ -156,7 +156,7 @@ print.agnes <- function(x, ...)
     print(x$height, ...)
     cat("Agglomerative coefficient:\n")
     print(x$ac, ...)
-    cat("\nAvailable arguments:\n")
+    cat("\nAvailable components:\n")
     print(names(x), ...)
     invisible(x)
 }
@@ -175,7 +175,7 @@ print.summary.agnes <- function(x, ...)
     cat("\n")
     ## only extra  compared to print.agnes:
     print(x$diss, ...)
-    cat("\nAvailable arguments:\n")
+    cat("\nAvailable components:\n")
     print(names(x), ...)
     invisible(x)
 }

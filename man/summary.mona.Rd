@@ -1,16 +1,12 @@
-% %Z%%M% version %I% created %G%
-% %Z%%Q%
 \name{summary.mona}
 \alias{summary.mona}
-\title{Summary Method for MONA Objects}
-\description{
-  Returns a summary list for a \code{mona} object.
-}
+\alias{print.summary.mona}
+\title{Summary method for `mona' objects}
+\description{Returns (and prints) a summary list for a \code{mona} object.}
 \usage{
-summary.mona(x, \dots)
+\method{summary}{mona}(x, \dots)
+\method{print}{summary.mona}(x, \dots)
 }
-\seealso{
-\code{\link{mona}}, \code{\link{mona.object}}.
-}
+\seealso{\code{\link{mona}}, \code{\link{mona.object}}.}
 \keyword{cluster}
-% Converted by Sd2Rd version 0.3-2.
+\keyword{print}

@@ -17,7 +17,7 @@ Type `q()' to quit R.
 > library(cluster)
 Loading required package: mva 
 > 
-> ### Clusplot() RESULT checking ...
+> ### clusplot() & pam() RESULT checking ...
 > 
 > ## plotting votes.diss(dissimilarity) in a bivariate plot and
 > ## partitioning into 2 clusters

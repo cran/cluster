@@ -3,37 +3,33 @@
 \title{European Union Agricultural Workforces}
 \usage{data(agriculture)}
 \description{
-    Gross National Product (GNP) per capita and percentage of the
-    population working in agriculture for each country belonging to the
-    European Union in 1993.
+  Gross National Product (GNP) per capita and percentage of the
+  population working in agriculture for each country belonging to the
+  European Union in 1993.
 }
 \format{
-    A data frame with 12 observations on 2 variables:
-    \tabular{rlll}{
-	[ , 1] \tab \code{x} \tab numeric \tab per capita GNP \cr
-	[ , 2] \tab \code{y} \tab numeric \tab percentage in agriculture
-    }
-    The row names of the data frame indicate the countries.
+  A data frame with 12 observations on 2 variables:
+  \tabular{rlll}{
+    [ , 1] \tab \code{x} \tab numeric \tab per capita GNP \cr
+    [ , 2] \tab \code{y} \tab numeric \tab percentage in agriculture
+  }
+  The row names of the data frame indicate the countries.
 }
 \source{
-    Eurostat (European Statistical Agency, 1994):
-    \emph{Cijfers en feiten: Een statistisch portret van de Europese
-	Unie}.
+  Eurostat (European Statistical Agency, 1994):
+  \emph{Cijfers en feiten: Een statistisch portret van de Europese Unie}.
 }
 \details{
-    The data seem to show two clusters, the ``more agricultural'' one
-    consisting of Greece, Portugal, Spain, and Ireland.
+  The data seem to show two clusters, the ``more agricultural'' one
+  consisting of Greece, Portugal, Spain, and Ireland.
 }
-\seealso{
-    \code{\link{agnes}},
-    \code{\link{daisy}},
-    \code{\link{diana}}.
+\seealso{\code{\link{agnes}}, \code{\link{daisy}}, \code{\link{diana}}.
 }
 \references{
-    Anja Struyf, Mia Hubert & Peter J. Rousseeuw (1996):
-    Clustering in an Object-Oriented Environment.
-    \emph{Journal of Statistical Software}, \bold{1}.
-    \url{http://www.stat.ucla.edu/journals/jss/}
+  Anja Struyf, Mia Hubert & Peter J. Rousseeuw (1996):
+  Clustering in an Object-Oriented Environment.
+  \emph{Journal of Statistical Software}, \bold{1}.
+  \url{http://www.stat.ucla.edu/journals/jss/}
 }
 \examples{
 data(agriculture)

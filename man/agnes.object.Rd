@@ -1,8 +1,6 @@
-% %Z%%M% version %I% created %G%
-% %Z%%Q%
 \name{agnes.object}
 \alias{agnes.object}
-\title{Agglomerative Nesting Object}
+\title{Agglomerative Nesting (AGNES) Object}
 \description{
   The objects of class \code{"agnes"}
   represent an agglomerative hierarchical clustering of a dataset.
@@ -70,4 +68,4 @@
   \code{\link{plot.agnes}}, \code{\link{twins.object}}. 
 }
 \keyword{cluster}
-% Converted by Sd2Rd version 0.3-2.
+

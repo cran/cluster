@@ -93,13 +93,13 @@ agnes(x, diss = FALSE, metric = "euclidean", stand = FALSE, method = "average")
   given by the user.
 }
 \references{
-Kaufman, L. and Rousseeuw, P.J. (1990). 
-\emph{Finding Groups in Data: An Introduction to Cluster Analysis.}
-Wiley, New York.
+  Kaufman, L. and Rousseeuw, P.J. (1990)
+  \emph{Finding Groups in Data: An Introduction to Cluster Analysis.}
+  Wiley, New York.
 
-Struyf, A., Hubert, M. and Rousseeuw, P.J. (1997). Integrating Robust 
-Clustering Techniques in S-PLUS,
-\emph{Computational Statistics and Data Analysis}, \bold{26}, 17-37.
+  Struyf, A., Hubert, M. and Rousseeuw, P.J. (1997)
+  Integrating Robust Clustering Techniques in S-PLUS,
+  \emph{Computational Statistics and Data Analysis}, \bold{26}, 17-37.
 }
 \seealso{
   \code{\link{agnes.object}}, \code{\link{daisy}}, \code{\link{diana}},

@@ -6,28 +6,37 @@ c     partitioning around medoids
 c     
 c     carries out a clustering using the k-medoid approach.
 c     
-      implicit double precision (a-h,o-z)
-      dimension x(nn,jpp),valmd(jpp),jtmd(jpp)
-      dimension nsend(nn),nrepr(nn),nelem(nn),ncluv(nn)
-      dimension radus(nn),damer(nn),ttd(nn),separ(nn),med(kk)
-      dimension clusinf(kk,5),sylinf(nn,4),obj(2)
-      dimension dys(1+nn*(nn-1)/2),nisol(kk)
+      integer nn,jpp,kk, jdyss,ndyst
 
-      if(jdyss.eq.1)go to 125
-      jhalt=0
-      call dysta(nn,jpp,x,dys,ndyst,jtmd,valmd,jhalt)
-      if (jhalt.eq.0)go to 125
-      jdyss=-1
-      return
+      double precision x(nn,jpp), dys(1+nn*(nn-1)/2), valmd(jpp)
+      integer jtmd(jpp), nsend(nn),nrepr(nn),nelem(nn), 
+     +     ncluv(nn), nisol(kk), med(kk)
+      double precision radus(nn),damer(nn),ttd(nn),separ(nn),ttsyl
+      double precision clusinf(kk,5),sylinf(nn,4),obj(2)
+c
+      integer jhalt, nhalf, k,l
+      double precision sky,s
+
+c jdyss = 0 : compute distances from x 
+c       = 1 : distances provided  in x      
+      if(jdyss.ne.1) then
+         jhalt=0
+         call dysta(nn,jpp,x,dys,ndyst,jtmd,valmd,jhalt)
+         if (jhalt.ne.0) then
+            jdyss=-1
+            return
+         endif
+      endif
 c     
- 125  s=0.0
+      s=0.0
       nhalf=nn*(nn-1)/2+1
       l=1
  130  l=l+1
       if(dys(l).gt.s)s=dys(l)
       if(l.lt.nhalf)go to 130
-      call bswap(kk,nn,nrepr,radus,damer,ttd,nhalf,dys,sky,s,obj)
-      call cstat(kk,nn,nsend,nrepr,radus,damer,ttd,separ,sky,s,
+
+      call bswap(kk,nn,      nrepr,radus,damer,ttd, nhalf,dys,sky,s,obj)
+      call cstat(kk,nn,nsend,nrepr,radus,damer,ttd, separ,    sky,s,
      f     nhalf,dys,ncluv,nelem,med,nisol)
       do 135 k=1,kk
          clusinf(k,1)=nrepr(k)
@@ -36,17 +45,20 @@ c
          clusinf(k,4)=damer(k)
          clusinf(k,5)=separ(k)
  135  continue
-      if(kk.le.1)go to 140
-      if(kk.ge.nn)go to 140
-      call dark(kk,nn,nhalf,ncluv,nsend,nelem,nrepr,
-     f     radus,damer,ttd,ttsyl,dys,s,sylinf)
- 140  end
+      if(1 .lt. kk .and. kk .lt. nn) then
+         call dark(kk,nn,nhalf,ncluv,nsend,nelem,nrepr,
+     f        radus,damer,ttd,ttsyl,dys,s,sylinf)
+      endif
+      end
 c     -----------------------------------------------------------
 c     
       subroutine dysta(nn,jpp,x,dys,ndyst,jtmd,valmd,jhalt)
 
-      implicit double precision (a-h,o-z)
-      dimension x(nn,jpp),dys(1+nn*(nn-1)/2),jtmd(jpp),valmd(jpp)
+      integer nn, jpp, ndyst, jtmd(jpp), jhalt
+      double precision x(nn,jpp), dys(1+nn*(nn-1)/2), valmd(jpp)
+
+      integer nlk,j,l,k, lsubt, npres
+      double precision pp, clk, rpres
 
       pp=jpp
       nlk=1 
@@ -83,11 +95,15 @@ c     -----------------------------------------------------------
 c     
       subroutine bswap(kk,nn,nrepr,dysma,dysmb,beter,hh,dys,sky,s,obj)
 
-      implicit double precision (a-h,o-z)
-
       integer kk,nn,nrepr(nn),hh
       double precision dysma(nn),dysmb(nn),beter(nn),dys(hh), sky,s,
      +     obj(2)
+c function called
+      integer meet
+      external meet
+c
+      integer nny, j,ja,k,nkj, njn,njaj,nmax, nbest,kbest
+      double precision cmd, ammax, rnn,dz,dzsky,small
 c     
 c     first algorithm: build.
 c     
@@ -183,11 +199,17 @@ c
       subroutine cstat(kk,nn,nsend,nrepr,radus,damer,ttd,separ,z,s,
      f     hh,dys,ncluv,nelem,med,nisol)
 
-      implicit double precision (a-h,o-z)
-      integer hh
-      dimension ncluv(nn),nsend(nn),nrepr(nn),nelem(nn)
-      dimension separ(nn),damer(nn),radus(nn),ttd(nn)
-      dimension dys(hh),med(kk),nisol(kk)
+      integer kk,nn, hh, nsend(nn),nrepr(nn)
+      integer ncluv(nn),nelem(nn), nisol(kk), med(kk)
+      double precision radus(nn),damer(nn),ttd(nn),separ(nn),z,s,dys(hh)
+
+c function called
+      integer meet
+      external meet
+c
+      integer j,k,m,ja,jb,jk, njaj, ksmal,nplac,numcl,numl,nel,njm,
+     +     nvn,ntt,mevj,kand,nvna,jndz
+      double precision dsmal, ttt,rtt,rnn,dam,sep,aja,ajb
 
       do 130 j=1,nn
          if(nrepr(j).eq.1)go to 120
@@ -250,8 +272,8 @@ c
       do 40 k=1,kk
 c     
 c     identification of cluster k:
-c     nel=number of objects
-c     nelem=vector of objects
+c     nel  = number of objects
+c     nelem= vector of objects
 c     
          nel=0
          do 23 j=1,nn
@@ -267,11 +289,12 @@ c
          do 250 j=1,nn
             if(j.eq.nvn)go to 250
             mevj=meet(nvn,j)
-            if(separ(k).gt.dys(mevj))separ(k)=dys(mevj)
+            if(separ(k).gt.dys(mevj)) separ(k)=dys(mevj)
  250     continue
 c     
-c     is cluster k     1) an l-cluster ?
-c     2) an l*-cluster ?
+c Is cluster k     
+c	1) an l-cluster  or
+c       2) an l*-cluster ?
 c     
          if(separ(k).eq.0.)go to 400
          numl=numl+1
@@ -285,14 +308,15 @@ c
             ajb=1.1*s+1.0
             do 25 jb=1,nn
                jndz=meet(nvna,jb)
-               if(ncluv(jb).eq.k)go to 30
-               if(dys(jndz).lt.ajb)ajb=dys(jndz)
-               go to 25
- 30            if(dys(jndz).gt.aja)aja=dys(jndz)
+               if(ncluv(jb).eq.k) then
+                  if(dys(jndz).gt.aja) aja=dys(jndz)
+               else
+                  if(dys(jndz).lt.ajb) ajb=dys(jndz)
+               endif
  25         continue
-            if(aja.ge.ajb)kand=0
-            if(dam.lt.aja)dam=aja
-            if(sep.gt.ajb)sep=ajb
+            if(aja.ge.ajb) kand=0
+            if(dam.lt.aja) dam=aja
+            if(sep.gt.ajb) sep=ajb
  26      continue
          separ(k)=sep
          damer(k)=dam
@@ -313,10 +337,17 @@ c
       subroutine dark(kk,nn,hh,ncluv,nsend,nelem,negbr,
      f     syl,srank,avsyl,ttsyl,dys,s,sylinf)
 
-      implicit double precision (a-h,o-z)
-      integer hh
-      dimension ncluv(nn),nsend(nn),nelem(nn),negbr(nn)
-      dimension syl(nn),srank(nn),avsyl(nn),dys(hh),sylinf(nn,4)
+      integer kk,nn,hh
+      integer ncluv(nn),nsend(nn),nelem(nn),negbr(nn)
+      double precision syl(nn),srank(nn),avsyl(nn),dys(hh),sylinf(nn,4)
+      double precision ttsyl, s
+c function called
+      integer meet
+      external meet
+c
+      integer j,l, lang,lplac, nsylr, nclu,numcl,ntt,nj,njl,nl,nbb,mjl
+      double precision dysa,dysb,db,att,btt,rtt,rnn,symax
+
       nsylr=0
       ttsyl=0.0 
       do 100 numcl=1,kk 

@@ -1,10 +1,52 @@
-This directory contains code, help and examples for CLUS, an S-PLUS
-package for clustering, as described in ``Clustering in an
-Object-Oriented Environment'' by Anja Struyf, Mia Hubert, and Peter
-J. Rousseeuw (Journal of Statistical Software, volume 1).
+ORIGINAL README :
+
+  This directory contains code, help and examples for CLUS, an S-PLUS
+  package for clustering, as described in ``Clustering in an
+  Object-Oriented Environment'' by Anja Struyf, Mia Hubert, and Peter
+  J. Rousseeuw (Journal of Statistical Software, volume 1).
+------------------------------------------------------------------------
 
 See http://www.stat.ucla.edu/journals/jss/ for the original version.
+
 The current port is based on material from
-	http://win-www.uia.ac.be/u/statis
+	http://win-www.uia.ac.be/u/statis/
 
 KH <Kurt.Hornik@ci.tuwien.ac.at> 1998/05/21
+
+---------------------
+
+For historical reasons, 
+we keep R/README-Splus which has no relevance to the R package.
+
+TODO
+
+ 1) Silhouette und Banner Plot : 
+	Label vertical axis of horizontal barplot using HORIZONTAL text
+	{i.e., par(las = 1) or axis(*, las = 1)}
+
+    --> Should become an optional (but probably default) 
+	feature of barplot()!
+
+ 2) help files for plot.*() 
+	--- new arguments are in *.Rd,
+	but not really documented.
+
+ 3) daisy() for the case of mixed variables should allow
+    a weight vector (of length p = #vars) for up- or downweighing variables.
+
+ 4) Eliminate the many Fortran (g77 -Wall) warnings of the form
+    >> mona.f:101: warning: `jma' might be used uninitialized in this function
+
+ 5) a more thorough test of .Fortran("spannel", *) used in clusplot(*).
+
+ ------------------
+
+./R/daisy.q  :
+
+  If daisy  objects  inherit from "dist",  we can use  as.matrix() and
+  other dist methods which can be *very* useful !
+
+  --> also upgraded ./man/dissimilarity.object.Rd
+
+Martin <maechler@stat.math.ethz.ch>, since 1999
+

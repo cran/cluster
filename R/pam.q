@@ -1,7 +1,8 @@
+#### PAM : Partitioning Around Medoids
+
 pam <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 {
-    meanabsdev <- function(y)
-	mean(abs(y - mean(y, na.rm = TRUE)), na.rm = TRUE)
+    meanabsdev <- function(y) mean(abs(y - mean(y, na.rm=TRUE)), na.rm=TRUE)
     size <- function(d)
     {
 	discr <- 1 + 8 * length(d)
@@ -34,7 +35,7 @@ pam <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	    attr(x, "Size") <- size(x)
 	    attr(x, "Metric") <- "unspecified"
 	}
-	## adapt S-Plus dissimilarities to Fortran:
+	## adapt S dissimilarities to Fortran:
 	## convert upper matrix, read by rows, to lower matrix, read by rows.
 	n <- attr(x, "Size")
 	if((k < 1) || (k > n - 1))
@@ -47,7 +48,6 @@ pam <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	jtmd <- integer(1)
 	ndyst <- 0
 	x2 <- double(n)
-	jdyss <- 1
     }
     else {
 	## check type of input matrix
@@ -63,25 +63,23 @@ pam <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	if((k < 1) || (k > n - 1))
 	    stop("The number of cluster should be at least 1 and at most n-1.")
 	jp <- ncol(x2)
-	jtmd <- ifelse(is.na(rep(1, n) %*% x2), -1, 1)
+	jtmd <- as.integer(ifelse(is.na(rep(1, n) %*% x2), -1, 1))
 	valmisdat <- min(x2, na.rm = TRUE) - 0.5
 	x2[is.na(x2)] <- valmisdat
 	valmd <- rep(valmisdat, jp)
-	jdyss <- 0
 	dv <- double(1 + (n * (n - 1))/2)
     }
     ## call Fortran routine
     storage.mode(dv) <- "double"
     storage.mode(x2) <- "double"
     storage.mode(valmd) <- "double"
-    storage.mode(jtmd) <- "integer"
     res <- .Fortran("pam",
 		    as.integer(n),
 		    as.integer(jp),
 		    as.integer(k),
-		    x2,
-		    dis = dv,
-		    ok = as.integer(jdyss),
+		    x = x2,
+		    dys = dv,
+                    jdyss = as.integer(diss),# 0/1
 		    valmd,
 		    jtmd,
 		    as.integer(ndyst),
@@ -103,7 +101,7 @@ pam <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
     sildim <- res$silinf[, 4]
     if(diss) {
 	disv <- x	
-	##add labels to Fortran output
+	## add labels to Fortran output
 	if(length(attr(x, "Labels")) != 0) {
 	    sildim <- attr(x, "Labels")[sildim]
 	    names(res$clu) <- attr(x, "Labels")
@@ -111,50 +109,49 @@ pam <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	}
     }
     else {
-	##give warning if some dissimilarities are missing.
-	if(res$ok == -1)
+	## give warning if some dissimilarities are missing.
+	if(res$jdyss == -1)
 	    stop("No clustering performed, NA-values in the dissimilarity matrix.")	
-	##adapt Fortran output to S-Plus:
-	##convert lower matrix, read by rows, to upper matrix, read by rows.
-	disv <- res$dis[-1]
+	## adapt Fortran output to S:
+	## convert lower matrix, read by rows, to upper matrix, read by rows.
+	disv <- res$dys[-1]
 	disv[disv == -1] <- NA
 	disv <- disv[upper.to.lower.tri.inds(n)]
 	class(disv) <- "dissimilarity"
 	attr(disv, "Size") <- nrow(x)
 	attr(disv, "Metric") <- metric
 	attr(disv, "Labels") <- dimnames(x)[[1]]	
-	##add labels to Fortran output
+	## add labels to Fortran output
 	res$med <- x[res$med,  ]
 	if(length((dimnames(x)[[1]])) != 0) {
 	    sildim <- dimnames(x)[[1]][sildim]
 	    names(res$clu) <- dimnames(x)[[1]]
 	}
     }
-    ##add dimnames to Fortran output
+    ## add dimnames to Fortran output
     names(res$obj) <- c("build", "swap")
     res$isol <- factor(res$isol, levels = c(0, 1, 2),
 		       labels = c("no", "L", "L*"))
     names(res$isol) <- 1:k
     dimnames(res$clusinf) <- list(NULL, c("size", "max_diss", "av_diss",
 					  "diameter", "separation"))
-    if(k != 1) {
-	dimnames(res$silinf) <- list(sildim,
-				     c("cluster", "neighbor", "sil_width", ""))
-	## construct S-Plus object
-	clustering <- list(medoids = res$med, clustering = res$clu, 
-			   objective = res$obj, isolation = res$isol,
-			   clusinfo = res$clusinf,
-			   silinfo =
-			   list(widths = res$silinf[, -4], 
-				clus.avg.widths = res$avsil[1:k],
-				avg.width = res$ttsil),
-			   diss = disv)
-    }
-    else {
-	clustering <- list(medoids = res$med, clustering = res$clu, 
-			   objective = res$obj, isolation = res$isol,
-			   clusinfo = res$clusinf, diss = disv)
-    }
+    ## construct S object
+    clustering <-
+        if(k != 1) {
+            dimnames(res$silinf) <-
+                list(sildim, c("cluster", "neighbor", "sil_width", ""))
+            list(medoids = res$med, clustering = res$clu, 
+                 objective = res$obj, isolation = res$isol,
+                 clusinfo = res$clusinf,
+                 silinfo =
+                 list(widths = res$silinf[, -4], 
+                      clus.avg.widths = res$avsil[1:k],
+                      avg.width = res$ttsil),
+                 diss = disv)
+        }
+        else list(medoids = res$med, clustering = res$clu, 
+                  objective = res$obj, isolation = res$isol,
+                  clusinfo = res$clusinf, diss = disv)
     if(!diss) {
 	x2[x2 == valmisdat] <- NA
 	clustering$data <- x2
@@ -172,16 +169,15 @@ print.pam <- function(x, ...)
     print(x$clustering, ...)
     cat("Objective function:\n")
     print(x$objective, ...)
-    cat("\nAvailable arguments:\n")
+    cat("\nAvailable components:\n")
     print(names(x), ...)
     invisible(x)
 }
 
 summary.pam <- function(x, ...)
 {
-    object <- x
-    class(object) <- "summary.pam"
-    object
+    class(x) <- "summary.pam"
+    x
 }
 
 print.summary.pam <- function(x, ...)
@@ -209,7 +205,7 @@ print.summary.pam <- function(x, ...)
     }
     cat("\n")
     print(x$diss, ...)
-    cat("\nAvailable arguments:\n")
+    cat("\nAvailable components:\n")
     print(names(x), ...)
     invisible(x)
 }
