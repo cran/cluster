@@ -1,3 +1,4 @@
+### $Id: plotpart.q,v 1.7 2001/11/07 10:42:08 maechler Exp maechler $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
          nmax.lab = 40, max.strlen = 5,
@@ -100,8 +101,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
         if(n <= 4) {
             for(i in 1:n) {
                 j <- verhoud1[i]
-                polygon(z[[j]], ##not yet density = dens[j],
-                        col = col[i], ...)
+                polygon(z[[j]], density = dens[j], col = col[i], ...)
             }
         }
         else {
@@ -112,8 +112,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
             j <- pam(sort(verhoud), 4)$clustering
             for(i in 1:n) {
                 q <- verhoud1[i]
-                polygon(z[[q]], ##not yet density = dens[q],
-                        col = col[j[i]], ...)
+                polygon(z[[q]], density = dens[q], col = col[j[i]], ...)
             }
         }
     }
@@ -125,8 +124,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
     }
     plotje <- function(x, ...)
     {
-        polygon(x, ##not yet density = 0,
-                col = 5, ...)
+        polygon(x, density = 0, col = 5, ...)
     }
     notavail <- function(x)
     {
@@ -447,8 +445,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
     }
     else if(shade) {
         for(i in 1:n)
-            polygon(z[[i]], ##not yet density = density[i],
-                    col = 5, ...)
+            polygon(z[[i]], density = density[i], col = 5, ...)
     }
     else if(color) {
         dens <- vector(mode = "numeric", length = n)

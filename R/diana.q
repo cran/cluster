@@ -1,3 +1,5 @@
+### $Id: diana.q,v 1.6 2001/11/07 10:45:44 maechler Exp maechler $
+
 diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 {
     meanabsdev <- function(y)

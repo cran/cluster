@@ -1,3 +1,5 @@
+### $Id: plothier.q,v 1.8 2001/11/07 10:43:21 maechler Exp maechler $
+
 pltree <- function(x, ...) UseMethod("pltree")
 
 pltree.twins <- function(x, main = paste("Dendrogram of ", deparse(call)), ...)

@@ -1,3 +1,5 @@
+C $Id: clara.f,v 1.7 2001/11/07 10:53:58 maechler Exp maechler $
+
 c     Clustering LARge Applications
 c     ~          ~~~   ~
 c     Clustering program based upon the k-medoid approach,

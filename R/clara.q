@@ -1,3 +1,5 @@
+### $Id: clara.q,v 1.8 2001/11/07 10:44:16 maechler Exp maechler $
+
 #### CLARA := Clustering LARge Applications
 ####
 #### Note that the algorithm is O(n), but O(ns^2) where ns == sampsize
