@@ -78,8 +78,11 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
 %% mostly by Martin Mächler :
   By default, the random sampling is implemented with a \emph{very}
   simple scheme (with period \eqn{2^{16} = 65536}) inside the Fortran
-  code, independently of \R's random number generation, and as a matter of
-  fact, deterministically.  Alternatively, we recommend
+  code, independently of \R's random number generation, and as a matter
+  of fact, deterministically.  Alternatively, we recommend setting
+  \code{rngR = TRUE} which uses \R's random number generators.  Then,
+  \code{clara()} results are made reproducible typically by using
+  \code{\link{set.seed}()} before calling \code{clara}.
 
   The storage requirement of \code{clara} computation (for small
   \code{k}) is about

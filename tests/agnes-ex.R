@@ -26,3 +26,10 @@ summary(ar1 <- agnes(ruspini, metric = "manhattan"))
 str(ar1)
 
 cat('Time elapsed: ', proc.time() - .proctime00,'\n')
+
+summary(ar2 <- agnes(ruspini, metric="manhattan", method = "weighted"))
+print  (ar3 <- agnes(ruspini, metric="manhattan", method = "flexible",
+                     par.meth = 0.5))
+stopifnot(all.equal(ar2[1:4], ar3[1:4], tol=1e-12))
+
+cat('Time elapsed: ', proc.time() - .proctime00,'\n')

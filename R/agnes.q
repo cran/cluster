@@ -1,15 +1,27 @@
 #### $Id: agnes.q,v 1.17 2004/03/11 16:26:40 maechler Exp maechler $
 agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
-		  stand = FALSE, method = "average",
+		  stand = FALSE, method = "average", par.method,
                   keep.diss = n < 100, keep.data = !diss)
 {
-    METHODS <- c("average", "single", "complete", "ward", "weighted")
-    ## hclust has more;  1    2         3           4       5
+    METHODS <- c("average", "single","complete", "ward","weighted", "flexible")
+    ## hclust has more;  1    2         3           4       5         6
     meth <- pmatch(method, METHODS)
-    if(is.na(meth))
-	stop("invalid clustering method")
-    if(meth == -1)
-	stop("ambiguous clustering method")
+    if(is.na(meth)) stop("invalid clustering method")
+    if(meth == -1) stop("ambiguous clustering method")
+    method <- METHODS[meth]
+    if(method == "flexible") {
+        ## Lance-Williams formula (but *constant* coefficients):
+        par.method <- as.numeric(par.method) # or barf
+        stopifnot((np <- length(par.method)) >= 1)
+        if(np == 1)## default (a1= a, a2= a, b= 1-2a, c = 0)
+            par.method <- c(par.method, par.method, 1-2*par.method, 0)
+        else if(np == 3)
+            par.method <- c(par.method, 0)
+        else if(np != 4)
+            stop("'par.method' must be of length 1, 3, or 4")
+        attr(method,"par") <- par.method
+    } else par.method <- double(1)
+
     if((diss <- as.logical(diss))) {
 	## check type of input vector
 	if(any(is.na(x))) stop(..msg$error["NAdiss"])
@@ -72,6 +84,7 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		    ner = integer(n),
 		    ban = double(n),
 		    ac = as.double(0),
+                    par.method,
 		    merge = matrix(0:0, n - 1, 2), # integer
                     DUP = FALSE,
 		    PACKAGE = "cluster")

@@ -26,6 +26,16 @@ silh.wid
 #select the number of k clusters with the largest si value :
 (myk <- which.min(silh.wid))
 
+## "pathological" case where a_i == b_i == 0 :
+D6 <- structure(c(0, 0, 0, 0.4, 1, 0.05, 1, 1, 0, 1, 1, 0, 0.25, 1, 1),
+                Labels = LETTERS[1:6], Size = 6, call = as.name("manually"),
+                class = "dist", Diag = FALSE, Upper = FALSE)
+D6
+kl6 <- c(1,1, 2,2, 3,3)
+silhouette(kl6, D6)# had one NaN
+summary(silhouette(kl6, D6))
+plot(silhouette(kl6, D6))# gives error in earlier cluster versions
+
 postscript(file="silhouette-ex.ps")
 ## MM:  plot to see how the decision is made
 plot(silh.wid, type = 'b', col= "blue", xlab = "k")

@@ -11,6 +11,7 @@
 #include <R_ext/Print.h>/* for diagnostics */
 
 #include "cluster.h"
+#include "ind_2.h"
 
 /*     carries out a clustering using the k-medoid approach.
  */
@@ -82,18 +83,19 @@ void bswap(int *kk, int *nn, int *nrepr,
     int i, j, ij, k, kj, kbest = -1, nbest = -1, njn, nmax = -1;/* init: -Wall*/
     double ammax, small, cmd, dz, dzsky;
 
+    double tmp1 = *s * 1.1f + 1.;
+
      /* Parameter adjustments */
     --beter;
     --dysmb;
     --dysma;
     --nrepr;
 
-
 /*     first algorithm: build. */
 
     for (i = 1; i <= *nn; ++i) {
 	nrepr[i] = 0;
-	dysma[i] = *s * 1.1f + 1.;
+	dysma[i] = tmp1;
     }
     for (k = 1; k <= *kk; ++k) {
 	for (i = 1; i <= *nn; ++i) {
@@ -133,8 +135,8 @@ void bswap(int *kk, int *nn, int *nrepr,
 /*--   Loop : */
 L60:
 	for (j = 1; j <= *nn; ++j) {
-	    dysma[j] = *s * 1.1f + 1.;
-	    dysmb[j] = *s * 1.1f + 1.;
+	    dysma[j] = tmp1;
+	    dysmb[j] = tmp1;
 	    for (i = 1; i <= *nn; ++i) {
 		if (nrepr[i] == 1) {
 		    ij = ind_2(i, j);
@@ -156,9 +158,7 @@ L60:
 		    ij = ind_2(i, j);
 		    kj = ind_2(k, j);
 		    if (dys[ij] == dysma[j]) {
-			small = dysmb[j];
-			if (small > dys[kj])
-			    small = dys[kj];
+			small = dysmb[j] > dys[kj]? dys[kj] : dysmb[j];
 			dz += (- dysma[j] + small);
 		    } else {
 			if (dys[kj] < dysma[j])

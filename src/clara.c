@@ -18,6 +18,7 @@
 #include <R_ext/Random.h>/* when R's RNG is used */
 
 #include "cluster.h"
+#include "ind_2.h"
 
 void clara(int *n,  /* = number of objects */
 	   int *jpp,/* = number of variables */
@@ -391,24 +392,6 @@ double randm(int *nrun)
     /* Masking off all but the last 16 bits is equivalent to  % 65536 */
     return ((double) (*nrun) / 65536.);
 } /* randm() */
-
-int ind_2(int l, int j)
-{
-/* Utility, originally FORTRAN,  called "meet"; called from CLARA, PAM & TWINS.
- * Original code had MEET(), MEET2(), and MEET3() in the 3 source files.
-
- * ind_2(l,j) returns the *index* of dys() where diss. d(l,j) is stored:
- *        d(l,j) == dys[ind_2(l,j)]
- *
- * MM: changed to work with 0-origin matrices  dys[], but l,j are >= 1
- */
-    if(l > j)
-	return (l-2)*(l-1)/2 + j;
-    else if(l == j)
-	return 0;/* and the first element, dys[0] is := 0.  permanently! */
-    else /* l < j */
-	return (j-2)*(j-1)/2 + l;
-}
 
 /* bswap2() : called once [per random sample] from clara() : */
 void bswap2(int kk, int nsam, int *nrepr,

@@ -61,6 +61,7 @@ diana <- function(x, diss = inherits(x, "dist"),
 		    ner = integer(n),
 		    ban = double(n),
 		    dc = as.double(0),
+                    double(1),
 		    merge = matrix(0:0, n - 1, 2), # integer
                     DUP = FALSE,
 		    PACKAGE = "cluster")

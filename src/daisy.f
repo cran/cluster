@@ -1,3 +1,5 @@
+c -*- mode: fortran; kept-old-versions: 12;  kept-new-versions: 20; -*-
+
       subroutine daisy(nn,jpp,x,valmd,jtmd,jdat,vtype,ndyst,disv)
 c     c
 c     c	 Calculating dissimilarities between objects or variables
@@ -76,7 +78,8 @@ c		binary variable x(*,j)
 
       else
 c Case II : jdat != 1:	all variables are interval scaled
-c -------   ~~~~~~~~~ { basically === dysta() in ./pam.f <== FIXME! }
+c -------   ~~~~~~~~~ { basically === dysta() in ./dysta.f
+c                       FIXME: common code! }
 	 pp=jpp
 	 do 600 l=2,nn
 	    lsubt=l-1
@@ -109,4 +112,3 @@ c -------   ~~~~~~~~~ { basically === dysta() in ./pam.f <== FIXME! }
       endif
 
       end
-

@@ -1,6 +1,11 @@
 Things that were on my TODO list and have been accomplished
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+May, 2004:
+
+o New agnes(*, method = "flexible", par.method = *) to allow
+  Lance-Williams formula.
+
 Mar, 2004:
 
 o  When using a NAMESPACE, can rename `..dClass' in R/0aaa.R (and *.q):
@@ -21,6 +26,13 @@ For R 1.7.0 :
     dissimilarities !
      --> save space in result object
      --> somewhat changed summary/print output , i.e. minor NON-compatibility!
+
+  o a) pam()$diss  is not a `proper' dissimilarity
+       (class is only "dissimilarity", missing "dist") -> done Mo,17.3.03
+    b) as.dist() is not generic and does too much for "dist" objects,
+       and also for "dissimilarity" {<< these were fixed for R 1.7.0}
+       and the completely wrong thing for the
+       pam()$diss like "dissimilarity"s... (wrong $Size !)
 
   o plot(ylab / xlab) -- for agnes -> bannerplot() & pltree()
     ./R/plothier.q   ===> NOT DONE -- rather tell people {on the help()} to

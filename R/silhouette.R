@@ -44,7 +44,7 @@ silhouette.default <- function(x, dist, dmatrix, ...) {
         minC <- max.col(-t(diC))
         wds[iC,"neighbor"] <- clid[-j][minC]
         b.i <- diC[cbind(minC, seq(along = minC))]
-        s.i <- (b.i - a.i) / pmax(b.i, a.i)
+        s.i <- ifelse(a.i != b.i, (b.i - a.i) / pmax(b.i, a.i), 0)
         wds[iC,"sil_width"] <- s.i
     }
     attr(wds, "Ordered") <- FALSE

@@ -5,8 +5,11 @@ c     group average method (_or others_) of Sokal and Michener (1958),
 c     as well as divisive analysis (DIANA) using the method of
 c     Mcnaughton-Smith, Williams, Dale, and Mockett (1964).
 c
+c     Extended by Martin Maechler to allow the (flexible)
+c     Lance-Williams clustering method (with parameters alpha[1:4])
+c
       subroutine twins(nn,jpp,x,dys,dys2,jdyss,valmd,jtmd,ndyst,jalg,
-     f	   method,kwan,ner,ban,coef,merge)
+     f	   method,kwan,ner,ban,coef, alpha, merge)
 
 c Arguments
       integer nn, jpp
@@ -18,7 +21,7 @@ c			jdyss < 10 : don't save dissimilarities
       double precision x(nn,jpp), valmd(jpp)
       double precision dys((nn*(nn-1))/2 + 1), dys2((nn*(nn-1))/2 + 1)
 c     dys2(.) can have length 1, if(!keep.diss)
-      double precision ban(nn), coef
+      double precision ban(nn), coef, alpha(4)
       integer merge(nn-1,2)
 C VARs
       integer i,jhalt
@@ -29,7 +32,7 @@ C VARs
 c     compute distances
 	 jhalt=0
 	 call dysta(nn,jpp,x,dys,ndyst,jtmd,valmd,jhalt)
-c     	      ----- in ./pam.f
+c     	      ----- in ./dysta.f
 	 if(jhalt.ne.0) then
 	    jdyss=-1
 	    return
@@ -45,7 +48,7 @@ C        save distances for S
 
       if(jalg.ne.2) then
 c	AGNES
-	 call averl(nn,kwan,ner,ban,dys,method,merge)
+	 call averl(nn,kwan,ner,ban,dys,method,alpha,merge)
       else
 c	DIANA
 	 call splyt(nn,kwan,ner,ban,dys,       merge)
@@ -55,18 +58,20 @@ c	DIANA
 c     -----------------------------------------------------------
 c     AGNES agglomeration
 c
-      subroutine averl(nn,kwan,ner,ban,dys,method,merge)
+      subroutine averl(nn,kwan,ner,ban,dys, method,alpha, merge)
 
       integer nn, kwan(nn), ner(nn), method, merge(nn-1,2)
-      double precision ban(nn), dys(1+nn*(nn-1)/2)
+      double precision ban(nn), dys(1+nn*(nn-1)/2), alpha(4)
 c Function (defined in ./meet.f ):
       integer meet
 c VARs
       integer j,l,la,lb,l1,l2,lq, lka, lenda, lendb
       integer lfyrs, llast, lmuch, lnext, lput, lnum
       integer naq, nbq, nab,  nlj, nns, nclu,nmerge
-      double precision akb, d, dnew, fa,fb,fc, smald, ta,tb,tq
-c
+      double precision akb, d,dnew, fa,fb,fc, smald, ta,tb,tq
+c against (unnecessary) warnings [-Wall]:
+      lfyrs= -1
+      llast= -1
 c
       nclu=nn-1
 c     initialization
@@ -74,6 +79,7 @@ c     initialization
 	 kwan(l)=1
 	 ner(l)=l
  10   continue
+
 c
 c     find closest clusters
 c
@@ -154,10 +160,13 @@ c
 	 if(kwan(lq).eq.0)go to 240
 	 naq=meet(la,lq)
 	 nbq=meet(lb,lq)
+
 	 if(method.eq.2)go to 300
 	 if(method.eq.3)go to 310
 	 if(method.eq.4)go to 320
 	 if(method.eq.5)go to 330
+	 if(method.eq.6)go to 340
+
 c     1: group average method
 	 ta=kwan(la)
 	 tb=kwan(lb)
@@ -165,16 +174,19 @@ c     1: group average method
 	 fb=tb/(ta+tb)
 	 dys(naq)=fa*dys(naq)+fb*dys(nbq)
 	 go to 240
+
 c     2: single linkage
  300	 dnew=dys(naq)
 	 if(dys(nbq).lt.dnew)dnew=dys(nbq)
 	 dys(naq)=dnew
 	 go to 240
+
 c     3: complete linkage
  310	 dnew=dys(naq)
 	 if(dnew.lt.dys(nbq))dnew=dys(nbq)
 	 dys(naq)=dnew
 	 go to 240
+
 c     4: ward's method
  320	 ta=kwan(la)
 	 tb=kwan(lb)
@@ -187,8 +199,19 @@ c     4: ward's method
      +     fc*dys(nab)*dys(nab)
 	 dys(naq)=sqrt(d)
 	 go to 240
+
 c     5: weighted average linkage
  330	 dys(naq)=(dys(naq)+dys(nbq))/2.d0
+	 go to 240
+
+c     6: "Flexible Strategy" (K+R p.236 f) extended to 'Lance-Williams'
+ 340     dys(naq)= alpha(1)* dys(naq)+ alpha(2)* dys(nbq) +
+     +        alpha(3)* dys(meet(la,lb)) +
+     +        alpha(4)* dabs(dys(naq) - dys(nbq))
+c   Lance-Williams would allow alpha(1:2) to *depend* on |cluster|
+c        could also include the extensions of Jambu(1978) --
+c   See Gordon A.D. (1999) "Classification" (2nd ed.) p.78 ff
+
  240  continue
 
       kwan(la)=kwan(la)+kwan(lb)
@@ -243,7 +266,11 @@ c VARs
       integer lndsd, lchan, lner, lmm, lmma, lmmb
       integer l1, l2, lgrb, llq, lmz, lxf, lxg, lxx,lxy, lxxa, lxxp
       integer nj, nlj, nclu, nhalf, nmerge
-
+c against (unnecessary) warnings [-Wall]:
+      jaway= -1
+      lndsd= -1
+      lxg=   -1
+      nj=    -1
 c
 c     initialization
 c

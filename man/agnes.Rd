@@ -5,8 +5,8 @@
   Computes agglomerative hierarchical clustering of the dataset.
 }
 \usage{
-agnes(x, diss = inherits(x, "dist"),
-      metric = "euclidean", stand = FALSE, method = "average",
+agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
+      stand = FALSE, method = "average", par.method,
       keep.diss = n < 100, keep.data = !diss)
 }
 \arguments{
@@ -49,11 +49,16 @@ agnes(x, diss = inherits(x, "dist"),
     argument will be ignored.
   }
   \item{method}{
-    character string defining the clustering method. The five methods
-    implemented are "average" (group average method),
-    "single" (single linkage), "complete" (complete linkage),
-    "ward" (Ward's method), and "weighted" (weighted average linkage).
-    Default is "average".
+    character string defining the clustering method.  The six methods
+    implemented are "average" (group average method), "single" (single
+    linkage), "complete" (complete linkage), "ward" (Ward's method),
+    "weighted" (weighted average linkage) and its generalization
+    \code{"flexible"} which uses (a constant version of) the
+    Lance-Williams formula and the \code{par.method} argument.  Default
+    is "average".
+  }
+  \item{par.method}{if \code{method == "flexible"}, numeric vector of
+    length 1, 3, or 4, see in the details section.
   }
   \item{keep.diss, keep.data}{logicals indicating if the dissimilarities
     and/or input data \code{x} should be kept in the result.  Setting
@@ -90,6 +95,32 @@ agnes(x, diss = inherits(x, "dist"),
   When \code{method="complete"}, we use the largest dissimilarity
   between a point in the first cluster and a point in the second cluster
   (furthest neighbor method).
+
+  The \code{method = "flexible"} allows (and requires) more details:
+  The Lance-Williams formula specifies how dissimilarities are
+  computed when clusters are agglomerated (equation (32) in K.\&R.,
+  p.237).  If clusters \eqn{C_1} and \eqn{C_2} are agglomerated into a
+  new cluster, the dissimilarity between their union and another
+  cluster \eqn{Q} is given by
+  \deqn{
+    D(C_1 \cup C_2, Q) = \alpha_1 * D(C_1, Q) + \alpha_2 * D(C_2, Q) +
+                         \beta * D(C_1,C_2) + \gamma * |D(C_1, Q) - D(C_2, Q)|,
+  }
+  where the four coefficients \eqn{(\alpha_1, \alpha_2, \beta, \gamma)}
+  are specified by the vector \code{par.method}:
+
+  If \code{par.method} is of length 1,
+  say \eqn{= \alpha}, \code{par.method} is extended to
+  give the \dQuote{Flexible Strategy} (K. \& R., p.236 f) with
+  Lance-Williams coefficients \eqn{(\alpha_1 = \alpha_2 = \alpha, \beta =
+    1 - 2\alpha, \gamma=0)}.\cr
+  If of length 3, \eqn{\gamma = 0} is used.
+
+  \bold{Care} and expertise is probably needed when using \code{method
+    = "flexible"} particularly for the case when \code{par.method} is
+  specified of longer length than one.
+  The \emph{weighted average} (\code{method="weighted"}) is the same as
+  \code{method="flexible", par.method = 0.5}.
 }
 \section{BACKGROUND}{
   Cluster analysis divides a dataset into groups (clusters) of
@@ -129,8 +160,12 @@ agn1 <- agnes(votes.repub, metric = "manhattan", stand = TRUE)
 agn1
 plot(agn1)
 
+op <- par(mfrow=c(2,2))
 agn2 <- agnes(daisy(votes.repub), diss = TRUE, method = "complete")
 plot(agn2)
+agnS <- agnes(votes.repub, method = "flexible", par.meth = 0.6)
+plot(agnS)
+par(op)
 
 data(agriculture)
 ## Plot similar to Figure 7 in ref
@@ -138,4 +173,3 @@ data(agriculture)
 \testonly{plot(agnes(agriculture))}
 }
 \keyword{cluster}
-% Converted by Sd2Rd version 0.3-2.

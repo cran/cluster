@@ -1,4 +1,38 @@
+2004-06-11  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/clara.Rd: finish \note{} about 'rngR' (thanks to Christian H).
+
+2004-06-01  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/ind_2.h: new file for __inline__ definition of  ind_2(),
+		#included from these two files:
+	* src/clara.c:
+	* src/pam.c:
+
+	* tests/agnes-ex.R: test for "weighted" == "flexible"(0.5)
+
+2004-05-28  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.9.2	(not yet released)
+
+	* R/agnes.q (agnes): New method = "flexible" (and 'par.method = ..')
+	* src/twins.f (averl): implementing "flexible" Lance-Williams formula.
+	* man/agnes.Rd:
+
+2004-05-25  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/silhouette.R (silhouette.default): give silhouette 0 (not NaN)
+	when a_i = b_i {thanks to example and suggestions by Witek Wolsky}.
+
+2004-04-26  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/pam.c: cosmetic efficiency improvement from Li Long
+
 2004-03-11  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.8.1 for R versions <= 1.8.1
+				 1.9.1 for R versions >= 1.9.0
+	  -- released to CRAN
 
 	* src/clara.c (clara): fixed second NA-handling bug:
 		the test should be "nunfs+1 != jran"
@@ -44,7 +78,7 @@
 2003-12-22  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.8.0 for R versions <= 1.8.1
-	                         1.9.0 for R versions >= 1.9.0
+				 1.9.0 for R versions >= 1.9.0
 
 2003-12-19  Martin Maechler  <maechler@stat.math.ethz.ch>
 
@@ -60,7 +94,7 @@
 
 2003-11-29  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-	* R/daisy.q (daisy): better checking & handling  if(stand)
+	* R/daisy.q (daisy): better checking & handling	 if(stand)
 
 	* R/pam.q (pam): new argument `cluster.only = FALSE'.  If true,
 	  only return the clustering vector, no other info.
@@ -101,11 +135,11 @@
 
 	* DESCRIPTION (Version): 1.7.6 (for R 1.8.0)
 
-	* man/daisy.Rd:         codoc difference for argument *defaults*
-	* man/ellipsoidhull.Rd:   "       "       "     "
-	* man/plot.mona.Rd:       "       "       "     "
-	* man/plot.diana.Rd:      "       "       "     "
-			         use \method{..}{..} (more!) also for these:
+	* man/daisy.Rd:		codoc difference for argument *defaults*
+	* man/ellipsoidhull.Rd:	  "	  "	  "	"
+	* man/plot.mona.Rd:	  "	  "	  "	"
+	* man/plot.diana.Rd:	  "	  "	  "	"
+				 use \method{..}{..} (more!) also for these:
 	* man/predict.ellipsoid.Rd
 	* man/silhouette.Rd:
 	* man/plot.agnes.Rd:
@@ -131,7 +165,7 @@
   __ All these are thanks to Luke Tierney's checkUsagePackage() !! __
 
 	* R/silhouette.R (plot.silhouette): `clw'
-	                 (sortSilhouette): `clid' & `k'
+			 (sortSilhouette): `clid' & `k'
 			 (summary.silhouette): `n'
 	* R/ellipsoidhull.R (ellipsoidhull): `ina' unneeded
 	* R/plotpart.q (clusplot.default): extraneous if() in "funny case"
@@ -183,7 +217,7 @@
 	* tests/ellipsoid-ex.R: no need for try() anymore; use new RNG
 
 	* tests/clara.R:
-	* tests/clara-ex.R:     better if(...) RNGdefault("1.6")
+	* tests/clara-ex.R:	better if(...) RNGdefault("1.6")
 	* tests/fanny-ex.R:
 	* tests/mona.R:
 
@@ -199,7 +233,7 @@
 	* DESCRIPTION (Version): 1.7.1
 
 	* man/pam.object.Rd: add example about assessing #{clusters} via
-	  	silhouette widths from Ch.Hennig.
+		silhouette widths from Ch.Hennig.
 
 	* R/plotpart.q (plot.partition): new argument `dist'
 	  It doesn't try a clusplot if `keep.diss' was FALSE and no `dist'

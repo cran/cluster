@@ -7,8 +7,9 @@
 /* NO LONGER:
  * int F77_NAME(meet)(int *, int *);
 
- * but this instead: */
-int ind_2(int l, int j);
+ * Instead include *inline" definition in
+ * ./ind_2.h
+ *   ~~~~~~~ */
 
 /* --------- ./clara.c ------------------*/
 
