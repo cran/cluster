@@ -1,0 +1,10 @@
+This directory contains code, help and examples for CLUS, an S-PLUS
+package for clustering, as described in ``Clustering in an
+Object-Oriented Environment'' by Anja Struyf, Mia Hubert, and Peter
+J. Rousseeuw (Journal of Statistical Software, volume 1).
+
+See http://www.stat.ucla.edu/journals/jss/ for the original version.
+The current port is based on material from
+	http://win-www.uia.ac.be/u/statis
+
+KH <Kurt.Hornik@ci.tuwien.ac.at> 1998/05/21

@@ -1,0 +1,19 @@
+      FUNCTION MEET(L,J)
+      IF(L.GT.J)GO TO 10
+      IF(L.EQ.J)GO TO 20
+CC
+CC   L LESS THAN J
+CC
+      MEET=(J-2)*(J-1)/2+L+1
+      RETURN
+CC
+CC   J LESS THAN L
+CC
+   10 MEET=(L-2)*(L-1)/2+J+1
+      RETURN
+CC
+CC   J EQUALS L
+CC
+   20 MEET=1
+      RETURN
+      END

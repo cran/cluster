@@ -1,0 +1,46 @@
+Sun Apr 11 04:21:03 1999  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* DESCRIPTION (Version): New version is 1.2-0.
+
+	* R/plotpart.q: Replace rep.int() by rep().
+	
+	* R/zzz.R: Make .First.lib() use plot.hclust() for plclust() which
+	seems to do the job, sort of.
+
+	* data/animals.R: Replaced by `animals.tab'.
+	* data/ruspini.R: Replaced by `ruspini.tab'.
+	* data/votes.repub.tab: New file.
+
+	* man/agriculture.Rd: New file.
+	* man/animals.Rd: New file.
+	* man/flower.Rd: New file.
+	* man/ruspini.Rd: New file.
+	* man/votes.repub.Rd: New file.
+	* man/*: Hand-edit all examples to make executable.
+
+Fri Nov 27 23:53:11 1998  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* DESCRIPTION (Version): New version is 1.1-3.
+
+	* R/mona.q: Barf only if neither a matrix nor a data frame
+	(remember that in S, is.matrix() is TRUE for data frames).
+
+	* man/*: Converted anew via `Sd2Rd -x' using Sd2Rd 0.3-2.
+
+	* TODO: Removed.
+
+Tue Jun 16 09:23:15 1998  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* DESCRIPTION (Version): New version is 1.1-2.
+
+	* DESCRIPTION:
+	* PORTING:	
+	* TITLE:
+	* R/zzz.R:
+	* src/Makefile:
+	Change old `clus' to new name `cluster'.
+
+Mon Jun 15 11:01:52 1998  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* ChangeLog: Finally started, current version is 1.1-1.
+
