@@ -1,6 +1,6 @@
 
 R : Copyright 2003, The R Development Core Team
-Version 1.7.0 Under development (unstable) (2003-03-26)
+Version 1.8.0 Under development (unstable) (2003-06-02)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -16,7 +16,9 @@ Type `q()' to quit R.
 > library(cluster)
 > 
 > ## generate 1500 objects, divided into 2 clusters.
-> if(paste(R.version$major, R.version$minor, sep=".") >= 1.7)  RNGversion(1.6)
+> if(R.version$major != "1" || as.numeric(R.version$minor) >= 7) RNGversion("1.6")
+Warning message: 
+Buggy version of Kinderman-Ramage generator used. in: RNGkind("Marsaglia-Multicarry", "Buggy Kinderman-Ramage") 
 > set.seed(264)
 > x <- rbind(cbind(rnorm(700, 0,8), rnorm(700, 0,8)),
 +            cbind(rnorm(800,50,8), rnorm(800,10,8)))
@@ -1420,7 +1422,7 @@ $sample
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  17.36 0.19 18.94 0 0 
+Time elapsed:  17.4 0.04 18.92 0 0 
 > ## Lynne (P IV, 1.6 GHz): 18.81
 > ## nb-mm (P III,700 MHz): 27.97
 > 

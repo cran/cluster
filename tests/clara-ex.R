@@ -2,19 +2,22 @@
 ###  `cluster'  currently
 
 library(cluster)
-if(paste(R.version$major, R.version$minor, sep=".") >= 1.7)  RNGversion(1.6)
 
 data(xclara)
 ## Try 100 times *different* random samples -- for reliability:
+if(R.version$major != "1" || as.numeric(R.version$minor) >= 7) RNGversion("1.6")
+
+nSim <- 100
+nCl <- 3 # = no.classes
 set.seed(421)# (reproducibility)
-cl <- matrix(NA,nrow(xclara), 100)
-for(i in 1:100)
-    cl[,i] <- clara(xclara, 3, rngR = TRUE, keep.data=FALSE, trace=1)$cluster
-rcl <- apply(cl,1, range)
+## unknown problem: this is still platform dependent to some extent:
+cl <- matrix(NA,nrow(xclara), nSim)
+for(i in 1:nSim) cl[,i] <- clara(xclara, nCl, rngR = TRUE)$cluster
+tcl <- apply(cl,1, tabulate, nbins = nCl)
 ## those that are not always in same cluster (5 out of 3000 for this seed):
-(iDoubt <- which(rcl[1,] != rcl[2,]))
+(iDoubt <- which(apply(tcl,2, function(n) all(n < nSim))))
 if(length(iDoubt)) { # (not for all seeds)
-  tabD <- apply(cl[iDoubt, , drop = FALSE], 1, table)
-  colnames(tabD) <- format(iDoubt)
+  tabD <- tcl[,iDoubt, drop=FALSE]
+  dimnames(tabD) <- list(cluster = paste(1:nCl), obs = format(iDoubt))
   t(tabD) # how many times in which clusters
 }

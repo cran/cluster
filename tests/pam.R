@@ -16,8 +16,7 @@ stopifnot(identical(px[nms], pd[nms]),
 		    pam(dist(x),2)[nms])
 	  )
 
-if(paste(R.version$major, R.version$minor, sep=".") >= 1.7)  RNGversion(1.6)
-set.seed(625)
+set.seed(253)
 ## generate 250 objects, divided into 2 clusters.
 x <- rbind(cbind(rnorm(120, 0,8), rnorm(120, 0,8)),
 	   cbind(rnorm(130,50,8), rnorm(130,10,8)))
@@ -33,14 +32,19 @@ stopifnot(identical(pdx[nm2], pdxK[nm2]))
 spdx <- silhouette(pdx)
 summary(spdx)
 spdx
+postscript("pam-tst.ps")
 if(FALSE)
     plot(spdx)# the silhouette
 ## is now identical :
 plot(pdx)# failed in 1.7.0 -- now only does silhouette
 
-## new `dist' argument needed for clusplot():
+par(mfrow = 2:1)
+## new `dist' argument for clusplot():
 plot(pdx, dist=dist(x))
-clusplot(pdx, dist=dist(x))
+## but this should work automagically (via eval()) as well:
+plot(pdx)
+## or this
+clusplot(pdx)
 
 data(ruspini)
 summary(pr4 <- pam(ruspini, 4))
@@ -52,6 +56,7 @@ summary(pv3 <- pam(votes.repub, 3))
 (pv4 <- pam(votes.repub, 4))
 (pv6 <- pam(votes.repub, 6))
 
+dev.off()
 
 ## Last Line:
 cat('Time elapsed: ', proc.time() - .proctime00,'\n')

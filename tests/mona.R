@@ -7,7 +7,8 @@ str(mani)
 
 if(require(MASS)) {
 
-    if(paste(R.version$major, R.version$minor, sep=".") >= 1.7)  RNGversion(1.6)
+    if(R.version$major != "1" || as.numeric(R.version$minor) >= 7)
+        RNGversion("1.6")
     set.seed(253)
     n <- 512; p <- 3
     Sig <- diag(p); Sig[] <- 0.8 ^ abs(col(Sig) - row(Sig))

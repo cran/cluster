@@ -3,7 +3,7 @@ library(cluster)
 
 ###--- An extension of  example(fanny) : -------------------
 
-if(paste(R.version$major, R.version$minor, sep=".") >= 1.7)  RNGversion(1.6)
+if(R.version$major != "1" || as.numeric(R.version$minor) >= 7) RNGversion("1.6")
 set.seed(171)
 ## generate 25 objects, divided into two clusters, and 3 objects lying
 ## between those clusters.

@@ -1,4 +1,4 @@
-### $Id: plotpart.q,v 1.18 2003/02/06 10:36:45 maechler Exp $
+### $Id: plotpart.q,v 1.21 2003/06/03 13:39:52 maechler Exp $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
          nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
@@ -551,13 +551,14 @@ clusplot.partition <- function(x, main = NULL, dist = NULL, ...)
         clusplot.default(x$diss, x$clustering, diss = TRUE, main = main, ...)
     else { ## try to find "x$diss" by looking at the pam() call:
         if(!is.null(x$call)) {
-            tryx <- try(eval(x$call[[2]]))
-            if(inherits(tryx, "try-error"))
+            xD <- try(eval(x$call[[2]], envir = parent.frame()))
+            if(inherits(xD, "try-error") || !inherits(xD, "dist"))
                 stop("no diss nor data found, nor the original argument of ",
-                     x$call)
+                     deparse(x$call))
             ## else
-            warning("both `x$diss' and `dist' are empty; ",
-                    "trying to find the first argument of ", x$call)
+            ## warning("both `x$diss' and `dist' are empty; ",
+            ##         "trying to find the first argument of ", deparse(x$call))
+            clusplot.default(xD, x$clustering, diss = TRUE, main = main, ...)
         }
         else stop("no diss nor data found for clusplot()'")
     }

@@ -1,3 +1,30 @@
+2003-06-04  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/clara-ex.R and man/clara.Rd: add "drop = FALSE"
+
+2003-06-03  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/clara.Rd: the "simulation" example is now correct for any seed.
+	* tests/clara-ex.R: using "correct" ex. above
+
+2003-06-02  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/daisy.q (daisy): s/codes/unclass/
+
+	* tests/ellipsoid-ex.R: no need for try() anymore; use new RNG
+
+	* tests/clara.R:
+	* tests/clara-ex.R:     better if(...) RNGdefault("1.6")
+	* tests/fanny-ex.R:
+	* tests/mona.R:
+
+2003-05-28  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.7.2
+
+	* R/plotpart.q: clusplot.partition(): try to find `x$diss' by
+	looking up x$call.
+
 2003-04-30  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.7.1

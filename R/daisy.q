@@ -1,4 +1,4 @@
-#### $Id: daisy.q,v 1.12 2003/03/17 17:10:21 maechler Exp $
+#### $Id: daisy.q,v 1.13 2003/06/03 13:39:28 maechler Exp $
 daisy <-
 function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 {
@@ -34,8 +34,8 @@ function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 	if(!is.list(type)) stop("invalid `type'; must be named list")
 	tT <- type$ ordratio
 	tL <- type$ logratio
-	x[, names(type2[tT])] <- codes(as.ordered(x[, names(type2[tT])]))
-	x[, names(type2[tL])] <- log10(		  x[, names(type2[tL])])
+	x[, names(type2[tT])] <- unclass(as.ordered(x[, names(type2[tT])]))
+	x[, names(type2[tL])] <- log10(		    x[, names(type2[tL])])
 	type2[tA] <- "A"
 	type2[tS] <- "S"
 	type2[tT] <- "T" # was "O" (till 2000-12-14) accidentally !

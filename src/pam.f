@@ -1,4 +1,4 @@
-c $Id: pam.f,v 1.15 2002/12/30 22:33:20 maechler Exp $
+c $Id: pam.f,v 1.16 2003/06/03 13:40:56 maechler Exp $
 c
 c PAM := Partitioning Around Medoids
 c
