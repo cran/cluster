@@ -1,4 +1,4 @@
-### $Id: diana.q,v 1.16 2004/03/11 16:26:40 maechler Exp maechler $
+### $Id: diana.q,v 1.17 2004/06/25 16:15:14 maechler Exp $
 
 diana <- function(x, diss = inherits(x, "dist"),
 		  metric = "euclidean", stand = FALSE,
@@ -53,7 +53,7 @@ diana <- function(x, diss = inherits(x, "dist"),
 		    dis = double(if(keep.diss) length(dv) else 1),
 		    ok = as.integer(if(keep.diss) diss + 10 else diss),
 		    if(mdata)valmd else double(1),
-		    if(mdata) jtmd else integer(1),
+		    if(mdata) jtmd else integer(jp),
 		    as.integer(ndyst),
 		    as.integer(2),# jalg = 2 <==> DIANA
 		    as.integer(0),# ~ method
@@ -61,9 +61,9 @@ diana <- function(x, diss = inherits(x, "dist"),
 		    ner = integer(n),
 		    ban = double(n),
 		    dc = as.double(0),
-                    double(1),
+		    double(1),
 		    merge = matrix(0:0, n - 1, 2), # integer
-                    DUP = FALSE,
+		    DUP = FALSE,
 		    PACKAGE = "cluster")
     if(!diss) {
 	## give warning if some dissimilarities are missing.

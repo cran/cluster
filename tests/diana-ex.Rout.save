@@ -1,6 +1,6 @@
 
 R : Copyright 2004, The R Foundation for Statistical Computing
-Version 1.9.0 alpha (2004-03-08), ISBN 3-900051-00-3
+Version 2.0.0 Under development (unstable) (2004-06-24), ISBN 3-900051-00-3
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -431,5 +431,105 @@ List of 8
  - attr(*, "class")= chr [1:2] "diana" "twins"
 > 
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  0.17 0.02 0.22 0 0 
+Time elapsed:  0.31 0 0.43 0 0 
+> 
+> ## From system.file("scripts/ch11.R", package = "MASS")
+> data(swiss)
+> swiss.x <- as.matrix(swiss[,-1])
+> dCH <- diana(swiss.x)
+> str(as.dendrogram(as.hclust(dCH)))
+--[dendrogram w/ 2 branches and 47 members at h = 127] ..
+  |--[dendrogram w/ 2 branches and 31 members at h = 99.2]
+  |  |--[dendrogram w/ 2 branches and 11 members at h = 60.9]
+  |  |  |--[dendrogram w/ 2 branches and 8 members at h = 29.1]
+  |  |  |  |--[dendrogram w/ 2 branches and 5 members at h = 22.7]
+  |  |  |  |  |--[dendrogram w/ 2 branches and 4 members at h = 17.4]
+  |  |  |  |  |  |--[dendrogram w/ 2 branches and 3 members at h = 11.7]
+  |  |  |  |  |  |  |--leaf "Courtelary" 
+  |  |  |  |  |  |  `--[dendrogram w/ 2 branches and 2 members at h = 7.48]
+  |  |  |  |  |  |     |--leaf "Le Locle" 
+  |  |  |  |  |  |     `--leaf "ValdeTravers" 
+  |  |  |  |  |  `--leaf "La Chauxdfnd" 
+  |  |  |  |  `--leaf "La Vallee" 
+  |  |  |  `--[dendrogram w/ 2 branches and 3 members at h = 19]
+  |  |  |     |--[dendrogram w/ 2 branches and 2 members at h = 11.5]
+  |  |  |     |  |--leaf "Lausanne" 
+  |  |  |     |  `--leaf "Neuchatel" 
+  |  |  |     `--leaf "Vevey" 
+  |  |  `--[dendrogram w/ 2 branches and 3 members at h = 56.1]
+  |  |     |--leaf "V. De Geneve" 
+  |  |     `--[dendrogram w/ 2 branches and 2 members at h = 21.4]
+  |  |        |--leaf "Rive Droite" 
+  |  |        `--leaf "Rive Gauche" 
+  |  `--[dendrogram w/ 2 branches and 20 members at h = 48.4]
+  |     |--leaf "Moutier" 
+  |     `--[dendrogram w/ 2 branches and 19 members at h = 44.3]
+  |        |--[dendrogram w/ 2 branches and 18 members at h = 39.1]
+  |        |  |--[dendrogram w/ 2 branches and 6 members at h = 21.9]
+  |        |  |  |--[dendrogram w/ 2 branches and 4 members at h = 12.1]
+  |        |  |  |  |--[dendrogram w/ 2 branches and 2 members at h = 10.8]
+  |        |  |  |  |  |--leaf "Neuveville" 
+  |        |  |  |  |  `--leaf "Boudry" 
+  |        |  |  |  `--[dendrogram w/ 2 branches and 2 members at h = 4.56]
+  |        |  |  |     |--leaf "Grandson" 
+  |        |  |  |     `--leaf "Val de Ruz" 
+  |        |  |  `--[dendrogram w/ 2 branches and 2 members at h = 13.5]
+  |        |  |     |--leaf "Nyone" 
+  |        |  |     `--leaf "Yverdon" 
+  |        |  `--[dendrogram w/ 2 branches and 12 members at h = 20.4]
+  |        |     |--[dendrogram w/ 2 branches and 7 members at h = 15.1]
+  |        |     |  |--[dendrogram w/ 2 branches and 5 members at h = 11.6]
+  |        |     |  |  |--[dendrogram w/ 2 branches and 4 members at h = 8.05]
+  |        |     |  |  |  |--[dendrogram w/ 2 branches and 3 members at h = 6.79]
+  |        |     |  |  |  |  |--[dendrogram w/ 2 branches and 2 members at h = 4.79]
+  |        |     |  |  |  |  |  |--leaf "Aigle" 
+  |        |     |  |  |  |  |  `--leaf "Morges" 
+  |        |     |  |  |  |  `--leaf "Rolle" 
+  |        |     |  |  |  `--leaf "Avenches" 
+  |        |     |  |  `--leaf "Orbe" 
+  |        |     |  `--[dendrogram w/ 2 branches and 2 members at h = 6.04]
+  |        |     |     |--leaf "Moudon" 
+  |        |     |     `--leaf "Payerne" 
+  |        |     `--[dendrogram w/ 2 branches and 5 members at h = 17.3]
+  |        |        |--[dendrogram w/ 2 branches and 4 members at h = 11.2]
+  |        |        |  |--[dendrogram w/ 2 branches and 2 members at h = 7.57]
+  |        |        |  |  |--leaf "Aubonne" 
+  |        |        |  |  `--leaf "Oron" 
+  |        |        |  `--[dendrogram w/ 2 branches and 2 members at h = 6.35]
+  |        |        |     |--leaf "Cossonay" 
+  |        |        |     `--leaf "Lavaux" 
+  |        |        `--leaf "Paysd'enhaut" 
+  |        `--leaf "Echallens" 
+  `--[dendrogram w/ 2 branches and 16 members at h = 56.2]
+     |--[dendrogram w/ 2 branches and 5 members at h = 20.4]
+     |  |--[dendrogram w/ 2 branches and 3 members at h = 12.7]
+     |  |  |--leaf "Delemont" 
+     |  |  `--[dendrogram w/ 2 branches and 2 members at h = 9.4]
+     |  |     |--leaf "Franches-Mnt" 
+     |  |     `--leaf "Porrentruy" 
+     |  `--[dendrogram w/ 2 branches and 2 members at h = 13]
+     |     |--leaf "Gruyere" 
+     |     `--leaf "Sarine" 
+     `--[dendrogram w/ 2 branches and 11 members at h = 30.0]
+        |--[dendrogram w/ 2 branches and 5 members at h = 12.9]
+        |  |--[dendrogram w/ 2 branches and 4 members at h = 11.9]
+        |  |  |--[dendrogram w/ 2 branches and 3 members at h = 8.45]
+        |  |  |  |--leaf "Broye" 
+        |  |  |  `--[dendrogram w/ 2 branches and 2 members at h = 4.14]
+        |  |  |     |--leaf "Glane" 
+        |  |  |     `--leaf "Veveyse" 
+        |  |  `--leaf "Sion" 
+        |  `--leaf "Monthey" 
+        `--[dendrogram w/ 2 branches and 6 members at h = 16.0]
+           |--[dendrogram w/ 2 branches and 4 members at h = 7.42]
+           |  |--[dendrogram w/ 2 branches and 3 members at h = 5.94]
+           |  |  |--[dendrogram w/ 2 branches and 2 members at h = 2.05]
+           |  |  |  |--leaf "Conthey" 
+           |  |  |  `--leaf "Sierre" 
+           |  |  `--leaf "Herens" 
+           |  `--leaf "Entremont" 
+           `--[dendrogram w/ 2 branches and 2 members at h = 5.09]
+              |--leaf "Martigwy" 
+              `--leaf "St Maurice" 
+> 
 > 

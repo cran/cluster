@@ -1,4 +1,4 @@
-#### $Id: agnes.q,v 1.17 2004/03/11 16:26:40 maechler Exp maechler $
+#### $Id: agnes.q,v 1.18 2004/06/25 16:16:51 maechler Exp $
 agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		  stand = FALSE, method = "average", par.method,
                   keep.diss = n < 100, keep.data = !diss)
@@ -76,7 +76,7 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		    dis = double(if(keep.diss) length(dv) else 1),
 		    ok = as.integer(jdyss),
 		    if(mdata) valmd else double(1),
-		    if(mdata) jtmd else integer(1),
+		    if(mdata) jtmd else integer(jp),
 		    as.integer(ndyst),
 		    as.integer(1),# jalg = 1 <==> AGNES
 		    meth,# integer

@@ -1,4 +1,4 @@
-#### $Id: fanny.q,v 1.15 2004/03/11 16:26:40 maechler Exp maechler $
+#### $Id: fanny.q,v 1.16 2004/06/25 16:11:46 maechler Exp $
 fanny <- function(x, k, diss = inherits(x, "dist"),
 		  metric = "euclidean", stand = FALSE)
 {
@@ -57,7 +57,7 @@ fanny <- function(x, k, diss = inherits(x, "dist"),
 		    dis = dv,
 		    ok = as.integer(jdyss),
 		    if(mdata)valmd else double(1),
-		    if(mdata) jtmd else integer(1),
+		    if(mdata) jtmd else integer(jp),
 		    as.integer(ndyst),
 		    integer(n),
 		    integer(n),

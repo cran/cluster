@@ -16,3 +16,10 @@ summary(dr1 <- diana(ruspini, metric = "manhattan"))
 str(dr1)
 
 cat('Time elapsed: ', proc.time() - .proctime00,'\n')
+
+## From system.file("scripts/ch11.R", package = "MASS")
+data(swiss)
+swiss.x <- as.matrix(swiss[,-1])
+dCH <- diana(swiss.x)
+str(as.dendrogram(as.hclust(dCH)))
+

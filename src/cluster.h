@@ -46,7 +46,7 @@ void clara(int *n,  /* = number of objects */
 
 void dysta2(int nsam, int jpp, int *nsel,
 	    double *x, int n, double *dys, int diss_kind,
-	    int *jtmd, double *valmd, Rboolean *toomany_NA);
+	    int *jtmd, double *valmd, Rboolean has_NA, Rboolean *toomany_NA);
 
 void bswap2(int kk, int nsam, int *nrepr,
 	    double *dys, double *sky, double s,

@@ -1,3 +1,21 @@
+2004-06-24  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.9.4 -- fix dysta() using jtmd[] problems
+		(thanks to valgrind and BDR).
+
+	* R/agnes.q (agnes): initialize 'jtmd' to length p in any case
+	* R/diana.q (diana): ditto
+	* R/fanny.q (fanny):  "
+	* R/pam.q (pam):      "
+
+	* R/daisy.q (daisy): pass 'mdata' to Fortran
+	* src/daisy.f (daisy): new "boolean" argument 'mdata'
+
+	* src/clara.c (clara): pass has_NA to dysta2() and don't use
+		jtmd[] and valmd[] if(!has_NA)
+	* src/cluster.h (dysta2): new arg 'has_NA'
+
+
 2004-06-18  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.9.3 {only change = below}

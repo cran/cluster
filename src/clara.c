@@ -225,7 +225,7 @@ void clara(int *n,  /* = number of objects */
 	}
 
 	dysta2(*nsam, *jpp, nsel, x, *n, dys, *diss_kind,
-	       jtmd, valmd, &dyst_toomany_NA);
+	       jtmd, valmd, has_NA, &dyst_toomany_NA);
 	if(dyst_toomany_NA) {
 	    if(*trace_lev)
 		Rprintf("  dysta2() gave dyst_toomany_NA --> new sample\n");
@@ -305,7 +305,7 @@ void clara(int *n,  /* = number of objects */
 
     *obj = zba / rnn;
     dysta2(*nsam, *jpp, nbest, x, *n, dys, *diss_kind, jtmd, valmd,
-	   &dyst_toomany_NA);
+	   has_NA, &dyst_toomany_NA);
     if(dyst_toomany_NA) {
 	REprintf(" *** SHOULD NOT HAPPEN: clara() -> dysta2(nbest) gave toomany_NA\n");
 	return;
@@ -332,7 +332,7 @@ void clara(int *n,  /* = number of objects */
 
 void dysta2(int nsam, int jpp, int *nsel,
 	    double *x, int n, double *dys, int diss_kind,
-	    int *jtmd, double *valmd, Rboolean *toomany_NA)
+	    int *jtmd, double *valmd, Rboolean has_NA, Rboolean *toomany_NA)
 {
 /* Compute Dissimilarities for the selected sub-sample	---> dys[,] */
 
@@ -356,7 +356,7 @@ void dysta2(int nsam, int jpp, int *nsel,
 	    for (j = 0; j < jpp; ++j) {
 		lj = lsel-1 + j * n;
 		kj = ksel-1 + j * n;
-		if (jtmd[j] < 0) { /* x[,j] has some Missing (NA) */
+		if (has_NA && jtmd[j] < 0) { /* x[,j] has some Missing (NA) */
 		    /* in the following line (Fortran!), x[-2] ==> seg.fault
 		       {BDR to R-core, Sat, 3 Aug 2002} */
 		    if (x[lj] == valmd[j] || x[kj] == valmd[j]) {

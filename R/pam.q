@@ -1,5 +1,5 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q,v 1.19 2004/03/11 16:26:40 maechler Exp maechler $
+#### --- $Id: pam.q,v 1.20 2004/06/25 16:09:42 maechler Exp $
 pam <- function(x, k, diss = inherits(x, "dist"),
 		metric = "euclidean", stand = FALSE, cluster.only = FALSE,
                 keep.diss = !diss && !cluster.only && n < 100,
@@ -62,7 +62,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	      dys = dv,
 	      jdyss = as.integer(diss),
 	      if(mdata)valmd else double(1),
-	      if(mdata) jtmd else integer(1),
+	      if(mdata) jtmd else integer(jp),
 	      as.integer(ndyst),
 	      integer(n),		# nsend[]
 	      logical(n),		# nrepr[]

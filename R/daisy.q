@@ -1,4 +1,4 @@
-#### $Id: daisy.q,v 1.16 2004/03/11 16:26:40 maechler Exp maechler $
+#### $Id: daisy.q,v 1.17 2004/06/25 16:17:47 maechler Exp $
 daisy <-
 function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 {
@@ -126,6 +126,7 @@ function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 		     as.integer(jdat),
 		     type3,		# vtype
 		     as.integer(ndyst),
+		     as.integer(mdata),
 		     dis = double((n * (n - 1))/2),
                      NAOK = TRUE,# only to allow "+- Inf"
 		     DUP = FALSE,

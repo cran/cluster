@@ -5,7 +5,7 @@ c Compute Distances from X matrix {also for agnes() and diana()}:
 c -----------------------------------------------------------
 c
 c was part of  pam.f --- now called both from Fortran & C
-c "keep in sync" with  daisy.f {move both to C or replace by mva's dist!}
+c "keep in sync" with  daisy.f {move both to C or replace by R's dist!}
 c
       subroutine dysta(nn,jpp,x,dys,ndyst,jtmd,valmd,jhalt)
 

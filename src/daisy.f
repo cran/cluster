@@ -1,6 +1,6 @@
 c -*- mode: fortran; kept-old-versions: 12;  kept-new-versions: 20; -*-
 
-      subroutine daisy(nn,jpp,x,valmd,jtmd,jdat,vtype,ndyst,disv)
+      subroutine daisy(nn,jpp,x,valmd,jtmd,jdat,vtype,ndyst,mdata,disv)
 c     c
 c     c	 Calculating dissimilarities between objects or variables
 c     c
@@ -13,7 +13,7 @@ c     c	 The following vectors and matrices must be dimensioned in the
 c     c	 main program :
       double precision x(nn,jpp), valmd(jpp)
       double precision disv(1+nn*(nn-1)/2)
-      integer jtmd(jpp), jdat, vtype(jpp), ndyst
+      integer jtmd(jpp), jdat, vtype(jpp), ndyst, mdata
 
 c	vtype was character originally
 c	vtype(j) is the type of variable j:
@@ -24,17 +24,18 @@ c	       = 4 (O) for an Ordinal  variable
 c	       = 5 (I) for an Interval variable (additive)
 c	       = 6 (T) for a  raTio    variable (log transformed)
 
-c	vector jtmd is only read if there are missing values
+c	vector jtmd is only read if there are missing values : if(mdata)
 c	jtmd(j) =  0 if variable j is binary
 c		= -1 if variable j is not binary and has missing values
 c		= +1 if variable j is not binary and has no missing values
 c VAR
       double precision clk,dlk, pp,ppa, rpres
       integer j,k,l,la, lsubt, nlk, nbad, npres
+      logical hasNA
 
-c
+      hasNA = (mdata .ne. 0)
+
 c	  calculation of the dissimilarities
-c
       nlk=0
       if(jdat .eq. 1) then
 c Case I: `mixed' type variables
@@ -48,9 +49,11 @@ c Case I: `mixed' type variables
 c		Dissimilarity between obs.  l & k
 	       do 420 j=1,jpp
 		  if(vtype(j) .ge. 3) then
-		     if(jtmd(j).lt.0) then
-			if(x(l,j).eq.valmd(j))go to 420
-			if(x(k,j).eq.valmd(j))go to 420
+		     if (hasNA) then
+                        if(jtmd(j).lt.0) then
+                           if(x(l,j).eq.valmd(j)) goto 420
+                           if(x(k,j).eq.valmd(j)) goto 420
+                        endif
 		     endif
 		     ppa=ppa+1.
 		     if(vtype(j).eq.3) then
@@ -60,8 +63,8 @@ c		Dissimilarity between obs.  l & k
 		     endif
 		  else
 c		binary variable x(*,j)
-		     if(x(l,j).ne.0..and.x(l,j).ne.1.)go to 420
-		     if(x(k,j).ne.0..and.x(k,j).ne.1.)go to 420
+		     if(x(l,j).ne.0..and.x(l,j).ne.1.) goto 420
+		     if(x(k,j).ne.0..and.x(k,j).ne.1.) goto 420
 		     if(vtype(j).eq.2.or.x(l,j).ne.0.or.x(k,j).ne.0)
      *			  ppa=ppa+1.
 		     if(x(l,j).ne.x(k,j)) dlk=dlk+1.
@@ -88,9 +91,11 @@ c                       FIXME: common code! }
 	       nlk=nlk+1
 	       npres=0
 	       do 530 j=1,jpp
-		  if(jtmd(j).lt.0) then
-		     if(x(l,j).eq.valmd(j))goto 530
-		     if(x(k,j).eq.valmd(j))goto 530
+                  if (hasNA) then
+                     if(jtmd(j).lt.0) then
+                        if(x(l,j).eq.valmd(j)) goto 530
+                        if(x(k,j).eq.valmd(j)) goto 530
+                     endif
 		  endif
 		  npres=npres+1
 		  if(ndyst.eq.1) then
