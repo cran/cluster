@@ -1,3 +1,27 @@
+2004-07-21  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/mona.Rd: drop an extraneous "}\n" that Kurt's new tools found
+	* man/twins.object.Rd: dito
+
+2004-07-06  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.9.5 (not yet released)
+
+	* man/pam.Rd: note on 'medoids'
+
+2004-07-02  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/pam.q: new argument 'medoids'
+	* man/pam.Rd: ex.with 'medoids'
+	* src/pam.c (bswap): new argument 'med_given'
+
+2004-06-29  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/pam.c (bswap): moved ammax/nmax computation into same loop
+	as beter[]. added many comments.
+	GOAL: Allow initial medoids user-specification.
+	>>> TODO: do the analogous thing in src/clara.c 's bswap2()
+
 2004-06-24  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.9.4 -- fix dysta() using jtmd[] problems

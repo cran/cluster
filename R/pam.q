@@ -1,7 +1,8 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q,v 1.20 2004/06/25 16:09:42 maechler Exp $
+#### --- $Id: pam.q,v 1.21 2004/07/02 22:13:37 maechler Exp $
 pam <- function(x, k, diss = inherits(x, "dist"),
-		metric = "euclidean", stand = FALSE, cluster.only = FALSE,
+		metric = "euclidean", medoids = NULL,
+                stand = FALSE, cluster.only = FALSE,
                 keep.diss = !diss && !cluster.only && n < 100,
                 keep.data = !diss && !cluster.only)
 {
@@ -51,6 +52,15 @@ pam <- function(x, k, diss = inherits(x, "dist"),
     }
     if((k <- as.integer(k)) < 1 || k >= n)
 	stop("Number of clusters `k' must be in {1,2, .., n-1}; hence n >= 2")
+    if(is.null(medoids))# default: using "build & swap" to determine medoids"
+        medID <- integer(k)# all 0 -> will be used as `code' in C
+    else {
+        if(length(medID <- as.integer(medoids)) != k ||
+           any(medID < 1) || any(medID > n))
+            stop("'medoids' must be NULL or vector of ",
+                 k, "indices in {1,2, .., n}, n=", n)
+        ## use observation numbers  'medID' as starting medoids for 'swap' only
+    }
     ## call Fortran routine
     storage.mode(dv) <- "double"
     storage.mode(x2) <- "double"
@@ -73,7 +83,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	      double(n),		# separ[]
 	      ttsil = as.double(0),
 	      obj = c(as.double(cluster.only), 0.),# in & out!
-	      med = integer(if(cluster.only) 1 else k),
+	      med = medID,# in & out(if !cluster.only)
 	      clu = integer(n),
 	      clusinf = if(cluster.only) 0. else matrix(0., k, 5),
 	      silinf  = if(cluster.only) 0. else matrix(0., n, 4),

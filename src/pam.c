@@ -8,6 +8,8 @@
  * f2c (version 20031025) and run through f2c-clean,v 1.10 2002/03/28
  */
 
+#include <float.h>
+
 #include <R_ext/Print.h>/* for diagnostics */
 
 #include "cluster.h"
@@ -27,8 +29,9 @@ void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
     int clusinf_dim1 = *kk;
 
     /* Local variables */
-    Rboolean all_stats = (obj[0] == 0.);/* if false, only return 'ncluv[]' */
-    int k, l, nhalf, jhalt;
+    Rboolean all_stats = (obj[0] == 0.),/* if false, only return 'ncluv[]' */
+	med_given = (med[0] != 0);/* if true, med[] contain initial medoids */
+    int k, i, nhalf, jhalt;
     double s, sky;
 
     /* Function Body */
@@ -43,12 +46,29 @@ void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
     nhalf = *nn * (*nn - 1) / 2 + 1; /* nhalf := #{distances}+1 = length(dys) */
 
     /* s := max( dys[.] ), the largest distance */
-    for (l = 1, s = 0.; l < nhalf; ++l) /* dys[0] == 0. is NOT used !*/
-	if (s < dys[l])
-	    s = dys[l];
+    for (i = 1, s = 0.; i < nhalf; ++i) /* dys[0] == 0. is NOT used !*/
+	if (s < dys[i])
+	    s = dys[i];
+
+    /* FIXME: work with med[] = (i_1, i_2, ..., i_k)
+     * ----- instead nrepr[] = (b_1, ... b_n)   b_i in {0,1} */
+    if(med_given) {
+	/* if true, med[] contain initial medoids */
+
+	/* for the moment, translate these to nrepr[] 0/1 : */
+	k = 0;
+	for (i = 0; i < *nn; ++i)
+	    if (med[k] == i+1) {
+		k++; nrepr[i] = 1;
+	    } else   nrepr[i] = 0;
+    }
+    else
+	for (i = 0; i < *nn; ++i)
+	    nrepr[i] = 0;
+
 
 /*     Build + Swap : */
-    bswap(kk, nn, nrepr, radus, damer, ttd, dys, &sky, &s, obj);
+    bswap(kk, nn, nrepr, med_given, radus, damer, ttd, dys, &sky, &s, obj);
 
 /*     Compute Clustering & STATs if(all_stats): */
     cstat(kk, nn, nsend, nrepr, all_stats,
@@ -75,60 +95,86 @@ void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
 
      bswap(): the clustering algorithm in 2 parts:  I. build,	II. swap
 */
-void bswap(int *kk, int *nn, int *nrepr,
+void bswap(int *kk, int *nn, int *nrepr, Rboolean med_given,
 	   /* nrepr[]: here is boolean (0/1): 1 = "is representative object"  */
 	   double *dysma, double *dysmb, double *beter,
 	   double *dys, double *sky, double *s, double *obj)
 {
-    int i, j, ij, k, kj, kbest = -1, nbest = -1, njn, nmax = -1;/* init: -Wall*/
-    double ammax, small, cmd, dz, dzsky;
+    int i, j, ij, k;
 
-    double tmp1 = *s * 1.1f + 1.;
-
+    double tmp1 = *s * 1.1f + 1.;/* larger than all dys[]; replacing
+				    by DBL_MAX  changes result - why ? */
      /* Parameter adjustments */
-    --beter;
-    --dysmb;
-    --dysma;
     --nrepr;
+    --beter;
+    --dysma;
+    --dysmb;
 
-/*     first algorithm: build. */
+/* IDEA: when n (= *nn) is large compared to k (= *kk),
+ * ----  rather use a "sparse" representation:
+ * instead of boolean vector nrepr[] , use  ind_repr <- which(nrepr) !!
+ */
 
-    for (i = 1; i <= *nn; ++i) {
-	nrepr[i] = 0;
+    for (i = 1; i <= *nn; ++i)
 	dysma[i] = tmp1;
-    }
-    for (k = 1; k <= *kk; ++k) {
+
+    if(med_given) {
+	/* compute dysma[] : dysma[j] = D(j, nearest_representative) */
 	for (i = 1; i <= *nn; ++i) {
-	    if (nrepr[i] == 0) {
-		beter[i] = 0.;
+	    if (nrepr[i] == 1)
 		for (j = 1; j <= *nn; ++j) {
-		    cmd = dysma[j] - dys[ind_2(i, j)];
-		    if (cmd > 0.)
-			beter[i] += cmd;
+		    ij = ind_2(i, j);
+		    if (dysma[j] > dys[ij])
+			dysma[j] = dys[ij];
+		}
+	}
+    }
+    else {
+/* first algorithm: build :  find  *kk  representatives  aka medoids :  */
+
+	for (k = 1; k <= *kk; ++k) {
+
+	    /* compute beter[i] for all non-representatives:
+	     * also find ammax := max_{..} and nmax := argmax_i{beter[i]} ... */
+	    int nmax = -1; /* -Wall */
+	    double ammax, cmd;
+	    ammax = 0.;
+	    for (i = 1; i <= *nn; ++i) {
+		if (nrepr[i] == 0) {
+		    beter[i] = 0.;
+		    for (j = 1; j <= *nn; ++j) {
+			cmd = dysma[j] - dys[ind_2(i, j)];
+			if (cmd > 0.)
+			    beter[i] += cmd;
+		    }
+		    if (ammax <= beter[i]) {
+			/*  does < (instead of <= ) work too? -- NO! */
+			ammax = beter[i];
+			nmax = i;
+		    }
 		}
 	    }
-	}
-	ammax = 0.;
-	for (i = 1; i <= *nn; ++i) {
-	    if (nrepr[i] == 0 && ammax <= beter[i]) {
-		/*  does < (instead of <= ) work too? -- NO! */
-		ammax = beter[i];
-		nmax = i;
+
+	    nrepr[nmax] = 1;/* = .true. : *is* a representative */
+	    /* update dysma[] : dysma[j] = D(j, nearest_representative) */
+	    for (j = 1; j <= *nn; ++j) {
+		ij = ind_2(nmax, j);
+		if (dysma[j] > dys[ij])
+		    dysma[j] = dys[ij];
 	    }
 	}
-	nrepr[nmax] = 1;/* = .true. : *is* a representative */
-	for (j = 1; j <= *nn; ++j) {
-	    njn = ind_2(nmax, j);
-	    if (dysma[j] > dys[njn])
-		dysma[j] = dys[njn];
-	}
+	/* output of the above loop:  nrepr[], dysma[], ... */
     }
+
     *sky = 0.;
     for (j = 1; j <= *nn; ++j)
 	*sky += dysma[j];
     obj[0] = *sky / *nn;
 
     if (*kk > 1) {
+
+	double small, dz, dzsky;
+	int kj, kbest = -1, nbest = -1;/* init: -Wall*/
 
 	/*     second algorithm: swap. */
 

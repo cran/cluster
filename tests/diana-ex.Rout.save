@@ -438,7 +438,7 @@ Time elapsed:  0.31 0 0.43 0 0
 > swiss.x <- as.matrix(swiss[,-1])
 > dCH <- diana(swiss.x)
 > str(as.dendrogram(as.hclust(dCH)))
---[dendrogram w/ 2 branches and 47 members at h = 127] ..
+--[dendrogram w/ 2 branches and 47 members at h = 127]
   |--[dendrogram w/ 2 branches and 31 members at h = 99.2]
   |  |--[dendrogram w/ 2 branches and 11 members at h = 60.9]
   |  |  |--[dendrogram w/ 2 branches and 8 members at h = 29.1]

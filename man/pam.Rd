@@ -7,8 +7,8 @@
   medoids'', a more robust version of K-means.
 }
 \usage{
-pam(x, k, diss = inherits(x, "dist"),
-    metric = "euclidean", stand = FALSE, cluster.only = FALSE,
+pam(x, k, diss = inherits(x, "dist"), metric = "euclidean",
+    medoids = NULL, stand = FALSE, cluster.only = FALSE,
     keep.diss = !diss && !cluster.only && n < 100,
     keep.data = !diss && !cluster.only)
 }
@@ -47,6 +47,9 @@ pam(x, k, diss = inherits(x, "dist"),
     differences.  If \code{x} is already a dissimilarity matrix, then
     this argument will be ignored.
   }
+  \item{medoids}{NULL (default) or length-\code{k} vector of integer
+    indices (in \code{1:n}) specifying initial medoids instead of using
+    the \sQuote{\emph{build}} algorithm.}
   \item{stand}{logical; if true, the measurements in \code{x} are
     standardized before calculating the dissimilarities.  Measurements
     are standardized for each variable (column), by subtracting the
@@ -90,8 +93,9 @@ pam(x, k, diss = inherits(x, "dist"),
   of the dissimilarities of the observations to their closest
   representative object.
   \cr
-  The algorithm first looks for a good initial set of medoids (this is
-  called the \bold{build} phase).  Then it finds a local minimum for the
+  By default, when \code{medoids} are not specified, the algorithm first
+  looks for a good initial set of medoids (this is called the
+  \bold{build} phase).  Then it finds a local minimum for the
   objective function, that is, a solution such that there is no single
   switch of an observation with a medoid that will decrease the
   objective (this is called the \bold{swap} phase).
@@ -114,12 +118,17 @@ pamx <- pam(x, 2)
 pamx
 summary(pamx)
 plot(pamx)
-
+## use obs. 1 & 16 as starting medoids -- same result (typically)
+(p2m <- pam(x, 2, medoids = c(1,16)))
+\dontshow{
+ stopifnot(all.equal(pamx[-c(3,8)], p2m[-c(3,8)], tol=1e-14),
+           all.equal(pamx[[3]][2],  p2m[[3]][2],  tol=1e-14))
+}
 pam(daisy(x, metric = "manhattan"), 2, diss = TRUE)
 
 data(ruspini)
 ## Plot similar to Figure 4 in Stryuf et al (1996)
 \dontrun{plot(pam(ruspini, 4), ask = TRUE)}
-\testonly{plot(pam(ruspini, 4))}
+\dontshow{plot(pam(ruspini, 4))}
 }
 \keyword{cluster}
