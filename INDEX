@@ -1,5 +1,7 @@
 agnes                    Agglomerative Nesting
 agnes.object             Agglomerative Nesting Object
+agriculture              European Union Agricultural Workforces
+animals                  Attributes of Animals
 clara                    Clustering Large Applications
 clara.object             Clustering Large Applications Object
 clusplot                 Clusplot - Generic Function
@@ -11,6 +13,7 @@ diana.object             Divisive Analysis Object
 dissimilarity.object     Dissimilarity Matrix Object
 fanny                    Fuzzy Analysis
 fanny.object             Fuzzy Analysis Object
+flower                   Flower Characteristics
 mona                     Monothetic Analysis
 mona.object              Monothetic Analysis Object
 pam                      Partitioning Around Medoids
@@ -38,6 +41,7 @@ print.summary.diana      Use `print()' on a `summary.diana' object
 print.summary.fanny      Use `print()' on a `summary.fanny' object
 print.summary.mona       Use `print()' on a `summary.mona' object
 print.summary.pam        Use `print()' on a `summary.pam' object
+ruspini                  Ruspini Data
 summary.agnes            Summary method for `agnes' objects
 summary.clara            Summary method for `clara' objects
 summary.diana            Summary method for `diana' objects
@@ -47,8 +51,4 @@ summary.pam              Summary Method for `pam' Objects
 twins.object             Hierarchical Clustering Object
 votes.repub              Votes for Republican Candidate in Presidential
                          Elections
-agriculture              European Union Agricultural Workforces
-ruspini                  Ruspini Data
-animals                  Attributes of Animals
-flower                   Flower Characteristics
 xclara                   Bivariate Data Set with 3 Clusters
