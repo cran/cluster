@@ -1,4 +1,4 @@
-### $Id: clara.q,v 1.16 2002/09/12 14:39:21 maechler Exp $
+### $Id: clara.q,v 1.17 2002/12/30 22:45:58 maechler Exp $
 
 #### CLARA := Clustering LARge Applications
 ####
@@ -23,8 +23,8 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	stop(paste(c("'sampsize' should be at least", max(2,k),
 		     " = max(2, number of clusters)"), collapse = " "))
     if(n < sampsize)
-	stop(paste(c("Number of objects is", n,
-		     ", should be at least", sampsize, "(sampsize)"),
+	stop(paste(c("`sampsize' =", sampsize,
+                     "should not be larger than the number of objects,", n),
 		   collapse = " "))
     if((samples <- as.integer(samples)) < 1)
 	stop("'samples' should be at least 1")
@@ -32,7 +32,7 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     namx <- dimnames(x)[[1]]
     ## standardize, if necessary
     data <- x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
-    ## put info about metric, size and NAs in arguments for the Fortran call
+    ## put info about metric, size and NAs in arguments for the .C call
     jp <- ncol(x2)
 
     if((mdata <- any(inax <- is.na(x2)))) { # TRUE if x[] has any NAs

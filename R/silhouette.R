@@ -130,7 +130,7 @@ plot.silhouette <-
     }
     if(do.clus.stat) {
         mtext(expression(paste(j," :  ", n[j]," | ", ave[i %in% Cj] ~~ s[i])),
-              adj = 1.05, line = -1.2)
+              adj = 1.04, line = -1.2)
         y <- rev(y)
         for(j in 1:k) {
             yj <- mean(y[cli == j])

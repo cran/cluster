@@ -1,3 +1,43 @@
+2002-12-30  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/bannerplot.Rd: and
+	* R/plothier.q (bannerplot): new `labels' e.g. passed from plot.agnes().
+
+	* man/plot.agnes.Rd: finally added `labels = ' example
+
+	* tests/clara.R: for() loops were silly; + other ex + comments
+	* src/clara.c: cosmetic
+	* src/fanny.f: and
+	* src/pam.f: cosmetic "syncing" of almost identical parts
+
+2002-12-28  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/clara.Rout.save:
+	* tests/clara.R: add ruspini examples
+
+	* src/clara.c: finally found & fixed "clara(ruspini, 4)" problem
+
+2002-12-21  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.6-4  {for R 1.6.2}
+
+	* R/diana.q (diana): since 1.6-1, integer x was not coerced
+
+	* tests/agnes-ex.R,
+	* tests/diana-ex.R, and *.Rout.save: new test files
+
+	* src/twins.f: some comments added; gotos removed
+	banag() and bandy() were identical --> renamed to bncoef()
+
+2002-12-17  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/agnes.q: agnes(*, method = "no") no longer segfaults
+
+	* R/silhouette.R (plot.silhouette): adj=1.04 (not "1.05")
+
+	* R/plothier.q (pltree.twins): new `labels' arg. such that it can
+	be given to plot.agnes() e.g.
+
 2002-12-05  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Date, Version): 1.6-3
@@ -15,7 +55,7 @@
 
 2002-10-23  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-	* R/agnes.q (print.summary.agnes): oops: had "clara" there!
+	* R/agnes.q (print.summary.agnes): oops: had `clara' there!
 
 2002-10-23  Martin Maechler  <maechler@stat.math.ethz.ch>
 

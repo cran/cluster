@@ -1,3 +1,4 @@
+/* -*- mode: c; kept-new-versions: 25; kept-old-versions: 20 -*- */
 
 /*   Clustering LARge Applications
      ~		~~~   ~
@@ -57,11 +58,11 @@ void clara(int *n,  /* = number of objects */
 
     /* Local variables */
 
-    Rboolean nafs, kall, full_sample, has_NA = *mdata;
-    int j, jk, jkk, js, jsm, jhalt, jran, l, less;
+    Rboolean nafs, kall, full_sample, lrg_sam, has_NA = *mdata;
+    int j, jk, jkk, js, jsm, jhalt, jran, l, n_sam;
     int nsm, ntt, nad, nadv, kran, kans, nrun, nexap, nexbp;
     int n_dys, nsamb, nunfs;
-    double rnn, sky, zb, zba = -1., s = -1., sx = -1.;/* Wall */
+    double rnn, sky, zb, s, sx = -1., zba = -1.;/* Wall */
 
     /* Parameter adjustments */
     --nsel;
@@ -72,13 +73,12 @@ void clara(int *n,  /* = number of objects */
     n_dys = *nsam * (*nsam - 1) / 2 + 1;/* >= 1 */
 
     full_sample = (*n == *nsam);/* only one sub sample == full data */
-
-    nsamb = *nsam << 1;
-    if (*n < nsamb)/* sample more than *n/2 -->
-		    * generate indices for smaller half */
-	less = *n - *nsam;
+    nsamb = *nsam * 2;
+    lrg_sam = (*n < nsamb);/* sample more than *n/2 */
+    if (lrg_sam)/* generate indices for the other, smaller half */
+	n_sam = *n - *nsam;
     else
-	less = *nsam;
+	n_sam = *nsam;
     nunfs = 0;
     kall = FALSE;
 
@@ -90,7 +90,7 @@ void clara(int *n,  /* = number of objects */
 	jhalt = 0;
 	if (!full_sample) {/* `real' case: sample size < n */
 	    ntt = 0;
-	    if (kall/*was jran != 1 */ && nunfs != jran && *n >= nsamb) {
+	    if (kall/*was jran != 1 */ && nunfs != jran && !lrg_sam) {
 		/* nsel[] := sort(nrx[])   for the first j=1:k	?? */
 		for (jk = 0; jk < *kk; ++jk)
 		    nsel[jk+1] = nrx[jk];
@@ -109,38 +109,54 @@ void clara(int *n,  /* = number of objects */
 		ntt = *kk;
 	    }
 	    else {
-
-		/* Loop find random index `kran' not yet in nrx[] : */
+		/* Loop finding random index `kran' not yet in nrx[] : */
 	    L180:
 		kran = (int) (rnn * randm(&nrun) + 1.);
+		if(*trace_lev >= 3)
+		    Rprintf("... {180} nrun=%d -> k{ran}=%d\n", nrun,kran);
 		if (kran > *n) kran = *n;
 
 		if (kall/*jran != 1*/) {
-		    for (jk = 0; jk < *kk; ++jk) {
+		    for (jk = 0; jk < *kk; ++jk)
 			if (kran == nrx[jk])
 			    goto L180;
-		    }
 		}
 		/* end Loop */
-		++ntt;
-		nsel[ntt] = kran;
-		if (ntt == less)
-		    goto L290;
+		nsel[++ntt] = kran;
+		if (ntt == n_sam)
+		    goto L295;
+	    }
+
+	    if(*trace_lev >= 2) {
+		Rprintf(".. kall(T/F)=%d , nsel[ntt=%d] = %d\n",
+			kall, ntt, nsel[ntt]);
+		if(*trace_lev >= 3) {
+		    Rprintf("... nrx[0:%d]= ",*kk-1);
+		    for (jk = 0; jk < *kk; jk++)
+			Rprintf("%d ",nrx[jk]); Rprintf("\n");
+		    Rprintf("... nsel[1:%d]= ",ntt);
+		    for (jk = 1; jk <= ntt; jk++)
+			Rprintf("%d ",nsel[jk]); Rprintf("\n");
+		}
 	    }
 
 	    do {
 	    L210:
+		/* find `kran', a random `k' in {1:n},
+		 * not in nrx[0:(k-1)] nor nsel[1:ntt] : */
 		kran = (int) (rnn * randm(&nrun) + 1.);
+		if(*trace_lev >= 3)
+		    Rprintf("... {210} nrun=%d -> k{ran}=%d\n", nrun,kran);
 		if (kran > *n) kran = *n;
 
-		if (kall/*jran != 1*/ && *n < nsamb) {
+		if (kall/*jran != 1*/ && lrg_sam) {
 		    for (jk = 0; jk < *kk; ++jk) {
 			if (kran == nrx[jk])
 			    goto L210;
 		    }
 		}
-		/* insert kran into nsel[] :   (?) */
-		for (kans = 1; kans <= ntt; ++kans) {
+		/* insert kran into nsel[1:ntt] or after  and increase ntt : */
+		for (kans = 1; kans <= ntt; ++kans)
 		    if (nsel[kans] >= kran) {
 			if (nsel[kans] == kran)
 			    goto L210;
@@ -149,21 +165,20 @@ void clara(int *n,  /* = number of objects */
 				nadv = ntt - nad + kans;
 				nsel[nadv + 1] = nsel[nadv];
 			    }
-			    ++ntt;
 			    nsel[kans] = kran;
-			    goto L290;
+			    /* continue _outer_ loop */ goto L290;
 			}
 		    }
-		}
-		++ntt;
-		nsel[ntt] = kran;
-	    L290:
-		;
-	    } while (ntt < less);
+		nsel[ntt+1] = kran;
 
-	    if (*n < nsamb) {
+	    L290:
+		++ntt;
+	    } while (ntt < n_sam);
+
+	L295:
+	    if (lrg_sam) {
 		/* have indices for smaller _nonsampled_ half; revert this: */
-		for (j = 1, nexap = 1, nexbp = 0; j < *n; j++) {
+		for (j = 1, nexap = 1, nexbp = 0; j <= *n; j++) {
 		    if (nsel[nexap] == j)
 			++nexap;
 		    else
@@ -196,6 +211,9 @@ void clara(int *n,  /* = number of objects */
 	    if (s < dys[l])
 		s = dys[l];
 	} while (l+1 < n_dys);
+
+	if(*trace_lev >= 2)
+	    Rprintf(". clara(): s:= max dys[l=%d] = %g\n", l,s);
 
 	bswap2(*kk, *nsam, nrepr, dys, &sky, s,
 	       /* dysma */tmp1, /*dysmb*/tmp2,
@@ -230,13 +248,15 @@ void clara(int *n,  /* = number of objects */
 
     if (nunfs >= *nran) { *jstop = 1; return; }
 
+
 /*     for the best subsample, the objects of the entire data set
      are assigned to their clusters */
 
     if (!kall) { *jstop = 2; return; }
 
-    if(*trace_lev)
-	Rprintf("C clara(): sample found. --> dysta2(nbest), resul(), finis\n");
+    if(*trace_lev) {
+	Rprintf("C clara(): sample _found_ --> dysta2(nbest), resul(), end\n");
+    }
     *obj = zba / rnn;
     dysta2(*nsam, *jpp, nbest, x, *n, dys, *diss_kind, jtmd, valmd, &jhalt);
 
@@ -275,9 +295,11 @@ void dysta2(int nsam, int jpp, int *nsel,
     for (l = 1; l < nsam; ++l) {
 	lsel = nsel[l];
 	if(lsel <= 0 || lsel > n)
-	    REprintf("	** dysta2(): nsel[l= %d] = %d is OUT\n", l, lsel);
+	    REprintf(" ** dysta2(): nsel[l= %d] = %d is OUT\n", l, lsel);
 	for (k = 0; k < l; ++k) {
 	    ksel = nsel[k];
+	    if(ksel <= 0 || ksel > n)
+		REprintf(" ** dysta2(): nsel[k= %d] = %d is OUT\n", k, ksel);
 	    clk = 0.;
 	    ++nlk;
 	    npres = 0;
@@ -285,7 +307,8 @@ void dysta2(int nsam, int jpp, int *nsel,
 		lj = (lsel - 1) * jpp + j;
 		kj = (ksel - 1) * jpp + j;
 		if (jtmd[j] < 0) {
-/* in the following line, x[-2] ==> seg.fault {BDR to R-core, Sat, 3 Aug 2002} */
+		    /* in the following line (Fortran!), x[-2] ==> seg.fault
+		       {BDR to R-core, Sat, 3 Aug 2002} */
 		    if (x[lj] == valmd[j]) {
 			continue /* next j */;
 		    }
@@ -315,12 +338,12 @@ double randm(int *nrun)
 {
 /* we programmed this generator ourselves because we wanted it
    to be machine independent. it should run on most computers
-   because the largest int used is less than 2**30 . the period
-   is 2**16=65536, which is good enough for our purposes. */
+   because the largest int used is less than 2^30 . the period
+   is 2^16=65536, which is good enough for our purposes. */
     /* MM: improved the original speed-wise only: */
     *nrun = (*nrun * 5761 + 999) & 0177777;
     /* Masking off all but the last 16 bits is equivalent to  % 65536 */
-    return ((double) (*nrun) / 65536.f);
+    return ((double) (*nrun) / 65536.);
 } /* randm() */
 
 /* bswap2() : called once [per random sample] from clara() : */
@@ -468,7 +491,8 @@ void selec(int kk, int n, int jpp, int diss_kind,
 
     --dys;
 
-    /* Function Body */
+
+    /* nafs := TRUE  if a distance cannot be calculated*/
     *nafs = FALSE;
 
 /* identification of representative objects, and initializations */

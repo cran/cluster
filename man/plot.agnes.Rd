@@ -83,5 +83,15 @@ plot.agnes(x, ask = FALSE, which.plots = NULL,
   \code{\link{agnes}}, \code{\link{agnes.object}},
   \code{\link{twins.object}}, \code{\link{par}}.
 }
+\examples{
+## Can also pass `labels' to pltree() and bannerplot():
+data(iris)
+cS <- as.character(Sp <- iris$Species)
+cS[Sp == "setosa"] <- "S"
+cS[Sp == "versicolor"] <- "V"
+cS[Sp == "virginica"] <- "g"
+ai <- agnes(iris[, 1:4])
+plot(ai, labels = cS, nmax = 150)# bannerplot labels are mess
+}
 \keyword{cluster}
 \keyword{hplot}

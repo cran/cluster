@@ -1,4 +1,4 @@
-### $Id: diana.q,v 1.11 2002/09/03 17:00:17 maechler Exp maechler $
+### $Id: diana.q,v 1.12 2002/12/21 22:22:44 maechler Exp $
 
 diana <- function(x, diss = inherits(x, "dist"),
 		  metric = "euclidean", stand = FALSE)
@@ -44,7 +44,7 @@ diana <- function(x, diss = inherits(x, "dist"),
     res <- .Fortran("twins",
 		    n,
 		    jp,
-		    x2,
+		    as.double(x2),
 		    dv,
 		    dis = double(1 + (n * (n - 1))/2),
 		    ok = as.integer(diss), # = jdyss

@@ -1,7 +1,14 @@
-#### $Id: agnes.q,v 1.11 2002/09/03 17:00:17 maechler Exp maechler $
+#### $Id: agnes.q,v 1.12 2002/12/30 22:45:07 maechler Exp $
 agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		  stand = FALSE, method = "average")
 {
+    METHODS <- c("average", "single", "complete", "ward", "weighted")
+    ## hclust has more;  1    2         3           4       5
+    meth <- pmatch(method, METHODS)
+    if(is.na(meth))
+	stop("invalid clustering method")
+    if(meth == -1)
+	stop("ambiguous clustering method")
     if(diss) {
 	## check type of input vector
 	if(any(is.na(x)))
@@ -42,13 +49,6 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 	dv <- double(1 + (n * (n - 1))/2)
 	jdyss <- 0
     }
-    meth <-
-	switch(method,
-	       average = 1, # default
-	       single =	 2,
-	       complete= 3,
-	       ward =	 4,
-	       weighted= 5)
     ## call Fortran routine
     storage.mode(x2) <- "double"
     res <- .Fortran("twins",

@@ -1,4 +1,4 @@
-C-- $Id: fanny.f,v 1.7 2002/09/09 08:47:51 maechler Exp $
+C-- $Id: fanny.f,v 1.8 2002/12/30 22:06:37 maechler Exp $
 C   program for Fuzzy cluster ANalysis
 C
       subroutine fanny(nn,jpp,kk,x,dss,jdyss,valmd,jtmd,ndyst,
@@ -243,9 +243,9 @@ c     VARs
       nbest=1
       do 10 l=2,k
 	 if(pbest .lt. p(1,l)) then
-            pbest=p(1,l)
-            nbest=l
-         endif
+	    pbest=p(1,l)
+	    nbest=l
+	 endif
  10   continue
       nfuzz(1)=nbest
       ncluv(1)=1
@@ -254,37 +254,37 @@ c     VARs
 	 pbest=p(m,1)
 	 nbest=1
 	 do 30 l=2,k
-            if(pbest .lt. p(m,l)) then
-               pbest=p(m,l)
-               nbest=l
-            endif
+	    if(pbest .lt. p(m,l)) then
+	       pbest=p(m,l)
+	       nbest=l
+	    endif
  30	 continue
 	 stay= .FALSE.
 	 do 40 ktry=1,ktrue
 	    if(nfuzz(ktry).eq. nbest) then
-               stay=.TRUE.
-               ncluv(m)=ktry
-            endif
+	       stay=.TRUE.
+	       ncluv(m)=ktry
+	    endif
  40	 continue
 	 if(.not. stay) then
-            ktrue=ktrue+1
-            nfuzz(ktrue)=nbest
-            ncluv(m)=ktrue
-         endif
+	    ktrue=ktrue+1
+	    nfuzz(ktrue)=nbest
+	    ncluv(m)=ktrue
+	 endif
  20   continue
       if(ktrue .lt. k) then
-         do 60 kwalk=ktrue+1, k
-            do 70 kleft=1,k
-               stay=.FALSE.
-               do 80 ktry=1,kwalk-1
-                  if(nfuzz(ktry).eq.kleft) stay=.TRUE.
- 80            continue
-               if(.not. stay) then
-                  nfuzz(kwalk)=kleft
-                  go to 60
-               endif
- 70         continue
- 60      continue
+	 do 60 kwalk=ktrue+1, k
+	    do 70 kleft=1,k
+	       stay=.FALSE.
+	       do 80 ktry=1,kwalk-1
+		  if(nfuzz(ktry).eq.kleft) stay=.TRUE.
+ 80	       continue
+	       if(.not. stay) then
+		  nfuzz(kwalk)=kleft
+		  go to 60
+	       endif
+ 70	    continue
+ 60	 continue
       endif
 
       do 110 m=1,nn
@@ -297,24 +297,23 @@ c     VARs
  130	 continue
  110  continue
       end
-c----------------------------------------------------------------------------
+c     -----------------------------------------------------------
 c
-c Compute Silhouette Information :
+c     Compute Silhouette Information :
 c
-c CLEANUP: this is almost identical to  black() in  pam.f()
+c CLEANUP: this is almost identical to	black() in  pam.f()
 c   -- only difference : different  dys() indexing !
 c
       subroutine fygur(ktrue,nn,kk,hh,ncluv,nsend,nelem,
      1	   negbr,syl,srank,avsyl,ttsyl,dss,s,sylinf)
-c     Args
+c Args
       integer ktrue,nn,kk,hh
       integer ncluv(nn), nsend(nn), nelem(nn), negbr(nn)
       double precision syl(nn),srank(nn),avsyl(kk),ttsyl,dss(hh)
       double precision s, sylinf(nn,4)
-c     VARs
-      integer j,l, lang, lplac, mjl
-      integer nsylr, ntt, nj, numcl, nclu, nbb, nl, njl
-      double precision db,dysa,dysb, att,btt, rtt, rnn, symax
+c VARs
+      integer j,l, lang,lplac, nsylr, nclu,numcl,ntt,nj,njl,nl,nbb,mjl
+      double precision dysa,dysb,db, btt,rtt, symax
 
       nsylr=0
       ttsyl=0.0
@@ -343,6 +342,7 @@ c     VARs
 			else if(l.gt.nj) then
 			   mjl=nn*(nj-1)+l-nj*(nj+1)/2
 			   db=db+dss(mjl)
+C			else dss(.)=0 ; nothing to add
 			endif
 		     endif
  43		  continue
@@ -354,40 +354,52 @@ c     VARs
 		  endif
 	       endif
  41	    continue
-	    if(ntt.eq.1)go to 50
-	    dysa=0.0
-	    do 45 l=1,ntt
-	       nl=nelem(l)
-	       if(nj.lt.nl) then
-		  njl=nn*(nj-1)+nl-nj*(nj+1)/2
-		  dysa=dysa+dss(njl)
-	       else if(nj.gt.nl) then
-		  njl=nn*(nl-1)+nj-nl*(nl+1)/2
-		  dysa=dysa+dss(njl)
+
+	    if(ntt.gt.1) then
+	       dysa=0.0
+	       do 45 l=1,ntt
+		  nl=nelem(l)
+		  if(nj.lt.nl) then
+		     njl=nn*(nj-1)+nl-nj*(nj+1)/2
+		     dysa=dysa+dss(njl)
+		  else if(nj.gt.nl) then
+		     njl=nn*(nl-1)+nj-nl*(nl+1)/2
+		     dysa=dysa+dss(njl)
+C		  else dss(.)=0 ; nothing to add
+		  endif
+ 45	       continue
+	       dysa=dysa/(ntt - 1)
+	       if(dysa.gt.0.0)then
+		  if(dysb.gt.0.0) then
+		     if(dysb.gt.dysa) then
+			syl(j)=1.0-dysa/dysb
+		     else if(dysb.lt.dysa) then
+			syl(j)=dysb/dysa-1.0
+		     else
+c     dysb == dysa:
+			syl(j)=0.0
+		     endif
+		     if(syl(j).le. -1.0) syl(j)=-1.0
+		     if(syl(j).ge.  1.0) syl(j)= 1.0
+		  else
+		     syl(j)=-1.0
+		  endif
+	       else if(dysb.gt.0.0) then
+		  syl(j)=1.0
+	       else
+		  syl(j)=0.0
 	       endif
- 45	    continue
-	    att=ntt-1
-	    dysa=dysa/att
-	    if(dysa.gt.0.0)go to 51
-	    if(dysb.gt.0.0)go to 52
- 50	    syl(j)=0.0
-	    go to 40
- 52	    syl(j)=1.0
-	    go to 40
- 51	    if(dysb.le.0.0)go to 53
-	    if(dysb.gt.dysa)syl(j)=1.0-dysa/dysb
-	    if(dysb.lt.dysa)syl(j)=dysb/dysa-1.0
-	    if(dysb.eq.dysa)syl(j)=0.0
-	    go to 54
- 53	    syl(j)=-1.0
- 54	    if(syl(j).le.(-1.0))syl(j)=-1.0
-	    if(syl(j).ge.1.0)syl(j)=1.0
+	    else
+c     ntt == 1:
+	       syl(j)=0.0
+	    endif
  40	 continue
+
 	 avsyl(numcl)=0.0
 	 do 60 j=1,ntt
 	    symax=-2.0
 	    do 70 l=1,ntt
-	       if(symax.lt. syl(l)) then
+	       if(symax .lt. syl(l)) then
 		  symax=syl(l)
 		  lang=l
 	       endif
@@ -408,7 +420,7 @@ c     VARs
 	    sylinf(nsylr,3)=0.0
 	    sylinf(nsylr,4)=nelem(1)
 	 else
- 75	    do 80 l=1,ntt
+	    do 80 l=1,ntt
 	       nsylr=nsylr+1
 	       lplac=nsend(l)
 	       sylinf(nsylr,1)=numcl
@@ -418,6 +430,5 @@ c     VARs
  80	    continue
 	 endif
  100  continue
-      rnn=nn
-      ttsyl=ttsyl/rnn
+      ttsyl=ttsyl/nn
       end

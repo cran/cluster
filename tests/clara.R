@@ -21,15 +21,20 @@ stopifnot(identical(clara0$clustering, pam0$clustering)
 
 summary(clara2 <- clara(x, 2))
 
+clInd <- c("objective", "medoids", "clusinfo")
+clIn4 <- c(clInd, "sample")
+## clara() {as original code} always draws the *same* random samples !!!!
+clara(x, 2, samples = 50)[clInd]
 for(i in 1:20)
-    print(clara(x, 2, samples = 50)[c("objective", "medoids", "clusinfo")])
+    print(clara(x[sample(nrow(x)),], 2, samples = 50)[clInd])
 
-for(i in 1:10)
-    print(clara(x, 2, samples = 200)[c("objective", "medoids", "clusinfo")])
+clara(x, 2, samples = 101)[clInd]
+clara(x, 2, samples = 149)[clInd]
+clara(x, 2, samples = 200)[clInd]
 ## Note that this last one is practically identical to the slower  pam() one
 
 x[print(sample(length(x), 20))] <- NA
-clara(x, 2, samples = 50)[c("objective", "medoids", "clusinfo")]
+clara(x, 2, samples = 50)[clInd]
 
 ###-- Larger example: 2000 objects, divided into 5 clusters.
 x5 <- rbind(cbind(rnorm(400, 0,4), rnorm(400, 0,4)),
@@ -41,10 +46,44 @@ x5 <- rbind(cbind(rnorm(400, 0,4), rnorm(400, 0,4)),
 x5 <- cbind(x5, rnorm(nrow(x5)))
 
 clara(x5, 5)
-for(i in 1:20)
-    print(summary(clara(x5, 5, samples = 50)))
+summary(clara(x5, 5, samples = 50))
+## 3 "half" samples:
+clara(x5, 5, samples = 999)
+clara(x5, 5, samples = 1000)
+clara(x5, 5, samples = 1001)
+
+clara(x5, 5, samples = 2000)#full sample
+
+
+##  small example(s):
+data(ruspini)
+
+clara(ruspini,4)
+
+rus <- data.matrix(ruspini); storage.mode(rus) <- "double"
+ru2 <- rus[c(1:7,21:28, 45:51, 61:69),]
+ru3 <- rus[c(1:4,21:25, 45:48, 61:63),]
+ru4 <- rus[c(1:2,21:22, 45:47),]
+ru5 <- rus[c(1:2,21,    45),]
+daisy(ru5, "manhattan")
+## Dissimilarities :  11 118 143 107 132  89
+
+## no problem anymore, since 2002-12-28:
+clara(ru5, k=3, met="manhattan", sampsize=3,trace=2)[clIn4]
+clara(ru5, k=3, met="manhattan", sampsize=4,trace=1)[clIn4]
+
+daisy(ru4, "manhattan")
+## this one gives problem, from ss = 6 on ___ still after 2002-12-28 ___ :
+for(ss in 4:nrow(ru4)){
+    cat("---\n\nsample size = ",ss,"\n")
+    print(clara(ru4,k=3,met="manhattan",sampsize=ss)[clIn4])
+}
+for(ss in 4:nrow(ru3)){
+    cat("---\n\nsample size = ",ss,"\n")
+    print(clara(ru3,k=4,met="manhattan",sampsize=ss)[clIn4])
+}
 
 ## Last Line:
 cat('Time elapsed: ', proc.time() - .proctime00,'\n')
 ## Lynne (P IV, 1.6 GHz):  7.5
-## nb-mm (P III,700 MHz): 12.4
+## nb-mm (P III,700 MHz): 29.2

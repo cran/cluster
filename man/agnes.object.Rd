@@ -71,4 +71,3 @@
   \code{\link{plot.agnes}}, \code{\link{twins.object}}.
 }
 \keyword{cluster}
-

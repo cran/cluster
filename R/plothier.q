@@ -1,12 +1,12 @@
-### $Id: plothier.q,v 1.11 2002/10/18 23:09:34 maechler Exp $
+### $Id: plothier.q,v 1.13 2002/12/30 23:27:46 maechler Exp $
 
 pltree <- function(x, ...) UseMethod("pltree")
 
-pltree.twins <- function(x, main = paste("Dendrogram of ", deparse(call)), ...)
+pltree.twins <- function(x, main = paste("Dendrogram of ", deparse(call)),
+			 labels = NULL, ...)
 {
     call <- x$call
-    labels <- NULL
-    if(length(x$order.lab) != 0) {
+    if(is.null(labels) && length(x$order.lab) != 0) {
 	names(x$order) <- names(x$order.lab) <- 1:length(x$order)
 	labels <- x$order.lab[names(sort(x$order))]
     }
@@ -23,8 +23,8 @@ bannerplot <-
 function(x, w = rev(x$height), fromLeft = TRUE,
 	 main, sub, xlab = "Height", adj = 0, col = c(2, 0), border = 0,
 	 axes = TRUE, frame.plot = axes, rev.xax = !fromLeft, xax.pretty = TRUE,
-	 nmax.lab = 35, max.strlen = 5,
-	 yax.do = axes && length(x$order) < nmax.lab,
+	 labels = NULL, nmax.lab = 35, max.strlen = 5,
+	 yax.do = axes && length(x$order) <= nmax.lab,
 	 yaxRight = fromLeft, y.mar = 2.4 + max.strlen / 2.5, ...)
 {
     m <- max(w)
@@ -65,18 +65,19 @@ function(x, w = rev(x$height), fromLeft = TRUE,
 	}
     }
     barplot(w, xlab = xlab, horiz = TRUE, space = 0, axes = FALSE,
-            col = col, border = border, mgp = c(2.5, 1, 0), ...)
+	    col = col, border = border, mgp = c(2.5, 1, 0), ...)
     if(frame.plot && (border == 0 || border == par("bg")))
-        rect(0, 0, m, ncol(w))
+	rect(0, 0, m, ncol(w))
 
     title(main = main, sub = sub, adj = adj)
     if(axes) {
 	axis(1, at = at.vals, labels = lab.vals, ...)
 	if(yax.do) {
-	    names <- if (length(x$order.lab) != 0)
-		substring(x$order.lab, 1, max.strlen) else x$order
+	    if(is.null(labels))
+		labels <- rev(if (length(x$order.lab) != 0)
+			      substring(x$order.lab, 1,max.strlen) else x$order)
 	    axis(ax$side, at = 0:(length(x$order) - 1), las = 1,
-		 labels = rev(names), pos = ax$pos, mgp = c(3, 1.25, 0), ...)
+		 labels = labels, pos = ax$pos, mgp = c(3, 1.25, 0), ...)
 	}
     }
 }
@@ -86,8 +87,8 @@ function(x, w = rev(x$height), fromLeft = TRUE,
 ## --> maybe *merge* these two into one plot.twins()
 plot.agnes <-
 function(x, ask = FALSE, which.plots = NULL, main = NULL,
-         sub = paste("Agglomerative Coefficient = ", round(x$ac, digits = 2)),
-         adj = 0, nmax.lab = 35, max.strlen = 5, xax.pretty = TRUE, ...)
+	 sub = paste("Agglomerative Coefficient = ", round(x$ac, digits = 2)),
+	 adj = 0, nmax.lab = 35, max.strlen = 5, xax.pretty = TRUE, ...)
 {
     if(is.null(main)) {
 	## Different default for banner & pltree:
@@ -205,7 +206,7 @@ plot.mona <- function(x, main = paste("Banner of ", deparse(x$call)),
     bannerplot(x[c("order","order.lab")], w = w, fromLeft = TRUE,
 	       yaxRight = FALSE, col = col, main = main, sub = sub, xlab = xlab,
 	       adj= adj, axes= axes, nmax.lab= nmax.lab, max.strlen= max.strlen,
-               xax.pretty = m+1, ...)
+	       xax.pretty = m+1, ...)
     names <- paste(" ", rev(x$variable))
     is.na(names) <- i0
     text(w, 1:length(names) - 0.5, names, adj = 0, col = col[1], ...)

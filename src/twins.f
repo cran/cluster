@@ -1,3 +1,4 @@
+c -*- mode: Fortran; kept-new-versions: 15; kept-old-versions: 10 -*-
 c
 c     This program performs agglomerative nesting (AGNES) using the
 c     group average method of Sokal and Michener (1958), as well as
@@ -38,14 +39,14 @@ C VARs
       if(jalg.ne.2) then
 c	AGNES
 	 call averl(nn,kwan,ner,ban,dys,method,merge)
-	 call banag(nn,ban,ner,coef)
       else
 c	DIANA
 	 call splyt(nn,kwan,ner,ban,dys,merge)
-	 call bandy(nn,ban,ner,coef)
       endif
+      call bncoef(nn,ban,ner,coef)
       end
 c     -----------------------------------------------------------
+c     AGNES agglomeration
 c
       subroutine averl(nn,kwan,ner,ban,dys,method,merge)
 
@@ -56,7 +57,7 @@ c Function (defined in ./meet.f ):
 c VARs
       integer j,l,la,lb,l1,l2,lq, lka, lenda, lendb
       integer lfyrs, llast, lmuch, lnext, lput, lnum
-      integer naq, nbq, nab, nej,nlj, nns, nclu,nmerge
+      integer naq, nbq, nab,  nlj, nns, nclu,nmerge
       double precision akb, d, dnew, fa,fb,fc, smald, ta,tb,tq
 c
 c
@@ -71,42 +72,47 @@ c     find closest clusters
 c
       nmerge=1
  100  j=1
+
  80   j=j+1
       if(kwan(j).eq.0)goto 80
-      nej=meet(1,j)
-      smald=dys(nej)*1.1+1.0
+      smald=dys(meet(1,j))*1.1+1.0
       nns=nn-1
       do 120 l=1,nns
-	 if(kwan(l).eq.0)go to 120
-	 lmuch=l+1
-	 do 110 j=lmuch,nn
-	    if(kwan(j).eq.0)go to 110
-	    nlj=meet(l,j)
-	    if(dys(nlj).gt.smald)go to 110
-	    smald=dys(nlj)
-	    la=l
-	    lb=j
- 110	 continue
+	 if(kwan(l).gt.0) then
+            lmuch=l+1
+            do 110 j=lmuch,nn
+               if(kwan(j).gt.0) then
+                  nlj=meet(l,j)
+                  if(dys(nlj) .le. smald) then
+c     		MM: note also when "==" !
+                     smald=dys(nlj)
+                     la=l
+                     lb=j
+                  endif
+               endif
+ 110        continue
+         endif
  120  continue
 c
 c     merge-structure for plotting tree in S
 c
       l1=-la
       l2=-lb
-      if(nmerge.eq.1)go to 121
-      do 122 j=1,(nmerge-1)
-	 if((merge(j,1).eq.l1).or.(merge(j,2).eq.l1))l1=j
-	 if((merge(j,1).eq.l2).or.(merge(j,2).eq.l2))l2=j
- 122  continue
- 121  merge(nmerge,1)=l1
+      if(nmerge .gt. 1) then
+         do 122 j=1,(nmerge-1)
+            if((merge(j,1).eq.l1).or.(merge(j,2).eq.l1)) l1=j
+            if((merge(j,1).eq.l2).or.(merge(j,2).eq.l2)) l2=j
+ 122     continue
+      endif
+      merge(nmerge,1)=l1
       merge(nmerge,2)=l2
       nmerge=nmerge+1
 c
 c     determine lfyrs and llast
 c
       do 200 l=1,nn
-	 if(ner(l).eq.la)lfyrs=l
-	 if(ner(l).eq.lb)llast=l
+	 if(ner(l).eq.la) lfyrs=l
+	 if(ner(l).eq.lb) llast=l
  200  continue
       ban(llast)=smald
 c
@@ -114,29 +120,30 @@ c     if the two clusters are next to each other,
 c     ner must not be changed
 c
       lnext=lfyrs+kwan(la)
-      if(lnext.eq.llast)goto 230
+      if(lnext .ne. llast) then
 c
-c     updating ner and ban
+c     	 updating ner and ban
 c
-      lput=lfyrs+kwan(la)
-      lnum=llast-lput
-      do 220 l=1,lnum
-	 lka=ner(lput)
-	 akb=ban(lput)
-	 lenda=llast+kwan(lb)-2
-	 lendb=lenda+1
-	 do 210 j=lput,lenda
-	    ner(j)=ner(j+1)
-	    ban(j)=ban(j+1)
- 210	 continue
-	 ner(lendb)=lka
-	 ban(lendb)=akb
- 220  continue
+         lput=lfyrs+kwan(la)
+         lnum=llast-lput
+         do 220 l=1,lnum
+            lka=ner(lput)
+            akb=ban(lput)
+            lenda=llast+kwan(lb)-2
+            lendb=lenda+1
+            do 210 j=lput,lenda
+               ner(j)=ner(j+1)
+               ban(j)=ban(j+1)
+ 210        continue
+            ner(lendb)=lka
+            ban(lendb)=akb
+ 220     continue
+      endif
 c
 c     calculate new dissimilarities
 c
- 230  do 240 lq=1,nn
-	 if(lq.eq.la.or.lq.eq.lb)go to 240
+      do 240 lq=1,nn
+	 if(lq.eq.la .or. lq.eq.lb) go to 240
 	 if(kwan(lq).eq.0)go to 240
 	 naq=meet(la,lq)
 	 nbq=meet(lb,lq)
@@ -144,24 +151,24 @@ c
 	 if(method.eq.3)go to 310
 	 if(method.eq.4)go to 320
 	 if(method.eq.5)go to 330
-c     group average method
+c     1: group average method
 	 ta=kwan(la)
 	 tb=kwan(lb)
 	 fa=ta/(ta+tb)
 	 fb=tb/(ta+tb)
 	 dys(naq)=fa*dys(naq)+fb*dys(nbq)
 	 go to 240
-c     single linkage
+c     2: single linkage
  300	 dnew=dys(naq)
 	 if(dys(nbq).lt.dnew)dnew=dys(nbq)
 	 dys(naq)=dnew
 	 go to 240
-c     complete linkage
+c     3: complete linkage
  310	 dnew=dys(naq)
 	 if(dnew.lt.dys(nbq))dnew=dys(nbq)
 	 dys(naq)=dnew
 	 go to 240
-c     ward's method
+c     4: ward's method
  320	 ta=kwan(la)
 	 tb=kwan(lb)
 	 tq=kwan(lq)
@@ -169,46 +176,51 @@ c     ward's method
 	 fb=(tb+tq)/(ta+tb+tq)
 	 fc=-tq/(ta+tb+tq)
 	 nab=meet(la,lb)
-	 d=fa*dys(naq)*dys(naq)+fb*dys(nbq)*dys(nbq)
-	 d=d+fc*dys(nab)*dys(nab)
+	 d=fa*dys(naq)*dys(naq) + fb*dys(nbq)*dys(nbq) +
+     +     fc*dys(nab)*dys(nab)
 	 dys(naq)=sqrt(d)
 	 go to 240
-c     weighted average linkage
+c     5: weighted average linkage
  330	 dys(naq)=(dys(naq)+dys(nbq))/2.d0
  240  continue
- 250  kwan(la)=kwan(la)+kwan(lb)
+
+      kwan(la)=kwan(la)+kwan(lb)
       kwan(lb)=0
       nclu=nclu-1
       if(nclu.gt.0)goto 100
       end
 c     -----------------------------------------------------------
 c
-      subroutine banag(nn,ban,ner,ac)
+c	cf = ac := "Agglomerative Coefficient" from AGNES banner
+c  or	cf = dc := "Divisive Coefficient"      from DIANA banner
+
+      subroutine bncoef(nn,ban,ner,cf)
 
       integer nn, ner(nn)
-      double precision ban(nn), ac
+      double precision ban(nn), cf
 c VARs
       integer k,kearl,kafte
       double precision sup,syze,rnn
 
       sup=0.0
       do 70 k=2,nn
-	 if(ban(k).gt.sup)sup=ban(k)
+	 if(ban(k).gt.sup) sup=ban(k)
  70   continue
-      ac=0.0
+      cf=0.0
       do 80 k=1,nn
 	 kearl=k
 	 if(k.eq.1)kearl=2
 	 kafte=k+1
 	 if(k.eq.nn)kafte=nn
 	 syze=ban(kearl)
-	 if(ban(kafte).lt.syze)syze=ban(kafte)
-	 ac=ac+1.0-(syze/sup)
+	 if(ban(kafte).lt.syze) syze=ban(kafte)
+	 cf=cf+1.0-(syze/sup)
  80   continue
       rnn=nn
-      ac=ac/rnn
+      cf=cf/rnn
       end
 c     -----------------------------------------------------------
+c	DIANA "splitting"
 c
       subroutine splyt(nn,kwan,ner,ban,dys,merge)
 
@@ -238,7 +250,7 @@ c
       kwan(1)=nn
       ja=1
 c
-c     computation of diameter of data set
+c     cs :=  diameter of data set
 c
       cs=0.0
       k=0
@@ -253,127 +265,135 @@ c
 c
 c     special case of a pair of objects
 c
-      if(kwan(ja).ne.2)go to 50
-      kwan(ja)=1
-      kwan(jb)=1
-      jan=ner(ja)
-      jbn=ner(jb)
-      jab=meet(jan,jbn)
-      ban(jb)=dys(jab)
-      go to 400
+      if(kwan(ja).eq.2) then
+         kwan(ja)=1
+         kwan(jb)=1
+         jan=ner(ja)
+         jbn=ner(jb)
+         jab=meet(jan,jbn)
+         ban(jb)=dys(jab)
+      else
 c
 c     finding first object to be shifted
 c
- 50   bygsd=-1.
-      do 110 l=ja,jb
-	 lner=ner(l)
-	 sd=0.
-	 do 100 j=ja,jb
-	    jner=ner(j)
-	    nlj=meet(lner,jner)
-	    sd=sd+dys(nlj)
- 100	 continue
-	 if(sd.le.bygsd)go to 110
-	 bygsd=sd
-	 lndsd=l
- 110  continue
+ 50      bygsd=-1.
+         do 110 l=ja,jb
+            lner=ner(l)
+            sd=0.
+            do 100 j=ja,jb
+               jner=ner(j)
+               nlj=meet(lner,jner)
+               sd=sd+dys(nlj)
+ 100        continue
+            if(bygsd .lt. sd) then
+               bygsd=sd
+               lndsd=l
+            endif
+ 110     continue
 c
 c     shifting the first object
 c
-      kwan(ja)=kwan(ja)-1
-      kwan(jb)=1
-      if(jb.eq.lndsd)go to 115
-      lchan=ner(lndsd)
-      lmm=jb-1
-      do 112 lmma=lndsd,lmm
-	 lmmb=lmma+1
-	 ner(lmma)=ner(lmmb)
- 112  continue
-      ner(jb)=lchan
- 115  splyn=0.
-      jma=jb-1
+         kwan(ja)=kwan(ja)-1
+         kwan(jb)=1
+         if(jb.ne.lndsd) then
+            lchan=ner(lndsd)
+            lmm=jb-1
+            do 112 lmma=lndsd,lmm
+               lmmb=lmma+1
+               ner(lmma)=ner(lmmb)
+ 112        continue
+            ner(jb)=lchan
+         endif
+         splyn=0.
+         jma=jb-1
 c
 c     finding the next object to be shifted
 c
- 120  splyn=splyn+1.
-      rest=jma-ja
-      bdyff=-1.
-      do 150 l=ja,jma
-	 lner=ner(l)
-	 da=0.
-	 do 130 j=ja,jma
-	    jner=ner(j)
-	    nlj=meet(lner,jner)
-	    da=da+dys(nlj)
- 130	 continue
-	 da=da/rest
-	 db=0.
-	 jmb=jma+1
-	 do 140 j=jmb,jb
-	    jner=ner(j)
-	    nlj=meet(lner,jner)
-	    db=db+dys(nlj)
- 140	 continue
-	 db=db/splyn
-	 dyff=da-db
-	 if(dyff.le.bdyff)go to 150
-	 bdyff=dyff
-	 jaway=l
- 150  continue
-      jmb=jma+1
+ 120     splyn=splyn+1.
+         rest=jma-ja
+         bdyff=-1.
+         do 150 l=ja,jma
+            lner=ner(l)
+            da=0.
+            do 130 j=ja,jma
+               jner=ner(j)
+               nlj=meet(lner,jner)
+               da=da+dys(nlj)
+ 130        continue
+            da=da/rest
+            db=0.
+            jmb=jma+1
+            do 140 j=jmb,jb
+               jner=ner(j)
+               nlj=meet(lner,jner)
+               db=db+dys(nlj)
+ 140        continue
+            db=db/splyn
+            dyff=da-db
+            if(bdyff.lt.dyff) then
+               bdyff=dyff
+               jaway=l
+            endif
+ 150     continue
+         jmb=jma+1
 c
 c     shifting the next object when necessary
 c
-      if(bdyff.le.0.)go to 200
-      if(jma.eq.jaway)go to 165
-      lchan=ner(jaway)
-      lmz=jma-1
-      do 160 lxx=jaway,lmz
-	 lxxp=lxx+1
-	 ner(lxx)=ner(lxxp)
- 160  continue
-      ner(jma)=lchan
- 165  do 170 lxx=jmb,jb
-	 lxy=lxx-1
-	 if(ner(lxy).lt.ner(lxx))go to 180
-	 lchan=ner(lxy)
-	 ner(lxy)=ner(lxx)
-	 ner(lxx)=lchan
- 170  continue
- 180  kwan(ja)=kwan(ja)-1
-      kwan(jma)=kwan(jmb)+1
-      kwan(jmb)=0
-      jma=jma-1
-      jmb=jma+1
-      if(jma.ne.ja)go to 120
+         if(bdyff.le.0.)go to 200
+         if(jma.eq.jaway)go to 165
+         lchan=ner(jaway)
+         lmz=jma-1
+         do 160 lxx=jaway,lmz
+            lxxp=lxx+1
+            ner(lxx)=ner(lxxp)
+ 160     continue
+         ner(jma)=lchan
+ 165     do 170 lxx=jmb,jb
+            lxy=lxx-1
+            if(ner(lxy).lt.ner(lxx))go to 180
+            lchan=ner(lxy)
+            ner(lxy)=ner(lxx)
+            ner(lxx)=lchan
+ 170     continue
+ 180     kwan(ja)=kwan(ja)-1
+         kwan(jma)=kwan(jmb)+1
+         kwan(jmb)=0
+         jma=jma-1
+         jmb=jma+1
+         if(jma.ne.ja)go to 120
 c
 c     switch the two parts when necessary
 c
- 200  if(ner(ja).lt.ner(jmb))go to 300
-      lxxa=ja
-      do 220 lgrb=jmb,jb
-	 lxxa=lxxa+1
-	 lchan=ner(lgrb)
-	 do 210 lxy=lxxa,lgrb
-	    lxf=lgrb-lxy+lxxa
-	    lxg=lxf-1
-	    ner(lxf)=ner(lxg)
- 210	 continue
-	 ner(lxg)=lchan
- 220  continue
-      llq=kwan(jmb)
-      kwan(jmb)=0
-      jma=ja+jb-jma-1
-      jmb=jma+1
-      kwan(jmb)=kwan(ja)
-      kwan(ja)=llq
+ 200     if(ner(ja).lt.ner(jmb))go to 300
+         lxxa=ja
+         do 220 lgrb=jmb,jb
+            lxxa=lxxa+1
+            lchan=ner(lgrb)
+            do 210 lxy=lxxa,lgrb
+               lxf=lgrb-lxy+lxxa
+               lxg=lxf-1
+               ner(lxf)=ner(lxg)
+ 210        continue
+            ner(lxg)=lchan
+ 220     continue
+         llq=kwan(jmb)
+         kwan(jmb)=0
+         jma=ja+jb-jma-1
+         jmb=jma+1
+         kwan(jmb)=kwan(ja)
+         kwan(ja)=llq
 c
 c     compute level for banner
 c
- 300  if(nclu.eq.1)ban(jmb)=cs
-      if(nclu.eq.1)go to 400
-      call supcl(dys,ja,jb,arest,nn,ner)
-      ban(jmb)=arest
+ 300     if(nclu.eq.1) then
+            ban(jmb)=cs
+         else
+            call supcl(dys,ja,jb,arest,nn,ner)
+            ban(jmb)=arest
+         endif
+
+      endif
+
  400  nclu=nclu+1
       if(nclu.eq.nn)goto 500
 c
@@ -387,29 +407,33 @@ c
  430  ja=1
       if(kwan(ja).eq.1)go to 420
       go to 30
+
 c
 c     merge-structure for plotting tree in S
 c
  500  do 550 nmerge=1,(nn-1)
 	 dmin=cs
 	 do 560 j=2,nn
-	    if ((kwan(j).lt.0).or.(ban(j).gt.dmin))goto 560
-	    dmin=ban(j)
-	    nj=j
+	    if (kwan(j).ge.0 .and. dmin.ge.ban(j)) then
+               dmin=ban(j)
+               nj=j
+            endif
  560	 continue
 	 kwan(nj)=-1
 	 l1=-ner(nj-1)
 	 l2=-ner(nj)
-	 if(nmerge.eq.1)go to 570
-	 do 580 j=1,(nmerge-1)
-	    if((merge(j,1).eq.l1).or.(merge(j,2).eq.l1))l1=j
-	    if((merge(j,1).eq.l2).or.(merge(j,2).eq.l2))l2=j
- 580	 continue
- 570	 merge(nmerge,1)=l1
+	 if(nmerge.gt.1) then
+            do 580 j=1,(nmerge-1)
+               if((merge(j,1).eq.l1).or.(merge(j,2).eq.l1)) l1=j
+               if((merge(j,1).eq.l2).or.(merge(j,2).eq.l2)) l2=j
+ 580        continue
+         endif
+	 merge(nmerge,1)=l1
 	 merge(nmerge,2)=l2
  550  continue
       end
 c     -----------------------------------------------------------
+c     used in splyt() above
 c
       subroutine supcl(dys,kka,kkb,arest,nn,ner)
 
@@ -433,31 +457,3 @@ c VARs
  20   continue
       return
       end
-c     -----------------------------------------------------------
-c
-      subroutine bandy(nn,ban,ner,dc)
-c Arguments
-      integer nn,ner(nn)
-      double precision ban(nn), dc
-c VARs
-      integer k, kearl, kafte
-      double precision sup, syze, rnn
-
-      sup=0.0
-      do 70 k=2,nn
-	 if(ban(k).gt.sup)sup=ban(k)
- 70   continue
-      dc=0.0
-      do 80 k=1,nn
-	 kearl=k
-	 if(k.eq.1)kearl=2
-	 kafte=k+1
-	 if(k.eq.nn)kafte=nn
-	 syze=ban(kearl)
-	 if(ban(kafte).lt.syze)syze=ban(kafte)
-	 dc=dc+1.0-(syze/sup)
- 80   continue
-      rnn=nn
-      dc=dc/rnn
-      end
-

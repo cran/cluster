@@ -1,4 +1,4 @@
-c $Id: pam.f,v 1.13 2002/10/28 21:25:37 maechler Exp $
+c $Id: pam.f,v 1.15 2002/12/30 22:33:20 maechler Exp $
 c
 c PAM := Partitioning Around Medoids
 c
@@ -390,14 +390,14 @@ c     function called
       external meet
 c
       integer j,l, lang,lplac, nsylr, nclu,numcl,ntt,nj,njl,nl,nbb,mjl
-      double precision dysa,dysb,db,btt,rtt,rnn,symax
+      double precision dysa,dysb,db, btt,rtt, symax
 
       nsylr=0
       ttsyl=0.0
       do 100 numcl=1,kk
 	 ntt=0
 	 do 30 j=1,nn
-	    if(ncluv(j).eq.numcl)then
+	    if(ncluv(j).eq.numcl) then
 	       ntt=ntt+1
 	       nelem(ntt)=j
 	    endif
@@ -411,7 +411,7 @@ c
 		  nbb=0
 		  db=0.0
 		  do 43 l=1,nn
-		     if(ncluv(l).eq.nclu)then
+		     if(ncluv(l).eq.nclu) then
 			nbb=nbb+1
 			if(l .ne. nj) then
 			   mjl=meet(nj,l)
@@ -421,7 +421,7 @@ c
  43		  continue
 		  btt=nbb
 		  db=db/btt
-		  if(db.lt.dysb)then
+		  if(dysb .gt. db)then
 		     dysb=db
 		     negbr(j)=nclu
 		  endif
@@ -463,9 +463,10 @@ c     ntt == 1:
 	       syl(j)=0.0
 	    endif
  40	 continue
+
 	 avsyl(numcl)=0.0
 	 do 60 j=1,ntt
-	    symax=-2.0
+	    symax=-2.
 	    do 70 l=1,ntt
 	       if(symax .lt. syl(l)) then
 		  symax=syl(l)
@@ -475,7 +476,7 @@ c     ntt == 1:
 	    nsend(j)=lang
 	    srank(j)=syl(lang)
 	    avsyl(numcl)=avsyl(numcl)+srank(j)
-	    syl(lang)=-3.0
+	    syl(lang)=-3.
  60	 continue
 	 ttsyl=ttsyl+avsyl(numcl)
 	 rtt=ntt
@@ -498,6 +499,5 @@ c     ntt == 1:
  80	    continue
 	 endif
  100  continue
-      rnn=nn
-      ttsyl=ttsyl/rnn
+      ttsyl=ttsyl/nn
       end

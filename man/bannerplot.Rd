@@ -11,7 +11,7 @@ bannerplot(x, w = rev(x$height), fromLeft = TRUE,
            main, sub, xlab = "Height",  adj = 0,
            col = c(2, 0), border = 0, axes = TRUE, frame.plot = axes,
            rev.xax = !fromLeft, xax.pretty = TRUE,
-           nmax.lab = 35, max.strlen = 5,
+           labels = NULL, nmax.lab = 35, max.strlen = 5,
            yax.do = axes && length(x$order) < nmax.lab,
            yaxRight = fromLeft, y.mar = 2.4 + max.strlen/2.5, \dots)
 }
@@ -33,6 +33,8 @@ bannerplot(x, w = rev(x$height), fromLeft = TRUE,
   \item{xax.pretty}{logical or integer indicating if
     \code{\link{pretty}()} should be used for the x axis.
     \code{xax.pretty = FALSE} is mainly for back compatibility.}
+  \item{labels}{labels to use on y-axis; the default is constructed from
+    \code{x}.}
   \item{nmax.lab}{integer indicating the number of labels which is
     considered too large for single-name labelling the banner plot.}
   \item{max.strlen}{positive integer giving the length to which
@@ -46,7 +48,7 @@ bannerplot(x, w = rev(x$height), fromLeft = TRUE,
   \item{\dots}{graphical parameters (see \code{\link{par}}) may also
     be supplied as arguments to this function.}
 }
-\author{Martin Maechler}
+\author{Martin Maechler (from original code of Kaufman and Rousseeuw).}
 \note{This is mainly a utility called from \code{\link{plot.agnes}},
   \code{\link{plot.diana}} and \code{\link{plot.mona}}.
 }% also serves as \seealso{*}
