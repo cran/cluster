@@ -11,6 +11,10 @@
 \usage{
 \method{print}{agnes}(x, \dots)
 }
+\arguments{
+  \item{x}{an agnes object.}
+  \item{\dots}{potential further arguments (require by generic).}
+}
 \seealso{
   \code{\link{agnes}}, \code{\link{agnes.object}}, \code{\link{print}},
   \code{\link{print.default}}.

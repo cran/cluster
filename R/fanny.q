@@ -18,7 +18,7 @@ fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	    stop("NA-values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") {
 	    if(!is.numeric(x) || size(x) == 0)
-		stop("x is not of class dissimilarity and can not be converted to this class." )	
+		stop("x is not of class dissimilarity and can not be converted to this class." )
 	    ## convert input vector to class "dissimilarity"
 	    class(x) <- "dissimilarity"
 	    attr(x, "Size") <- size(x)
@@ -37,11 +37,11 @@ fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	jdyss <- 1
     }
     else {
-	##check type of input matrix 
+	##check type of input matrix
 	if((!is.data.frame(x) && !is.numeric(x)) ||
 	   (!all(sapply(x, data.class) == "numeric")))
 	    stop("x is not a numeric dataframe or matrix.")
-	x <- data.matrix(x)	
+	x <- data.matrix(x)
 	## standardize, if necessary
 	x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
 	##put info about metric, size and NAs in arguments for the Fortran call
@@ -94,7 +94,7 @@ fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 		    PACKAGE = "cluster")
     sildim <- res$silinf[, 4]
     if(diss) {
-	disv <- x	
+	disv <- x
 	##add labels to Fortran output
 	if(length(attr(x, "Labels")) != 0) {
 	    sildim <- attr(x, "Labels")[sildim]
@@ -105,13 +105,13 @@ fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
     else {
 	##give warning if some dissimilarities are missing.
 	if(res$ok == -1)
-	    stop("No clustering performed, NA-values in the dissimilarity matrix.")	
+	    stop("No clustering performed, NA-values in the dissimilarity matrix.")
 	disv <- res$dis[ - (1 + (n * (n - 1))/2)]
 	disv[disv == -1] <- NA
 	class(disv) <- "dissimilarity"
 	attr(disv, "Size") <- nrow(x)
 	attr(disv, "Metric") <- metric
-	attr(disv, "Labels") <- dimnames(x)[[1]]	
+	attr(disv, "Labels") <- dimnames(x)[[1]]
 	##add labels to Fortran output
 	if(length(dimnames(x)[[1]]) != 0) {
 	    sildim <- dimnames(x)[[1]][sildim]
@@ -126,16 +126,16 @@ fanny <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
     if(k != 1) {
 	dimnames(res$silinf) <- list(sildim,
 				     c("cluster", "neighbor", "sil_width", ""))
-	clustering <- list(membership = res$p, coeff = res$coeff, 
+	clustering <- list(membership = res$p, coeff = res$coeff,
 			   clustering = res$clu, objective = res$obj,
-			   silinfo = 
+			   silinfo =
 			   list(widths = res$silinf[, -4],
 				clus.avg.widths = res$avsil[1:k],
 				avg.width = res$ttsil),
 			   diss = disv)
     }
     else {
-	clustering <- list(membership = res$p, coeff = res$coeff, 
+	clustering <- list(membership = res$p, coeff = res$coeff,
 			   clustering = res$clu, objective = res$obj,
 			   diss = disv)
     }
@@ -162,9 +162,8 @@ print.fanny <- function(x, ...)
     invisible(x)
 }
 
-summary.fanny <- function(x, ...)
+summary.fanny <- function(object, ...)
 {
-    object <- x
     class(object) <- "summary.fanny"
     object
 }

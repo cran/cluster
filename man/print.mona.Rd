@@ -11,6 +11,10 @@
 \usage{
 \method{print}{mona}(x, \dots)
 }
+\arguments{
+  \item{x}{a mona object.}
+  \item{\dots}{potential further arguments (require by generic).}
+}
 \seealso{
   \code{\link{mona}}, \code{\link{mona.object}}, \code{\link{print}},
   \code{\link{print.default}}.

@@ -4,9 +4,9 @@
 
 ### FIXME :
 ##  should not necessarily keep data in result, because "large" !
-##  OTOH, data is used for clusplot.partition() 
+##  OTOH, data is used for clusplot.partition()
 
-## Note:  ./plotpart.q	is also working with clara() objects 
+## Note:  ./plotpart.q	is also working with clara() objects
 
 
 clara <- function(x, k, metric = "euclidean", stand = FALSE,
@@ -87,13 +87,13 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 		    integer(sampsize),
 		    integer(sampsize),
 		    integer(sampsize),
-		    PACKAGE = "cluster")	
+		    PACKAGE = "cluster")
     ## give a warning when errors occured
     if(res$jstop == 1)
 	stop("For each sample at least one object was found which could not be assigned to a cluster (because of missing values).")
     if(res$jstop == 2)
 	stop("Each of the random samples contains objects between which no distance can be computed.")
-    sildim <- res$silinf[, 4]	
+    sildim <- res$silinf[, 4]
     ## adapt Fortran output to S:
     ## convert lower matrix, read by rows, to upper matrix, read by rows.
     disv <- res$dis[-1]
@@ -101,7 +101,7 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     disv <- disv[upper.to.lower.tri.inds(sampsize)]
     class(disv) <- "dissimilarity"
     attr(disv, "Size") <- sampsize
-    attr(disv, "Metric") <- metric	
+    attr(disv, "Metric") <- metric
     attr(disv, "Labels") <- namx[res$sample]
     ## add labels to Fortran output
     res$med <- x[res$med, ]
@@ -117,16 +117,16 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     if(k != 1) {
 	dimnames(res$silinf) <- list(sildim,
 				     c("cluster", "neighbor", "sil_width", ""))
-	clustering <- list(sample = res$sample, medoids = res$med, 
+	clustering <- list(sample = res$sample, medoids = res$med,
 			   clustering = res$clu, objective = res$obj,
 			   clusinfo = clusinf,
-			   silinfo = list(width = res$silinf[, -4], 
+			   silinfo = list(width = res$silinf[, -4],
 			   clus.avg.widths = res$avsil[1:k],
 			   avg.width = res$ttsil),
 			   diss = disv)
     }
     else {
-	clustering <- list(sample = res$sample, medoids = res$med, 
+	clustering <- list(sample = res$sample, medoids = res$med,
 			   clustering = res$clu, objective = res$obj,
 			   clusinfo = clusinf, diss = disv)
     }
@@ -147,10 +147,10 @@ print.clara <- function(x, ...)
     invisible(x)
 }
 
-summary.clara <- function(x, ...)
+summary.clara <- function(object, ...)
 {
-    class(x) <- "summary.clara"
-    x
+    class(object) <- "summary.clara"
+    object
 }
 
 print.summary.clara <- function(x, ...)

@@ -12,13 +12,17 @@
 }
 \usage{
   \method{print}{dissimilarity}(x, \dots)
-\method{summary}{dissimilarity}(x, \dots)
+\method{summary}{dissimilarity}(object, \dots)
+}
+\arguments{
+  \item{x, object}{a dissimilarity object.}
+  \item{\dots}{potential further arguments (require by generic).}
 }
 \seealso{
   \code{\link{daisy}}, \code{\link{dissimilarity.object}},
-  \code{\link{print}}, \code{\link{print.default}}. 
+  \code{\link{print}}, \code{\link{print.default}}.
 }
 \keyword{cluster}
 \keyword{print}
 
- 
+

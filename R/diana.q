@@ -38,7 +38,7 @@ diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 	    attr(x, "Metric") <- "unspecified"
 	}
 	n <- attr(x, "Size")
-	dv <- x[lower.to.upper.tri.inds(n)]	
+	dv <- x[lower.to.upper.tri.inds(n)]
 	##prepare arguments for the Fortran call
 	dv <- c(0, dv)
 	jp <- 1
@@ -50,7 +50,7 @@ diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 	dv2 <- double(1 + (n * (n - 1))/2)
     }
     else {
-	##check type of input matrix 
+	##check type of input matrix
 	if((!is.data.frame(x) && !is.numeric(x)) ||
 	   (!all(sapply(x, data.class) == "numeric")))
 	    stop("x is not a numeric dataframe or matrix.")
@@ -107,7 +107,7 @@ diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 	class(disv) <- "dissimilarity"
 	attr(disv, "Size") <- nrow(x)
 	attr(disv, "Metric") <- metric
-	attr(disv, "Labels") <- dimnames(x)[[1]]	
+	attr(disv, "Labels") <- dimnames(x)[[1]]
 	##add labels to Fortran output
 	if(length(dimnames(x)[[1]]) != 0) {
 	    order.lab <- dimnames(x)[[1]][res$ner]
@@ -120,7 +120,7 @@ diana <- function(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 	    order.lab <- attr(x, "Labels")[res$ner]
 	}
     }
-    clustering <- list(order = res$ner, height = res$ban[-1], dc = res$dc, 
+    clustering <- list(order = res$ner, height = res$ban[-1], dc = res$dc,
 		       merge = res$merge, diss = disv)
     if(exists("order.lab"))
 	clustering$order.lab <- order.lab
@@ -149,9 +149,8 @@ print.diana <- function(x, ...)
     invisible(x)
 }
 
-summary.diana <- function(x, ...)
+summary.diana <- function(object, ...)
 {
-    object <- x
     class(object) <- "summary.diana"
     object
 }

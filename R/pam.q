@@ -29,7 +29,7 @@ pam <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	    stop("NA-values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") {
 	    if(!is.numeric(x) || size(x) == 0)
-		stop("x is not of class dissimilarity and can not be converted to this class." )	
+		stop("x is not of class dissimilarity and can not be converted to this class." )
 	    ## convert input vector to class "dissimilarity"
 	    class(x) <- "dissimilarity"
 	    attr(x, "Size") <- size(x)
@@ -40,7 +40,7 @@ pam <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	n <- attr(x, "Size")
 	if((k < 1) || (k > n - 1))
 	    stop("The number of cluster should be at least 1 and at most n-1.")
-	dv <- x[lower.to.upper.tri.inds(n)]	
+	dv <- x[lower.to.upper.tri.inds(n)]
 	## prepare arguments for the Fortran call
 	dv <- c(0, dv)
 	jp <- 1
@@ -54,7 +54,7 @@ pam <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	if((!is.data.frame(x) && !is.numeric(x)) ||
 	   !all(sapply(x, data.class) == "numeric"))
 	    stop("x is not a numeric dataframe or matrix.")
-	x <- data.matrix(x)	
+	x <- data.matrix(x)
 	## standardize, if necessary
 	x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
 	## put info about metric, size and NAs in arguments for the Fortran call
@@ -100,7 +100,7 @@ pam <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 		    PACKAGE = "cluster")
     sildim <- res$silinf[, 4]
     if(diss) {
-	disv <- x	
+	disv <- x
 	## add labels to Fortran output
 	if(length(attr(x, "Labels")) != 0) {
 	    sildim <- attr(x, "Labels")[sildim]
@@ -111,7 +111,7 @@ pam <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
     else {
 	## give warning if some dissimilarities are missing.
 	if(res$jdyss == -1)
-	    stop("No clustering performed, NA-values in the dissimilarity matrix.")	
+	    stop("No clustering performed, NA-values in the dissimilarity matrix.")
 	## adapt Fortran output to S:
 	## convert lower matrix, read by rows, to upper matrix, read by rows.
 	disv <- res$dys[-1]
@@ -120,7 +120,7 @@ pam <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 	class(disv) <- "dissimilarity"
 	attr(disv, "Size") <- nrow(x)
 	attr(disv, "Metric") <- metric
-	attr(disv, "Labels") <- dimnames(x)[[1]]	
+	attr(disv, "Labels") <- dimnames(x)[[1]]
 	## add labels to Fortran output
 	res$med <- x[res$med,  ]
 	if(length((dimnames(x)[[1]])) != 0) {
@@ -140,16 +140,16 @@ pam <- function(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
         if(k != 1) {
             dimnames(res$silinf) <-
                 list(sildim, c("cluster", "neighbor", "sil_width", ""))
-            list(medoids = res$med, clustering = res$clu, 
+            list(medoids = res$med, clustering = res$clu,
                  objective = res$obj, isolation = res$isol,
                  clusinfo = res$clusinf,
                  silinfo =
-                 list(widths = res$silinf[, -4], 
+                 list(widths = res$silinf[, -4],
                       clus.avg.widths = res$avsil[1:k],
                       avg.width = res$ttsil),
                  diss = disv)
         }
-        else list(medoids = res$med, clustering = res$clu, 
+        else list(medoids = res$med, clustering = res$clu,
                   objective = res$obj, isolation = res$isol,
                   clusinfo = res$clusinf, diss = disv)
     if(!diss) {
@@ -174,10 +174,10 @@ print.pam <- function(x, ...)
     invisible(x)
 }
 
-summary.pam <- function(x, ...)
+summary.pam <- function(object, ...)
 {
-    class(x) <- "summary.pam"
-    x
+    class(object) <- "summary.pam"
+    object
 }
 
 print.summary.pam <- function(x, ...)

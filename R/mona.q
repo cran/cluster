@@ -8,16 +8,16 @@ mona <- function(x)
     if(!all(sapply(lapply(as.data.frame(x), levs), length) == 2))
         stop(message = "All variables must be binary (factor with 2 levels).")
     n <- nrow(x)
-    jp <- ncol(x)	
+    jp <- ncol(x)
     ##change levels of input matrix
     x2 <- apply(as.matrix(x), 2, factor)
     x2[x2 == "1"] <- "0"
     x2[x2 == "2"] <- "1"
     x2[x2 == "NA"] <- "2"
-    ##	x2 <- paste(x2, collapse = "")	
+    ##	x2 <- paste(x2, collapse = "")
     ##	storage.mode(x2) <- "character"
     ## call Fortran routine
-    storage.mode(x2) <- "integer"        
+    storage.mode(x2) <- "integer"
     res <- .Fortran("mona",
                     as.integer(n),
                     as.integer(jp),
@@ -28,34 +28,37 @@ mona <- function(x)
                     integer(n),
                     lava = integer(n),
                     integer(jp),
-                    PACKAGE = "cluster")	
-    ##give a warning when errors occured
-    if(res$error == 1)
-        stop("No clustering performed, an object was found with all values missing." )
-    if(res$error == 2)
-        stop("No clustering performed, a variable was found with at least 50% missing values." )
-    if(res$error == 3)
-        stop(message = "No clustering performed, a variable was found with all non missing values identical." )
-    if(res$error == 4)
-        stop("No clustering performed, all variables have at least one missing value." )
+                    PACKAGE = "cluster")
+    ## give a warning when errors occured
+    if(res$error != 0) {
+        ch <- "No clustering performed,"
+        switch(res$error,
+               ## 1 :
+               stop(paste(ch,"an object was found with all values missing.")),
+               ## 2 :
+               stop(paste(ch,"a variable was found with at least 50% missing values.")),
+               ## 3 :
+               stop(paste(ch,"a variable was found with all non missing values identical.")),
+               ## 4 :
+               stop(paste(ch,"all variables have at least one missing value."))
+               )
+    }
     res$x2 <- matrix(as.numeric(substring(res$x2,
                                           1:nchar(res$x2), 1:nchar(res$x2))),
                      n, jp)
-    dimnames(res$x2) <- dimnames(x)	
-    ##add labels to Fortran output
-    if(length(dimnames(x)[[1]]) != 0)
-        order.lab <- dimnames(x)[[1]][res$ner]
-    if(length(dimnames(x)[[2]]) != 0) {
+    dimnames(res$x2) <- dnx <- dimnames(x)
+    ## add labels to Fortran output
+    if(length(dnx[[2]]) != 0) {
         lava <- as.character(res$lava)
-        lava[lava != "0"] <- dimnames(x)[[2]][res$lava]
+        lava[lava != "0"] <- dnx[[2]][res$lava]
         lava[lava == "0"] <- "NULL"
         res$lava <- lava
     }
-    ##construct S object
+    ## construct "mona" object
     clustering <- list(data = res$x2, order = res$ner,
                        variable = res$lava[ -1 ], step = res$nban[-1])
-    if(exists("order.lab"))
-        clustering$order.lab <- order.lab
+    if(length(dnx[[1]]) != 0)
+        clustering$order.lab <- dnx[[1]][res$ner]
     class(clustering) <- "mona"
     attr(clustering, "Call") <- sys.call()
     clustering
@@ -77,9 +80,8 @@ print.mona <- function(x, ...)
     invisible(x)
 }
 
-summary.mona <- function(x, ...)
+summary.mona <- function(object, ...)
 {
-    object <- x
     class(object) <- "summary.mona"
     object
 }

@@ -11,9 +11,13 @@
 \usage{
 \method{print}{fanny}(x, \dots)
 }
+\arguments{
+  \item{x}{a fanny object.}
+  \item{\dots}{potential further arguments (require by generic).}
+}
 \seealso{
   \code{\link{fanny}}, \code{\link{fanny.object}}, \code{\link{print}},
-  \code{\link{print.default}}. 
+  \code{\link{print.default}}.
 }
 \keyword{cluster}
 \keyword{print}

@@ -1,122 +1,98 @@
-% %Z%%M% version %I% created %G%
-% %Z%%Q%
 \name{clara}
 \alias{clara}
-\title{
-Clustering Large Applications
-}
+\title{Clustering Large Applications}
 \description{
-Returns a list representing a clustering of the data into \code{k} clusters.
+  Computes a \code{"clara"} object, a list representing a clustering of
+  the data into \code{k} clusters.
 }
 \usage{
-clara(x, k, metric = "euclidean", stand = FALSE, samples = 5, 
+clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
       sampsize = 40 + 2 * k)
-
-
 }
 \arguments{
-\item{x}{
-data matrix or dataframe, each row corresponds to an observation,
-and each column corresponds to a variable. All variables must be numeric.
-Missing values (NAs) are allowed.
-
-
+  \item{x}{
+    data matrix or dataframe, each row corresponds to an observation,
+    and each column corresponds to a variable.  All variables must be numeric.
+    Missing values (NAs) are allowed. }
+  \item{k}{integer, the number of clusters.
+    It is required that \eqn{0 < k < n} where \eqn{n} is the number of
+    observations (i.e., n = \code{nrow(x)}).}
+  \item{metric}{
+    character string specifying the metric to be used for calculating
+    dissimilarities between observations.
+    The currently available options are "euclidean" and "manhattan".
+    Euclidean distances are root sum-of-squares of differences, and
+    manhattan distances are the sum of absolute differences.
+  }
+  \item{stand}{logical, indicating if the measurements in \code{x} are
+    standardized before calculating the dissimilarities.  Measurements
+    are standardized for each variable (column), by subtracting the
+    variable's mean value and dividing by the variable's mean absolute
+    deviation.
+  }
+  \item{samples}{integer, number of samples to be drawn from the dataset.}
+  \item{sampsize}{integer, number of observations in each
+    sample. \code{sampsize} should be higher than the number of clusters
+    (\code{k}) and at most the number of observations (n = \code{nrow(x)}).}
 }
-\item{k}{
-integer, the number of clusters.
-It is required that 0 < k < n where n is the number of observations. 
-
-
-}
-\item{metric}{
-character string specifying the metric to be used for calculating
-dissimilarities between observations.
-The currently available options are "euclidean" and "manhattan".
-Euclidean distances are root sum-of-squares of differences, and
-manhattan distances are the sum of absolute differences.
-
-
-}
-\item{stand}{
-logical flag: if TRUE, then the measurements in \code{x} are standardized before
-calculating the dissimilarities. Measurements are standardized for each
-variable (column), by subtracting the variable's mean value and dividing by 
-the variable's mean absolute deviation.
-
-
-}
-\item{samples}{
-integer, number of samples to be drawn from the dataset.
-
-
-}
-\item{sampsize}{
-integer, number of observations in each sample. \code{sampsize} should be higher 
-than the number of clusters (\code{k}) and at most the number of observations 
-(nrow(\code{x})).
-
-
-}}
 \value{
-an object of class \code{"clara"} representing the clustering.
-See clara.object for details.
-
-
+  an object of class \code{"clara"} representing the clustering.  See
+  \code{\link{clara.object}} for details.
 }
 \details{
-\code{clara} is fully described in chapter 3 of Kaufman and Rousseeuw (1990).
-Compared to other partitioning methods such as \code{pam}, it can deal with
-much larger datasets. Internally, this is achieved by considering
-sub-datasets of fixed size, so that the time and storage requirements
-become linear in nrow(\code{x}) rather than quadratic.
+  \code{clara} is fully described in chapter 3 of Kaufman and Rousseeuw (1990).
+  Compared to other partitioning methods such as \code{pam}, it can deal with
+  much larger datasets.  Internally, this is achieved by considering
+  sub-datasets of fixed size (\code{sampsize}) such that the time and
+  storage requirements become linear in \eqn{n} rather than quadratic.
 
+  Each sub-dataset is partitioned into \code{k} clusters using the same
+  algorithm as in \code{\link{pam}}.\cr
+  Once \code{k} representative objects have been selected from the
+  sub-dataset, each observation of the entire dataset is assigned
+  to the nearest medoid.
 
-Each sub-dataset is partitioned into \code{k} clusters using the same 
-algorithm as in the \code{pam} function.
-Once \code{k} representative objects have been selected from the
-sub-dataset, each observation of the entire dataset is assigned
-to the nearest medoid.
-The sum of the dissimilarities of the observations to their closest medoid, is
-used as a measure of the quality of the clustering. The sub-dataset
-for which the sum is minimal, is retained.
-A further analysis is carried out on the final partition.
-Each sub-dataset is forced to contain the medoids obtained from the best 
-sub-dataset until then.
-Randomly drawn observations are added to this set until \code{sampsize}
-has been reached.
+  The sum of the dissimilarities of the observations to their closest
+  medoid is used as a measure of the quality of the clustering.  The
+  sub-dataset for which the sum is minimal, is retained.  A further
+  analysis is carried out on the final partition.
 
-
-}
-\section{BACKGROUND}{
-Cluster analysis divides a dataset into groups (clusters) of observations that
-are similar to each other. Partitioning methods like \code{pam}, \code{clara}, and
-\code{fanny} require that the number of clusters be given by the user.
-Hierarchical methods like \code{agnes}, \code{diana}, and \code{mona} construct a
-hierarchy of clusterings, with the number of clusters ranging from one to
-the number of observations.
-
-
+  Each sub-dataset is forced to contain the medoids obtained from the
+  best sub-dataset until then.  Randomly drawn observations are added to
+  this set until \code{sampsize} has been reached.
 }
 \note{
-For small datasets (say with fewer than 200 observations),
-the function \code{pam} can be used directly.
+%% mostly by Martin Mächler :
+  The random sampling is implemented with a \emph{very} simple scheme
+  (with period \eqn{2^{16} = 65536}) inside the Fortran code,
+  independently of \R's random number generation, and as a matter of
+  fact, deterministically.
 
+  The storage requirement of \code{clara} computation (for small
+  \code{k}) is about
+  \eqn{O(n \times p) + O(j^2)}{O(n * p) + O(j^2)} where
+  \eqn{j = \code{sampsize}}, and \eqn{(n,p) = \code{dim(x)}}.
+  The CPU computing time (again neglecting small \code{k}) is about
+  \eqn{O(n \times p \times j^2 \times N)}{O(n * p * j^2 * N)}, where
+  \eqn{N = \code{samples}}.
 
+  For ``small'' datasets, the function \code{\link{pam}} can be used
+  directly.  What can be considered \emph{small}, is really a function
+  of available computing power, both memory (RAM) and speed.
+  Originally (1990), ``small'' meant less than 100 observations;
+  later, the authors said \emph{``small (say with fewer than 200
+  observations)''}..
 }
 \references{
-Kaufman, L. and Rousseeuw, P.J. (1990). 
-\emph{Finding Groups in Data: An Introduction to Cluster Analysis. }
-Wiley, New York.
+  Kaufman, L. and Rousseeuw, P.J. (1990)
+  \emph{Finding Groups in Data: An Introduction to Cluster Analysis}.
+  Wiley, New York.
 
-
-Struyf, A., Hubert, M. and Rousseeuw, P.J. (1997). Integrating Robust 
-Clustering Techniques in S-PLUS,
-\emph{Computational Statistics and Data Analysis, \bold{26}, 17-37.}
-
-
+  Further, see the references in \code{\link{plot.agnes}}.
 }
 \seealso{
-\code{\link{clara.object}}, \code{\link{pam}}, \code{\link{partition.object}}, \code{\link{plot.partition}}.
+  \code{\link{clara.object}}, \code{\link{pam}},
+  \code{\link{partition.object}}, \code{\link{plot.partition}}.
 }
 \examples{
 ## generate 500 objects, divided into 2 clusters.

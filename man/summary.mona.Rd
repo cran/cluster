@@ -4,8 +4,12 @@
 \title{Summary method for `mona' objects}
 \description{Returns (and prints) a summary list for a \code{mona} object.}
 \usage{
-\method{summary}{mona}(x, \dots)
+\method{summary}{mona}(object, \dots)
 \method{print}{summary.mona}(x, \dots)
+}
+\arguments{
+  \item{x, object}{a \code{\link{mona}} object.}
+  \item{\dots}{potential further arguments (require by generic).}
 }
 \seealso{\code{\link{mona}}, \code{\link{mona.object}}.}
 \keyword{cluster}

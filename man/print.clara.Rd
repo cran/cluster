@@ -11,6 +11,10 @@
 \usage{
 \method{print}{clara}(x, \dots)
 }
+\arguments{
+  \item{x}{a clara object.}
+  \item{\dots}{potential further arguments (require by generic).}
+}
 \seealso{
   \code{\link{clara}}, \code{\link{clara.object}}, \code{\link{print}},
   \code{\link{print.default}}.

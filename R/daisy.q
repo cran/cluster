@@ -95,14 +95,14 @@ print.dissimilarity <- function(x, ...)
     invisible(x)
 }
 
-summary.dissimilarity <- function(x, ...)
+summary.dissimilarity <- function(object, ...)
 {
-    cat(length(x), "dissimilarities, summarized :\n")
-    print(sx <- summary(as.vector(x), ...))
+    cat(length(object), "dissimilarities, summarized :\n")
+    print(sx <- summary(as.vector(object), ...))
     cat("\n")
-    if(!is.null(attr(x, "na.message")))
-        cat("Warning : ", attr(x, "NA.message"), "\n")
-    cat("Metric : ", attr(x, "Metric"), "\n",
-        "Number of objects : ", attr(x, "Size"), "\n", sep="")
+    if(!is.null(attr(object, "na.message")))
+        cat("Warning : ", attr(object, "NA.message"), "\n")
+    cat("Metric : ", attr(object, "Metric"), "\n",
+        "Number of objects : ", attr(object, "Size"), "\n", sep="")
     invisible(sx)
 }

@@ -38,7 +38,7 @@ agnes <- function(x, diss = FALSE, metric = "euclidean",
             attr(x, "Metric") <- "unspecified"
         }
         n <- attr(x, "Size")
-        dv <- x[lower.to.upper.tri.inds(n)]	
+        dv <- x[lower.to.upper.tri.inds(n)]
         ##prepare arguments for the Fortran call
         dv <- c(0, dv)
         jp <- 1
@@ -114,18 +114,18 @@ agnes <- function(x, diss = FALSE, metric = "euclidean",
         class(disv) <- "dissimilarity"
         attr(disv, "Size") <- nrow(x)
         attr(disv, "Metric") <- metric
-        attr(disv, "Labels") <- dimnames(x)[[1]]	
+        attr(disv, "Labels") <- dimnames(x)[[1]]
         ##add labels to Fortran output
         if(length(dimnames(x)[[1]]) != 0)
             order.lab <- dimnames(x)[[1]][res$ner]
     }
     else {
-        disv <- x	
+        disv <- x
         ##add labels to Fortran output
         if(length(attr(x, "Labels")) != 0)
             order.lab <- attr(x, "Labels")[res$ner]
     }
-    clustering <- list(order = res$ner, height = res$ban[-1], ac = res$ac, 
+    clustering <- list(order = res$ner, height = res$ban[-1], ac = res$ac,
                        merge = res$merge, diss = disv)
     if(exists("order.lab"))
         clustering$order.lab <- order.lab
@@ -138,9 +138,8 @@ agnes <- function(x, diss = FALSE, metric = "euclidean",
     clustering
 }
 
-summary.agnes <- function(x, ...)
+summary.agnes <- function(object, ...)
 {
-    object <- x
     class(object) <- "summary.agnes"
     object
 }

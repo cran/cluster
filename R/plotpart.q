@@ -1,49 +1,61 @@
 plot.partition <-
-function(x, ask = FALSE, cor = TRUE, stand = FALSE, lines = 2,
+function(x, ask = FALSE, which.plots = NULL,
+         nmax.lab = 40, max.strlen = 5,
+         cor = TRUE, stand = FALSE, lines = 2,
          shade = FALSE, color = FALSE, labels = 0, plotchar = TRUE,
          span = TRUE, xlim = NULL, ylim = NULL, ...)
 {
-    choices <- c("All", "Clusplot", "Silhouette Plot")
-    choices <- substring(choices, 1, 40)
-    tmenu <- paste("plot:", choices)
-    pick <- 4
-    ask.now <- ask
-    z <- NULL
-    while(pick <= length(tmenu) + 2) {
-        if(ask.now)
-            pick <- menu(tmenu, title = 
+    silhouPlot <- function(x, nmax.lab, max.strlen) {
+        if(length(x$silinfo) == 0)
+            stop("No silhouette plot available when the number of clusters equals 1." )
+        s <- rev(x$silinfo[[1]][, 3])
+        space <- c(0, rev(diff(x$silinfo[[1]][, 1])))
+        space[space != 0] <- 0.5
+        names <- if(length(s) < nmax.lab)
+            substring(rev(dimnames(x$silinfo[[1]])[[1]]), 1, max.strlen)
+        barplot(s, space = space, names = names,
+                xlab = "Silhouette width",
+                xlim = c(min(0, min(s)), 1), horiz = TRUE,
+                mgp = c(2.5, 1, 0), ...)
+        title(main = paste("Silhouette plot of ",
+              deparse(attr(x, "Call"))),
+              sub = paste("Average silhouette width : ",
+              round(x$ silinfo$avg.width, digits = 2)), adj = 0)
+    }
+
+    if(is.null(which.plots) && !ask)
+        which.plots <- 1:2
+    if(ask && is.null(which.plots)) { ## Use `menu' ..
+        tmenu <- paste("plot:", ## choices :
+                       c("All", "Clusplot", "Silhouette Plot"))
+        pick <- 0
+        while(pick <= length(tmenu) + 1) {
+            pick <- menu(tmenu, title =
                          "\nMake a plot selection (or 0 to exit):\n") + 1
-        switch(pick,
-               return(invisible(x)),
-               ask.now <- FALSE
-               ,{
+            switch(pick,
+                   return(invisible())
+                   ,
                    clusplot(x, cor = cor, stand = stand, lines = lines,
                             shade = shade, color = color, labels = labels,
-                            plotchar = plotchar, span = span, 
+                            plotchar = plotchar, span = span,
                             xlim = xlim, ylim = ylim, ...)
-               }
-               ,{
-                   if(length(x$silinfo) == 0)
-                       stop("No silhouette plot available when the number of clusters equals 1." )
-                   s <- rev(x$silinfo[[1]][, 3])
-                   space <- c(0, rev(diff(x$silinfo[[1]][, 1])))
-                   space[space != 0] <- 0.5
-                   names <- if(length(s) < 40)
-                       substring(rev(dimnames(x$silinfo[[1]])[[1]]), 1, 5)
-                   barplot(s, space = space, names = names,
-                           xlab = "Silhouette width",
-                           xlim = c(min(0, min(s)), 1), horiz = TRUE,
-                           mgp = c(2.5, 1, 0), ...)
-                   title(main = paste("Silhouette plot of ", 
-                         deparse(attr(x, "Call"))),
-                         sub = paste("Average silhouette width : ",
-                         round(x$ silinfo$avg.width, digits = 2)), adj = 0)
-               }
+                   ,
+                   silhouPlot(x, nmax.lab, max.strlen)
+                   )
+        }
+    }
+    else {
+        ask <- prod(par("mfcol")) < length(which.plots) && dev.interactive()
+        if(ask) { op <- par(ask = TRUE); on.exit(par(op)) }
+        for(i in which.plots)
+        switch(i,
+               clusplot(x, cor = cor, stand = stand, lines = lines,
+                        shade = shade, color = color, labels = labels,
+                        plotchar = plotchar, span = span,
+                        xlim = xlim, ylim = ylim, ...)
+               ,
+               silhouPlot(x, nmax.lab, max.strlen)
                )
-        if(!ask.now)
-            pick <- pick + 1
-        if(pick == length(tmenu) + 2)
-            ask.now <- ask
     }
     invisible()
 }
@@ -56,7 +68,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
          col.p = "dark green", # was 5 (= shaded col)
          col.txt = col.p,
          span = TRUE, xlim = NULL, ylim = NULL, ...)
-{	
+{
     size <- function(d)
     {
         discr <- 1 + 8 * length(d)
@@ -133,7 +145,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
     }
 
     ## BEGIN ----
-    
+
     namx <- deparse(substitute(x))
     if(is.data.frame(x))
         x <- data.matrix(x)
@@ -212,10 +224,10 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
         if(!is.matrix(x))
             stop("x is not allowed")
         ## ELSE
-        labels1 <- 
+        labels1 <-
             if(length(dimnames(x)[[1]]) == 0) 1:nrow(x)
             else dimnames(x)[[1]]
-        
+
         if(ncol(x) == 1) {
             hulp <- rep(0, length(x))
             x1 <- matrix(c(t(x), hulp), ncol = 2)
@@ -224,7 +236,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
         else {
             prim.pr <- princomp(x, scores = TRUE, cor = ncol(x) != 2)
             x1 <- prim.pr$scores
-            
+
             var.dec <- cumsum(prim.pr$sdev^2/sum(prim.pr$ sdev^2))[2]
             x1 <- cbind(x1[, 1], x1[, 2])
         }
@@ -284,7 +296,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
                     b <-
                         if(diff(rangy) == 0)
                             1
-                        else if(abs(diff(y.1)) > (diff(rangy)/50)) 
+                        else if(abs(diff(y.1)) > (diff(rangy)/50))
                             diff(y.1)/num1
                         else diff(rangy)/num2
                 }
@@ -344,7 +356,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
         else { ## rank2
             if(!span) {
                 loc[i, ] <- apply(x, 2, mean)
-                dist[i] <- sqrt(max(mahalanobis(x, loc[i, ], cov))) 
+                dist[i] <- sqrt(max(mahalanobis(x, loc[i, ], cov)))
                 dist[i] <- dist[i] + 0.01 * dist[i]
             }
             else { ## span and rank2
@@ -403,7 +415,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
             miny <- x1[1, 2] - 1
             maxy <- x1[1, 2] + 1
         }
-    }		
+    }
     if(!is.null(xlim)) {
         if(xlim[1] < minx) minx <- xlim[1]
         if(xlim[2] > maxx) maxx <- xlim[2]
@@ -487,7 +499,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
                    (sqrt((punt.1[1] - loc[i, 1])^2 +
                          (punt.1[2] - loc[i, 2])^2) +
                     sqrt((punt.2[1] - loc[j, 1])^2 +
-                         (punt.2[2] - loc[j, 2])^2)) > 
+                         (punt.2[2] - loc[j, 2])^2)) >
                    sqrt((loc[j, 1] - loc[i, 1])^2 +
                         (loc[j, 2] - loc[i, 2])^2))
                 {
@@ -543,7 +555,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
 
 clusplot.partition <- function(x, ...)
 {
-    if(length(x$data) != 0 && 
+    if(length(x$data) != 0 &&
        (!is.na(min(x$data)) || data.class(x) == "clara"))
          invisible(clusplot.default(x$data, x$clustering, diss = FALSE, ...))
     else invisible(clusplot.default(x$diss, x$clustering, diss = TRUE, ...))

@@ -3,7 +3,7 @@ c     ~          ~~~   ~
 c     Clustering program based upon the k-medoid approach,
 c     and suitable for data sets of at least 100 objects.
 c     (for smaller data sets, please use program pam.)
-c     
+c
       subroutine clara(nn,jpp,kk,x,nran,nsam,dys,mdata,valmd,jtmd,ndyst,
      f     nrepr,nsel,nbest,nr,nrx,radus,ttd,ratt,ttbes,rdbes,rabes,
      f     mtt,obj,avsyl,ttsyl,sylinf,jstop,
@@ -14,7 +14,7 @@ c     nn   = number of objects
 c     jpp  = number of variables
 c     kk   = number of clusters
 c     nran = number of random samples drawn (= `samples' in S)
-c     nsam = number of objects drawn from data set
+c     nsam = number of objects drawn from data set (= `sampsize' in R)
 c
 c     mdata= {0,1};  1 : min(x) is missing value (NA);  0: no NA
 c     ndyst= {1,2};  1 : euclidean;  2 : manhattan
@@ -23,19 +23,19 @@ c     valmd[j] = "missing value code" (instead of NA) for x[,j]
 c     jtmd [j] = {-1,1}:  -1 : x[,j] has NA ;  1 : no NAs in x[,j]
 
       double precision x(nn*jpp), dys(1 + nsam*(nsam-1)/2),
-     1     valmd(jpp), radus(kk),ttd(kk),ratt(kk), 
+     1     valmd(jpp), radus(kk),ttd(kk),ratt(kk),
      2     ttbes(kk),rdbes(kk),rabes(kk), obj, avsyl(kk), ttsyl,
      3     sylinf(nsam,4), tmp1(nsam),tmp2(nsam),tmp3(nsam)
       integer jtmd(jpp), nrepr(nsam),nsel(nsam),nbest(nsam),
      1     nr(kk),nrx(kk), mtt(kk),
      2     ntmp1(nsam),ntmp2(nsam),ntmp3(nsam),
      3     ntmp4(nsam),ntmp5(nsam),ntmp6(nsam)
-c Var      
+c Var
       logical nafs
-      integer j,jjb,jk,jkk,jn,js,jsm,jran,jhalt, 
+      integer j,jjb,jk,jkk,jn,js,jsm,jran,jhalt,
      1     kall,kans,kkm,kkp,kran,
      2     l,less, nad,nadv,nadvp,nexap,nexbp, nhalf,
-     3     nneq,nnpp, nrun,nsamb,nsub, nunfs,nsm,ntt
+     3     nneq, nrun,nsamb,nsub, nunfs,nsm,ntt
       double precision rnn, ran, zba, s,sx,z,zb
 
       jstop=0
@@ -45,6 +45,7 @@ c Var
       else
          nneq=0
       endif
+c     nhalf := size of distance array dys()
       nhalf= nsam*(nsam-1)/2 + 1
       nsamb=2*nsam
       if(nn.lt.nsamb) then
@@ -52,12 +53,13 @@ c Var
       else
          less=nsam
       endif
-      nnpp=nn*jpp
 
       nunfs=0
       kall=0
+c     nrun : this is the ``random seed'' of the very simple randm() below
       nrun=0
-c     
+
+c
 c     Loop :  random subsamples are drawn and partitioned into kk clusters
       do 400 jran=1,nran
          jhalt=0
@@ -186,16 +188,16 @@ c     305  continue
  370     continue
          sx=s
  400  continue
-c--- end random sampling loop 
+c--- end random sampling loop
 
       if(nunfs.ge.nran) then
          jstop=1
          return
       endif
-c     
+c
 c     for the best subsample, the objects of the entire data set
-c     are assigned to their clusters 
-c     
+c     are assigned to their clusters
+c
  450  if(kall.ne.1) then
          jstop=2
          return
@@ -209,12 +211,12 @@ c
       endif
  500  end
 c     --- of clara() ---------------------------------------------------
-c     
-c     
+c
+c
       subroutine dysta2(nsam,jpp,nsel,x,nn,dys,ndyst,jtmd, valmd,jhalt)
 
       integer nsam,jpp, nn, nsel(nsam), ndyst, jtmd(jpp), jhalt
-      double precision x(nn*jpp), dys(1+nsam*(nsam-1)/2), valmd(jpp) 
+      double precision x(nn*jpp), dys(1+nsam*(nsam-1)/2), valmd(jpp)
 c
       double precision pp, rpres, clk
       integer j,k,l, nlk, lsubt,lsel, ksel,lj,kj, npres
@@ -279,7 +281,7 @@ c   is 2**16=65536, which is good enough for our purposes.
       return
       end
 c     -----------------------------------------------------------
-c     
+c
       subroutine bswap2(kk,nsam,nrepr,dys,sky,s,dysma,dysmb,beter)
 
       integer kk,nsam, nrepr(nsam)
@@ -288,13 +290,13 @@ c
 c
       integer meet
       external meet
-c Var      
+c Var
       integer j,k, ja, nny, njn,njaj,nkj,nmax,kbest,nbest
       double precision ammax, rsam, asky,cmd,dz,dzsky,small
 
-c     
+c
 c     first algorithm: build.
-c     
+c
       nny=0
       do 17 j=1,nsam
          nrepr(j)=0
@@ -304,7 +306,7 @@ c
 c-- LOOP ---------------------
  20   do 22 ja=1,nsam
          if(nrepr(ja).ne.0)go to 22
-         
+
          beter(ja)=0.
          do 21 j=1,nsam
             njaj=meet(ja,j)
@@ -336,9 +338,9 @@ C--
       rsam=nsam
       asky=sky/rsam
 
-c     
+c
 c     second algorithm: swap.
-c     
+c
 C-- LOOP
  60   do 63 j=1,nsam
          dysma(j)=1.1*s+1.0
@@ -385,7 +387,7 @@ C-- LOOP
 c     --- of bswap2() --------------------------------------------------
 
 c     selec() : called once [per random sample] from clara()
-c     
+c
       subroutine selec(kk,nn,jpp,ndyst,zb,nsam,mdata,
      f     jtmd,valmd,nrepr,nsel,dys,x,nr,nafs,ttd,radus,ratt,
      f     nrnew,nsnew,npnew,ns,np,new,ttnew,rdnew)
@@ -398,22 +400,22 @@ c
       integer nr(kk)
       double precision ttd(kk),radus(kk),ratt(kk),
      1     ttnew(nsam), rdnew(nsam)
-      integer nrnew(nsam),nsnew(nsam),npnew(nsam), 
+      integer nrnew(nsam),nsnew(nsam),npnew(nsam),
      1     ns(nsam),np(nsam), new(nsam)
 c
       integer meet
       external meet
 c Var
-      integer j,jk,jn,jp,jkabc,jnew, ka,kb, newf, 
+      integer j,jk,jn,jp,jkabc,jnew, ka,kb, newf,
      1     na,nb,nrjk, njk,npa,npb,npab,nstrt
       double precision pp,dsum,dnull, tra, pres, abc, rns
 
-c     
+c
 c     nafs = .true. if a distance cannot be calculated
       nafs=.false.
-c     
+c
 c     identification of representative objects, and initializations
-c     
+c
       jk=0
       do 10 j=1,nsam
          if(nrepr(j).eq.0)go to 10
@@ -424,11 +426,11 @@ c
          radus(jk)=-1.
          np(jk)=j
  10   continue
-c     
+c
 c     assignment of the objects of the entire data set to a cluster,
 c     computation of some statistics, determination of the
 c     new ordering of the clusters
-c     
+c
       zb=0.
       pp=jpp
       newf=0
@@ -507,10 +509,10 @@ c
       endif
  90   if(jn.lt.nn)go to 15
 
-c     
+c
 c     a permutation is carried out on vectors nr,ns,np,ttd,radus
 c     using the information in vector new.
-c     
+c
       do 92 jk=1,kk
          njk=new(jk)
          nrnew(jk)=nr(njk)
@@ -532,10 +534,10 @@ c
          ttd(j)=ttd(j)/rns
  101  continue
       if(kk.eq.1)go to 150
-c     
+c
 c     computation of minimal distance of medoid ka to any
 c     other medoid for comparison with the radius of cluster ka.
-c     
+c
       do 120 ka=1,kk
          nstrt=0
          npa=np(ka)
@@ -558,7 +560,7 @@ c
  150  return
       end
 c     -----------------------------------------------------------
-c     
+c
       subroutine resul(kk,nn,jpp,ndyst,mdata,jtmd, valmd,x,nrx,mtt)
 
       integer kk,nn,jpp,ndyst,mdata
@@ -569,9 +571,9 @@ c Var
       double precision pp,dsum,dnull,tra,abc
 
       pp=jpp
-c     
+c
 c     clustering vector is incorporated into x, and printed.
-c     
+c
       jn=0
  100  jn=jn+1
       njnb=(jn-1)*jpp
@@ -638,7 +640,7 @@ c
  320  continue
  330  end
 c     -----------------------------------------------------------
-c     
+c
       subroutine black(kk,jpp,nn,nsam,nbest,dys,sx,x,avsyl,ttsyl,sylinf,
      f     ncluv,nsend,nelem,negbr,syl,srank)
 
@@ -654,18 +656,18 @@ c Var
       integer j,l,jna, lang,lplac, nbb,ncase,nsylr,numcl,nclu,ntt,nj,nl
       double precision att,btt,rtt,db,dysa,dysb, rsam,symax
 
-c     
+c
 c     construction of clustering vector (ncluv)
 c     of selected sample (nbest).
-c     
+c
       do 12 l=1,nsam
          ncase=nbest(l)
          jna=(ncase-1)*jpp+1
          ncluv(l)=idint(x(jna)+0.1)
  12   continue
-c     
+c
 c     drawing of the silhouettes
-c     
+c
       nsylr=0
       ttsyl=0.0
       do 100 numcl=1,kk

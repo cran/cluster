@@ -9,7 +9,11 @@
   inheriting from class \code{\link{diana}}.
 }
 \usage{
-print.diana(x, \dots)
+\method{print}{diana}(x, \dots)
+}
+\arguments{
+  \item{x}{a diana object.}
+  \item{\dots}{potential further arguments (require by generic).}
 }
 \seealso{
   \code{\link{diana}}, \code{\link{diana.object}}, \code{\link{print}},

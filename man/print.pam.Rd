@@ -11,6 +11,10 @@
 \usage{
 \method{print}{pam}(x, \dots)
 }
+\arguments{
+  \item{x}{a pam object.}
+  \item{\dots}{potential further arguments (require by generic).}
+}
 \seealso{
   \code{\link{pam}}, \code{\link{pam.object}}, \code{\link{print}},
   \code{\link{print.default}}.
