@@ -6,10 +6,10 @@ mona <- function(x)
     if(!is.matrix(x) && !is.data.frame(x))
         stop("x must be a matrix or data frame.")
     if(!all(sapply(lapply(as.data.frame(x), levs), length) == 2))
-        stop(message = "All variables must be binary (factor with 2 levels).")
+        stop("All variables must be binary (factor with 2 levels).")
     n <- nrow(x)
     jp <- ncol(x)
-    ##change levels of input matrix
+    ## change levels of input matrix
     x2 <- apply(as.matrix(x), 2, factor)
     x2[x2 == "1"] <- "0"
     x2[x2 == "2"] <- "1"
@@ -21,7 +21,7 @@ mona <- function(x)
     res <- .Fortran("mona",
                     as.integer(n),
                     as.integer(jp),
-                    x2 = x2,
+                    x2 = x2,# x[,]
                     error = as.integer(0),
                     nban = integer(n),
                     ner = integer(n),
@@ -29,23 +29,24 @@ mona <- function(x)
                     lava = integer(n),
                     integer(jp),
                     PACKAGE = "cluster")
-    ## give a warning when errors occured
+    ## stop with a message when two many missing values:
     if(res$error != 0) {
-        ch <- "No clustering performed,"
+        ch <- "No clustering performed, "
         switch(res$error,
                ## 1 :
-               stop(paste(ch,"an object was found with all values missing.")),
+               stop(ch,"an object was found with all values missing."),
                ## 2 :
-               stop(paste(ch,"a variable was found with at least 50% missing values.")),
+               stop(ch,"a variable was found with at least 50% missing values."),
                ## 3 :
-               stop(paste(ch,"a variable was found with all non missing values identical.")),
+               stop(ch,"a variable was found with all non missing values identical."),
                ## 4 :
-               stop(paste(ch,"all variables have at least one missing value."))
+               stop(ch,"all variables have at least one missing value.")
                )
     }
-    res$x2 <- matrix(as.numeric(substring(res$x2,
-                                          1:nchar(res$x2), 1:nchar(res$x2))),
-                     n, jp)
+    ##O res$x2 <- matrix(as.numeric(substring(res$x2,
+    ##O                                      1:nchar(res$x2), 1:nchar(res$x2))),
+    ##O                      n, jp)
+    storage.mode(res$x2) <- "integer" # keeping dim()
     dimnames(res$x2) <- dnx <- dimnames(x)
     ## add labels to Fortran output
     if(length(dnx[[2]]) != 0) {
@@ -79,6 +80,8 @@ print.mona <- function(x, ...)
     print(names(x), ...)
     invisible(x)
 }
+
+## FIXME: These should differ from print()
 
 summary.mona <- function(object, ...)
 {

@@ -35,10 +35,10 @@
 data(agriculture)
 
 ## Compute the dissimilarities using Euclidean metric and without
-## standardization 
+## standardization
 daisy(agriculture, metric = "euclidean", stand = FALSE)
 
-## Plot similar to Figure 3 in Struyf et al (1996)
+## 2nd plot is similar to Figure 3 in Struyf et al (1996)
 plot(pam(agriculture, 2))
 
 ## Plot similar to Figure 7 in Struyf et al (1996)

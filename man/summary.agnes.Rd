@@ -1,7 +1,7 @@
 \name{summary.agnes}
 \alias{summary.agnes}
 \alias{print.summary.agnes}
-\title{Summary method for `agnes' objects}
+\title{Summary Method for `agnes' Objects}
 \description{
   Returns (and prints) a summary list for an \code{agnes} object.
   Printing gives more output than the corresponding

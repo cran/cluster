@@ -56,5 +56,6 @@
   \code{\link{pam}}, \code{\link{clara}}, \code{\link{fanny}},
   \code{\link{agnes}}, \code{\link{diana}}.
 }
+%\examples{} --> ./daisy.Rd
 \keyword{cluster}
 

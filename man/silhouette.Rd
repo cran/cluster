@@ -20,7 +20,7 @@ sortSilhouette(object, \dots)
 \method{summary}{silhouette}(object, FUN = mean, \dots)
 \method{plot}{silhouette}(x, nmax.lab = 40, max.strlen = 5,
      main = NULL, sub = NULL, xlab = expression("Silhouette width "* s[i]),
-     col = heat.colors(n), cex.names = par("cex.axis"),
+     col = "gray", border = 0, cex.names = par("cex.axis"),
      do.n.k = TRUE, do.clus.stat = TRUE, \dots)
 }
 \arguments{
@@ -38,7 +38,10 @@ sortSilhouette(object, \dots)
     strings are truncated in silhouette plot labeling.}
   \item{main, sub, xlab}{arguments to \code{\link{title}}; have a
     sensible non-NULL default here.}
-  \item{col, cex.names}{arguments passed \code{\link{barplot}()}.}
+  \item{col, border, cex.names}{arguments passed
+    \code{\link{barplot}()}; note that the default used to be \code{col
+      = heat.colors(n), border = par("fg")} instead.
+  }
   \item{do.n.k}{logical indicating if \eqn{n} and \eqn{k} ``title text''
     should be written.}
   \item{do.clus.stat}{logical indicating if cluster size and averages
@@ -53,8 +56,8 @@ sortSilhouette(object, \dots)
     smallest of these \eqn{d(i,C)} is \eqn{b(i) := \min_C d(i,C)},
     and can be seen as the dissimilarity between i and its ``neighbor''
     cluster, i.e., the nearest one to which it does \emph{not} belong.
-    Finally, \deqn{s(i) := \frac{b(i) - a(i) }{max(a(i), b(i))}}{%
-      s(i) := ( b(i) - a(i) ) / max( a(i), b(i) )}.
+    Finally, \deqn{s(i) := \frac{b(i) - a(i) }{max(a(i), b(i))}.}{%
+      s(i) := ( b(i) - a(i) ) / max( a(i), b(i) ).}
 
     Observations with a large \eqn{s(i)} (almost 1) are very well
     clustered, a small \eqn{s(i)} (around 0) means that the observation
@@ -78,6 +81,21 @@ sortSilhouette(object, \dots)
   the observation.  The \code{\link{colnames}} correspondingly are
   \code{c("cluster", "neighbor", "sil_width")}.
 
+  \code{summary(sil)} returns an object of class
+  \code{summary.silhouette}, a list with components
+%%Rd bug: fails inside \value{}!:\describe{
+    \item{si.summary}{numerical \code{\link{summary}} of the individual
+      silhouette widths \eqn{s(i)}.}
+    \item{clus.avg.widths}{numeric (rank 1) array of clusterwise
+      \emph{means} of silhouette widths where \code{mean = FUN} is used.}
+    \item{avg.width}{the total mean \code{FUN(s)} where \code{s} are the
+      individual silhouette widths.}
+    \item{clus.sizes}{\code{\link{table}} of the \eqn{k} cluster sizes.}
+    \item{call}{if available, the call creating \code{sil}.}
+    \item{Ordered}{logical identical to \code{attr(sil, "Ordered")}, see
+      below.}
+%%Rd bug:   }
+
   \code{sortSilhouette(sil)} orders the rows of \code{sil} as in the
   silhouette plot, by cluster (increasingly) and decreasing silhouette
   width \eqn{s(i)}.
@@ -91,7 +109,7 @@ sortSilhouette(object, \dots)
   Silhouettes: A graphical aid to the interpretation and validation of
   cluster analysis. \emph{J. Comput. Appl. Math.}, \bold{20}, 53--65.
 
-  chapter 2 of  Kaufman, L. and Rousseeuw, P.J. (1990), see
+  chapter 2 of Kaufman, L. and Rousseeuw, P.J. (1990), see
   the references in \code{\link{plot.agnes}}.
 }
 \seealso{\code{\link{partition.object}}, \code{\link{plot.partition}}.
@@ -106,6 +124,12 @@ sortSilhouette(object, \dots)
  si2 <- silhouette(pr4$clustering, dist(ruspini, "canberra"))
  summary(si2) # has small values: "canberra"'s fault
  plot(si2, nmax= 80, cex.names=0.6)
+
+ par(mfrow = c(3,2), oma = c(0,0, 3, 0))
+ for(k in 2:6)
+    plot(silhouette(pam(ruspini, k=k)), main = paste("k = ",k), do.n.k=FALSE)
+ mtext("PAM(Ruspini) as in Kaufman & Rousseeuw, p.101",
+       outer = TRUE, font = par("font.main"), cex = par("cex.main"))
 
  ## Silhouette for a hierarchical clustering:
  ar <- agnes(ruspini)

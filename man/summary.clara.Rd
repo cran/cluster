@@ -1,7 +1,7 @@
 \name{summary.clara}
 \alias{summary.clara}
 \alias{print.summary.clara}
-\title{Summary method for `clara' objects}
+\title{Summary Method for `clara' Objects}
 \description{
   Returns (and prints) a summary list for a \code{clara} object.
   Printing gives more output than the corresponding

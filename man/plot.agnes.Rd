@@ -9,7 +9,7 @@
 plot.agnes(x, ask = FALSE, which.plots = NULL,
            main = paste("Banner of ", deparse(attr(x, "Call"))),
            sub = paste("Agglomerative Coefficient = ",round(x$ac, digits = 2)),
-           adj = 0, nmax.lab = 35, max.strlen = 5, \dots)
+           adj = 0, nmax.lab = 35, max.strlen = 5, xax.pretty = TRUE, \dots)
 }
 \arguments{
   \item{x}{an object of class \code{"agnes"}, typically created by
@@ -23,12 +23,17 @@ plot.agnes(x, ask = FALSE, which.plots = NULL,
   \item{main, sub}{main and sub title for the plot, with a convenient
     default.  See documentation for these arguments in
     \code{\link{plot.default}}.}
+  \item{adj}{for label adjustment in \code{\link{bannerplot}()}.}
   \item{nmax.lab}{integer indicating the number of labels which is
     considered too large for single-name labelling the banner plot.}
   \item{max.strlen}{positive integer giving the length to which
     strings are truncated in banner plot labeling.}
-  \item{adj,\dots}{graphical parameters (see \code{\link{par}}) may also
-    be supplied as arguments to this function.}
+  \item{xax.pretty}{logical or integer indicating if
+    \code{\link{pretty}(*, n = xax.pretty)} should be used for the x axis.
+    \code{xax.pretty = FALSE} is for back compatibility.}
+  \item{\dots}{graphical parameters (see \code{\link{par}}) may also
+    be supplied and are passed to \code{\link{bannerplot}()} or
+    \code{\link{pltree}()}, respectively.}
 }
 \section{Side Effects}{
   An appropriate plot is produced on the current graphics device. This can
@@ -80,4 +85,3 @@ plot.agnes(x, ask = FALSE, which.plots = NULL,
 }
 \keyword{cluster}
 \keyword{hplot}
-% Converted by Sd2Rd version 0.3-2.

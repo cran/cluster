@@ -1,8 +1,10 @@
+%-*- mode: Rd; kept-old-versions: 12;  kept-new-versions: 20; -*-
 \name{pam}
 \alias{pam}
-\title{Partitioning Around Medoids (PAM)}
+\title{Partitioning Around Medoids}
 \description{
-Return a partitioning (clustering) of the data into \code{k} clusters.
+  Partitioning (clustering) of the data into \code{k} clusters ``around
+  medoids'', a more robust version of K-means.
 }
 \usage{
 pam(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
@@ -12,16 +14,18 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
     data matrix or data frame, or dissimilarity matrix or object,
     depending on the value of the \code{diss} argument.
 
-    In case of a matrix or data frame, each row corresponds to an observation,
-    and each column corresponds to a variable.  All variables must be numeric.
-    Missing values (\code{\link{NA}}s) \emph{are} allowed---as long as
-    every pair of observations has at least one case not missing.
+    In case of a matrix or data frame, each row corresponds to an
+    observation, and each column corresponds to a variable.  All
+    variables must be numeric.  Missing values (\code{\link{NA}}s)
+    \emph{are} allowed---as long as every pair of observations has at
+    least one case not missing.
 
     In case of a dissimilarity matrix, \code{x} is typically the output
     of \code{\link{daisy}} or \code{\link{dist}}.  Also a vector of
     length n*(n-1)/2 is allowed (where n is the number of observations),
     and will be interpreted in the same way as the output of the
-    above-mentioned functions. Missing values (NAs) are \emph{not} allowed.
+    above-mentioned functions. Missing values (NAs) are \emph{not}
+    allowed.
   }
   \item{k}{positive integer specifying the number of clusters, less than
     the number of observations.}
@@ -52,29 +56,30 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
   \code{?\link{pam.object}} for details.
 }
 \details{
-  \code{pam} is fully described in chapter 2 of Kaufman and Rousseeuw (1990).
-  Compared to the k-means approach in \code{kmeans}, the function \code{pam} has
-  the following features: (a) it also accepts a dissimilarity matrix;
-  (b) it is more robust because it minimizes a sum of dissimilarities
-  instead of a sum of squared euclidean distances; (c) it provides a novel
-  graphical display, the silhouette plot (see \code{plot.partition})
-  (d) it allows to select the number of clusters (from component
-  \code{silinfo} of the return value, see \code{\link{pam.object}}).
+  \code{pam} is fully described in chapter 2 of Kaufman and Rousseeuw
+  (1990).  Compared to the k-means approach in \code{kmeans}, the
+  function \code{pam} has the following features: (a) it also accepts a
+  dissimilarity matrix; (b) it is more robust because it minimizes a sum
+  of dissimilarities instead of a sum of squared euclidean distances;
+  (c) it provides a novel graphical display, the silhouette plot (see
+  \code{plot.partition}) (d) it allows to select the number of clusters
+  using \code{\link{silhouette}()$avg.width} on the result (or its
+  component \code{silinfo}, see also \code{\link{pam.object}}).
 
   The \code{pam}-algorithm is based on the search for \code{k}
   representative objects or medoids among the observations of the
-  dataset. These observations should represent the structure of the
-  data. After finding a set of \code{k} medoids, \code{k} clusters are
-  constructed by assigning each observation to the nearest medoid. The
+  dataset.  These observations should represent the structure of the
+  data.  After finding a set of \code{k} medoids, \code{k} clusters are
+  constructed by assigning each observation to the nearest medoid.  The
   goal is to find \code{k} representative objects which minimize the sum
   of the dissimilarities of the observations to their closest
   representative object.
   \cr
   The algorithm first looks for a good initial set of medoids (this is
-  called the BUILD phase). Then it finds a local minimum for the
+  called the \bold{build} phase).  Then it finds a local minimum for the
   objective function, that is, a solution such that there is no single
   switch of an observation with a medoid that will decrease the
-  objective (this is called the SWAP phase).
+  objective (this is called the \bold{swap} phase).
 }
 \note{
   For datasets larger than (say) 200 observations, \code{pam} will take a lot of
@@ -103,4 +108,3 @@ data(ruspini)
 \testonly{plot(pam(ruspini, 4))}
 }
 \keyword{cluster}
-

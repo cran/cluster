@@ -1,7 +1,7 @@
 \name{summary.fanny}
 \alias{summary.fanny}
 \alias{print.summary.fanny}
-\title{Summary method for `fanny' objects}
+\title{Summary Method for `fanny' Objects}
 \description{Returns (and prints) a summary list for a \code{fanny} object.}
 \usage{
 \method{summary}{fanny}(object, \dots)

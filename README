@@ -22,13 +22,6 @@ we keep R/README-Splus which has no relevance to the R package.
 
 TODO {see ./DONE-MM for things done}
 
- 1) Silhouette und Banner Plot :
-	Label vertical axis of horizontal barplot using HORIZONTAL text
-	{i.e., par(las = 1) or axis(*, las = 1)}
-
-    --> Should become an optional (but probably default)
-	feature of barplot()!
-
  3) daisy() for the case of mixed variables should allow
     a weight vector (of length p = #vars) for up- or downweighing variables.
     daisy() really should accept the other methods mva's dist() does _and_
@@ -41,14 +34,9 @@ TODO {see ./DONE-MM for things done}
     from twins, and hence have a pltree() method for plotting the
     hierarchical tree.
 
+ 8b) Think about "merging" the plot.agnes and plot.diana methods.
+
 ------------------
-
-./R/daisy.q  :
-
-  If daisy  objects  inherit from "dist",  we can use  as.matrix() and
-  other dist methods which can be *very* useful !
-
-  --> also upgraded ./man/dissimilarity.object.Rd
 
 Martin <maechler@stat.math.ethz.ch>, since 1999
 

@@ -1,7 +1,8 @@
-agriculture              European Union Agricultural Workforces
-animals                  Attributes of Animals
-flower                   Flower Characteristics
-pluton                   Isotopic Composition Plutonium Batches
-ruspini                  Ruspini Data
-votes.repub              Votes for Republican Candidate in Presidential Elections
-xclara                   Bivariate Data Set with 3 Clusters
+agriculture             European Union Agricultural Workforces
+animals                 Attributes of Animals
+flower                  Flower Characteristics
+pluton                  Isotopic Composition Plutonium Batches
+ruspini                 Ruspini Data
+votes.repub             Votes for Republican Candidate in Presidential
+                        Elections
+xclara                  Bivariate Data Set with 3 Clusters

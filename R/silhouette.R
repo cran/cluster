@@ -3,6 +3,8 @@ silhouette <- function(x, ...) UseMethod("silhouette")
 ## Accessor and more:
 silhouette.partition <- function(x, ...) {
     r <- x$silinfo$widths
+    if(is.null(r))
+        stop("invalid partition object")
     attr(r, "Ordered") <- TRUE # (cluster <increasing>, s.i <decreasing>)
     attr(r, "call") <- x$call
     class(r) <- "silhouette"
@@ -93,7 +95,7 @@ plot.silhouette <-
     function(x, nmax.lab = 40, max.strlen = 5,
              main = NULL, sub = NULL,
              xlab = expression("Silhouette width " * s[i]),
-             col = heat.colors(n), cex.names = par("cex.axis"),
+             col = "gray", border = 0, cex.names = par("cex.axis"),
              do.n.k = TRUE, do.clus.stat = TRUE, ...)
 {
     if(!is.matrix(x) || ncol(x) != 3)
@@ -120,7 +122,7 @@ plot.silhouette <-
     y <- barplot(s, space = space, names = names, xlab = xlab,
                  xlim = c(min(0, min(s)), 1),
                  horiz = TRUE, las = 1, mgp = c(2.5, 1, 0),
-                 col = col, cex.names = cex.names, ...)
+                 col = col, border = border, cex.names = cex.names, ...)
     title(main = main, sub = sub, adj = 0)
     if(do.n.k) {
         mtext(paste("n =", n),  adj = 0)

@@ -1,4 +1,4 @@
-### $Id: clara.q,v 1.15 2002/09/09 09:36:53 maechler Exp $
+### $Id: clara.q,v 1.16 2002/09/12 14:39:21 maechler Exp $
 
 #### CLARA := Clustering LARge Applications
 ####
@@ -96,7 +96,7 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     attr(disv, "Metric") <- metric
     attr(disv, "Labels") <- namx[res$sample]
     ## add labels to Fortran output
-    res$med <- x[res$med, ]
+    res$med <- x[res$med, , drop = FALSE]
     res$clu <- as.integer(matrix(res$clu, nrow= n, ncol= jp, byrow= TRUE)[, 1])
     if(!is.null(namx)) {
 	sildim <- namx[sildim]

@@ -1,0 +1,71 @@
+Things that were on my TODO list and have been accomplished
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Oct. 2002 {for "banner"; silhouette was earlier}:
+
+ 1) Silhouette und Banner Plot :
+	Label vertical axis of horizontal barplot using HORIZONTAL text
+	{i.e., par(las = 1) or axis(*, las = 1)}
+    --> Should become an optional (but probably default)
+	feature of barplot()!
+
+
+July 2002:
+
+  clara():  Must have allocation(?) bug in Fortran --> ../cluster_tests/clara.R
+
+	    --- bug (not allocation!) found and eliminated.
+
+  o all [ agnes, clara, daisy, diana, fanny, pam ] now have something like
+
+        valmisdat <- min(x2, na.rm=TRUE) - 0.5 #(double) VALue for MISsing DATa
+
+    but this will go wrong as soon as  min(x2) < -5e15  !!!
+
+   --> now using something more sensible
+
+
+May 2002:
+
+  data/flower.R :  Big problem: V1..V3 should be binary, i.e. 0:1
+  man/flower.Rd :  but as factors they become  1:2 !
+		==> the example (.. type = list(asymm = 1)
+		has probably been wrong all the time -- compare to JSS  paper!
+  --- no!  the changes to cluster-1.5.1 which test these,etc
+      give no difference!
+
+o clusplot() -- drawing MVE ellipses (-> .Fortran("spannel",..)) :
+	     S-plus has ellipses that just exactly contain all points.
+	     whereas our ellipses are *always* slightly too large.
+
+o Provide a user function
+     ellipsoidhull <- function(x, n = 201)
+     = a combination of internal .Fortran("spannel",.), cov.wt() & ellipse()
+
+
+o man/flower.Rd :  use \describe{  \item ... for the 8 variables
+
+* OLDER
+
+  2) help files for plot.*()
+	 --- new arguments are in *.Rd,
+	 but not really documented.
+
+  5) a more thorough test of .Fortran("spannel", *) used in clusplot(*).
+
+     -> done {new ellipsoidhull() }
+
+-------------
+
+./R/daisy.q  :
+
+  Now that daisy objects inherit from "dist",  we can use  as.matrix() and
+  other dist methods which can be *very* useful !
+  --> also upgraded ./man/dissimilarity.object.Rd
+
+  {remaining:  improve our code or the examples ?!}
+
+ 8) Make bannerplot() an (possibly later namespace internal ?)
+    standalone function called from both  plot.agnes() and plot.diana(),
+    even plot.mona()!
+

@@ -1,3 +1,64 @@
+2002-10-21  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/daisy.q (daisy): allow "+- Inf" in `x' (gave error from Fortran)
+
+2002-10-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/silhouette.R (plot.silhouette): also use border = 0 and new
+	  default col = "gray".
+
+	* R/plothier.q (bannerplot): arguments inside = . , border = 0
+	  work with R 1.6.1's barplot() {give "not yet .."  otherwise}.
+
+	* tests/mona.R and mona.Rout.save: new tests
+
+	* R/mona.q (mona): get rid of 1:nchar() warnings; other cosmetic
+	* src/mona.f (mona): variable renaming; logical cleanup in NA dealing
+
+	* R/zzz.R (stop): multi-argument version for R versions < 1.6
+
+2002-10-18  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R CMD check now okay.
+
+	* man/plot.mona.Rd: update (for bannerplot() usage), same for
+	* man/plot.agnes.Rd and
+	* man/plot.diana.Rd.
+
+	* R/plothier.q (bannerplot): finally working for all three;
+	  argument `xax.pretty = TRUE' (set to FALSE for old behavior).
+        (plot.mona): using bannerplot(); {and is.na(.) <- .}
+
+2002-10-16  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/plothier.q (bannerplot): newly standalone function,
+		called from plot.diana(), plot.agnes() -- not yet plot.mona()
+
+2002-10-15  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.6-2 (not yet released)
+
+	* R/plothier.q (plot.diana, bannerplot): rev(.) x-axis labels
+	  --> fixing bug introduced at/before version 1.2-5
+
+	* R/plothier.q (plot.agnes, bannerplot) and plot.diana:
+		add "las = 2" to vertical axis(), and add space to right
+		for plot.diana.
+
+2002-09-12  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Date): -- released locally only
+
+2002-09-11  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/clara.q (clara): for the case of k = 1 (and diss=FALSE),
+	* R/pam.q (pam):     medoids should stay matrix
+
+	* src/pam.f (pam): put under RCS; replaced goto by if..else..
+
+	* man/pam.Rd: mention silhouette() directly
+	* man/silhouette.Rd: document summary(); + 1ex
+
 2002-09-09  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.6-1 ==> for CRAN and R 1.6.0

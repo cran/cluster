@@ -1,59 +1,64 @@
-agnes                   Agglomerative Nesting
-agnes.object            Agglomerative Nesting (AGNES) Object
-agriculture             European Union Agricultural Workforces
-animals                 Attributes of Animals
-clara                   Clustering Large Applications
-clara.object            Clustering Large Applications (CLARA) Object
-clusplot                Cluster Plot - Generic Function
-clusplot.default        Bivariate Cluster Plot (clusplot) Default Method
-clusplot.partition      Bivariate Clusplot of a Partitioning Object
-cluster-internal        Internal cluster functions
-daisy                   Dissimilarity Matrix Calculation
+agnes			Agglomerative Nesting
+clara			Clustering Large Applications
+daisy			Dissimilarity Matrix Calculation
 diana                   DIvisive ANAlysis Clustering
-diana.object            Divisive Analysis (DIANA) Object
-dissimilarity.object    Dissimilarity Matrix Object
-ellipsoidhull           Compute the Ellipsoid Hull or Spanning
-                        Ellipsoid of a Point Set
-fanny                   Fuzzy Analysis Clustering
-fanny.object            Fuzzy Analysis (FANNY) Object
-flower                  Flower Characteristics
-lower.to.upper.tri.inds
-                        Permute Indices for Triangular Matrices
-mona                    MONothetic Analysis Clustering of Binary Variables
-mona.object             Monothetic Analysis (MONA) Object
-pam                     Partitioning Around Medoids (PAM)
-pam.object              Partitioning Around Medoids (PAM) Object
-partition.object        Partitioning Object
-plot.agnes              Plots of an Agglomerative Hierarchical
-                        Clustering
-plot.diana              Plots of a Divisive Hierarchical Clustering
-plot.mona               Banner of Monothetic Divisive Hierarchical
-                        Clusterings
-plot.partition          Plot of a Partition of the Data Set
-pltree                  Clustering Trees - Generic Function
-pltree.twins            Clustering Tree of a Hierarchical Clustering
+fanny			Fuzzy Analysis Clustering
+mona			MONothetic Analysis Clustering of Binary Variables
+pam			Partitioning Around Medoids
+
+dissimilarity.object	Dissimilarity Matrix Object
+partition.object	Partitioning Object
+twins.object		Hierarchical Clustering Object
+
+agnes.object		Agglomerative Nesting (AGNES) Object
+clara.object		Clustering Large Applications (CLARA) Object
+diana.object		Divisive Analysis (DIANA) Object
+fanny.object		Fuzzy Analysis (FANNY) Object
+mona.object		Monothetic Analysis (MONA) Object
+pam.object		Partitioning Around Medoids (PAM) Object
+sizeDiss		Sample Size of Dissimilarity Like Object
+
+clusplot		Cluster Plot - Generic Function
+clusplot.default	Bivariate Cluster Plot (Clusplot) Default Method
+clusplot.partition	Bivariate Clusplot of a Partitioning Object
+pltree			Clustering Trees - Generic Function
+pltree.twins		Clustering Tree of a Hierarchical Clustering
+
+bannerplot		Plot Banner (of Hierarchical Clustering)
+silhouette		Compute or Extract Silhouette Information from
+			Clustering
+ellipsoidhull		Compute the Ellipsoid Hull or Spanning Ellipsoid
+			of a Point Set
+predict.ellipsoid	Predict Method for Ellipsoid Objects
+volume.ellipsoid	Compute the Volume of Planar Object
+lower.to.upper.tri.inds Permute Indices for Triangular Matrices
+
+plot.agnes		Plots of an Agglomerative Hierarchical Clustering
+plot.diana		Plots of a Divisive Hierarchical Clustering
+plot.mona		Banner of Monothetic Divisive Hierarchical Clusterings
+plot.partition		Plot of a Partition of the Data Set
+print.dissimilarity	Print and Summary Methods for Dissimilarity Objects
+print.agnes		Print Method for AGNES Objects
+print.clara		Print Method for CLARA Objects
+print.diana		Print Method for DIANA Objects
+print.fanny		Print Method for FANNY Objects
+print.mona		Print Method for MONA Objects
+print.pam		Print Method for PAM Objects
+summary.agnes		Summary Method for `agnes' Objects
+summary.clara		Summary Method for `clara' Objects
+summary.diana		Summary method for `diana' Objects
+summary.fanny		Summary Method for `fanny' Objects
+summary.mona		Summary Method for `mona'  Objects
+summary.pam		Summary Method for PAM Objects
+cluster-internal        Internal cluster functions
+
+
+	  DATASETS
+
+agriculture		European Union Agricultural Workforces
+animals			Attributes of Animals
+flower			Flower Characteristics
 pluton                  Isotopic Composition Plutonium Batches
-predict.ellipsoid       Predict Method for Ellipsoid Objects
-print.agnes             Print Method for AGNES Objects
-print.clara             Print Method for CLARA Objects
-print.diana             Print Method for DIANA Objects
-print.dissimilarity     Print and Summary Methods for Dissimilarity
-                        Objects
-print.fanny             Print Method for FANNY Objects
-print.mona              Print Method for MONA Objects
-print.pam               Print Method for PAM Objects
-ruspini                 Ruspini Data
-silhouette              Compute or Extract Silhouette Information from
-                        Clustering
-sizeDiss                Sample Size of Dissimilarity Like Object
-summary.agnes           Summary method for `agnes' objects
-summary.clara           Summary method for `clara' objects
-summary.diana           Summary Method for `diana' Objects
-summary.fanny           Summary method for `fanny' objects
-summary.mona            Summary method for `mona' objects
-summary.pam             Summary Method for PAM Objects
-twins.object            Hierarchical Clustering Object
-volume.ellipsoid        Compute the Volume of Planar Object
-votes.repub             Votes for Republican Candidate in Presidential
-                        Elections
-xclara                  Bivariate Data Set with 3 Clusters
+ruspini			Ruspini Data
+votes.repub		Votes for Republican Candidate in Presidential Elections
+xclara			Bivariate Data Set with 3 Clusters

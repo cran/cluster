@@ -96,6 +96,7 @@ function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 		     type3,		# vtype
 		     as.integer(ndyst),
 		     dis = double((n * (n - 1))/2),
+                     NAOK = TRUE,# only to allow "+- Inf"
 		     DUP = FALSE,
 		     PACKAGE = "cluster")$dis
     ## adapt Fortran output to S:

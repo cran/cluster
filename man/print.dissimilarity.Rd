@@ -12,7 +12,7 @@
   or \code{summary} for the general behavior of these.
 }
 \usage{
-  \method{print}{dissimilarity}(x, \dots)
+\method{print}{dissimilarity}(x, \dots)
 \method{summary}{dissimilarity}(object, \dots)
 \method{print}{summary.dissimilarity}(x, \dots)
 }

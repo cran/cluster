@@ -6,21 +6,24 @@
 }
 \usage{
 plot.mona(x, main = paste("Banner of ", deparse(attr(x, "Call"))),
-          col = 2, axes = TRUE, adj = 0,
+          sub = NULL, xlab = "Separation step",
+	  col = c(2,0), axes = TRUE, adj = 0,
           nmax.lab = 35, max.strlen = 5, \dots)
 }
 \arguments{
   \item{x}{an object of class \code{"mona"}, typically created by
     \code{\link{mona}(.)}.}
-  \item{main}{main title for the plot, with a convenient
-    default.  See documentation for \code{main} in \code{\link{plot.default}}.}
+  \item{main,sub}{main and sub titles for the plot, with convenient
+    defaults.  See documentation in \code{\link{plot.default}}.}
+  \item{xlab}{x axis label, see \code{\link{title}}.}
+  \item{col,adj}{graphical parameters passed to \code{\link{bannerplot}()}.}
+  \item{axes}{logical, indicating if (labeled) axes should be drawn.}
   \item{nmax.lab}{integer indicating the number of labels which is
     considered too large for labeling.}
   \item{max.strlen}{positive integer giving the length to which
     strings are truncated in labeling.}
-  \item{axes}{logical, indicating if (labeled) axes should be drawn.}
-  \item{col,adj,\dots}{graphical parameters (see \code{\link{par}}) may also
-    be supplied as arguments to this function.}
+  \item{\dots}{further graphical arguments are passed to
+    \code{\link{bannerplot}()} and \code{\link{text}}.}
 }
 \section{Side Effects}{
   A banner is plotted on the current graphics device.
