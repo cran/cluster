@@ -38,11 +38,11 @@ silhouette.default <- function(x, dist, dmatrix, ...) {
         wds[iC, "cluster"] <- j
         a.i <- if(Nj > 1) colSums(dmatrix[iC, iC])/(Nj - 1) else 0 # length(a.i)= Nj
         ## minimal distances to points in all other clusters:
-        diC <- rbind(apply(dmatrix[!iC, iC], 2,
+        diC <- rbind(apply(dmatrix[!iC, iC, drop = FALSE], 2,
                            function(r) tapply(r, x[!iC], mean)))# (k-1) x Nj
         minC <- max.col(-t(diC))
         wds[iC,"neighbor"] <- clid[-j][minC]
-        b.i <- diC[cbind(minC, seq(minC))]
+        b.i <- diC[cbind(minC, seq(along = minC))]
         s.i <- (b.i - a.i) / pmax(b.i, a.i)
         wds[iC,"sil_width"] <- s.i
     }

@@ -1,3 +1,11 @@
+2003-06-10  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.7.3
+
+	* R/silhouette.R (silhouette.default): fix bugs for case "Nj == 1"
+	* tests/silhouette-default.Rout.save:
+	* tests/silhouette-default.R: new test for the above
+
 2003-06-04  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* tests/clara-ex.R and man/clara.Rd: add "drop = FALSE"
