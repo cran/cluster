@@ -62,6 +62,12 @@ by
 Change all '0' to 0.
 Change all '1' to 1.
 
+* R/daisy.q:
+* src/daisy.f:
+
+(BDR) Rewrite to pass integers rather than C character strings to 
+Fortran.
+
 ************************************************************************
 
 The directory `man' contains R documentation sources converted via

@@ -1,3 +1,13 @@
+Sun Dec  5 20:14:45 1999  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* DESCRIPTION (Version): New version is 1.2-1.
+
+	* R/daisy.q:
+	* src/daisy.f:
+	* PORTING:
+	Rewrite to pass integers rather than character strings to Fortran
+	(changes provided by BDR).
+
 Sun Apr 11 04:21:03 1999  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
 
 	* DESCRIPTION (Version): New version is 1.2-0.

@@ -9,14 +9,14 @@ function(x, metric = "euclidean", stand = F, type = list())
 	{
 		levels(as.factor(y))
 	}
-#check type of input matrix 
+#check type of input matrix
 	if(!is.data.frame(x) && !is.numeric(x))
 		stop(message = "x is not a dataframe or a numeric matrix.")
 	if(!is.null(type$asymm)) if(!all(sapply(lapply(as.data.frame(x[, type$
 			asymm]), levs), length) == 2))
 			stop(message =
 				"asymmetric binary variable has more than 2 levels."
-				)	
+				)
 #transform variables and construct `type' vector
 	type2 <- sapply(x, data.class)
 	x <- data.matrix(x)
@@ -28,13 +28,13 @@ function(x, metric = "euclidean", stand = F, type = list())
 	type2[type$ordratio] <- "O"
 	type2[type2 == "numeric"] <- "I"
 	type2[type2 == "ordered"] <- "O"
-	type2[type2 == "factor"] <- "N"	
+	type2[type2 == "factor"] <- "N"
 #standardize, if necessary
 	if(all(type2 == "I")) {
 		if(stand) {
 			x <- scale(x, scale = apply(x, 2, meanabsdev))
 		}
-		jdat <- "2"
+		jdat <- 2
 		if(metric == "manhattan")
 			ndyst <- 2
 		else ndyst <- 1
@@ -43,40 +43,40 @@ function(x, metric = "euclidean", stand = F, type = list())
 		colmin <- apply(x, 2, min, na.rm = T)
 		colextr <- apply(x, 2, max, na.rm = T) - colmin
 		x <- scale(x, center = colmin, scale = colextr)
-		jdat <- "1"
+		jdat <- 1
 		ndyst <- 0
 	}
-	type2 <- paste(type2, collapse = "")
+#	type2 <- paste(type2, collapse = "")
 #put info about NAs in arguments for the Fortran call
 	jtmd <- ifelse(is.na(rep(1, nrow(x)) %*% x), -1, 1)
 	valmisdat <- min(x, na.rm = T) - 0.5
 	x[is.na(x)] <- valmisdat
-	valmd <- rep(valmisdat, ncol(x))	
+	valmd <- rep(valmisdat, ncol(x))
 #call Fortran routine
 	storage.mode(x) <- "double"
 	storage.mode(valmd) <- "double"
 	storage.mode(jtmd) <- "integer"
-	storage.mode(type2) <- "character"
+        type3 <- as.integer(match(type2, c('A','S','N','O','I','T')))
 	res <- .Fortran("daisy",
 		as.integer(nrow(x)),
 		as.integer(ncol(x)),
 		x,
 		valmd,
 		jtmd,
-		as.character(jdat),
-		type2,
+		as.integer(jdat),
+		type3,
 		as.integer(ndyst),
-		dis = double(1 + (nrow(x) * (nrow(x) - 1))/2))	
+		dis = double(1 + (nrow(x) * (nrow(x) - 1))/2))
 #adapt Fortran output to S-Plus:
 #convert lower matrix, read by rows, to upper matrix, read by rows.
 	disv <- res$dis[-1]
 	disv[disv == -1] <- NA
 	full <- matrix(0, nrow(x), nrow(x))
 	full[!lower.tri(full, diag = T)] <- disv
-	disv <- t(full)[lower.tri(full)]	
+	disv <- t(full)[lower.tri(full)]
 #give warning if some dissimilarities are missimg
-	if(is.na(min(disv))) attr(disv, "NA.message") <- 
-			"NA-values in the dissimilarity matrix !"	
+	if(is.na(min(disv))) attr(disv, "NA.message") <-
+			"NA-values in the dissimilarity matrix !"
 #construct S-Plus object
 	class(disv) <- "dissimilarity"
 	attr(disv, "Labels") <- dimnames(x)[[1]]
@@ -85,7 +85,7 @@ function(x, metric = "euclidean", stand = F, type = list())
 	disv
 }
 
-"print.dissimilarity" <- 
+"print.dissimilarity" <-
 function(x, ...)
 {
 	cat("Dissimilarities :\n")
