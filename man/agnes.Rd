@@ -1,6 +1,7 @@
 \name{agnes}
 \alias{agnes}
-\title{Agglomerative Nesting}
+\title{Agglomerative Nesting (Hierarchical Clustering)}
+\concept{UPGMA clustering}
 \description{
   Computes agglomerative hierarchical clustering of the dataset.
 }
@@ -50,11 +51,11 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
   }
   \item{method}{
     character string defining the clustering method.  The six methods
-    implemented are "average" (group average method), "single" (single
-    linkage), "complete" (complete linkage), "ward" (Ward's method),
-    "weighted" (weighted average linkage) and its generalization
-    \code{"flexible"} which uses (a constant version of) the
-    Lance-Williams formula and the \code{par.method} argument.  Default
+    implemented are "average" ([unweighted pair-]group average method, UPGMA),
+    "single" (single linkage), "complete" (complete linkage),
+    "ward" (Ward's method), "weighted" (weighted average linkage) and
+    its generalization \code{"flexible"} which uses (a constant version of)
+    the Lance-Williams formula and the \code{par.method} argument.  Default
     is "average".
   }
   \item{par.method}{if \code{method == "flexible"}, numeric vector of
@@ -73,7 +74,7 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
   \code{agnes} is fully described in chapter 5 of Kaufman and Rousseeuw (1990).
   Compared to other agglomerative clustering methods such as \code{hclust},
   \code{agnes} has the following features: (a) it yields the
-  agglomerative coefficient (see \code{agnes.object})
+  agglomerative coefficient (see \code{\link{agnes.object}})
   which measures the amount of clustering structure found; and (b)
   apart from the usual tree it also provides the banner, a novel
   graphical display (see \code{\link{plot.agnes}}).

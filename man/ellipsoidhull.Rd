@@ -68,8 +68,12 @@ ellipsoidhull(x, tol=0.01, maxit=5000,
 
 \author{Martin Maechler did the present class implementation; Rousseeuw
   et al did the underlying code.}
-\seealso{\code{\link[base]{chull}} for the convex hull,
-  \code{\link{clusplot}} which makes use of this; \code{\link[lqs]{cov.mve}}.}
+\seealso{\code{\link{predict.ellipsoid}} which is also the
+  \code{\link{predict}} method for \code{ellipsoid} objects.
+
+  \code{\link[graphics]{chull}} for the convex hull,
+  \code{\link{clusplot}} which makes use of this; \code{\link[MASS]{cov.mve}}.
+}
 \examples{
 x <- rnorm(100)
 xy <- unname(cbind(x, rnorm(100) + 2*x + 10))

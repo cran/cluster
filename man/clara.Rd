@@ -14,7 +14,7 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
   \item{x}{
     data matrix or data frame, each row corresponds to an observation,
     and each column corresponds to a variable.  All variables must be numeric.
-    Missing values (NAs) are allowed. }
+    Missing values (NAs) are allowed.}
   \item{k}{integer, the number of clusters.
     It is required that \eqn{0 < k < n} where \eqn{n} is the number of
     observations (i.e., n = \code{nrow(x)}).}
@@ -75,7 +75,7 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
   this set until \code{sampsize} has been reached.
 }
 \note{
-%% mostly by Martin Mächler :
+%% mostly by Martin Maechler :
   By default, the random sampling is implemented with a \emph{very}
   simple scheme (with period \eqn{2^{16} = 65536}) inside the Fortran
   code, independently of \R's random number generation, and as a matter

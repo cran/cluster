@@ -81,7 +81,7 @@
     appropriate color scheme should be selected (we recommend a white
     background).}
   \item{labels}{
-    integer code, currently one of 0,1,2,3 and 4.  If
+    integer code, currently one of 0,1,2,3,4 and 5.  If
     \describe{
       \item{labels= 0,}{no labels are placed in the plot;}
       \item{labels= 1,}{points and ellipses can be identified in the plot (see

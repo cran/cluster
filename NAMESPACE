@@ -10,6 +10,9 @@ export(bannerplot, ellipsoidhull, ellipsoidPoints,
        lower.to.upper.tri.inds, upper.to.lower.tri.inds,
        meanabsdev, sizeDiss, sortSilhouette)
 
+export(predict.ellipsoid)
+export(coef.hclust)
+
 ## things from (ex-)mva -- not really needed..
 #importFrom(stats, as.hclust, as.dist, as.dendrogram, cutree)
 
@@ -27,13 +30,16 @@ S3method(volume, ellipsoid)
 
 ## register all the method for generics elsewhere in case namespace is
 ## loaded but not currently attached.
+S3method(coef, hclust)
+S3method(coef, twins)
+
 S3method(plot, agnes)
 S3method(plot, diana)
 S3method(plot, mona)
 S3method(plot, partition)
 S3method(plot, silhouette)
 
-S3method(predict, ellipsoid)
+#exported: S3method(predict, ellipsoid)
 
 S3method(print, agnes)
 S3method(print, clara)

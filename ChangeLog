@@ -1,3 +1,36 @@
+2005-01-21  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/clara.Rd: get rid of iso-latin1 character
+
+2004-12-14  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/agnes.Rd: concept{UPGMA ..}
+
+2004-11-27  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.9.7    (not yet CRAN)
+
+	* R/plothier.q (bannerplot): use default 'main' and 'sub'
+	* man/bannerplot.Rd: + example
+
+	* R/coef.R (coef.hclust): Implement R function for
+	           computing the agglomerative/divisive coefficient.
+	* man/coef.hclust.Rd: new; including example
+
+	* man/predict.ellipsoid.Rd: wrong link
+
+2004-11-26  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/twins.f (bncoef): drop unused argument 'ner'
+
+2004-11-20  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/clusplot.default.Rd: fix typo
+
+2004-10-28  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/predict.ellipsoid.Rd: add nice example
+
 2004-08-19  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (LazyData): yes

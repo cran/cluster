@@ -8,7 +8,7 @@
 }
 \usage{
 bannerplot(x, w = rev(x$height), fromLeft = TRUE,
-           main, sub, xlab = "Height",  adj = 0,
+           main=NULL, sub=NULL, xlab = "Height",  adj = 0,
            col = c(2, 0), border = 0, axes = TRUE, frame.plot = axes,
            rev.xax = !fromLeft, xax.pretty = TRUE,
            labels = NULL, nmax.lab = 35, max.strlen = 5,
@@ -52,6 +52,10 @@ bannerplot(x, w = rev(x$height), fromLeft = TRUE,
 \note{This is mainly a utility called from \code{\link{plot.agnes}},
   \code{\link{plot.diana}} and \code{\link{plot.mona}}.
 }% also serves as \seealso{*}
+\examples{
+data(agriculture)
+bannerplot(agnes(agriculture), main = "Bannerplot")
+}
 \keyword{hplot}
 \keyword{cluster}
 \keyword{utilities}

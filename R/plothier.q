@@ -6,21 +6,22 @@ pltree <- function(x, ...) UseMethod("pltree")
 pltree.twins <- function(x, main = paste("Dendrogram of ", deparse(x$call)),
 			 labels = NULL, ylab = "Height", ...)
 {
-    if(is.null(labels) && length(x$order.lab) != 0)
-	labels <- x$order.lab[sort.list(x$order)]
 
-    ## calling plot.hclust() via generic :
-    plot(structure(list(merge = x$merge, order = x$order,
-                        height = sort(x$height), labels = labels,
-                        call = x$call, method = x$method),
-                   class = "hclust"),
+    plot(as.hclust(x), labels = labels,
+##-     if(is.null(labels) && length(x$order.lab) != 0)
+##- 	labels <- x$order.lab[sort.list(x$order)]
+##-
+##-     ## calling plot.hclust() via generic :
+##-     plot(structure(list(merge = x$merge, order = x$order,
+##-                         height = sort(x$height), labels = labels,
+##-                         call = x$call, method = x$method),
+##-                    class = "hclust"),
          main = main, ylab = ylab, ...)
-    invisible()
 }
 
 bannerplot <-
-function(x, w = rev(x$height), fromLeft = TRUE,
-	 main, sub, xlab = "Height", adj = 0, col = c(2, 0), border = 0,
+function(x, w = rev(x$height), fromLeft = TRUE, main=NULL, sub=NULL,
+         xlab = "Height", adj = 0, col = c(2, 0), border = 0,
 	 axes = TRUE, frame.plot = axes, rev.xax = !fromLeft, xax.pretty = TRUE,
 	 labels = NULL, nmax.lab = 35, max.strlen = 5,
 	 yax.do = axes && length(x$order) <= nmax.lab,
@@ -79,6 +80,7 @@ function(x, w = rev(x$height), fromLeft = TRUE,
 		 labels = labels, pos = ax$pos, mgp = c(3, 1.25, 0), ...)
 	}
     }
+    invisible()
 }
 
 ## plot.diana() [further down] & plot.agnes() are  almost identical;
