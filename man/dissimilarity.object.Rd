@@ -25,7 +25,7 @@
   The length of the vector is \eqn{n*(n-1)/2}, i.e., of order \eqn{n^2}.
 
   \code{"dissimilarity"} objects also inherit from class
-  \code{\link[mva]{dist}} and can use \code{dist} methods, in
+  \code{\link{dist}} and can use \code{dist} methods, in
   particular, \code{\link{as.matrix}}, such that \eqn{d_{ij}}{d(i,j)}
   from above is just \code{as.matrix(do)[i,j]}.
 

@@ -1,3 +1,24 @@
+2005-04-04  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.9.8
+
+	* R/daisy.q (print.dissimilarity): rewritten, now based on
+	print.hclust().
+
+	* R/zzz.R (gettextf): ..etc: define substitutes such as to allow
+	running in R < 2.1.0
+
+	* man/ellipsoidhull.Rd: fixed outdated "link[pkg]"
+	* man/clusplot.default.Rd: dito
+	* man/*.Rd : etc
+
+2005-03-22  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/clara.q (clara): start to 'rationalize' messages for future
+	translation.
+
+	* src/cluster.h: define the  _(String) macro (for i18n), not yet used.
+
 2005-01-21  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* man/clara.Rd: get rid of iso-latin1 character

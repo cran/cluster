@@ -30,7 +30,7 @@
     function stops with a warning message.
 
     In case of a dissimilarity matrix, \code{x} is the output of
-    \code{\link{daisy}} or \code{\link[mva]{dist}} or a symmetric matrix.  Also,
+    \code{\link{daisy}} or \code{\link{dist}} or a symmetric matrix.  Also,
     a vector of length \eqn{n*(n-1)/2} is allowed (where \eqn{n} is the
     number of observations), and will be interpreted in the same way as
     the output of the above-mentioned functions.  Missing values (NAs)
@@ -156,8 +156,8 @@
   a visual display of the clustering is plotted on the current graphics device.
 }
 \details{
-  \code{clusplot} uses the functions \code{\link[mva]{princomp}} and
-  \code{\link[mva]{cmdscale}}.  These functions are
+  \code{clusplot} uses the functions \code{\link{princomp}} and
+  \code{\link{cmdscale}}.  These functions are
   data reduction techniques. They will represent the data in a bivariate plot.
   Ellipses are then drawn to indicate the clusters.  The further layout of the
   plot is determined by the optional arguments.
@@ -190,9 +190,9 @@
   \emph{Computational Statistics and Data Analysis}, \bold{26}, 17-37.
 }
 \seealso{
-  \code{\link[mva]{princomp}}, \code{\link[mva]{cmdscale}}, \code{\link{pam}},
+  \code{\link{princomp}}, \code{\link{cmdscale}}, \code{\link{pam}},
   \code{\link{clara}}, \code{\link{daisy}}, \code{\link{par}},
-  \code{\link{identify}}, \code{\link[lqs]{cov.mve}},
+  \code{\link{identify}}, \code{\link[MASS]{cov.mve}},
   \code{\link{clusplot.partition}}.
 }
 \examples{

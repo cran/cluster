@@ -10,7 +10,10 @@ if(interactive()) {
 ## trivial cases should `work':
 daisy(cbind(1))
 (d10 <- daisy(matrix(0., 1,0))); str(d10)
-(d01 <- daisy(matrix(0., 0,1))); str(d01)
+d01 <- daisy(matrix(0., 0,1))
+if(paste(R.version$major, R.version$minor, sep=".") >= "2.1.0")
+    print(d01)
+str(d01)
 d32 <- data.frame(eins=c("A"=1,"B"=1,"C"=1), zwei=c(2,2,2))
 daisy(d32)
 daisy(d32, stand = TRUE)

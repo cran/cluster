@@ -149,10 +149,15 @@ function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
     disv
 }
 
-print.dissimilarity <- function(x, ...)
+print.dissimilarity <-
+    function(x, diag = NULL, upper = NULL,
+	     digits = getOption("digits"), justify = "none", right = TRUE, ...)
 {
     cat("Dissimilarities :\n")
-    print(as.vector(x), ...)
+    ##orig {Rousseeuw..}: print(as.vector(x), ...)
+    stats:::print.dist(x, diag=diag, upper=upper, digits=digits,
+                       justify=justify, right=right, ...)
+    ##
     cat("\n")
     if(!is.null(attr(x, "na.message")))
 	cat("Warning : ", attr(x, "NA.message"), "\n")
@@ -163,9 +168,11 @@ print.dissimilarity <- function(x, ...)
     invisible(x)
 }
 
-summary.dissimilarity <- function(object, ...)
+summary.dissimilarity <-
+    function(object, digits = max(3, getOption("digits") - 2), ...)
+    ## 'digits': want a bit higher precision
 {
-    sx <- summary(as.vector(object), ...)
+    sx <- summary(as.vector(object), digits = digits, ...)
     at <- attributes(object)
     r <- c(list(summ = sx, n = length(object)), at[names(at) != "class"])
     class(r) <- "summary.dissimilarity"

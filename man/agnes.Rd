@@ -20,7 +20,7 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
     Missing values (NAs) are allowed.
 
     In case of a dissimilarity matrix, \code{x} is typically the output of
-    \code{\link{daisy}} or \code{\link[mva]{dist}}.
+    \code{\link{daisy}} or \code{\link{dist}}.
     Also a vector with length n*(n-1)/2 is allowed (where n is the number
     of observations), and will be interpreted in the same way as the
     output of the above-mentioned functions. Missing values (NAs) are not

@@ -59,7 +59,7 @@ daisy(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 }
 \details{
   \code{daisy} is fully described in chapter 1 of Kaufman and Rousseeuw (1990).
-  Compared to \code{\link[mva]{dist}} whose input must be numeric
+  Compared to \code{\link{dist}} whose input must be numeric
   variables, the main feature of \code{daisy} is its ability to handle
   other variable types as well (e.g. nominal, ordinal, (a)symmetric
   binary) even when different types occur in the same dataset.
@@ -118,7 +118,7 @@ daisy(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
   \emph{Computational Statistics and Data Analysis, \bold{26}, 17-37.}
 }
 \seealso{
-  \code{\link{dissimilarity.object}}, \code{\link[mva]{dist}},
+  \code{\link{dissimilarity.object}}, \code{\link{dist}},
   \code{\link{pam}}, \code{\link{fanny}}, \code{\link{clara}},
   \code{\link{agnes}}, \code{\link{diana}}.
 }

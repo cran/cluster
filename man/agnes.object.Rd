@@ -15,7 +15,7 @@
 \section{INHERITANCE}{
   The class \code{"agnes"} inherits from \code{"twins"}.
   Therefore, the generic functions \code{\link{pltree}} and
-  \code{\link[mva]{as.hclust}} are available for \code{agnes} objects.
+  \code{\link{as.hclust}} are available for \code{agnes} objects.
   After applying \code{as.hclust()}, all \emph{its} methods are
   available, of course.
 }
@@ -67,7 +67,7 @@
 }
 \seealso{
   \code{\link{agnes}}, \code{\link{diana}},
-  \code{\link[mva]{as.hclust}}, \code{\link[mva]{hclust}},
+  \code{\link{as.hclust}}, \code{\link{hclust}},
   \code{\link{plot.agnes}}, \code{\link{twins.object}}.
 }
 \keyword{cluster}

@@ -17,7 +17,7 @@ fanny(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
     Missing values (NAs) are allowed.
 
     In case of a dissimilarity matrix, \code{x} is typically the output
-    of \code{\link{daisy}} or \code{\link[mva]{dist}}.  Also a vector of
+    of \code{\link{daisy}} or \code{\link{dist}}.  Also a vector of
     length n*(n-1)/2 is allowed (where n is the number of observations),
     and will be interpreted in the same way as the output of the
     above-mentioned functions.  Missing values (NAs) are not allowed.

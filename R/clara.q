@@ -16,12 +16,11 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     if((k <- as.integer(k)) < 1 || k > n - 1)
 	stop("The number of cluster should be at least 1 and at most n-1." )
     if((sampsize <- as.integer(sampsize)) < max(2,k))
-	stop(paste(c("'sampsize' should be at least", max(2,k),
-		     " = max(2, number of clusters)"), collapse = " "))
+	stop(gettextf("'sampsize' should be at least %d = max(2, number of clusters)",
+                      max(2,k)), domain=NA)
     if(n < sampsize)
-	stop(paste(c("`sampsize' =", sampsize,
-                     "should not be larger than the number of objects,", n),
-		   collapse = " "))
+	stop(gettextf("'sampsize' = %d should not be larger than the number of objects, %d",
+                      sampsize, n), domain=NA)
     if((samples <- as.integer(samples)) < 1)
 	stop("'samples' should be at least 1")
 
@@ -85,10 +84,9 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     if(res$jstop) {
 	if(mdata && any(aNA <- apply(inax,1, all))) {
 	    i <- which(aNA)
-	    stop("Observation",
-		 if(length(i) > 1)
-		 paste("s  c(",paste(i, collapse=","),")  have", sep='')
-		 else paste("", i, "has"),
+	    stop(ngettext(length(i),
+                          sprintf("Observation %d has", i[1]),
+                          sprintf("Observations %s have", paste(i, collapse=","))),
 		 " *only* NAs --> omit for clustering")
 	} ## else
 	if(res$jstop == 1)

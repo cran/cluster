@@ -1,7 +1,15 @@
 /* At least for the things in C */
 
-#include <R_ext/Boolean.h>
-#include <R_ext/RS.h>
+#include <R.h>
+/* -> Rconfig.h, but also Boolean.h RS.h */
+
+#ifdef ENABLE_NLS
+#include <libintl.h>
+#define _(String) dgettext ("cluster", String)
+#else
+#define _(String) (String)
+#endif
+
 
 /* in ./meet.f --- called from most source files: */
 /* NO LONGER:

@@ -33,7 +33,7 @@ ellipsoidhull(x, tol=0.01, maxit=5000,
   \code{\link{clusplot.default}}.\cr
   The problem can be seen as a special case of the ``Min.Vol.''
   ellipsoid of which a more more flexible and general implementation is
-  \code{\link[lqs]{cov.mve}} in the \code{lqs} package.
+  \code{\link[MASS]{cov.mve}} in the \code{MASS} package.
 }
 \value{
   an object of class \code{"ellipsoid"}, basically a \code{\link{list}}
