@@ -87,7 +87,6 @@ x <- rbind(cbind(rnorm(10,0,0.5), rnorm(10,0,0.5)),
            cbind(rnorm(15,5,0.5), rnorm(15,5,0.5)))
 clusplot(pam(x, 2))
 }
-\keyword{libcluster}
 \keyword{cluster}
 \keyword{hplot}
 % Converted by Sd2Rd version 0.3-2.

@@ -3,7 +3,7 @@
 \name{print.summary.agnes}
 \alias{print.summary.agnes}
 \title{
-Use `print()' on a `summary.agnes' object
+Print Method for SUMMARY.AGNES Objects
 }
 \description{
 Prints all components of a \code{agnes} object.
@@ -19,7 +19,6 @@ the general behavior of this function.
 \seealso{
 \code{\link{agnes}}, \code{\link{agnes.object}}, \code{\link{print}}, \code{\link{print.default}}.
 }
-\keyword{libcluster}
 \keyword{cluster}
 \keyword{print}
 % Converted by Sd2Rd version 0.3-2.

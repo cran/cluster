@@ -3,7 +3,7 @@
 \name{print.pam}
 \alias{print.pam}
 \title{
-Use `print()' on a `pam' object
+Print Method for PAM Objects
 }
 \description{
 Prints the medoids, clustering vector and objective function
@@ -20,7 +20,6 @@ the general behavior of this function.
 \seealso{
 \code{\link{pam}}, \code{\link{pam.object}}, \code{\link{print}}, \code{\link{print.default}}.
 }
-\keyword{libcluster}
 \keyword{cluster}
 \keyword{print}
 % Converted by Sd2Rd version 0.3-2.

@@ -9,7 +9,7 @@ Partitioning Around Medoids
 Returns a list representing a clustering of the data into \code{k} clusters.
 }
 \usage{
-pam(x, k, diss = F, metric = "euclidean", stand = F)
+pam(x, k, diss = FALSE, metric = "euclidean", stand = FALSE)
 }
 \arguments{
 \item{x}{
@@ -101,7 +101,7 @@ the number of observations.
 
 
 }
-\section{NOTE}{
+\note{
 For datasets larger than (say) 200 observations, \code{pam} will take a lot of
 computation time. Then the function \code{clara} is preferable.
 
@@ -135,13 +135,12 @@ pamx
 summary(pamx)
 plot(pamx)
 
-pam(daisy(x, metric = "manhattan"), 2, diss = T)
+pam(daisy(x, metric = "manhattan"), 2, diss = TRUE)
 
 data(ruspini)
 ## Plot similar to Figure 4 in Stryuf et al (1996)
 \dontrun{plot(pam(ruspini, 4), ask = TRUE)}
 \testonly{plot(pam(ruspini, 4))}
 }
-\keyword{libcluster}
 \keyword{cluster}
 % Converted by Sd2Rd version 0.3-2.

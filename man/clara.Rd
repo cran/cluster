@@ -9,7 +9,7 @@ Clustering Large Applications
 Returns a list representing a clustering of the data into \code{k} clusters.
 }
 \usage{
-clara(x, k, metric = "euclidean", stand = F, samples = 5, 
+clara(x, k, metric = "euclidean", stand = FALSE, samples = 5, 
       sampsize = 40 + 2 * k)
 
 
@@ -97,7 +97,7 @@ the number of observations.
 
 
 }
-\section{NOTE}{
+\note{
 For small datasets (say with fewer than 200 observations),
 the function \code{pam} can be used directly.
 
@@ -134,6 +134,5 @@ data(xclara)
 \dontrun{plot(clara(xclara, 3), ask = TRUE)}
 \testonly{plot(clara(xclara, 3))}
 }
-\keyword{libcluster}
 \keyword{cluster}
 % Converted by Sd2Rd version 0.3-2.

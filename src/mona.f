@@ -1,221 +1,236 @@
-      SUBROUTINE MONA(NN,JPP,KX,JERR,NBAN,NER,KWAN,LAVA,JLACK)
-CC
-CC   MONOTHETIC ANALYSIS
-CC
-CC   PROGRAM FOR DIVISIVE HIERARCHICAL CLUSTERING OF BINARY DATA,
-CC   USING ASSOCIATION ANALYSIS.
-CC
-CC   LIST OF FUNCTIONS AND SUBROUTINES:
-CC       FUNCTION KAB 
-CC
-CC   THE FOLLOWING VECTORS AND MATRICES MUST BE DIMENSIONED IN THE
-CC   MAIN PROGRAM:
-CC       NBAN(NN),NER(NN),KWAN(NN),LAVA(NN)
-CC       KX(NN,JPP)
-CC       JLACK(JPP)
-CC   WHERE:
-CC          NN = NUMBER OF OBJECTS 
-CC          JPP = NUMBER OF VARIABLES
-CC
-      DIMENSION NBAN(NN),NER(NN),KWAN(NN),LAVA(NN)
-      DIMENSION JLACK(JPP)
-      INTEGER KX(NN,JPP),NZF
-CC
-      LACK=0
-      JHALT=0 
-      NNHAL=(NN+1)/2
-      JPTWE=(JPP+4)/5 
-      MYST=0
-      DO 70 L=1,NN
-      MYSCA=0 
-      DO 60 J=1,JPP 
-      IF(KX(L,J).EQ.0)GO TO 60
-      IF(KX(L,J).EQ.1)GO TO 60
-      MYSCA=MYSCA+1 
-   60 CONTINUE
-      MYST=MYST+MYSCA 
-      IF(MYSCA.NE.JPP)GO TO 70
-CC   ALL VARIABLES MISSING FOR THIS OBJECT
-      JHALT=1 
-      JERR=1
-   70 CONTINUE
-      IF(JHALT.EQ.1)RETURN
-      IF(MYST.EQ.0)GO TO 290
-      DO 100 J=1,JPP
-      JNUL=0
-      JEEN=0
-      DO 80 L=1,NN
-      IF(KX(L,J).EQ.0)JNUL=JNUL+1
-      IF(KX(L,J).EQ.1)JEEN=JEEN+1
-   80 CONTINUE
-      JLACK(J)=NN-JNUL-JEEN 
-      IF(JLACK(J).NE.0)LACK=LACK+1
-      IF(JLACK(J).LT.NNHAL)GO TO 90 
-CC   AT LEAST 50% OF THE OBJECTS HAVE MISSING VALUES FOR THIS VARIABLE
-      JHALT=1
-      JERR=2
-   90 IF(JNUL.EQ.0)GO TO 95 
-      IF(JEEN.EQ.0)GO TO 95 
-      GO TO 100 
-CC   ALL NON MISSING VALUES ARE IDENTICAL FOR THIS VARIABLE
-   95 JHALT=1
-      JERR=3
-  100 CONTINUE
-      IF(JHALT.EQ.0)GO TO 110 
-      RETURN
-  110 JPRES=JPP-LACK
-      IF(JPRES.NE.0)GO TO 200 
-CC   ALL VARIABLES HAVE MISSING VALUES       
-      JERR=4
-      RETURN
-CC
-CC   FILLING IN MISSING VALUES
-CC
-  200 DO 260 J=1,JPP
-      IF(JLACK(J).EQ.0)GO TO 260
-      LAMA=-1 
-      NSYN=1
-      DO 240 JA=1,JPP 
-      IF(JLACK(JA).NE.0)GO TO 240 
-      JVA=0 
-      JVB=0 
-      JVC=0 
-      JVD=0 
-      DO 230 K=1,NN 
-      IF(KX(K,J).EQ.1)GO TO 220
-      IF(KX(K,JA).EQ.0)JVA=JVA+1
-      IF(KX(K,JA).EQ.1)JVB=JVB+1
-      GO TO 230
-  220 IF(KX(K,JA).EQ.0)JVC=JVC+1
-      IF(KX(K,JA).EQ.1)JVD=JVD+1
-  230 CONTINUE
-      KAL=JVA*JVD-JVB*JVC
-      KALF=KAB(KAL)
-      IF(KALF.LT.LAMA)GO TO 240 
-      LAMA=KALF 
-      JMA=JA
-      IF(KAL.LT.0)NSYN=-1
-  240 CONTINUE
-      DO 250 L=1,NN 
-      IF(KX(L,J).EQ.0)GO TO 250
-      IF(KX(L,J).EQ.1)GO TO 250
-      IF(NSYN.EQ.1)THEN
-         KX(L,J)=KX(L,JMA)
-      ELSE
-         IF(KX(L,JMA).EQ.1)KX(L,J)=0
-         IF(KX(L,JMA).EQ.0)KX(L,J)=1
-      ENDIF
-  250 CONTINUE
-  260 CONTINUE
-CC
-CC   INITIALIZATION 
-CC
-  290 DO 300 K=1,NN 
-      KWAN(K)=0 
-      NER(K)=K
-      LAVA(K)=0 
-  300 CONTINUE
-      NPASS=1 
-      KWAN(1)=NN
-CC
-CC   ALGORITHM
-CC
-      NCLU=1
-      KA=1
-  310 KB=KA+KWAN(KA)-1
-      LAMA=-1 
-      JNAT=JPP
-      DO 370 J=1,JPP
-      IF(NCLU.EQ.1)GO TO 330
-      JNUL=0
-      JEEN=0
-      DO 325 L=KA,KB
-      NEL=NER(L)
-      IF(KX(NEL,J).EQ.0)JNUL=JNUL+1
-      IF(KX(NEL,J).EQ.1)JEEN=JEEN+1
-  325 CONTINUE
-      IF(JEEN.EQ.0)GO TO 370
-      IF(JNUL.EQ.0)GO TO 370
-  330 JNAT=JNAT-1 
-      LAMS=0
-      DO 360 JB=1,JPP 
-      IF(JB.EQ.J)GO TO 360
-      KVA=0 
-      KVB=0 
-      KVC=0 
-      KVD=0 
-      DO 350 L=KA,KB
-      NEL=NER(L)
-      IF(KX(NEL,J).EQ.1)GO TO 340
-      IF(KX(NEL,JB).EQ.0)KVA=KVA+1
-      IF(KX(NEL,JB).EQ.1)KVB=KVB+1
-      GO TO 350
-  340 IF(KX(NEL,JB).EQ.0)KVC=KVC+1
-      IF(KX(NEL,JB).EQ.1)KVD=KVD+1
-  350 CONTINUE
-      LAMS=LAMS+KAB(KVA*KVD-KVB*KVC)
-  360 CONTINUE
-      IF(LAMS.LE.LAMA)GO TO 370 
-      JTEL=KVC+KVD
-      JTELZ=KVA+KVB 
-      LAMA=LAMS 
-      JMA=J 
-  370 CONTINUE
-      IF(JNAT.LT.JPP)GO TO 375
-      KWAN(KA)=-KWAN(KA)
-      GO TO 400 
-CC
-CC    SPLITTING 
-CC
-  375 NEL=NER(KA)
-      IF(KX(NEL,JMA).EQ.1)THEN
-      NZF=0
-      JTEL2=JTEL
-      ELSE
-      NZF=1
-      JTEL2=JTELZ
-      ENDIF
-      JRES=KB-KA+1-JTEL2
-      KM=KA+JTEL2
-      L=KA
-  378 NEL=NER(L)
-      IF(KX(NEL,JMA).EQ.NZF)GO TO 380
-      L=L+1 
-      IF(L.LT.KM)GO TO 378
-      GO TO 390 
-  380 DO 381 LBB=L,KB 
-      NELBB=NER(LBB)
-      IF(KX(NELBB,JMA).EQ.NZF)GO TO 381
-      LCC=LBB-1 
-      GO TO 382 
-  381 CONTINUE
-  382 DO 383 LAA=L,LCC
-      LDD=LCC+L-LAA 
-      LEE=LDD+1 
-      NER(LEE)=NER(LDD) 
-  383 CONTINUE
-      NER(L)=NELBB
-      GO TO 378 
-  390 NCLU=NCLU+1 
-      NBAN(KM)=NPASS
-      KWAN(KA)=JTEL2
-      KWAN(KM)=JRES
-      LAVA(KM)=JMA
-      KA=KA+KWAN(KA)
-  400 IF(KB.EQ.NN)GO TO 500 
-  410 KA=KA+KAB(KWAN(KA)) 
-      IF(KA.GT.NN)GO TO 500 
-      IF(KWAN(KA).LT.2)GO TO 410
-      GO TO 310 
-  500 NPASS=NPASS+1 
-      DO 510 KA=1,NN
-      IF(KWAN(KA).GE.2)GO TO 310
-  510 CONTINUE
-      END 
-CC  
-CC
-      FUNCTION KAB(J) 
-      KAB=J 
-      IF(J.LT.0)KAB=-J
-      RETURN
-      END
+      subroutine mona(nn,jpp, kx,jerr, nban,ner,kwan,lava, jlack)
+cc
+cc   MONothetic Analysis
+cc
+cc   Program for divisive hierarchical clustering of binary data,
+cc   using association analysis.
+cc
+cc   list of functions and subroutines:
+cc       function kab
+cc
+      implicit double precision(a-h,o-z)
+
+      integer nn, jpp
+cc          nn = number of objects 
+cc          jpp = number of variables
+
+cc The following vectors and matrices must be dimensioned in the main program:
+      integer nban(nn),ner(nn),kwan(nn),lava(nn)
+      integer jlack(jpp)
+      integer kx(nn,jpp)
+      integer jerr
+cc jerr : error return code in {1,2,3,4}
+
+      integer nzf
+
+      lack=0
+      jhalt=0 
+      nnhal=(nn+1)/2
+      jptwe=(jpp+4)/5 
+      myst=0
+      do 70 l=1,nn
+         mysca=0 
+         do 60 j=1,jpp 
+            if(kx(l,j).eq.0)go to 60
+            if(kx(l,j).eq.1)go to 60
+            mysca=mysca+1 
+ 60      continue
+         myst=myst+mysca 
+         if(mysca .eq. jpp) then
+c     all variables missing for this object
+            jhalt=1 
+            jerr=1
+         endif
+ 70   continue
+      if(jhalt.eq.1)return
+      if(myst.eq.0)go to 290
+      do 100 j=1,jpp
+         jnul=0
+         jeen=0
+         do 80 l=1,nn
+            if(kx(l,j).eq.0)jnul=jnul+1
+            if(kx(l,j).eq.1)jeen=jeen+1
+ 80      continue
+         jlack(j)=nn-jnul-jeen 
+         if(jlack(j).ne.0)lack=lack+1
+         if(jlack(j).ge.nnhal) then
+c     at least 50% of the objects have missing values for this variable
+            jhalt=1
+            jerr=2
+         endif
+ 90      if(jnul.eq.0)go to 95 
+         if(jeen.eq.0)go to 95 
+         go to 100 
+cc   all non missing values are identical for this variable
+ 95      jhalt=1
+         jerr=3
+ 100  continue
+      if(jhalt.ne.0) return
+
+      jpres=jpp-lack
+      if(jpres.eq.0) then
+c     all variables have missing values       
+         jerr=4
+         return
+      endif
+cc
+cc   filling in missing values
+cc
+      do 260 j=1,jpp
+         if(jlack(j).eq.0)go to 260
+         lama=-1 
+         nsyn=1
+         do 240 ja=1,jpp 
+            if(jlack(ja).ne.0)go to 240 
+            jva=0 
+            jvb=0 
+            jvc=0 
+            jvd=0 
+            do 230 k=1,nn 
+               if(kx(k,j).eq.1)go to 220
+               if(kx(k,ja).eq.0)jva=jva+1
+               if(kx(k,ja).eq.1)jvb=jvb+1
+               go to 230
+ 220           if(kx(k,ja).eq.0)jvc=jvc+1
+               if(kx(k,ja).eq.1)jvd=jvd+1
+ 230        continue
+            kal=jva*jvd-jvb*jvc
+            kalf=kab(kal)
+            if(kalf.ge.lama)then
+               lama=kalf 
+               jma=ja
+               if(kal.lt.0) nsyn=-1
+            endif
+ 240     continue
+         do 250 l=1,nn 
+            if(kx(l,j).eq.0)go to 250
+            if(kx(l,j).eq.1)go to 250
+            if(nsyn.eq.1)then
+               kx(l,j)=kx(l,jma)
+            else
+               if(kx(l,jma).eq.1)kx(l,j)=0
+               if(kx(l,jma).eq.0)kx(l,j)=1
+            endif
+ 250     continue
+ 260  continue
+cc
+cc   initialization 
+cc
+ 290  do 300 k=1,nn 
+         kwan(k)=0 
+         ner(k)=k
+         lava(k)=0 
+ 300  continue
+      npass=1 
+      kwan(1)=nn
+cc
+cc   algorithm
+cc
+      nclu=1
+      ka=1
+C --- Loop ---
+ 310  kb=ka+kwan(ka)-1
+      lama=-1 
+      jnat=jpp
+      do 370 j=1,jpp
+         if(nclu.eq.1)go to 330
+         jnul=0
+         jeen=0
+         do 325 l=ka,kb
+            nel=ner(l)
+            if(kx(nel,j).eq.0)jnul=jnul+1
+            if(kx(nel,j).eq.1)jeen=jeen+1
+ 325     continue
+         if(jeen.eq.0)go to 370
+         if(jnul.eq.0)go to 370
+ 330     jnat=jnat-1 
+         lams=0
+         do 360 jb=1,jpp 
+            if(jb.eq.j)go to 360
+            kva=0 
+            kvb=0 
+            kvc=0 
+            kvd=0 
+            do 350 l=ka,kb
+               nel=ner(l)
+               if(kx(nel,j).eq.1)go to 340
+               if(kx(nel,jb).eq.0)kva=kva+1
+               if(kx(nel,jb).eq.1)kvb=kvb+1
+               go to 350
+ 340           if(kx(nel,jb).eq.0)kvc=kvc+1
+               if(kx(nel,jb).eq.1)kvd=kvd+1
+ 350        continue
+            lams=lams+kab(kva*kvd-kvb*kvc)
+ 360     continue
+         if(lams.le.lama)go to 370 
+         jtel=kvc+kvd
+         jtelz=kva+kvb 
+         lama=lams 
+         jma=j 
+ 370  continue
+      if(jnat.lt.jpp)go to 375
+      kwan(ka)=-kwan(ka)
+      go to 400 
+cc
+cc    splitting 
+cc
+ 375  nel=ner(ka)
+      if(kx(nel,jma).eq.1)then
+         nzf=0
+         jtel2=jtel
+      else
+         nzf=1
+         jtel2=jtelz
+      endif
+      jres=kb-ka+1-jtel2
+      km=ka+jtel2
+      l=ka
+c  -- inner loop --
+ 378  nel=ner(l)
+      if(kx(nel,jma).eq.nzf)go to 380
+      l=l+1 
+      if(l.lt.km)go to 378
+      go to 390 
+
+ 380  do 381 lbb=l,kb 
+         nelbb=ner(lbb)
+         if(kx(nelbb,jma).eq.nzf)go to 381
+         lcc=lbb-1 
+         go to 382 
+ 381  continue
+ 382  do 383 laa=l,lcc
+         ldd=lcc+l-laa 
+         lee=ldd+1 
+         ner(lee)=ner(ldd) 
+ 383  continue
+      ner(l)=nelbb
+      go to 378 
+
+ 390  nclu=nclu+1 
+      nban(km)=npass
+      kwan(ka)=jtel2
+      kwan(km)=jres
+      lava(km)=jma
+      ka=ka+kwan(ka)
+ 400  if(kb.eq.nn)go to 500 
+ 410  ka=ka+kab(kwan(ka)) 
+      if(ka.gt.nn)go to 500 
+      if(kwan(ka).lt.2)go to 410
+      go to 310 
+
+ 500  npass=npass+1 
+      do 510 ka=1,nn
+         if(kwan(ka).ge.2)go to 310
+ 510  continue
+      end 
+cc  
+cc kab(j) = |j| 
+cc
+      integer function kab(j) 
+
+      implicit none
+      integer j
+      kab=j 
+      if(j.lt.0) kab=-j
+      return
+      end

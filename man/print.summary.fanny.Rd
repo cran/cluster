@@ -3,7 +3,7 @@
 \name{print.summary.fanny}
 \alias{print.summary.fanny}
 \title{
-Use `print()' on a `summary.fanny' object
+Print Method for SUMMARY.FANNY Objects
 }
 \description{
 Prints all components of a \code{fanny} object.
@@ -19,7 +19,6 @@ the general behavior of this function.
 \seealso{
 \code{\link{fanny}}, \code{\link{fanny.object}}, \code{\link{print}}, \code{\link{print.default}}.
 }
-\keyword{libcluster}
 \keyword{cluster}
 \keyword{print}
 % Converted by Sd2Rd version 0.3-2.

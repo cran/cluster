@@ -30,7 +30,6 @@ a clustering tree is created on the current graphics device.
 \seealso{
 \code{\link{twins.object}}, \code{\link{agnes}}, \code{\link{diana}}, \code{\link{par}}.
 }
-\keyword{libcluster}
 \keyword{cluster}
 \keyword{hplot}
 % Converted by Sd2Rd version 0.3-2.

@@ -20,7 +20,6 @@ the general behavior of this function.
 \seealso{
 \code{\link{agnes}}, \code{\link{agnes.object}}, \code{\link{print}}, \code{\link{print.default}}.
 }
-\keyword{libcluster}
 \keyword{cluster}
 \keyword{print}
 % Converted by Sd2Rd version 0.3-2.

@@ -1,32 +1,21 @@
-% %Z%%M% version %I% created %G%
-% %Z%%Q%
 \name{plot.partition}
 \alias{plot.partition}
-\title{
-Plot of a Partition of the Data Set
-}
-\description{
-Creates plots for visualizing a \code{partition} object.
-}
+\title{Plot of a Partition of the Data Set}
+\description{Creates plots for visualizing a \code{partition} object.}
 \usage{
-plot.partition(x, ask=F, \dots)
+plot.partition(x, ask = FALSE, cor = TRUE, stand = FALSE, lines = 2,
+         shade = FALSE, color = FALSE, labels = 0, plotchar = TRUE,
+         span = TRUE, xlim = NULL, ylim = NULL, \dots)
 }
 \arguments{
-\item{x}{
-an object of class \code{"partition"}, e.g. created by the functions \code{pam},
-\code{clara}, and \code{fanny}.
-}
-\item{ask}{
-if TRUE, \code{plot.partition} operates in interactive mode.
-
-
-All optional arguments available to the function \code{clusplot.default}
-(except for the \code{diss} option) may also be supplied to this function.
-Graphical parameters (see \code{\link{par}}) may also
-be supplied as arguments to this function.
-}}
-\value{
-a NULL value is returned.
+  \item{x}{an object of class \code{"partition"}, typically created by the
+    functions \code{\link{pam}}, \code{\link{clara}}, and \code{\link{fanny}}.}
+  \item{ask}{if TRUE, \code{plot.partition} operates in interactive mode.}
+  \item{\dots}{
+    All optional arguments available to the function \code{clusplot.default}
+    (except for the \code{diss} option) may also be supplied to this function.
+    Graphical parameters (see \code{\link{par}}) may also
+    be supplied as arguments to this function.}
 }
 \section{Side Effects}{
 An appropriate plot is produced on the current graphics device. This can
@@ -35,16 +24,14 @@ Clusplot
 Silhouette plot
 }
 \details{
-When \code{ask=T}, rather than producing each plot sequentially,
+When \code{ask= TRUE}, rather than producing each plot sequentially,
 \code{plot.partition} displays a menu listing all the plots that can be produced.
 If the menu is not desired but a pause between plots is still wanted
-one must set \code{par(ask=T)} before invoking the plot command.
-
+one must set \code{par(ask= TRUE)} before invoking the plot command.
 
 The clusplot of a cluster partition consists of a two-dimensional 
 representation of the observations, in which the clusters are 
 indicated by ellipses. (See clusplot.partition for more details.)
-
 
 The silhouette plot of a nonhierarchical clustering is fully described in 
 Rousseeuw (1987) and in chapter 2 of Kaufman and Rousseeuw (1990).
@@ -58,7 +45,6 @@ A clustering can be performed for several values of \code{k} (the number of
 clusters). Finally, choose the value of \code{k} with the largest overall
 average silhouette width.
 
-
 The silhouette width is computed as follows:
 Put a(i) = average dissimilarity between i and all other points of the
 cluster to which i belongs. For all clusters C, put d(i,C) = average
@@ -68,13 +54,11 @@ neighbor cluster. Finally, put s(i) = ( b(i) - a(i) ) / max( a(i), b(i) ).
 The overall average silhouette width is then simply the average of s(i) over
 all observations i.
 }
-\section{NOTE}{
+\note{
 In the silhouette plot,
 observation labels are only printed when the number of observations is 
 limited to less than 40, for readability.
 Moreover, observation labels are truncated to at most 5 characters.
-
-
 }
 \references{
 Kaufman, L. and Rousseeuw, P.J. (1990). 
@@ -103,7 +87,6 @@ x <- rbind(cbind(rnorm(10,0,0.5), rnorm(10,0,0.5)),
            cbind(rnorm(15,5,0.5), rnorm(15,5,0.5)))
 plot(pam(x, 2))
 }
-\keyword{libcluster}
 \keyword{cluster}
 \keyword{hplot}
 % Converted by Sd2Rd version 0.3-2.

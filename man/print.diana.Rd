@@ -3,7 +3,7 @@
 \name{print.diana}
 \alias{print.diana}
 \title{
-Use `print()' on a `diana' object
+Print Method for DIANA Objects
 }
 \description{
 Prints the ordering of objects, diameters of splitted clusters,
@@ -20,7 +20,6 @@ the general behavior of this function.
 \seealso{
 \code{\link{diana}}, \code{\link{diana.object}}, \code{\link{print}}, \code{\link{print.default}}.
 }
-\keyword{libcluster}
 \keyword{cluster}
 \keyword{print}
 % Converted by Sd2Rd version 0.3-2.

@@ -3,7 +3,7 @@
 \name{print.summary.pam}
 \alias{print.summary.pam}
 \title{
-Use `print()' on a `summary.pam' object
+Print Method for SUMMARY.PAM Objects
 }
 \description{
 Prints all components of a \code{pam} object.
@@ -19,7 +19,6 @@ the general behavior of this function.
 \seealso{
 \code{\link{pam}}, \code{\link{pam.object}}, \code{\link{print}}, \code{\link{print.default}}.
 }
-\keyword{libcluster}
 \keyword{cluster}
 \keyword{print}
 % Converted by Sd2Rd version 0.3-2.

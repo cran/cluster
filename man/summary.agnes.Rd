@@ -14,6 +14,5 @@ summary.agnes(x, \dots)
 \seealso{
 \code{\link{agnes}}, \code{\link{agnes.object}}.
 }
-\keyword{libcluster}
 \keyword{cluster}
 % Converted by Sd2Rd version 0.3-2.

@@ -84,3 +84,31 @@ Replace the displayed equation by
 All examples hand-edited!
 
 ************************************************************************
+
+============== Martin Maechler (many things are in Changelog!) ===========
+
+src/clara.f :
+~~~~~~~~~~~
+
+  *) to lowercase only :
+
+	  tr A-Z a-z < clara.f.~1~ > clara.f.~2~
+
+  1) to lowercase 
+     and change initial comments to 'c' (because of Emacs' indentation):
+
+	  tr A-Z a-z < clara.f.~1~ | sed '/^cc/s//c/'> clara.f.~2~
+
+  2) Inside Emacs of clara.f.~2~
+
+     C-x C-w	(write-file "clara.f.~3~")
+
+     Repeat about 6 times
+	  M-C-q   (fortran-indent-subprogram)
+	  M-C-e   (end-of-fortran-subprogram)
+
+     M->	(end-of-buffer)
+     C-x C-o 	(delete-blank-lines)
+
+     C-x h	(mark-whole-buffer)
+     M-x tabify  	 			(tabify (point-min) (point-max))

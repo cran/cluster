@@ -10,7 +10,7 @@ Returns a list representing a divisive hierarchical clustering of
 the dataset.
 }
 \usage{
-diana(x, diss = F, metric = "euclidean", stand = F)
+diana(x, diss = FALSE, metric = "euclidean", stand = FALSE)
 
 
 }
@@ -128,6 +128,5 @@ data(agriculture)
 \dontrun{plot(diana(agriculture), ask = TRUE)}
 \testonly{plot(diana(agriculture))}
 }
-\keyword{libcluster}
 \keyword{cluster}
 % Converted by Sd2Rd version 0.3-2.

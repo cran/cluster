@@ -1,0 +1,120 @@
+
+R : Copyright 2001, The R Development Core Team
+Version 1.2.0 Patched (2001-01-03)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type `license()' or `licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type `contributors()' for more information.
+
+Type `demo()' for some demos, `help()' for on-line help, or
+`help.start()' for a HTML browser interface to help.
+Type `q()' to quit R.
+
+> ### SETUP
+> library(cluster)
+Loading required package: mva 
+> 
+> ### Clusplot() RESULT checking ...
+> 
+> ## plotting votes.diss(dissimilarity) in a bivariate plot and
+> ## partitioning into 2 clusters
+> data(votes.repub)
+> votes.diss <- daisy(votes.repub)
+> for(k in 2:4) {
++     votes.clus <- pam(votes.diss, k, diss = TRUE)$clustering
++     print(clusplot(votes.diss, votes.clus, diss = TRUE, shade = TRUE))
++ }
+$Distances
+         [,1]     [,2]
+[1,]  0.00000 21.86399
+[2,] 21.86399  0.00000
+
+$Shading
+[1] 15.59416 27.40584
+
+$Distances
+        [,1] [,2]    [,3]
+[1,]  0.0000   NA 11.9127
+[2,]      NA    0      NA
+[3,] 11.9127   NA  0.0000
+
+$Shading
+[1] 23.370399  5.130514 17.499086
+
+$Distances
+          [,1] [,2]     [,3]     [,4]
+[1,]   0.00000   NA 12.93120 102.0407
+[2,]        NA    0       NA       NA
+[3,]  12.93120   NA  0.00000       NA
+[4,] 102.04074   NA       NA   0.0000
+
+$Shading
+[1] 13.769557  3.875952 12.513759 18.840732
+
+> 
+> ## plotting iris (dataframe) in a 2-dimensional plot and partitioning
+> ## into 3 clusters.
+> data(iris)
+> iris.x <- iris[, 1:4]
+> 
+> for(k in 2:5)
++     print(clusplot(iris.x, pam(iris.x, k)$clustering, diss = FALSE))
+$Distances
+           [,1]       [,2]
+[1,] 0.00000000 0.08804135
+[2,] 0.08804135 0.00000000
+
+$Shading
+[1] 18.20844 24.79156
+
+$Distances
+         [,1]     [,2]     [,3]
+[1,] 0.000000 1.193707 2.519628
+[2,] 1.193707 0.000000       NA
+[3,] 2.519628       NA 0.000000
+
+$Shading
+[1] 19.523009 17.214608  9.262383
+
+$Distances
+         [,1]     [,2]     [,3]     [,4]
+[1,] 0.000000 2.064363 1.491499 2.849586
+[2,] 2.064363 0.000000       NA       NA
+[3,] 1.491499       NA 0.000000 0.654993
+[4,] 2.849586       NA 0.654993 0.000000
+
+$Shading
+[1] 12.885615 14.189337 14.517632  7.407416
+
+$Distances
+         [,1]      [,2]     [,3]     [,4]      [,5]
+[1,] 0.000000 1.7993612 1.377314 2.985213 3.7989247
+[2,] 1.799361 0.0000000       NA       NA 0.7201944
+[3,] 1.377314        NA 0.000000 0.999960 2.0174641
+[4,] 2.985213        NA 0.999960 0.000000        NA
+[5,] 3.798925 0.7201944 2.017464       NA 0.0000000
+
+$Shading
+[1] 10.399313 11.196803 10.158105 15.244197  5.001582
+
+> 
+> 
+> .Random.seed <- c(0,rep(7654,3))
+> ## generate 25 objects, divided into 2 clusters.
+> x <- rbind(cbind(rnorm(10,0,0.5), rnorm(10,0,0.5)),
++            cbind(rnorm(15,5,0.5), rnorm(15,5,0.5)))
+> print.default(clusplot(pam(x, 2)))
+$Distances
+         [,1]     [,2]
+[1,] 0.000000 5.260213
+[2,] 5.260213 0.000000
+
+$Shading
+[1] 19.39958 23.60042
+
+> 
+> 
+> 

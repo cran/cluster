@@ -1,105 +1,113 @@
-      SUBROUTINE DAISY(NN,JPP,X,VALMD,JTMD,JDAT,VTYPE,NDYST,DISV)
-CC
-CC   PROGRAM FOR CALCULATING DISSIMILARITIES BETWEEN OBJECTS
-CC   OR VARIABLES
-CC
-CC  THE FOLLOWING VECTORS AND MATRICES MUST BE DIMENSIONED IN THE
-CC  MAIN PROGRAM :
-CC   X(NN,JPP),DISV(1+NN*(NN-1)/2)
-CC   JTMD(JPP),VALMD(JPP)
-CC   INTEGER (was CHARACTER) VTYPE(JPP)
-CC  WHERE :
-CC          NN = NUMBER OF OBJECTS
-CC          JPP = NUMBER OF VARIABLES USED FOR THE CALCULATIONS
-CC
-      IMPLICIT DOUBLE PRECISION(A-H,O-Z)
+      subroutine daisy(nn,jpp,x,valmd,jtmd,jdat,vtype,ndyst,disv)
+cc
+cc  Calculating dissimilarities between objects or variables
+cc
+      implicit double precision(a-h,o-z)
 
-      DIMENSION X(NN,JPP),DISV(1+NN*(NN-1)/2),VALMD(JPP),JTMD(JPP)
-      INTEGER JDAT,VTYPE(JPP)
+      integer nn, jpp
+cc          nn  = number of objects
+cc          jpp = number of variables used for the calculations
 
-CC
-CC    VTYPE(J) IS THE TYPE OF VARIABLE J:
-CC        = 1(A) FOR AN ASYMMETRIC BINARY VARIABLE
-CC        = 2(S) FOR A SYMMETRIC BINARY VARIABLE
-CC        = 3(N) FOR A NOMINAL VARIABLE
-CC        = 4(O) FOR AN ORDINAL VARIABLE
-CC        = 5(I) FOR AN INTERVAL VARIABLE (ADDITIVE)
-CC        = 6(T) FOR A RATIO VARIABLE
-CC
-CC    VECTOR JTMD IS ONLY READ IF THERE ARE MISSING VALUES
-CC JTMD(J) = 0 IF VARIABLE J IS BINARY
-CC         =-1 IF VARIABLE J IS NOT BINARY AND HAS MISSING VALUES
-CC         =+1 IF VARIABLE J IS NOT BINARY AND HAS NO MISSING VALUES
-CC
+cc  The following vectors and matrices must be dimensioned in the
+cc  main program :
+      double precision x(nn,jpp), disv(1+nn*(nn-1)/2)
+      double precision valmd(jpp)
+      integer jtmd(jpp), jdat
+      integer vtype(jpp)
+cc  vtype was character
 
-  200 IF(JDAT.EQ.2)GO TO 500
+cc    vtype(j) is the type of variable j:
+cc        = 1 (A) for an Asymmetric binary variable
+cc        = 2 (S) for a  Symmetric  binary variable
+cc        = 3 (N) for a  Nominal  variable
+cc        = 4 (O) for an Ordinal  variable
+cc        = 5 (I) for an Interval variable (additive)
+cc        = 6 (T) for a  raTio    variable
+cc
+cc    vector jtmd is only read if there are missing values
+cc jtmd(j) =  0 if variable j is binary
+cc         = -1 if variable j is not binary and has missing values
+cc         = +1 if variable j is not binary and has no missing values
 
-CC
-CC   CALCULATION OF THE DISSIMILARITIES
-CC
-  400 NLK=1
-      NBAD=0
-      DISV(1)=0.0
-      DO 450 L=2,NN
-      LA=L-1
-      DO 440 K=1,LA
-      NLK=NLK+1
-      PPA=0.
-      DLK=0.
-      DO 420 J=1,JPP
-      IF(VTYPE(J).EQ.1.OR.VTYPE(J).EQ.2)GO TO 410
-      IF(JTMD(J).GE.0)GO TO 405
-      IF(X(L,J).EQ.VALMD(J))GO TO 420
-      IF(X(K,J).EQ.VALMD(J))GO TO 420
-  405 PPA=PPA+1.
-      IF(VTYPE(J).EQ.3.AND.X(L,J).NE.X(K,J))DLK=DLK+1.
-      IF(VTYPE(J).EQ.1.OR.VTYPE(J).EQ.2.OR.VTYPE(J).EQ.3)
-     F GO TO 420
-      DLK=DLK+DABS(X(L,J)-X(K,J))
-      GO TO 420
-  410 IF(X(L,J).NE.0..AND.X(L,J).NE.1.)GO TO 420
-      IF(X(K,J).NE.0..AND.X(K,J).NE.1.)GO TO 420
-      IF(VTYPE(J).EQ.2.OR.X(L,J).NE.0.OR.X(K,J).NE.0)PPA=PPA+1.
-      IF(X(L,J).NE.X(K,J))DLK=DLK+1.
-  420 CONTINUE
-      IF(PPA.GT.0.5)GO TO 430
-      NBAD=NBAD+1
-      DISV(NLK)=-1
-      GO TO 440
-  430 DISV(NLK)=DLK/PPA
-  440 CONTINUE
-  450 CONTINUE
-      GO TO 700
+cc 
+cc
+cc   calculation of the dissimilarities
+cc
 
-  500 PP=JPP
-      NLK=1
-      DISV(1)=0.0
-      DO 600 L=2,NN
-      LSUBT=L-1
-      DO 520 K=1,LSUBT
-      CLK=0.0
-      NLK=NLK+1
-      NPRES=0
-      DO 530 J=1,JPP
-      IF(JTMD(J).GE.0)GOTO 540
-      IF(X(L,J).EQ.VALMD(J))GOTO 530
-      IF(X(K,J).EQ.VALMD(J))GOTO 530
-  540 NPRES=NPRES+1
-      IF(NDYST.NE.1)GOTO 550
-      CLK=CLK+(X(L,J)-X(K,J))*(X(L,J)-X(K,J))
-      GOTO 530
-  550 CLK=CLK+DABS(X(L,J)-X(K,J))
-  530 CONTINUE
-      RPRES=NPRES
-      IF(NPRES.NE.0)GOTO 560
-      DISV(NLK)=-1.0
-      GOTO 520
-  560 IF(NDYST.NE.1)GOTO 570
-      DISV(NLK)=DSQRT(CLK*(PP/RPRES))
-      GOTO 520
-  570 DISV(NLK)=CLK*(PP/RPRES)
-  520 CONTINUE
-  600 CONTINUE
+      if(jdat .eq. 1) then
 
-  700 END
+         nlk=1
+         nbad=0
+         disv(1)=0.0
+         do 450 l=2,nn
+            la=l-1
+            do 440 k=1,la
+               nlk=nlk+1
+               ppa=0.
+               dlk=0.
+               do 420 j=1,jpp
+                  if(vtype(j).eq.1.or.vtype(j).eq.2)go to 410
+                  if(jtmd(j).ge.0)go to 405
+                  if(x(l,j).eq.valmd(j))go to 420
+                  if(x(k,j).eq.valmd(j))go to 420
+ 405              continue
+                  ppa=ppa+1.
+                  if(vtype(j).eq.3.and.x(l,j).ne.x(k,j))dlk=dlk+1.
+                  if(vtype(j).eq.1.or.vtype(j).eq.2.or.vtype(j).eq.3)
+     *                 go to 420
+                  dlk=dlk+dabs(x(l,j)-x(k,j))
+                  go to 420
+ 410              continue
+                  if(x(l,j).ne.0..and.x(l,j).ne.1.)go to 420
+                  if(x(k,j).ne.0..and.x(k,j).ne.1.)go to 420
+                  if(vtype(j).eq.2.or.x(l,j).ne.0.or.x(k,j).ne.0)
+     *                 ppa=ppa+1.
+                  if(x(l,j).ne.x(k,j))dlk=dlk+1.
+ 420           continue
+               if(ppa.gt.0.5)go to 430
+               nbad=nbad+1
+               disv(nlk)=-1
+               go to 440
+ 430           continue
+               disv(nlk)=dlk/ppa
+ 440        continue
+ 450     continue
+         
+      else
+         
+ 500     pp=jpp
+         nlk=1
+         disv(1)=0.0
+         do 600 l=2,nn
+            lsubt=l-1
+            do 520 k=1,lsubt
+               clk=0.0
+               nlk=nlk+1
+               npres=0
+               do 530 j=1,jpp
+                  if(jtmd(j).ge.0)goto 540
+                  if(x(l,j).eq.valmd(j))goto 530
+                  if(x(k,j).eq.valmd(j))goto 530
+ 540              continue
+                  npres=npres+1
+                  if(ndyst.ne.1)goto 550
+                  clk=clk+(x(l,j)-x(k,j))*(x(l,j)-x(k,j))
+                  goto 530
+ 550              continue
+                  clk=clk+dabs(x(l,j)-x(k,j))
+ 530           continue
+               rpres=npres
+               if(npres.ne.0)goto 560
+               disv(nlk)=-1.0
+               goto 520
+ 560           if(ndyst.ne.1)goto 570
+               disv(nlk)=dsqrt(clk*(pp/rpres))
+               goto 520
+ 570           continue
+               disv(nlk)=clk*(pp/rpres)
+ 520        continue
+ 600     continue
+      endif
+      
+      end
 

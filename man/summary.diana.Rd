@@ -14,6 +14,5 @@ summary.diana(x, \dots)
 \seealso{
 \code{\link{diana}}, \code{\link{diana.object}}.
 }
-\keyword{libcluster}
 \keyword{cluster}
 % Converted by Sd2Rd version 0.3-2.

@@ -1,3 +1,90 @@
+2001-01-04  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): New version is 1.3-2.
+
+	* man/print*.Rd:  Better \title{.},   hence
+	* INDEX
+	* man/*.Rd:  Remove \keyword{libcluster}; we have {cluster}.
+
+2001-01-03  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): New version is 1.3-1.
+
+2001-01-02  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/*.Rd:  fixes for codoc()
+	
+	* src/spannel.f (spannel): improve readability, indent properly, 
+			add a few comments
+	* src/clara.f:	<ditto>
+	* src/pam.f:	<ditto>
+	* src/twins.f: 	<ditto>
+	
+	* R/*.q : Added  PACKAGE = .. to all .Fortran() calls
+	  =====   Many  codoc() fixes; particularly  summary.*(*, ...)
+	
+        * R/plotpart.q: (clusplot.partition): simplified
+	* R/agnes.q:  T/F -> TRUE/FALSE and more
+	* R/clara.q:	<ditto>
+	* R/diana.q:	<ditto>
+	* R/fanny.q:	<ditto>
+	* R/mona.q:	<ditto>
+	* R/pam.q: 	<ditto>
+	
+2000-12-30  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): New version is 1.2-5.
+	
+2000-12-14  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+        * src/daisy.f: indented do loops; one if / else.
+
+	* R/daisy.q: __ daisy() __
+	   - "ordratio" |-> "T", was "O" erronously!
+	   - `metric' and `list' argument checking        
+	
+	* man/clusplot.default.Rd: updated and cleaned.
+
+2000-12-02  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/plothier.q:  plot.agnes() & plot.diana() : 
+	main=NULL defaults to two different titles for both plots
+
+2000-11-30  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+        * man/...Rd: 
+	   - \section{NOTE} becomes \note
+	   - fix most T/F to TRUE/FALSE, ..
+
+	* R/plothier.q: 
+	   - cleanup (T/F); indenting
+           - plot.mona(): las = 1 for axis; allow main=
+	   - plot.diana(): `which.plot' and main= and sub=
+	   - plot.agnes(): `which.plot' and main= and sub=
+	   - pltree.twins(): allow main= ; rm"plot = TRUE" (warn)
+	                    --> now depends on R 1.2's plot.hclust()	
+	
+	* R/plotpart.q: clusplot.default() -- now works!
+	   - *much* clean up
+	   - color choice such as to see points
+	   - got rid of NaN warning
+	   - eliminated "polygon(*,density.) warnings by '##no yet'"
+	
+2000-11-29  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/daisy.q: add "dist" class (and fix T/F to TRUE/FALSE etc)
+	* R/daisy.q  and
+	* man/print.dissimilarity.Rd: add summary.dissimilarity()
+	* man/dissimilarity.object.Rd:  cleanup, use \value{.}, doc. "dist"
+	* man/daisy.Rd: cleanup, use \value{.}
+	* man/agnes.Rd: cleanup.
+	* man/*.object.Rd: cleanup, use \value{.}
+
+2000-12-24  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* DESCRIPTION (Version): New version is 1.2-4.
+	(Maintainer): New entry.
+
 Thu Feb 17 22:56:58 2000  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
 
 	* DESCRIPTION (Version): New version is 1.2-3.

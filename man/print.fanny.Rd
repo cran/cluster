@@ -3,7 +3,7 @@
 \name{print.fanny}
 \alias{print.fanny}
 \title{
-Use `print()' on a `fanny' object
+Print Method for FANNY Objects
 }
 \description{
 Prints the objective function, membership coefficients and clustering vector
@@ -20,7 +20,6 @@ the general behavior of this function.
 \seealso{
 \code{\link{fanny}}, \code{\link{fanny.object}}, \code{\link{print}}, \code{\link{print.default}}.
 }
-\keyword{libcluster}
 \keyword{cluster}
 \keyword{print}
 % Converted by Sd2Rd version 0.3-2.

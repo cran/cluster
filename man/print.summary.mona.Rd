@@ -3,7 +3,7 @@
 \name{print.summary.mona}
 \alias{print.summary.mona}
 \title{
-Use `print()' on a `summary.mona' object
+Print Method for SUMMARY.MONA Objects
 }
 \description{
 Prints all components of a \code{mona} object.
@@ -19,7 +19,6 @@ the general behavior of this function.
 \seealso{
 \code{\link{mona}}, \code{\link{mona.object}}, \code{\link{print}}, \code{\link{print.default}}.
 }
-\keyword{libcluster}
 \keyword{cluster}
 \keyword{print}
 % Converted by Sd2Rd version 0.3-2.

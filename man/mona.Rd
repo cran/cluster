@@ -101,6 +101,5 @@ ma
 ## Plot similar to Figure 10 in Struyf et al (1996)
 plot(ma)
 }
-\keyword{libcluster}
 \keyword{cluster}
 % Converted by Sd2Rd version 0.3-2.

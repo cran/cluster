@@ -3,7 +3,7 @@
 \name{print.clara}
 \alias{print.clara}
 \title{
-Use `print()' on a `clara' object
+Print Method for CLARA Objects
 }
 \description{
 Prints the best sample, medoids, clustering vector and objective function
@@ -20,7 +20,6 @@ the general behavior of this function.
 \seealso{
 \code{\link{clara}}, \code{\link{clara.object}}, \code{\link{print}}, \code{\link{print.default}}.
 }
-\keyword{libcluster}
 \keyword{cluster}
 \keyword{print}
 % Converted by Sd2Rd version 0.3-2.

@@ -3,7 +3,7 @@
 \name{print.summary.clara}
 \alias{print.summary.clara}
 \title{
-Use `print()' on a `summary.clara' object
+Print Method for SUMMARY.CLARA Objects
 }
 \description{
 Prints all components of a \code{clara} object.
@@ -19,7 +19,6 @@ the general behavior of this function.
 \seealso{
 \code{\link{clara}}, \code{\link{clara.object}}, \code{\link{print}}, \code{\link{print.default}}.
 }
-\keyword{libcluster}
 \keyword{cluster}
 \keyword{print}
 % Converted by Sd2Rd version 0.3-2.

@@ -1,666 +1,723 @@
-      SUBROUTINE CLARA(NN,JPP,KK,X,NRAN,NSAM,DYS,MDATA,VALMD,JTMD,NDYST,
-     F NREPR,NSEL,NBEST,NR,NRX,RADUS,TTD,RATT,TTBES,RDBES,RABES,
-     F MTT,AZBA,AVSYL,TTSYL,SYLINF,JSTOP,
-     F TMP1,TMP2,TMP3,NTMP1,NTMP2,NTMP3,NTMP4,NTMP5,NTMP6)
-CC    CLUSTERING LARGE APPLICATIONS
-CC
-CC    CLUSTERING PROGRAM BASED UPON THE K-MEDOID APPROACH,
-CC    AND SUITABLE FOR DATA SETS OF AT LEAST 100 OBJECTS.
-CC    (FOR SMALLER DATA SETS, PLEASE USE PROGRAM PAM.)
-CC
-CC   THE FOLLOWING VECTORS AND MATRICES MUST BE DIMENSIONED IN
-CC   THE MAIN PROGRAM:
-CC        X(NN*JPP)
-CC        JTMD(JPP),VALMD(JPP)
-CC        NREPR(NSAM),NSEL(NSAM),NBEST(NSAM),DYS(1 + NSAM*(NSAM-1)/2)
-CC        NR(KK),NRX(KK),TTD(KK),RADUS(KK),RATT(KK)
-CC        TTBES(KK),RDBES(KK),RABES(KK)
-CC
-CC   WHERE:
-CC        NN = NUMBER OF OBJECTS
-CC        JPP = NUMBER OF VARIABLES
-CC        NSAM = NUMBER OF OBJECTS DRAWN FROM DATA SET
-CC        KK = NUMBER OF CLUSTERS
-CC
+c     Clustering LARge Applications
+c     ~          ~~~   ~
+c     Clustering program based upon the k-medoid approach,
+c     and suitable for data sets of at least 100 objects.
+c     (for smaller data sets, please use program pam.)
+c     
+      subroutine clara(nn,jpp,kk,x,nran,nsam,dys,mdata,valmd,jtmd,ndyst,
+     f     nrepr,nsel,nbest,nr,nrx,radus,ttd,ratt,ttbes,rdbes,rabes,
+     f     mtt,azba,avsyl,ttsyl,sylinf,jstop,
+     f     tmp1,tmp2,tmp3,ntmp1,ntmp2,ntmp3,ntmp4,ntmp5,ntmp6)
 
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION X(NN*JPP)
-      DIMENSION JTMD(JPP),VALMD(JPP)
-      DIMENSION NREPR(NSAM),NSEL(NSAM),NBEST(NSAM)
-      DIMENSION DYS(1 + NSAM*(NSAM-1)/2)
-      DIMENSION NR(KK),NRX(KK),TTD(KK),RADUS(KK),RATT(KK)
-      DIMENSION TTBES(KK),RDBES(KK),RABES(KK),MTT(KK)
-      DIMENSION SYLINF(NSAM,4),AVSYL(KK)
-      DIMENSION TMP1(NSAM),TMP2(NSAM),TMP3(NSAM)
-      DIMENSION NTMP1(NSAM),NTMP2(NSAM),NTMP3(NSAM)
-      DIMENSION NTMP4(NSAM),NTMP5(NSAM),NTMP6(NSAM)
-      INTEGER*4 NRUN
+      implicit double precision (a-h,o-z)
+      integer nn, jpp, nsam, nran, kk, mdata, jtmd, ndyst
+c     nn   = number of objects
+c     jpp  = number of variables
+c     kk   = number of clusters
+c     nran = ??
+c     nsam = number of objects drawn from data set
 
-      JSTOP=0
-      RNN=NN
-      NNEQ=0
-      IF(NN.EQ.NSAM) NNEQ=1
-      NHALF=NSAM*(NSAM-1)/2+1
-      NSAMB=2*NSAM
-      NNPP=NN*JPP
+c     The following vectors and matrices must be dimensioned in
+c     the main program:
+c     x(nn*jpp)
+c     jtmd(jpp),valmd(jpp)
+c     nrepr(nsam),nsel(nsam),nbest(nsam),dys(1 + nsam*(nsam-1)/2)
+c     nr(kk),nrx(kk),ttd(kk),radus(kk),ratt(kk)
+c     ttbes(kk),rdbes(kk),rabes(kk)
+c     
+      dimension x(nn*jpp)
+      dimension jtmd(jpp),valmd(jpp)
+      dimension nrepr(nsam),nsel(nsam),nbest(nsam)
+      dimension dys(1 + nsam*(nsam-1)/2)
+      dimension nr(kk),nrx(kk),ttd(kk),radus(kk),ratt(kk)
+      dimension ttbes(kk),rdbes(kk),rabes(kk),mtt(kk)
+      dimension sylinf(nsam,4),avsyl(kk)
+      dimension tmp1(nsam),tmp2(nsam),tmp3(nsam)
+      dimension ntmp1(nsam),ntmp2(nsam),ntmp3(nsam)
+      dimension ntmp4(nsam),ntmp5(nsam),ntmp6(nsam)
+      
+      integer*4 nrun
 
-CC
-CC   IN DO 400, RANDOM SUBSAMPLES ARE DRAWN AND PARTITIONED
-CC   INTO KK CLUSTERS
-CC
-  120 NUNFS=0
-      LESS=NSAM
-      IF(NN.LT.NSAMB)LESS=NN-NSAM
-      KALL=0
-      NRUN=0
-      DO 400 JRAN=1,NRAN
-      JHALT=0
-      IF(NNEQ.EQ.0)GO TO 140
-      IF(NNEQ.EQ.2)GO TO 400
-      NNEQ=2
-      DO 130 J=1,NSAM
-      NSEL(J)=J
-  130 CONTINUE
-      GO TO 320
-  140 NTT=0
-      IF(JRAN.EQ.1.OR.NUNFS.EQ.JRAN.OR.NN.LT.NSAMB)GO TO 180
-      DO 150 JK=1,KK
-      NSEL(JK)=NRX(JK)
-  150 CONTINUE
-      KKM=KK-1
-      DO 170 JK=1,KKM
-      NSM=NSEL(JK)
-      KKP=JK+1
-      JSM=JK
-      DO 160 JKK=KKP,KK
-      IF(NSEL(JKK).GE.NSM)GO TO 160
-      NSM=NSEL(JKK)
-      JSM=JKK
-  160 CONTINUE
-      NSEL(JSM)=NSEL(JK)
-      NSEL(JK)=NSM
-  170 CONTINUE
-      NTT=KK
-      GO TO 210
-  180 CALL RANDM(NRUN,RAN)
-      KRAN=RNN*RAN+1.
-      IF(KRAN.GT.NN)KRAN=NN
-      IF(JRAN.EQ.1)GO TO 200
-      DO 190 JK=1,KK
-      IF(KRAN.EQ.NRX(JK))GO TO 180
-  190 CONTINUE
-  200 NTT=NTT+1
-      NSEL(NTT)=KRAN
-      IF (LESS.EQ.NTT)GO TO 290
-  210 CALL RANDM(NRUN,RAN)
-      KRAN=RNN*RAN+1.
-      IF(KRAN.GT.NN)KRAN=NN
-      IF(JRAN.EQ.1)GO TO 230
-      IF(NN.GE.NSAMB)GO TO 230
-      DO 220 JK=1,KK
-      IF(KRAN.EQ.NRX(JK))GO TO 210
-  220 CONTINUE
-  230 DO 260 KANS=1,NTT
-      IF(NSEL(KANS).LT.KRAN)GO TO 260
-      IF(NSEL(KANS).EQ.KRAN)GO TO 210
-      GO TO 270
-  260 CONTINUE
-      NTT=NTT+1
-      NSEL(NTT)=KRAN
-      GO TO 290
-  270 DO 280 NAD=KANS,NTT
-      NADV=NTT-NAD+KANS
-      NADVP=NADV+1
-      NSEL(NADVP)=NSEL(NADV)
-  280 CONTINUE
-      NTT=NTT+1
-      NSEL(KANS)=KRAN
-  290 IF(NTT.LT.LESS)GO TO 210
-      IF(NN.GE.NSAMB)GO TO 320
-      NEXAP=1
-      NEXBP=1
-      JN=0
-  300 JN=JN+1
-      IF(NSEL(NEXAP).EQ.JN)THEN
-         NEXAP=NEXAP+1
-      ELSE
-         NREPR(NEXBP)=JN
-         NEXBP=NEXBP+1
-      ENDIF
-      IF(JN.LT.NN)GO TO 300
-      DO 310 NSUB=1,NSAM
-      NSEL(NSUB)=NREPR(NSUB)
-  310 CONTINUE
-  320 CALL DYSTA2(NSAM,JPP,NSEL,X,NN,DYS,NDYST,JTMD,VALMD,
-     F JHALT)
-      IF(JHALT.EQ.1)GO TO 400
-      KALL=1
-      S=0.0
-      L=1
-  340 L=L+1
-      IF(DYS(L).GT.S)S=DYS(L)
-      IF(L.LT.NHALF)GO TO 340
-      CALL BSWAP2(KK,NSAM,NREPR,DYS,Z,S,TMP1,TMP2,TMP3)
-      CALL SELEC(KK,NN,JPP,NDYST,ZB,NSAM,MDATA,
-     F JTMD,VALMD,NREPR,NSEL,DYS,X,NR,NAFS,TTD,RADUS,RATT,
-     F NTMP1,NTMP2,NTMP3,NTMP4,NTMP5,NTMP6,TMP1,TMP2)
-      NUNFS=NUNFS+NAFS
-      IF(NAFS.EQ.1)GO TO 400
-      IF(JRAN.EQ.1)GO TO 350
-      IF(ZB.GE.ZBA)GO TO 400
-  350 ZBA=ZB
-      DO 345 JJB=1,KK
-      TTBES(JJB)=TTD(JJB)
-      RDBES(JJB)=RADUS(JJB)
-      RABES(JJB)=RATT(JJB)
-  345 CONTINUE
-      DO 360 JK=1,KK
-      NRX(JK)=NR(JK)
-  360 CONTINUE
-      DO 370 JS=1,NSAM
-      NBEST(JS)=NSEL(JS)
-  370 CONTINUE
-      SX=S
-  400 CONTINUE
-      IF(NUNFS.LT.NRAN) GOTO 450
-      JSTOP=1
-      RETURN
-CC
-CC   FOR THE BEST SUBSAMPLE, THE OBJECTS OF THE ENTIRE DATA SET
-CC   ARE ASSIGNED TO THEIR CLUSTERS 
-CC
-  450 IF(KALL.EQ.1)GO TO 460
-      JSTOP=2
-      RETURN
-  460 AZBA=ZBA/RNN
-  470 CALL DYSTA2(NSAM,JPP,NBEST,X,NN,DYS,NDYST,JTMD,VALMD,
-     F JHALT)
-      CALL RESUL(KK,NN,JPP,NDYST,MDATA,JTMD,VALMD,
-     F X,NRX,MTT)
-      IF(KK.LE.1)GO TO 500
-  480 CALL BLACK(KK,JPP,NN,NSAM,NBEST,DYS,SX,X,AVSYL,TTSYL,SYLINF,
-     F NTMP1,NTMP2,NTMP3,NTMP4,TMP1,TMP2)
-  500 END
-CC
-CC
-CC
-CC
-      SUBROUTINE DYSTA2(NSAM,JPP,NSEL,X,NN,DYS,NDYST,JTMD,
-     F VALMD,JHALT)
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION X(NN*JPP),DYS(1+NSAM*(NSAM-1)/2)
-      DIMENSION NSEL(NSAM),JTMD(JPP),VALMD(JPP)
-      PP=JPP
-      NLK=1
-      DYS(1)=0.0
-      DO 100 L=2,NSAM
-      LSUBT=L-1
-      LSEL=NSEL(L)
-      DO 20 K=1,LSUBT
-      KSEL=NSEL(K)
-      CLK=0.0
-      NLK=NLK+1
-      NPRES=0
-      DO 30 J=1,JPP
-      NUMLJ=(LSEL-1)*JPP+J
-      NUMKJ=(KSEL-1)*JPP+J
-      IF(JTMD(J).GE.0)GO TO 40
-      IF(X(NUMLJ).EQ.VALMD(J))GO TO 30
-      IF(X(NUMKJ).EQ.VALMD(J))GO TO 30
-   40 NPRES=NPRES+1
-      IF(NDYST.NE.1)GO TO 50
-      CLK=CLK+(X(NUMLJ)-X(NUMKJ))*(X(NUMLJ)-X(NUMKJ))
-      GO TO 30
-   50 CLK=CLK+DABS(X(NUMLJ)-X(NUMKJ))
-   30 CONTINUE
-      RPRES=NPRES
-      IF(NPRES.NE.0)GO TO 60
-      JHALT=1
-      DYS(NLK)=-1.0
-      GO TO 20
-   60 IF(NDYST.NE.1)GO TO 70
-      DYS(NLK)=DSQRT(CLK*(PP/RPRES))
-      GO TO 20
-   70 DYS(NLK)=CLK*(PP/RPRES)
-   20 CONTINUE
-  100 CONTINUE
-      END
-CC
-CC
-      SUBROUTINE RANDM(NRUN,RAN)
-CC   WE PROGRAMMED THIS GENERATOR OURSELVES BECAUSE WE WANTED IT
-CC   TO BE MACHINE INDEPENDENT. IT SHOULD RUN ON MOST COMPUTERS
-CC   BECAUSE THE LARGEST INTEGER USED IS LESS THAN 2**30 . THE PERIOD
-CC   IS 2**16=65536, WHICH IS GOOD ENOUGH FOR OUR PURPOSES.
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      INTEGER*4 NRUN,K
-      NRUN=NRUN*5761+999
-      K=NRUN/65536
-      NRUN=NRUN-K*65536
-      RY=NRUN
-      RAN=RY/65536.0
-      RETURN
-      END
-CC
-CC
-      SUBROUTINE BSWAP2(KK,NSAM,NREPR,DYS,SKY,S,DYSMA,DYSMB,BETER)
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION DYSMA(NSAM),DYSMB(NSAM),BETER(NSAM),NREPR(NSAM)
-      DIMENSION DYS(1+NSAM*(NSAM-1)/2)
-CC
-CC   FIRST ALGORITHM: BUILD.
-CC
-      NNY=0
-      DO 17 J=1,NSAM
-      NREPR(J)=0
-      DYSMA(J)=1.1*S+1.0
-   17 CONTINUE
-   20 DO 22 JA=1,NSAM
-      IF(NREPR(JA).NE.0)GO TO 22
-      BETER(JA)=0.
-      DO 21 J=1,NSAM
-      NJAJ=MEET(JA,J)
-      CMD=DYSMA(J)-DYS(NJAJ)
-      IF(CMD.GT.0.0)BETER(JA)=BETER(JA)+CMD
-   21 CONTINUE
-   22 CONTINUE
-      AMMAX=0.
-      DO 31 JA=1,NSAM
-      IF(NREPR(JA).NE.0)GO TO 31
-      IF(BETER(JA).LT.AMMAX)GO TO 31
-      AMMAX=BETER(JA)
-      NMAX=JA
-   31 CONTINUE
-      NREPR(NMAX)=1
-      NNY=NNY+1
-      DO 41 J=1,NSAM
-      NJN=MEET(NMAX,J)
-      IF(DYS(NJN).LT.DYSMA(J))DYSMA(J)=DYS(NJN)
-   41 CONTINUE
-      IF(NNY.NE.KK)GO TO 20
-      SKY=0.
-      DO 51 J=1,NSAM
-      SKY=SKY+DYSMA(J)
-   51 CONTINUE
-      IF(KK.EQ.1)RETURN
-      RSAM=NSAM
-      ASKY=SKY/RSAM
-CC
-CC   SECOND ALGORITHM: SWAP.
-CC
-   60 DO 63 J=1,NSAM
-      DYSMA(J)=1.1*S+1.0
-      DYSMB(J)=1.1*S+1.0
-      DO 62 JA=1,NSAM
-      IF(NREPR(JA).EQ.0)GO TO 62
-      NJAJ=MEET(JA,J)
-      IF(DYS(NJAJ).GE.DYSMA(J))GO TO 61
-      DYSMB(J)=DYSMA(J)
-      DYSMA(J)=DYS(NJAJ)
-      GO TO 62
-   61 IF(DYS(NJAJ).GE.DYSMB(J))GO TO 62
-      DYSMB(J)=DYS(NJAJ)
-   62 CONTINUE
-   63 CONTINUE
-      DZSKY=1.0
-      DO 73 K=1,NSAM
-      IF(NREPR(K).EQ.1)GO TO 73
-      DO 72 JA=1,NSAM
-      IF(NREPR(JA).EQ.0)GO TO 72
-      DZ=0.
-      DO 71 J=1,NSAM
-      NJAJ=MEET(JA,J)
-      NKJ=MEET(K,J)
-      IF(DYS(NJAJ).NE.DYSMA(J))GO TO 70
-      SMALL=DYSMB(J)
-      IF(DYS(NJAJ).LT.SMALL)SMALL=DYS(NKJ)
-      DZ=DZ-DYSMA(J)+SMALL
-      GO TO 71
-   70 IF(DYS(NKJ).LT.DYSMA(J))DZ=DZ-DYSMA(J)+DYS(NKJ)
-   71 CONTINUE
-      IF(DZ.GE.DZSKY)GO TO 72
-      DZSKY=DZ
-      KBEST=K
-      NBEST=JA
-   72 CONTINUE
-   73 CONTINUE
-      IF(DZSKY.GE.0.0)RETURN
-      NREPR(KBEST)=1
-      NREPR(NBEST)=0
-      SKY=SKY+DZSKY
-      GO TO 60
-      END
-CC
-CC
-      SUBROUTINE SELEC(KK,NN,JPP,NDYST,ZB,NSAM,MDATA,
-     F JTMD,VALMD,NREPR,NSEL,DYS,X,NR,NAFS,TTD,RADUS,RATT,
-     F NRNEW,NSNEW,NPNEW,NS,NP,NEW,TTNEW,RDNEW)
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION NREPR(NSAM),NSEL(NSAM),DYS(1+NSAM*(NSAM-1)/2)
-      DIMENSION NRNEW(NSAM),NSNEW(NSAM),NPNEW(NSAM),TTNEW(NSAM)
-      DIMENSION RDNEW(NSAM)
-      DIMENSION NS(NSAM),NR(KK),NP(NSAM),TTD(KK),RADUS(KK),RATT(KK)
-      DIMENSION JTMD(JPP),VALMD(JPP),X(NN*JPP),NEW(NSAM)
-CC
-CC   NAFS = 1 IF A DISTANCE CANNOT BE CALCULATED
-CC
-      NAFS=0
-CC
-CC   IDENTIFICATION OF REPRESENTATIVE OBJECTS, AND INITIALIZATIONS
-CC
-      JK=0
-      DO 10 J=1,NSAM
-      IF(NREPR(J).EQ.0)GO TO 10
-      JK=JK+1
-      NR(JK)=NSEL(J)
-      NS(JK)=0
-      TTD(JK)=0.
-      RADUS(JK)=-1.
-      NP(JK)=J
-   10 CONTINUE
-CC
-CC   ASSIGNMENT OF THE OBJECTS OF THE ENTIRE DATA SET TO A CLUSTER,
-CC   COMPUTATION OF SOME STATISTICS, DETERMINATION OF THE
-CC   NEW ORDERING OF THE CLUSTERS
-CC
-      ZB=0.
-      PP=JPP
-      NEWF=0
-      JN=0
-   15 JN=JN+1
-      IF(MDATA.NE.0)GO TO 40
-      DO 30 JK=1,KK
-      DSUM=0.
-      NRJK=NR(JK)
-      IF (NRJK.EQ.JN) GOTO 25
-      DO 20 JP=1,JPP
-      NA=(NRJK-1)*JPP+JP
-      NB=(JN-1)*JPP+JP
-      TRA=DABS(X(NA)-X(NB))
-      IF(NDYST.EQ.1)TRA=TRA*TRA
-      DSUM=DSUM+TRA
-   20 CONTINUE
-      IF(JK.EQ.1)GO TO 25
-      IF(DSUM.GE.DNULL)GO TO 30
-   25 DNULL=DSUM
-      JKABC=JK
-   30 CONTINUE
-      GO TO 80
-   40 PRES=0.
-      DO 70 JK=1,KK
-      DSUM=0.
-      NRJK=NR(JK)
-      IF (NRJK.EQ.JN) GOTO 64
-      ABC=0.
-      DO 50 JP=1,JPP
-      NA=(NRJK-1)*JPP+JP
-      NB=(JN-1)*JPP+JP
-      IF(JTMD(JP).GE.0)GO TO 45
-      IF(X(NA).EQ.VALMD(JP))GO TO 50
-      IF(X(NB).EQ.VALMD(JP))GO TO 50
-   45 ABC=ABC+1.
-      TRA=DABS(X(NA)-X(NB))
-      IF(NDYST.EQ.1)TRA=TRA*TRA
-      DSUM=DSUM+TRA
-   50 CONTINUE
-      IF(ABC.LT.0.5)GO TO 70
-      DSUM=DSUM*ABC/PP
-      IF(PRES.GT.0.5)GO TO 60
-      PRES=1.
-      GO TO 65
-   60 IF(DSUM.GE.DNULL)GO TO 70
-   64 IF(PRES.GT.0.5)GO TO 65
-      PRES=1.
-   65 DNULL=DSUM
-      JKABC=JK
-   70 CONTINUE
-      IF(PRES.GT.0.5)GO TO 80
-      NAFS=1
-      RETURN
-   80 IF(NDYST.EQ.1)DNULL=DSQRT(DNULL)
-      ZB=ZB+DNULL
-      TTD(JKABC)=TTD(JKABC)+DNULL
-      IF(DNULL.GT.RADUS(JKABC))RADUS(JKABC)=DNULL
-      NS(JKABC)=NS(JKABC)+1
-      IF(NEWF.GE.KK)GO TO 90
-      IF(NEWF.EQ.0)GO TO 84
-      DO 82 JNEW=1,NEWF
-      IF(JKABC.EQ.NEW(JNEW))GO TO 90
-   82 CONTINUE
-   84 NEWF=NEWF+1
-      NEW(NEWF)=JKABC
-   90 IF(JN.LT.NN)GO TO 15
-CC
-CC   A PERMUTATION IS CARRIED OUT ON VECTORS NR,NS,NP,TTD,RADUS
-CC   USING THE INFORMATION IN VECTOR NEW.
-CC
-      DO 92 JK=1,KK
-      NJK=NEW(JK)
-      NRNEW(JK)=NR(NJK)
-      NSNEW(JK)=NS(NJK)
-      NPNEW(JK)=NP(NJK)
-      TTNEW(JK)=TTD(NJK)
-      RDNEW(JK)=RADUS(NJK)
-   92 CONTINUE
-      DO 94 JK=1,KK
-      NR(JK)=NRNEW(JK)
-      NS(JK)=NSNEW(JK)
-      NP(JK)=NPNEW(JK)
-      TTD(JK)=TTNEW(JK)
-      RADUS(JK)=RDNEW(JK)
-   94 CONTINUE
+      jstop=0
+      rnn=nn
+      nneq=0
+      if(nn.eq.nsam) nneq=1
+      nhalf= nsam*(nsam-1)/2 + 1
+      nsamb=2*nsam
+      nnpp=nn*jpp
 
-      DO 101 J=1,KK
-      RNS=NS(J)
-      TTD(J)=TTD(J)/RNS
-  101 CONTINUE
-      IF(KK.EQ.1)GO TO 150
-CC
-CC   COMPUTATION OF MINIMAL DISTANCE OF MEDOID KA TO ANY
-CC   OTHER MEDOID FOR COMPARISON WITH THE RADIUS OF CLUSTER KA.
-CC
-      DO 120 KA=1,KK
-      NSTRT=0
-      NPA=NP(KA)
-      DO 110 KB=1,KK
-      IF(KB.EQ.KA)GO TO 110
-      NPB=NP(KB)
-      NPAB=MEET(NPA,NPB)
-      IF(NSTRT.EQ.0)THEN
-         NSTRT=1
-      ELSE
-         IF(DYS(NPAB).GE.RATT(KA))GO TO 110
-      ENDIF
-  104 RATT(KA)=DYS(NPAB)
-      IF(RATT(KA).NE.0.)GO TO 110
-      RATT(KA)=-1.
-  110 CONTINUE
-      IF(RATT(KA).GT.(-0.5))RATT(KA)=RADUS(KA)/RATT(KA)
-  120 CONTINUE
-  150 END
-CC
-CC
-      SUBROUTINE RESUL(KK,NN,JPP,NDYST,MDATA,JTMD,
-     F VALMD,X,NRX,MTT)
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION X(NN*JPP),NRX(KK),JTMD(JPP),VALMD(JPP),MTT(KK)
-      PP=JPP
-CC
-CC   CLUSTERING VECTOR IS INCORPORATED INTO X, AND PRINTED.
-CC
-      JN=0
-  100 JN=JN+1
-      NJNB=(JN-1)*JPP
-      DO 145 JK=1,KK
-      IF(NRX(JK).EQ.JN)GO TO 220
-  145 CONTINUE
-      JNA=(JN-1)*JPP+1
-      IF(MDATA.NE.0)GO TO 170
-      DO 160 JK=1,KK
-      DSUM=0.
-      NRJK=(NRX(JK)-1)*JPP
-      DO 150 J=1,JPP
-      NA=NRJK+J
-      NB=NJNB+J
-      TRA=DABS(X(NA)-X(NB))
-      IF(NDYST.EQ.1)TRA=TRA*TRA
-      DSUM=DSUM+TRA
-  150 CONTINUE
-      IF(NDYST.EQ.1)DSUM=DSQRT(DSUM)
-      IF(JK.EQ.1)DNULL=DSUM+0.1
-      IF(DSUM.GE.DNULL)GO TO 160
-      DNULL=DSUM
-      JKSKY=JK
-  160 CONTINUE
-      GO TO 200
-  170 DO 190 JK=1,KK
-      DSUM=0.
-      NRJK=(NRX(JK)-1)*JPP
-      ABC=0.
-      DO 180 J=1,JPP
-      NA=NRJK+J
-      NB=NJNB+J
-      IF(JTMD(J).GE.0)GO TO 185
-      IF(X(NA).EQ.VALMD(J))GO TO 180
-      IF(X(NB).EQ.VALMD(J))GO TO 180
-  185 ABC=ABC+1.
-      TRA=DABS(X(NA)-X(NB))
-      IF(NDYST.EQ.1)TRA=TRA*TRA
-      DSUM=DSUM+TRA
-  180 CONTINUE
-      IF(NDYST.EQ.1)DSUM=DSQRT(DSUM)
-      DSUM=DSUM*ABC/PP
-      IF(JK.EQ.1)DNULL=DSUM+0.1
-      IF(DSUM.GE.DNULL)GO TO 190
-      DNULL=DSUM
-      JKSKY=JK
-  190 CONTINUE
-  200 X(JNA)=JKSKY
-  220 IF(JN.LT.NN)GO TO 100
-      DO 230 JK=1,KK
-      NRJK=NRX(JK)
-      NRJKA=(NRJK-1)*JPP+1
-      X(NRJKA)=JK
-  230 CONTINUE
+c     
+c     in do 400, random subsamples are drawn and partitioned
+c     into kk clusters
+c     
+ 120  nunfs=0
+      less=nsam
+      if(nn.lt.nsamb)less=nn-nsam
+      kall=0
+      nrun=0
+      do 400 jran=1,nran
+         jhalt=0
+         if(nneq.eq.0)go to 140
+         if(nneq.eq.2)go to 400
+c     else nneq == 1 when above nn == nsam :
+         nneq=2
+         do 130 j=1,nsam
+            nsel(j)=j
+ 130     continue
+         go to 320
 
-  300 DO 320 KA=1,KK
-      MTT(KA)=0
-      J=0
-  325 J=J+1
-      JA=(J-1)*JPP+1
-      NXJA=IDINT(X(JA)+0.1)
-      IF(NXJA.EQ.KA)MTT(KA)=MTT(KA)+1
-      IF(J.LT.NN)GO TO 325
-  320 CONTINUE
-  330 END
-CC
-CC
-      SUBROUTINE BLACK(KK,JPP,NN,NSAM,NBEST,DYS,SX,X,AVSYL,TTSYL,SYLINF,
-     F NCLUV,NSEND,NELEM,NEGBR,SYL,SRANK)
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION NCLUV(NSAM),NSEND(NSAM),NELEM(NSAM),NEGBR(NSAM)
-      DIMENSION SYL(NSAM),SRANK(NSAM),AVSYL(KK),NBEST(NSAM)
-      DIMENSION X(NN*JPP),DYS(1+NSAM*(NSAM-1)/2),SYLINF(NSAM,4)
-CC
-CC   CONSTRUCTION OF CLUSTERING VECTOR (NCLUV)
-CC   OF SELECTED SAMPLE (NBEST).
-CC
-      DO 12 L=1,NSAM
-      NCASE=NBEST(L)
-      JNA=(NCASE-1)*JPP+1
-      NCLUV(L)=IDINT(X(JNA)+0.1)
-   12 CONTINUE
-CC
-CC   DRAWING OF THE SILHOUETTES
-CC
-      NSYLR=0
-      TTSYL=0.0
-      DO 100 NUMCL=1,KK
-      NTT=0
-      DO 30 J=1,NSAM
-      IF(NCLUV(J).NE.NUMCL)GO TO 30
-      NTT=NTT+1
-      NELEM(NTT)=J
-   30 CONTINUE
-      DO 40 J=1,NTT
-      NJ=NELEM(J)
-      DYSB=1.1*SX+1.0
-      NEGBR(J)=-1
-      DO 41 NCLU=1,KK
-      IF(NCLU.EQ.NUMCL)GO TO 41
-      NBB=0
-      DB=0.0
-      DO 43 L=1,NSAM
-      IF(NCLUV(L).NE.NCLU)GO TO 43
-      NBB=NBB+1
-      MJL=MEET(NJ,L)
-      DB=DB+DYS(MJL)
-   43 CONTINUE
-      BTT=NBB
-      DB=DB/BTT
-      IF(DB.GE.DYSB)GO TO 41
-      DYSB=DB
-      NEGBR(J)=NCLU
-   41 CONTINUE
-      IF(NTT.EQ.1)GO TO 50
-      DYSA=0.0
-      DO 45 L=1,NTT
-      NL=NELEM(L)
-      NJL=MEET(NJ,NL)
-      DYSA=DYSA+DYS(NJL)
-   45 CONTINUE
-      ATT=NTT-1
-      DYSA=DYSA/ATT
-      IF(DYSA.GT.0.0)GO TO 51
-      IF(DYSB.GT.0.0)GO TO 52
-   50 SYL(J)=0.0
-      GO TO 40
-   52 SYL(J)=1.0
-      GO TO 40
-   51 IF(DYSB.LE.0.0)GO TO 53
-      IF(DYSB.GT.DYSA)SYL(J)=1.0-DYSA/DYSB
-      IF(DYSB.LT.DYSA)SYL(J)=DYSB/DYSA-1.0
-      IF(DYSB.EQ.DYSA)SYL(J)=0.0
-      GO TO 54
-   53 SYL(J)=-1.0
-   54 IF(SYL(J).LE.(-1.0))SYL(J)=-1.0
-      IF(SYL(J).GE.1.0)SYL(J)=1.0
-   40 CONTINUE
-      AVSYL(NUMCL)=0.0
-      DO 60 J=1,NTT
-      SYMAX=-2.0
-      DO 70 L=1,NTT
-      IF(SYL(L).LE.SYMAX)GO TO 70
-      SYMAX=SYL(L)
-      LANG=L
-   70 CONTINUE
-      NSEND(J)=LANG
-      SRANK(J)=SYL(LANG)
-      AVSYL(NUMCL)=AVSYL(NUMCL)+SRANK(J)
-      SYL(LANG)=-3.0
-   60 CONTINUE
-      TTSYL=TTSYL+AVSYL(NUMCL)
-      RTT=NTT
-      AVSYL(NUMCL)=AVSYL(NUMCL)/RTT
+c     nneq = 0 :
+ 140     ntt=0
+         if(jran.ne.1 .and. nunfs.ne.jran .and. nn.ge.nsamb) then
+            do 150 jk=1,kk
+               nsel(jk)=nrx(jk)
+ 150        continue
+            kkm=kk-1
+            do 170 jk=1,kkm
+               nsm=nsel(jk)
+               kkp=jk+1
+               jsm=jk
+               do 160 jkk=kkp,kk
+                  if(nsel(jkk).ge.nsm)go to 160
+                  nsm=nsel(jkk)
+                  jsm=jkk
+ 160           continue
+               nsel(jsm)=nsel(jk)
+               nsel(jk)=nsm
+ 170        continue
+            ntt=kk
 
-      IF(NTT.GE.2)GOTO 75
-      NCASE=NELEM(1)
-      NSYLR=NSYLR+1
-      SYLINF(NSYLR,1)=NUMCL
-      SYLINF(NSYLR,2)=NEGBR(1)
-      SYLINF(NSYLR,3)=0.0
-      SYLINF(NSYLR,4)=NBEST(NCASE)
-      GOTO 100
-   75 DO 80 L=1,NTT
-      LPLAC=NSEND(L)
-      NCASE=NELEM(LPLAC)
-      NSYLR=NSYLR+1
-      SYLINF(NSYLR,1)=NUMCL
-      SYLINF(NSYLR,2)=NEGBR(LPLAC)
-      SYLINF(NSYLR,3)=SRANK(L)
-      SYLINF(NSYLR,4)=NBEST(NCASE)
-   80 CONTINUE
-  100 CONTINUE
-      RSAM=NSAM
-      TTSYL=TTSYL/RSAM
-      END
+         else
+
+ 180        call randm(nrun,ran)
+            kran=rnn*ran+1.
+            if(kran.gt.nn)kran=nn
+            if(jran.ne.1) then
+               do 190 jk=1,kk
+                  if(kran.eq.nrx(jk))go to 180
+ 190           continue
+            endif
+ 200        ntt=ntt+1
+            nsel(ntt)=kran
+            if (less.eq.ntt)go to 290
+         endif
+C     Loop
+ 210     call randm(nrun,ran)
+         kran=rnn*ran+1.
+         if(kran.gt.nn)kran=nn
+         if(jran.eq.1)go to 230
+         if(nn.ge.nsamb)go to 230
+         do 220 jk=1,kk
+            if(kran.eq.nrx(jk))go to 210
+ 220     continue
+ 230     do 260 kans=1,ntt
+            if(nsel(kans).lt.kran)go to 260
+            if(nsel(kans).eq.kran)go to 210
+            go to 270
+ 260     continue
+
+         ntt=ntt+1
+         nsel(ntt)=kran
+         go to 290
+
+ 270     do 280 nad=kans,ntt
+            nadv=ntt-nad+kans
+            nadvp=nadv+1
+            nsel(nadvp)=nsel(nadv)
+ 280     continue
+         ntt=ntt+1
+         nsel(kans)=kran
+
+ 290     if(ntt.lt.less)go to 210
+         if(nn.ge.nsamb)go to 320
+         nexap=1
+         nexbp=1
+c     do 305  jn=1, nn
+         jn=0
+ 300     jn=jn+1
+         if(nsel(nexap).eq.jn)then
+            nexap=nexap+1
+         else
+            nrepr(nexbp)=jn
+            nexbp=nexbp+1
+         endif
+         if(jn.lt.nn)go to 300
+c     305  continue
+
+         do 310 nsub=1,nsam
+            nsel(nsub)=nrepr(nsub)
+ 310     continue
+
+ 320     call dysta2(nsam,jpp,nsel,x,nn,dys,ndyst,jtmd,valmd, jhalt)
+         if(jhalt.eq.1)go to 400
+         kall=1
+         s=0.0
+
+         l=1
+ 340     l=l+1
+         if(dys(l).gt.s)s=dys(l)
+         if(l.lt.nhalf)go to 340
+
+         call bswap2(kk,nsam,nrepr,dys,z,s,tmp1,tmp2,tmp3)
+         call selec(kk,nn,jpp,ndyst,zb,nsam,mdata,
+     f        jtmd,valmd,nrepr,nsel,dys,x,nr,nafs,ttd,radus,ratt,
+     f        ntmp1,ntmp2,ntmp3,ntmp4,ntmp5,ntmp6,tmp1,tmp2)
+         nunfs=nunfs+nafs
+         if(nafs.eq.1)go to 400
+         if(jran.ne.1) then
+            if(zb.ge.zba) go to 400
+         endif
+         zba=zb
+         do 345 jjb=1,kk
+            ttbes(jjb)=ttd(jjb)
+            rdbes(jjb)=radus(jjb)
+            rabes(jjb)=ratt(jjb)
+ 345     continue
+         do 360 jk=1,kk
+            nrx(jk)=nr(jk)
+ 360     continue
+         do 370 js=1,nsam
+            nbest(js)=nsel(js)
+ 370     continue
+         sx=s
+ 400  continue
+
+      if(nunfs.ge.nran) then
+         jstop=1
+         return
+      endif
+c     
+c     for the best subsample, the objects of the entire data set
+c     are assigned to their clusters 
+c     
+ 450  if(kall.ne.1) then
+         jstop=2
+         return
+      endif
+ 460  azba=zba/rnn
+ 470  call dysta2(nsam,jpp,nbest,x,nn,dys,ndyst,jtmd,valmd, jhalt)
+      call resul(kk,nn,jpp,ndyst,mdata,jtmd,valmd, x,nrx,mtt)
+      if(kk.gt.1) then
+ 480     call black(kk,jpp,nn,nsam,nbest,dys,sx,x,avsyl,ttsyl,sylinf,
+     +        ntmp1,ntmp2,ntmp3,ntmp4,tmp1,tmp2)
+      endif
+ 500  end
+c     -----------------------------------------------------------
+c     
+c     
+      subroutine dysta2(nsam,jpp,nsel,x,nn,dys,ndyst,jtmd, valmd,jhalt)
+
+      implicit none
+
+      integer nsam,jpp, nn, nsel(nsam), ndyst, jtmd(jpp), jhalt
+      double precision x(nn*jpp), dys(1+nsam*(nsam-1)/2), valmd(jpp) 
+c
+      double precision pp, rpres, clk
+      integer j,k,l, nlk, lsubt,lsel, ksel,numlj,numkj, npres
+c
+      pp=jpp
+      nlk=1
+      dys(1)=0.0
+      do 100 l=2,nsam
+         lsubt=l-1
+         lsel=nsel(l)
+         do 20 k=1,lsubt
+            ksel=nsel(k)
+            clk=0.0
+            nlk=nlk+1
+            npres=0
+            do 30 j=1,jpp
+               numlj=(lsel-1)*jpp+j
+               numkj=(ksel-1)*jpp+j
+               if(jtmd(j).lt.0) then
+                  if(x(numlj).eq.valmd(j))go to 30
+                  if(x(numkj).eq.valmd(j))go to 30
+               endif
+ 40            npres=npres+1
+               if(ndyst.eq.1)then
+                  clk=clk+(x(numlj)-x(numkj))*(x(numlj)-x(numkj))
+               else
+                  clk=clk+dabs(x(numlj)-x(numkj))
+               endif
+ 30         continue
+            rpres=npres
+            if(npres.ne.0)go to 60
+            jhalt=1
+            dys(nlk)=-1.0
+            go to 20
+ 60         if(ndyst.ne.1)go to 70
+            dys(nlk)=dsqrt(clk*(pp/rpres))
+            go to 20
+ 70         dys(nlk)=clk*(pp/rpres)
+ 20      continue
+ 100  continue
+      end
+c     -----------------------------------------------------------
+c
+      subroutine randm(nrun,ran)
+c   we programmed this generator ourselves because we wanted it
+c   to be machine independent. it should run on most computers
+c   because the largest integer used is less than 2**30 . the period
+c   is 2**16=65536, which is good enough for our purposes.
+      implicit double precision (a-h,o-z)
+      integer*4 nrun,k
+
+      nrun=nrun*5761+999
+      k=nrun/65536
+      nrun=nrun-k*65536
+      ry=nrun
+      ran=ry/65536.0
+      return
+      end
+c     -----------------------------------------------------------
+c     
+      subroutine bswap2(kk,nsam,nrepr,dys,sky,s,dysma,dysmb,beter)
+
+      implicit double precision (a-h,o-z)
+      dimension dysma(nsam),dysmb(nsam),beter(nsam),nrepr(nsam)
+      dimension dys(1+nsam*(nsam-1)/2)
+c     
+c     first algorithm: build.
+c     
+      nny=0
+      do 17 j=1,nsam
+         nrepr(j)=0
+         dysma(j)=1.1*s+1.0
+ 17   continue
+
+c-- LOOP ---------------------
+ 20   do 22 ja=1,nsam
+         if(nrepr(ja).ne.0)go to 22
+         
+         beter(ja)=0.
+         do 21 j=1,nsam
+            njaj=meet(ja,j)
+            cmd=dysma(j)-dys(njaj)
+            if(cmd.gt.0.0)beter(ja)=beter(ja)+cmd
+ 21      continue
+ 22   continue
+
+      ammax=0.
+      do 31 ja=1,nsam
+         if(nrepr(ja).ne.0)go to 31
+         if(beter(ja).lt.ammax)go to 31
+         ammax=beter(ja)
+         nmax=ja
+ 31   continue
+      nrepr(nmax)=1
+      nny=nny+1
+      do 41 j=1,nsam
+         njn=meet(nmax,j)
+         if(dys(njn).lt.dysma(j))dysma(j)=dys(njn)
+ 41   continue
+      if(nny.ne.kk)go to 20
+C--
+      sky=0.
+      do 51 j=1,nsam
+         sky=sky+dysma(j)
+ 51   continue
+      if(kk.eq.1)return
+      rsam=nsam
+      asky=sky/rsam
+
+c     
+c     second algorithm: swap.
+c     
+C-- LOOP
+ 60   do 63 j=1,nsam
+         dysma(j)=1.1*s+1.0
+         dysmb(j)=1.1*s+1.0
+         do 62 ja=1,nsam
+            if(nrepr(ja).eq.0)go to 62
+            njaj=meet(ja,j)
+            if(dys(njaj).ge.dysma(j))go to 61
+            dysmb(j)=dysma(j)
+            dysma(j)=dys(njaj)
+            go to 62
+ 61         if(dys(njaj).ge.dysmb(j))go to 62
+            dysmb(j)=dys(njaj)
+ 62      continue
+ 63   continue
+      dzsky=1.0
+      do 73 k=1,nsam
+         if(nrepr(k).eq.1)go to 73
+         do 72 ja=1,nsam
+            if(nrepr(ja).eq.0)go to 72
+            dz=0.
+            do 71 j=1,nsam
+               njaj=meet(ja,j)
+               nkj=meet(k,j)
+               if(dys(njaj).ne.dysma(j))go to 70
+               small=dysmb(j)
+               if(dys(njaj).lt.small)small=dys(nkj)
+               dz=dz-dysma(j)+small
+               go to 71
+ 70            if(dys(nkj).lt.dysma(j))dz=dz-dysma(j)+dys(nkj)
+ 71         continue
+            if(dz.ge.dzsky)go to 72
+            dzsky=dz
+            kbest=k
+            nbest=ja
+ 72      continue
+ 73   continue
+      if(dzsky.ge.0.0)return
+      nrepr(kbest)=1
+      nrepr(nbest)=0
+      sky=sky+dzsky
+      go to 60
+      end
+
+c     -----------------------------------------------------------
+c     
+      subroutine selec(kk,nn,jpp,ndyst,zb,nsam,mdata,
+     f     jtmd,valmd,nrepr,nsel,dys,x,nr,nafs,ttd,radus,ratt,
+     f     nrnew,nsnew,npnew,ns,np,new,ttnew,rdnew)
+
+      implicit double precision (a-h,o-z)
+      dimension nrepr(nsam),nsel(nsam),dys(1+nsam*(nsam-1)/2)
+      dimension nrnew(nsam),nsnew(nsam),npnew(nsam),ttnew(nsam)
+      dimension rdnew(nsam)
+      dimension ns(nsam),nr(kk),np(nsam),ttd(kk),radus(kk),ratt(kk)
+      dimension jtmd(jpp),valmd(jpp),x(nn*jpp),new(nsam)
+c     
+c     nafs = 1 if a distance cannot be calculated
+c     
+      nafs=0
+c     
+c     identification of representative objects, and initializations
+c     
+      jk=0
+      do 10 j=1,nsam
+         if(nrepr(j).eq.0)go to 10
+         jk=jk+1
+         nr(jk)=nsel(j)
+         ns(jk)=0
+         ttd(jk)=0.
+         radus(jk)=-1.
+         np(jk)=j
+ 10   continue
+c     
+c     assignment of the objects of the entire data set to a cluster,
+c     computation of some statistics, determination of the
+c     new ordering of the clusters
+c     
+      zb=0.
+      pp=jpp
+      newf=0
+      jn=0
+ 15   jn=jn+1
+
+      if(mdata.eq.0) then
+         do 30 jk=1,kk
+            dsum=0.
+            nrjk=nr(jk)
+            if (nrjk.ne.jn) then
+               do 20 jp=1,jpp
+                  na=(nrjk-1)*jpp+jp
+                  nb=(jn-1)*jpp+jp
+                  tra=dabs(x(na)-x(nb))
+                  if(ndyst.eq.1)tra=tra*tra
+                  dsum=dsum+tra
+ 20            continue
+               if(jk.ne.1) then
+                  if(dsum.ge.dnull)go to 30
+               endif
+            endif
+ 25         dnull=dsum
+            jkabc=jk
+ 30      continue
+
+      else
+
+ 40      pres=0.
+         do 70 jk=1,kk
+            dsum=0.
+            nrjk=nr(jk)
+            if (nrjk.ne.jn) then
+               abc=0.
+               do 50 jp=1,jpp
+                  na=(nrjk-1)*jpp+jp
+                  nb=(jn-1)*jpp+jp
+                  if(jtmd(jp).lt.0)then
+                     if(x(na).eq.valmd(jp))go to 50
+                     if(x(nb).eq.valmd(jp))go to 50
+                  endif
+ 45               abc=abc+1.
+                  tra=dabs(x(na)-x(nb))
+                  if(ndyst.eq.1)tra=tra*tra
+                  dsum=dsum+tra
+ 50            continue
+               if(abc.lt.0.5)go to 70
+               dsum=dsum*abc/pp
+            endif
+ 64         if(pres.le.0.5) then
+               pres=1.
+            else
+               if(dsum.ge.dnull)go to 70
+            endif
+ 65         dnull=dsum
+            jkabc=jk
+ 70      continue
+         if(pres.gt.0.5)go to 80
+         nafs=1
+         return
+      endif
+
+ 80   if(ndyst.eq.1)dnull=dsqrt(dnull)
+      zb=zb+dnull
+      ttd(jkabc)=ttd(jkabc)+dnull
+      if(dnull.gt.radus(jkabc))radus(jkabc)=dnull
+      ns(jkabc)=ns(jkabc)+1
+      if(newf.lt.kk) then
+         if(newf.ne.0) then
+            do 82 jnew=1,newf
+               if(jkabc.eq.new(jnew))go to 90
+ 82         continue
+         endif
+         newf=newf+1
+         new(newf)=jkabc
+      endif
+ 90   if(jn.lt.nn)go to 15
+
+c     
+c     a permutation is carried out on vectors nr,ns,np,ttd,radus
+c     using the information in vector new.
+c     
+      do 92 jk=1,kk
+         njk=new(jk)
+         nrnew(jk)=nr(njk)
+         nsnew(jk)=ns(njk)
+         npnew(jk)=np(njk)
+         ttnew(jk)=ttd(njk)
+         rdnew(jk)=radus(njk)
+ 92   continue
+      do 94 jk=1,kk
+         nr(jk)=nrnew(jk)
+         ns(jk)=nsnew(jk)
+         np(jk)=npnew(jk)
+         ttd(jk)=ttnew(jk)
+         radus(jk)=rdnew(jk)
+ 94   continue
+
+      do 101 j=1,kk
+         rns=ns(j)
+         ttd(j)=ttd(j)/rns
+ 101  continue
+      if(kk.eq.1)go to 150
+c     
+c     computation of minimal distance of medoid ka to any
+c     other medoid for comparison with the radius of cluster ka.
+c     
+      do 120 ka=1,kk
+         nstrt=0
+         npa=np(ka)
+         do 110 kb=1,kk
+            if(kb.eq.ka)go to 110
+            npb=np(kb)
+            npab=meet(npa,npb)
+            if(nstrt.eq.0) then
+               nstrt=1
+            else
+               if(dys(npab).ge.ratt(ka))go to 110
+            endif
+ 104        ratt(ka)=dys(npab)
+            if(ratt(ka).ne.0.)go to 110
+            ratt(ka)=-1.
+ 110     continue
+         if(ratt(ka).gt. -0.5) ratt(ka)=radus(ka)/ratt(ka)
+ 120  continue
+
+ 150  return
+      end
+c     -----------------------------------------------------------
+c     
+      subroutine resul(kk,nn,jpp,ndyst,mdata,jtmd,
+     f     valmd,x,nrx,mtt)
+
+      implicit double precision (a-h,o-z)
+      dimension x(nn*jpp),nrx(kk),jtmd(jpp),valmd(jpp),mtt(kk)
+      pp=jpp
+c     
+c     clustering vector is incorporated into x, and printed.
+c     
+      jn=0
+ 100  jn=jn+1
+      njnb=(jn-1)*jpp
+      do 145 jk=1,kk
+         if(nrx(jk).eq.jn)go to 220
+ 145  continue
+      jna=(jn-1)*jpp+1
+      if(mdata.ne.0)go to 170
+      do 160 jk=1,kk
+         dsum=0.
+         nrjk=(nrx(jk)-1)*jpp
+         do 150 j=1,jpp
+            na=nrjk+j
+            nb=njnb+j
+            tra=dabs(x(na)-x(nb))
+            if(ndyst.eq.1)tra=tra*tra
+            dsum=dsum+tra
+ 150     continue
+         if(ndyst.eq.1)dsum=dsqrt(dsum)
+         if(jk.eq.1)dnull=dsum+0.1
+         if(dsum.ge.dnull)go to 160
+         dnull=dsum
+         jksky=jk
+ 160  continue
+      go to 200
+ 170  do 190 jk=1,kk
+         dsum=0.
+         nrjk=(nrx(jk)-1)*jpp
+         abc=0.
+         do 180 j=1,jpp
+            na=nrjk+j
+            nb=njnb+j
+            if(jtmd(j).ge.0)go to 185
+            if(x(na).eq.valmd(j))go to 180
+            if(x(nb).eq.valmd(j))go to 180
+ 185        abc=abc+1.
+            tra=dabs(x(na)-x(nb))
+            if(ndyst.eq.1)tra=tra*tra
+            dsum=dsum+tra
+ 180     continue
+         if(ndyst.eq.1)dsum=dsqrt(dsum)
+         dsum=dsum*abc/pp
+         if(jk.eq.1)dnull=dsum+0.1
+         if(dsum.ge.dnull)go to 190
+         dnull=dsum
+         jksky=jk
+ 190  continue
+ 200  x(jna)=jksky
+ 220  if(jn.lt.nn)go to 100
+      do 230 jk=1,kk
+         nrjk=nrx(jk)
+         nrjka=(nrjk-1)*jpp+1
+         x(nrjka)=jk
+ 230  continue
+
+ 300  do 320 ka=1,kk
+         mtt(ka)=0
+         j=0
+ 325     j=j+1
+         ja=(j-1)*jpp+1
+         nxja=idint(x(ja)+0.1)
+         if(nxja.eq.ka)mtt(ka)=mtt(ka)+1
+         if(j.lt.nn)go to 325
+ 320  continue
+ 330  end
+c     -----------------------------------------------------------
+c     
+      subroutine black(kk,jpp,nn,nsam,nbest,dys,sx,x,avsyl,ttsyl,sylinf,
+     f     ncluv,nsend,nelem,negbr,syl,srank)
+
+      implicit double precision (a-h,o-z)
+
+      dimension ncluv(nsam),nsend(nsam),nelem(nsam),negbr(nsam)
+      dimension syl(nsam),srank(nsam),avsyl(kk),nbest(nsam)
+      dimension x(nn*jpp),dys(1+nsam*(nsam-1)/2),sylinf(nsam,4)
+c     
+c     construction of clustering vector (ncluv)
+c     of selected sample (nbest).
+c     
+      do 12 l=1,nsam
+         ncase=nbest(l)
+         jna=(ncase-1)*jpp+1
+         ncluv(l)=idint(x(jna)+0.1)
+ 12   continue
+c     
+c     drawing of the silhouettes
+c     
+      nsylr=0
+      ttsyl=0.0
+      do 100 numcl=1,kk
+         ntt=0
+         do 30 j=1,nsam
+            if(ncluv(j).ne.numcl)go to 30
+            ntt=ntt+1
+            nelem(ntt)=j
+ 30      continue
+
+         do 40 j=1,ntt
+            nj=nelem(j)
+            dysb=1.1*sx+1.0
+            negbr(j)=-1
+            do 41 nclu=1,kk
+               if(nclu.eq.numcl)go to 41
+               nbb=0
+               db=0.0
+               do 43 l=1,nsam
+                  if(ncluv(l).ne.nclu)go to 43
+                  nbb=nbb+1
+                  mjl=meet(nj,l)
+                  db=db+dys(mjl)
+ 43            continue
+               btt=nbb
+               db=db/btt
+               if(db.ge.dysb)go to 41
+               dysb=db
+               negbr(j)=nclu
+ 41         continue
+            if(ntt.eq.1)go to 50
+            dysa=0.0
+            do 45 l=1,ntt
+               nl=nelem(l)
+               njl=meet(nj,nl)
+               dysa=dysa+dys(njl)
+ 45         continue
+            att=ntt-1
+            dysa=dysa/att
+            if(dysa.gt.0.0)go to 51
+            if(dysb.gt.0.0)go to 52
+ 50         syl(j)=0.0
+            go to 40
+ 52         syl(j)=1.0
+            go to 40
+ 51         if(dysb.gt.0.)then
+               if(dysb.gt.dysa)syl(j)=1.0-dysa/dysb
+               if(dysb.lt.dysa)syl(j)=dysb/dysa-1.0
+               if(dysb.eq.dysa)syl(j)=0.0
+            else
+ 53            syl(j)=-1.0
+            endif
+ 54         if(syl(j).le.(-1.0))syl(j)=-1.0
+            if(syl(j).ge.1.0)syl(j)=1.0
+ 40      continue
+
+         avsyl(numcl)=0.0
+         do 60 j=1,ntt
+            symax= -2.
+            do 70 l=1,ntt
+               if(syl(l).le.symax)go to 70
+               symax=syl(l)
+               lang=l
+ 70         continue
+            nsend(j)=lang
+            srank(j)=syl(lang)
+            avsyl(numcl)=avsyl(numcl)+srank(j)
+            syl(lang)= -3.
+ 60      continue
+         ttsyl=ttsyl+avsyl(numcl)
+         rtt=ntt
+         avsyl(numcl)=avsyl(numcl)/rtt
+
+         if(ntt.ge.2)goto 75
+         ncase=nelem(1)
+         nsylr=nsylr+1
+         sylinf(nsylr,1)=numcl
+         sylinf(nsylr,2)=negbr(1)
+         sylinf(nsylr,3)=0.0
+         sylinf(nsylr,4)=nbest(ncase)
+         goto 100
+ 75      do 80 l=1,ntt
+            lplac=nsend(l)
+            ncase=nelem(lplac)
+            nsylr=nsylr+1
+            sylinf(nsylr,1)=numcl
+            sylinf(nsylr,2)=negbr(lplac)
+            sylinf(nsylr,3)=srank(l)
+            sylinf(nsylr,4)=nbest(ncase)
+ 80      continue
+ 100  continue
+      rsam=nsam
+      ttsyl=ttsyl/rsam
+      end

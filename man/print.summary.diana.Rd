@@ -3,7 +3,7 @@
 \name{print.summary.diana}
 \alias{print.summary.diana}
 \title{
-Use `print()' on a `summary.diana' object
+Print Method for SUMMARY.DIANA Objects
 }
 \description{
 Prints all components of a \code{diana} object.
@@ -19,7 +19,6 @@ the general behavior of this function.
 \seealso{
 \code{\link{diana}}, \code{\link{diana.object}}, \code{\link{print}}, \code{\link{print.default}}.
 }
-\keyword{libcluster}
 \keyword{cluster}
 \keyword{print}
 % Converted by Sd2Rd version 0.3-2.
