@@ -13,7 +13,7 @@ export(bannerplot, ellipsoidhull, ellipsoidPoints,
 ## things from (ex-)mva -- not really needed..
 #importFrom(stats, as.hclust, as.dist, as.dendrogram, cutree)
 
-#N> importFrom(graphics, plot)
+importFrom(graphics, plot)
 
 ###---- Methods ---- all documented but not exported
 
