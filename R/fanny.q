@@ -1,4 +1,4 @@
-#### $Id: fanny.q,v 1.8 2002/03/04 10:44:45 maechler Exp maechler $
+#### $Id: fanny.q,v 1.9 2002/07/29 08:10:46 maechler Exp $
 fanny <- function(x, k, diss = inherits(x, "dist"),
                   metric = "euclidean", stand = FALSE)
 {
@@ -148,12 +148,9 @@ summary.fanny <- function(object, ...)
 print.summary.fanny <- function(x, ...)
 {
     print(x$objective, ...)
-    cat("Membership coefficients:\n")
-    print(x$membership, ...)
-    cat("Coefficients:\n")
-    print(x$coeff, ...)
-    cat("Closest hard clustering:\n")
-    print(x$clustering, ...)
+    cat("Membership coefficients:\n");	print(x$membership, ...)
+    cat("Coefficients:\n");		print(x$coeff, ...)
+    cat("Closest hard clustering:\n");	print(x$clustering, ...)
     if(length(x$silinfo) != 0) {
 	cat("\nSilhouette plot information:\n")
 	print(x$silinfo[[1]], ...)
@@ -162,10 +159,9 @@ print.summary.fanny <- function(x, ...)
 	cat("Average silhouette width of total data set:\n")
 	print(x$silinfo[[3]], ...)
     }
-    cat("\n")
-    print(x$diss, ...)
-    cat("\nAvailable components:\n")
-    print(names(x), ...)
+    if(!is.null(x$diss)) { ## Dissimilarities:
+	cat("\n");			print(summary(x$diss, ...))
+    }
+    cat("\nAvailable components:\n");	print(names(x), ...)
     invisible(x)
 }
-

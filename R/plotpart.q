@@ -1,4 +1,4 @@
-### $Id: plotpart.q,v 1.12 2002/01/23 18:20:33 maechler Exp $
+### $Id: plotpart.q,v 1.13 2002/07/27 21:31:15 maechler Exp $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
          nmax.lab = 40, max.strlen = 5,
@@ -67,12 +67,11 @@ function(x, ask = FALSE, which.plots = NULL,
 
 clusplot <- function(x, ...) UseMethod("clusplot")
 
-
 clusplot.default <-
 function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
          shade = FALSE, color = FALSE, labels = 0, plotchar = TRUE,
          col.p = "dark green", # was 5 (= shaded col)
-         col.txt = col.p,
+         col.txt = col.p, col.clus = if(color) c(2, 4, 6, 3) else 5,
          span = TRUE, xlim = NULL, ylim = NULL,
          main = paste("CLUSPLOT(", deparse(substitute(x)),")"),
          verbose = getOption("verbose"),
@@ -125,24 +124,6 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
         }
     }## cmdscale() -- if R version < 1.5
 
-    clas.snijpunt <- function(x, loc, m, n, p)
-    {
-        if(     loc[n, m] <= x[1, m] && x[1, m] <= loc[p, m]) x[1, ]
-        else if(loc[n, m] <= x[2, m] && x[2, m] <= loc[p, m]) x[2, ]
-        else NA
-    }
-    coord.snijp1 <- function(x, gemid)
-        x[2, 2] - 2 * x[1, 2] * gemid + x[1, 1] * gemid^2
-    coord.snijp2 <- function(x, d2, y)
-        ((x[1, 1] * x[2, 2] - x[1, 2]^2) * d2)/y
-    coord.snijp3 <- function(xx, y, gemid)
-    {
-        sy <- sqrt(y)
-        sy <- c(sy, -sy)
-        cbind(xx[1] + sy,
-              xx[2] + gemid*sy)
-    }
-
     ## BEGIN ----
 
     (main)# eval
@@ -152,7 +133,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
         stop("x is not numeric")
 
     if(diss) {
-        if(is.na(min(x)))
+        if(any(is.na(x)))
             stop(message = "NA-values in x are not allowed.")
         if((data.class(x)) != "dissimilarity") {
             if(is.na(sizeDiss(x))) {
@@ -160,9 +141,8 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
                     stop("Distances must be result of dist or a square matrix.")
                 if(all.equal(x, t(x)) != TRUE)
                     stop("the square matrix is not symmetric.")
-                labels1 <-
-                    if(length(dimnames(x)[[1]]) == 0) 1:nrow(x)
-                    else dimnames(x)[[1]]
+                labels1 <- dimnames(x)[[1]]
+                if(is.null(labels1)) labels1 <- 1:n
             }
             else {
                 if(!is.vector(x)) {
@@ -170,9 +150,8 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
                     x <- as.matrix(x)
                     if((n <- nrow(x)) == ncol(x) &&
                        all.equal(x, t(x)) == TRUE) {
-                        labels1 <-
-                            if(length(dimnames(x)[[1]]) == 0) 1:nrow(x)
-                            else dimnames(x)[[1]]
+                        labels1 <- dimnames(x)[[1]]
+                        if(is.null(labels1)) labels1 <- 1:n
                     }
                     else {
                         if(is.null(labels1))
@@ -181,16 +160,16 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
                     }
                 }
                 else {
-                    attr(x, "Size") <- sizeDiss(x)
+                    attr(x, "Size") <- n <- sizeDiss(x)
                     labels1 <- 1:sizeDiss(x)
                 }
             }
         }
         else {
-            labels1 <-
-                if(length(attr(x, "Labels")) == 0)
-                    1:attr(x, "Size")
-                else attr(x, "Labels")
+            n <- attr(x, "Size")
+            labels1 <- attr(x, "Labels")
+            if(is.null(labels1))
+                labels1 <- 1:n
         }
         x1 <- cmdscale(x, k = 2, eig = TRUE, add = TRUE)
         if(x1$ac < 0)
@@ -200,13 +179,11 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
     }
     else { ## Not (diss)
         if(!is.matrix(x)) stop("x is not a data matrix")
-        if(is.na(min(x))) { ## any(is.na(x))
+        if(any(is.na(x))) {
             y <- is.na(x)
-            y1 <- apply(y, 1, sum)
-            y2 <- apply(y, 2, sum)
-            if(any(y1 == ncol(x)))
+            if(any(apply(y, 1, all)))
                 stop("one or more objects contain only missing values")
-            if(any(y2 == nrow(x)))
+            if(any(apply(y, 2, all)))
                 stop("one or more variables contain only missing values")
             x <- apply(x, 2, function(x)
                    { x[is.na(x)] <- median(x, na.rm = TRUE); x } )
@@ -214,9 +191,9 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
 
         }
 
-        labels1 <-
-            if(length(dimnames(x)[[1]]) == 0) 1:nrow(x)
-            else dimnames(x)[[1]]
+        n <- nrow(x)
+        labels1 <- dimnames(x)[[1]]
+        if(is.null(labels1)) labels1 <- 1:n
 
         if(ncol(x) == 1) {
             hulp <- rep(0, length(x))
@@ -234,10 +211,10 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
     ## --- The 2D space is setup and points are in x1[,]  (aantal x 2) ---
 
     clus <- as.vector(clus)
-    if(length(clus) != length(x1[, 1]))
+    if(length(clus) != n)
         stop("The clustering vector has not the good length")
     clus <- as.factor(clus)
-    if(sum(is.na(clus)) != 0)
+    if(any(is.na(clus)))
         stop("NA-values are not allowed in clustering vector")
     if(stand)
         x1 <- scale(x1)
@@ -249,16 +226,16 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
     miny <- rangy[1]
     maxy <- rangy[2]
     levclus <- levels(clus)
-    n <- length(levclus) # the number of clusters
-    z <- A <- vector("list", n)
-    maxima <- loc <- matrix(0, nrow = n, ncol = 2)
-    d2 <- verhoud <- numeric(n)
+    nC <- length(levclus) # the number of clusters
+    z <- A <- vector("list", nC)
+    maxima <- loc <- matrix(0, nrow = nC, ncol = 2)
+    d2 <- verhoud <- numeric(nC)
     verhouding <- 0
     ## num1 .. num6 : all used only once -- there are more constants anyway
     num3 <- 90
     num6 <- 70
 
-    for(i in 1:n) { ##-------------  i-th cluster  --------------
+    for(i in 1:nC) { ##-------------  i-th cluster  --------------
 	x <- x1[clus == levclus[i],, drop = FALSE ]
         aantal <- nrow(x) # number of observations in cluster [i]
         cov <- var(if(aantal == 1) {
@@ -425,6 +402,8 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
         if(ylim[2] > maxy) maxy <- ylim[2]
     }
 
+    if(length(col.p) < n) col.p <- rep(col.p, length= n)
+
     ## --- Now plotting starts ---
 
     plot(x1[, 1], x1[, 2], xlim = c(minx, maxx), ylim = c(miny, maxy),
@@ -437,36 +416,59 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
           adj = 0)
 
     if(color) {
-        color1 <- c(2, 4, 6, 3)
+        if(length(col.clus) < min(4,nC))
+            stop("`col.clus' should have length 4 when color is TRUE")
         i.verh <- order(verhoud)
-        jInd <- if(n > 4) pam(verhoud[i.verh], 4)$clustering else 1:n
-        for(i in 1:n) {
+        jInd <- if(nC > 4) pam(verhoud[i.verh], 4)$clustering else 1:nC
+        for(i in 1:nC) {
             k <- i.verh[i]
             polygon(z[[k]], density = if(shade) density[k] else 0,
-                    col = color1[jInd[i]], ...)
+                    col = col.clus[jInd[i]], ...)
         }
+        col.clus <- col.clus[jInd][order(i.verh)]
     }
     else {
-        for(i in 1:n)
+        for(i in 1:nC)
             polygon(z[[i]], density = if(shade) density[i] else 0,
-                    col = 5, ...)
+                    col = col.clus, ...)
     }
 
     ## points after polygon in order to write ON TOP:
     if(plotchar) {
         karakter <- 1:19
-        for(i in 1:n) {
-            x <- x1[clus == levclus[i],  , drop = FALSE]
-            kar <- 1+(i-1) %% 19
-            points(x[, 1], x[, 2], pch = karakter[kar], col = col.p, ...)
+        for(i in 1:nC) {
+            iC <- clus == levclus[i]
+            x <- x1[iC, , drop = FALSE]
+            il <- 1+(i-1) %% 19
+            points(x[, 1], x[, 2], pch = karakter[il], col = col.p[iC], ...)
         }
     }
 
-    if((lines == 1 || lines == 2) && n > 1) {
-        ## Draw lines between all pairs of the  n  cluster (centers)
-        afstand <- matrix(0, ncol = n, nrow = n)
-        for(i in 1:(n - 1)) {
-            for(j in (i + 1):n) {
+    if((lines == 1 || lines == 2) && nC > 1) {
+        ## Draw lines between all pairs of the  nC  cluster (centers)
+
+        ## utilities for computing ellipse intersections:
+        clas.snijpunt <- function(x, loc, m, n, p)
+        {
+            if(     loc[n, m] <= x[1, m] && x[1, m] <= loc[p, m]) x[1, ]
+            else if(loc[n, m] <= x[2, m] && x[2, m] <= loc[p, m]) x[2, ]
+            else NA
+        }
+        coord.snijp1 <- function(x, gemid)
+            x[2, 2] - 2 * x[1, 2] * gemid + x[1, 1] * gemid^2
+        coord.snijp2 <- function(x, d2, y)
+            ((x[1, 1] * x[2, 2] - x[1, 2]^2) * d2)/y
+        coord.snijp3 <- function(xx, y, gemid)
+        {
+            sy <- sqrt(y)
+            sy <- c(sy, -sy)
+            cbind(xx[1] + sy,
+                  xx[2] + gemid*sy)
+        }
+
+        afstand <- matrix(0, ncol = nC, nrow = nC)
+        for(i in 1:(nC - 1)) {
+            for(j in (i + 1):nC) {
                 gemid <- (loc[j, 2] - loc[i, 2])/(loc[j, 1] - loc[i, 1])
                 s0 <- coord.snijp1(A[[i]], gemid)
                 b0 <- coord.snijp2(A[[i]], d2[i], s0)
@@ -522,32 +524,32 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
     }
     else afstand <- NULL
 
-    ## FIXME: The following is *not* elegant..
-    if(labels == 1) {
-        for(i in 1:n) {
-            x1 <- rbind(x1, z[[i]][cumsum(rep(10, 40)), ])
-            labels1 <- c(labels1, rep(levclus[i], 40))
+    if(labels) {
+        if(labels == 1) {
+            for(i in 1:nC) { ## add cluster border points
+                m <- nrow(z[[i]])
+                ni <- length(ii <- seq(1, m, by = max(1, m %/% 40)))
+                x1 <- rbind(x1, z[[i]][ii, ])
+                labels1 <- c(labels1, rep(levclus[i], ni))
+                ## identify() only allows one color:
+                ##col.txt <- c(col.txt, rep(col.clus[if(color) i else 1], ni))
+            }
+            identify(x1, labels = labels1, col = col.txt[1])
         }
-        identify(x1[, 1], x1[, 2], labels1, col = col.txt)
+        else {
+            Stext <- function(xy, labs, ...) {
+                xy[, 1] <- xy[, 1] + (maxx - minx)/130
+                xy[, 2] <- xy[, 2] + (maxy - miny)/50
+                text(xy, labels = labs, ...)
+            }
+            if(labels == 3 || labels == 2)
+                Stext(x1, labels1, col = col.txt)
+            if(labels %in% c(2,4,5))
+                Stext(maxima, levclus, font = 4, col = col.clus)
+            if(labels == 5)
+                identify(x1, labels = labels1, col = col.txt[1])
+        }
     }
-    else if(labels == 2) {
-        x1 <- rbind(x1, maxima)
-        labels1 <- c(labels1, levclus)
-        x1[, 1] <- x1[, 1] + (maxx - minx)/130
-        x1[, 2] <- x1[, 2] + (maxy - miny)/50
-        text(x1, labels = labels1, col = col.txt)
-    }
-    else if(labels == 3) {
-        x1[, 1] <- x1[, 1] + (maxx - minx)/130
-        x1[, 2] <- x1[, 2] + (maxy - miny)/50
-        text(x1, labels = labels1, col = col.txt)
-    }
-    else if(labels == 4) {
-        maxima[, 1] <- maxima[, 1] + (maxx - minx)/ 130
-        maxima[, 2] <- maxima[, 2] + (maxy - miny)/ 50
-        text(maxima, labels = levclus, col = col.txt)
-    }
-
     density[density == 41] <- NA
     invisible(list(Distances = afstand, Shading = density))
 }
@@ -557,7 +559,7 @@ clusplot.partition <- function(x, main = NULL, ...)
     if(is.null(main) && !is.null(x$call))
 	main <- paste("clusplot(",format(x$call),")", sep="")
     if(length(x$data) != 0 &&
-       (!is.na(min(x$data)) || data.class(x) == "clara"))
+       (!any(is.na(x$data)) || data.class(x) == "clara"))
 	clusplot.default(x$data, x$clustering, diss = FALSE, main = main, ...)
     else clusplot.default(x$diss, x$clustering, diss = TRUE, main = main, ...)
 

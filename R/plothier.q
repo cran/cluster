@@ -1,4 +1,4 @@
-### $Id: plothier.q,v 1.9 2002/03/04 10:45:09 maechler Exp maechler $
+### $Id: plothier.q,v 1.9 2002/03/04 10:45:09 maechler Exp $
 
 pltree <- function(x, ...) UseMethod("pltree")
 

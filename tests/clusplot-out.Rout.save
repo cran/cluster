@@ -1,6 +1,6 @@
 
-R : Copyright 2001, The R Development Core Team
-Version 1.4.0  (2001-12-19)
+R : Copyright 2002, The R Development Core Team
+Version 1.6.0 Under development (unstable) (2002-07-29)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -106,7 +106,7 @@ $Shading
 > ## generate 25 objects, divided into 2 clusters.
 > x <- rbind(cbind(rnorm(10,0,0.5), rnorm(10,0,0.5)),
 +            cbind(rnorm(15,5,0.5), rnorm(15,5,0.5)))
-> print.default(clusplot(pam(x, 2)))
+> print.default(clusplot(px2 <- pam(x, 2)))
 $Distances
          [,1]     [,2]
 [1,] 0.000000 5.516876
@@ -116,5 +116,5 @@ $Shading
 [1] 20.18314 22.81686
 
 > 
-> 
+> clusplot(px2, labels = 2, col.p = 1 + px2$clustering)
 > 

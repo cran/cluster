@@ -12,6 +12,7 @@
           lines = 2, shade = FALSE, color = FALSE,
           labels= 0, plotchar = TRUE,
           col.p = "dark green", col.txt = col.p,
+          col.clus = if(color) c(2, 4, 6, 3) else 5,
           span = TRUE, xlim = NULL, ylim = NULL,
           main = paste("CLUSPLOT(", deparse(substitute(x)),")"),
           verbose = getOption("verbose"),
@@ -29,7 +30,7 @@
     function stops with a warning message.
 
     In case of a dissimilarity matrix, \code{x} is the output of
-    \code{\link{daisy}} or \code{\link{dist}} or a symmetric matrix.  Also,
+    \code{\link{daisy}} or \code{\link[mva]{dist}} or a symmetric matrix.  Also,
     a vector of length \eqn{n*(n-1)/2} is allowed (where \eqn{n} is the
     number of observations), and will be interpreted in the same way as
     the output of the above-mentioned functions.  Missing values (NAs)
@@ -88,6 +89,8 @@
       \item{labels= 2,}{all points and ellipses are labelled in the plot;}
       \item{labels= 3,}{only the points are labelled in the plot;}
       \item{labels= 4,}{only the ellipses are labelled in the plot.}
+      \item{labels= 5,}{the ellipses are labelled in the plot, and
+	points can be identified.}
     }
     The levels of the vector \code{clus} are taken as labels for the
     clusters.  The labels
@@ -117,8 +120,10 @@
     cluster fall on a straight line, \code{span=FALSE} draws a narrow
     ellipse around it and \code{span=TRUE} gives the exact line segment.
   }
-  \item{col.p}{color code used for the observation points.}
-  \item{col.txt}{color code for used for the labels.}
+  \item{col.p}{color code(s) used for the observation points.}
+  \item{col.txt}{color code(s) used for the labels (if \code{labels >= 2}).}
+  \item{col.clus}{color code for the ellipses (and their labels);
+    only one if color is false (as per default).}
 
   \item{xlim, ylim}{length 2 vectors giving the x- and y- ranges as in
     \code{\link{plot.default}}.}
@@ -160,9 +165,14 @@
 \note{
   When we have 4 or fewer clusters, then the \code{color=TRUE} gives
   every cluster a different color.  When there are more than 4 clusters,
-  clusplot uses the function \code{\link[cluster]{pam}} to cluster the
+  clusplot uses the function \code{\link{pam}} to cluster the
   densities into 4 groups such that ellipses with nearly the same
-  density get the same color.
+  density get the same color.  \code{col.clus} specifies the colors used.
+
+  The \code{col.p} and \code{col.txt} arguments, added for \R,
+  are recycled to have length the number of observations.
+  If \code{col.p} has more than one value, using \code{color = TRUE} can
+  be confusing because of a mix of point and ellipse colors.
 }
 \references{
   Pison, G., Struyf, A. and Rousseeuw, P.J. (1999)
@@ -180,9 +190,9 @@
   \emph{Computational Statistics and Data Analysis}, \bold{26}, 17-37.
 }
 \seealso{
-  \code{\link{princomp}}, \code{\link{cmdscale}}, \code{\link{pam}},
+  \code{\link[mva]{princomp}}, \code{\link[mva]{cmdscale}}, \code{\link{pam}},
   \code{\link{clara}}, \code{\link{daisy}}, \code{\link{par}},
-  \code{\link{identify}}, \code{\link{cov.mve}},
+  \code{\link{identify}}, \code{\link[lqs]{cov.mve}},
   \code{\link{clusplot.partition}}.
 }
 \examples{
@@ -192,12 +202,15 @@ data(votes.repub)
 votes.diss <- daisy(votes.repub)
 votes.clus <- pam(votes.diss, 2, diss = TRUE)$clustering
 clusplot(votes.diss, votes.clus, diss = TRUE, shade = TRUE)
+clusplot(votes.diss, votes.clus, diss = TRUE,
+         col.p = votes.clus, labels = 4)# color points and label ellipses
 %% FIXME: should have a  clusellipses(..) for just adding ellipses
 clusplot(votes.diss, votes.clus, diss = TRUE, span = FALSE)# simple ellipses
 
-if(interactive()) #  uses identify() *interactively* :
-  clusplot(votes.diss, votes.clus, diss = TRUE, shade = TRUE,
-           labels = 1)
+if(interactive()) { #  uses identify() *interactively* :
+  clusplot(votes.diss, votes.clus, diss = TRUE, shade = TRUE, labels = 1)
+  clusplot(votes.diss, votes.clus, labels = 5)# ident. only points
+}
 
 ## plotting iris (data frame) in a 2-dimensional plot and partitioning
 ## into 3 clusters.

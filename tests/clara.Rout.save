@@ -1,6 +1,6 @@
 
-R : Copyright 2001, The R Development Core Team
-Version 1.3.1  (2001-08-31)
+R : Copyright 2002, The R Development Core Team
+Version 1.6.0 Under development (unstable) (2002-07-29)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -13,6 +13,8 @@ Type `demo()' for some demos, `help()' for on-line help, or
 `help.start()' for a HTML browser interface to help.
 Type `q()' to quit R.
 
+> ### Note: MM has a version fo this in ../../cluster_tests/clara.R !!
+> 
 > library(cluster)
 Loading required package: mva 
 > 
@@ -20,15 +22,29 @@ Loading required package: mva
 > set.seed(264)
 > x <- rbind(cbind(rnorm(700, 0,8), rnorm(700, 0,8)),
 +            cbind(rnorm(800,50,8), rnorm(800,10,8)))
-> (clara2 <- clara(x, 2))
-Best sample:
- [1]   21   50   97  142  168  191  192  197  224  325  328  408  433  458  471
-[16]  651  712  714  722  797  805  837  909  919  926  999 1006 1018 1019 1049
-[31] 1081 1084 1132 1144 1150 1201 1207 1291 1307 1317 1330 1374 1426 1428
+> 
+> .proctime00 <- proc.time()
+> 
+> summary(clara2 <- clara(x, 2))
+Object of class `clara' from call:
+ clara(x = x, k = 2) 
 Medoids:
           [,1]       [,2]
 [1,]  2.787896 0.06403649
 [2,] 51.594304 8.52944737
+Objective function:	  10.15876 
+Numerical information per cluster:
+     size max_diss   av_diss isolation
+[1,]  700 32.70228 10.378867 0.6601837
+[2,]  800 27.37593  9.966161 0.5526569
+Average silhouette width per cluster:
+[1] 0.752770 0.772374
+Average silhouette width of best sample: 0.7652453 
+
+Best sample:
+ [1]   21   50   97  142  168  191  192  197  224  325  328  408  433  458  471
+[16]  651  712  714  722  797  805  837  909  919  926  999 1006 1018 1019 1049
+[31] 1081 1084 1132 1144 1150 1201 1207 1291 1307 1317 1330 1374 1426 1428
 Clustering vector:
    [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
   [38] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
@@ -71,16 +87,63 @@ Clustering vector:
 [1407] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
 [1444] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
 [1481] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
-Objective function:
-[1] 10.15876
+
+Silhouette plot information for best sample:
+     cluster neighbor sil_width
+458        1        2 0.8231660
+142        1        2 0.8153602
+21         1        2 0.8123992
+197        1        2 0.8118223
+408        1        2 0.8112843
+97         1        2 0.8061654
+433        1        2 0.7948877
+191        1        2 0.7761169
+50         1        2 0.7689566
+651        1        2 0.7664647
+192        1        2 0.7439787
+325        1        2 0.7187212
+471        1        2 0.7138665
+168        1        2 0.6506124
+224        1        2 0.6364204
+328        1        2 0.5940982
+919        2        1 0.8392739
+1307       2        1 0.8360310
+1081       2        1 0.8358883
+1132       2        1 0.8313630
+1207       2        1 0.8297462
+712        2        1 0.8252963
+1428       2        1 0.8194915
+1150       2        1 0.8173306
+1006       2        1 0.8163528
+1144       2        1 0.8130290
+1317       2        1 0.8128990
+714        2        1 0.8127996
+797        2        1 0.8103648
+999        2        1 0.8090429
+722        2        1 0.7873873
+1019       2        1 0.7834898
+1374       2        1 0.7830414
+1426       2        1 0.7719712
+1049       2        1 0.7695327
+1201       2        1 0.7612259
+1330       2        1 0.7542818
+909        2        1 0.7342792
+1291       2        1 0.7308119
+837        2        1 0.6919267
+1084       2        1 0.6774914
+926        2        1 0.6713276
+805        2        1 0.6304831
+1018       2        1 0.5703118
+
+6 dissimilarities, summarized :
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.4388 11.2800 26.1600 32.8900 53.0800 94.2200 
+Metric :  euclidean 
+Number of objects : 44
 
 Available components:
 [1] "sample"     "medoids"    "clustering" "objective"  "clusinfo"  
 [6] "diss"       "call"       "silinfo"    "data"      
-> clara2$clusinfo
-     size max_diss   av_diss isolation
-[1,]  700 32.70228 10.378867 0.6601837
-[2,]  800 27.37593  9.966161 0.5526569
 > 
 > clara(x, 2, samples = 50)[c("objective", "medoids", "clusinfo")]
 $objective
@@ -113,7 +176,9 @@ $clusinfo
 
 > ## Note that this last one is practically identical to the slower  pam() one
 > 
-> x[sample(length(x), 20)] <- NA
+> x[print(sample(length(x), 20))] <- NA
+ [1] 1676  562  623 2914 2965 1567 1018 1395 2533  951 2017 1098 2795 1926 2522
+[16]  792 1861 2158 2752 1834
 > clara(x, 2, samples = 50)[c("objective", "medoids", "clusinfo")]
 $objective
 [1] 5.186164
@@ -128,4 +193,61 @@ $clusinfo
 [1,] 1302 20.53262 4.599018 0.9083157
 [2,]  198 43.48010 7.524994 1.9234593
 
+> 
+> ###-- Larger example: 2000 objects, divided into 5 clusters.
+> x5 <- rbind(cbind(rnorm(400, 0,4), rnorm(400, 0,4)),
++             cbind(rnorm(400,10,8), rnorm(400,40,6)),
++             cbind(rnorm(400,30,4), rnorm(400, 0,4)),
++             cbind(rnorm(400,40,4), rnorm(400,20,2)),
++             cbind(rnorm(400,50,4), rnorm(400,50,4)))
+> ## plus 1 random dimension
+> x5 <- cbind(x5, rnorm(nrow(x5)))
+> 
+> clara(x5, 5)
+Call:	 clara(x = x5, k = 5) 
+Medoids:
+          [,1]       [,2]        [,3]
+[1,] -0.872440  2.2418689  0.09723326
+[2,]  8.928414 41.0975791 -1.07147083
+[3,] 39.597468 21.2575795 -1.22257165
+[4,] 30.389994  0.3027725  0.45848626
+[5,] 50.074446 47.2064012 -0.54624405
+Objective function:	 5.976173
+Clustering vector: 	 int [1:2000] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ...
+Cluster sizes:	    	 400 397 403 400 400 
+Best sample:
+ [1]   10   50  186  297  300  322  349  378  382  415  441  450  484  523  615
+[16]  673  683  763  780  799  820  841  864  873  887  926 1011 1017 1032 1038
+[31] 1056 1093 1214 1272 1282 1467 1494 1520 1554 1570 1602 1713 1729 1753 1768
+[46] 1895 1907 1909 1934 1984
+
+Available components:
+[1] "sample"     "medoids"    "clustering" "objective"  "clusinfo"  
+[6] "diss"       "call"       "silinfo"    "data"      
+> clara(x5, 5, samples = 50)
+Call:	 clara(x = x5, k = 5, samples = 50) 
+Medoids:
+           [,1]       [,2]        [,3]
+[1,] -0.2051312 -0.1764594 -0.27646669
+[2,]  8.0341205 39.8819686  0.69822130
+[3,] 39.9395138 19.4267255 -0.04163601
+[4,] 30.3625053  1.0688087 -0.14795409
+[5,] 49.7833880 51.0402147 -0.51752205
+Objective function:	 5.746808
+Clustering vector: 	 int [1:2000] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ...
+Cluster sizes:	    	 400 397 403 400 400 
+Best sample:
+ [1]  120  128  150  177  206  210  228  243  278  281  351  443  501  512  591
+[16]  593  608  627  648  669  672  692  693  701  752  754  839  845  856  860
+[31]  884  922 1038 1042 1100 1218 1295 1322 1332 1398 1430 1541 1582 1596 1646
+[46] 1660 1735 1762 1878 1989
+
+Available components:
+[1] "sample"     "medoids"    "clustering" "objective"  "clusinfo"  
+[6] "diss"       "call"       "silinfo"    "data"      
+> 
+> ## Last Line:
+> cat('Time elapsed: ', proc.time() - .proctime00,'\n')
+Time elapsed:  0.58 0.02 0.64 0 0 
+> 
 > 

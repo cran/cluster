@@ -1,6 +1,44 @@
+2002-07-29  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.5-2
+
+
+	* R/daisy.q (print.summary.dissimilarity): new function and
+	  summary.dissimilarity() now returns a classed object.
+
+	* R/agnes.q (print.summary.agnes),
+	* R/clara.q (print.summary.clara),
+	* R/diana.q (print.summary.diana),
+	* R/fanny.q (print.summary.fanny),
+	* R/pam.q (print.summary.pam):
+	print.summary.*() now only *summarizes* dissimilarities (if at all)
+
+2002-07-27  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/pam.R and tests/pam.Rout.save : new files
+
+	* man/summary.agnes.Rd: + example
+	* man/summary.clara.Rd: + example
+
+	* R/clara.q (print.clara): improvements: call, no long clus. vector
+	* R/agnes.q (print.agnes): similar
+
+	* man/daisy.Rd : added "[mva]" to \link{}s.  The same in:
+	* man/clusplot.default.Rd: new `col.clus' argument,
+		new option `labels = 5'.
+	* R/plotpart.q (clusplot.default): cosmetical cleaning;
+		`col.p' is now vectorized for point coloring.
+		The cluster ellipse is now labeled with font=4 and proper color
+
 2002-06-17  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-        * submit to CRAN -- won't be in 1.5.1-recommended
+	* man/sizeDiss.Rd: fix \value{}
+
+	* tests/daisy-ex.R: new file (and *.Rout.save)
+
+2002-06-17  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+        * submit to CRAN -- won't be in R's 1.5.1-recommended
 
 	* R/daisy.q (daisy): make sure "0","1" factors are valid binary vars
 	                     several extra checks {incl apply(<empty>) `bug'

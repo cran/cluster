@@ -1,4 +1,4 @@
-### $Id: diana.q,v 1.9 2002/03/04 10:44:45 maechler Exp maechler $
+### $Id: diana.q,v 1.10 2002/07/29 08:10:46 maechler Exp $
 
 diana <- function(x, diss = inherits(x, "dist"),
                   metric = "euclidean", stand = FALSE)
@@ -116,18 +116,14 @@ summary.diana <- function(object, ...)
 
 print.summary.diana <- function(x, ...)
 {
-    cat("Merge:\n")
-    print(x$merge, ...)
+    cat("Merge:\n");			print(x$merge, ...)
     cat("Order of objects:\n")
-    print(if (length(x$order.lab) != 0) x$order.lab else x$order,
-	  quote = FALSE, ...)
-    cat("Height:\n")
-    print(x$height, ...)
-    cat("Divisive coefficient:\n")
-    print(x$dc, ...)
-    cat("\n")
-    print(x$diss, ...)
-    cat("\nAvailable components:\n")
-    print(names(x), ...)
+    print(if(length(x$order.lab)) x$order.lab else x$order, quote = FALSE, ...)
+    cat("Height:\n");			print(x$height, ...)
+    cat("Divisive coefficient:\n");	print(x$dc, ...)
+    if(!is.null(x$diss)) { ## Dissimilarities:
+	cat("\n");			print(summary(x$diss, ...))
+    }
+    cat("\nAvailable components:\n");	print(names(x), ...)
     invisible(x)
 }

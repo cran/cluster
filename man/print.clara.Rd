@@ -16,6 +16,7 @@
   \item{\dots}{potential further arguments (require by generic).}
 }
 \seealso{
+  \code{\link{summary.clara}} producing more output;
   \code{\link{clara}}, \code{\link{clara.object}}, \code{\link{print}},
   \code{\link{print.default}}.
 }

@@ -68,4 +68,3 @@ clusplot(pam(x4, 2))
 }
 \keyword{cluster}
 \keyword{hplot}
-

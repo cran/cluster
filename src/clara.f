@@ -1,4 +1,4 @@
-C $Id: clara.f,v 1.8 2002/03/04 10:43:17 maechler Exp $
+C $Id: clara.f,v 1.9 2002/07/29 15:40:39 maechler Exp $
 
 c     Clustering LARge Applications
 c     ~          ~~~   ~
@@ -645,11 +645,14 @@ c     -----------------------------------------------------------
 c
       subroutine black(kk,jpp,nn,nsam,nbest,dys,sx,x,avsyl,ttsyl,sylinf,
      f     ncluv,nsend,nelem,negbr,syl,srank)
+c
+c Silhouettes computation and "drawing"  --> syl() and sylinf()
+c
 
       integer kk,jpp,nn, nsam, nbest(nsam)
+      integer ncluv(nsam),nsend(nsam),nelem(nsam),negbr(nsam)
       double precision dys(1+nsam*(nsam-1)/2), sx, x(nn*jpp)
       double precision avsyl(kk), ttsyl, sylinf(nsam,4)
-      integer ncluv(nsam),nsend(nsam),nelem(nsam),negbr(nsam)
       double precision syl(nsam),srank(nsam)
 c
       integer meet
@@ -714,23 +717,24 @@ c
  52         syl(j)=1.0
             go to 40
  51         if(dysb.gt.0.)then
-               if(dysb.gt.dysa)syl(j)=1.0-dysa/dysb
-               if(dysb.lt.dysa)syl(j)=dysb/dysa-1.0
-               if(dysb.eq.dysa)syl(j)=0.0
+               if(dysb.gt.dysa) syl(j)= 1.0 - dysa/dysb
+               if(dysb.lt.dysa) syl(j)= dysb/dysa - 1.0
+               if(dysb.eq.dysa) syl(j)= 0.0
             else
  53            syl(j)=-1.0
             endif
- 54         if(syl(j).le.(-1.0))syl(j)=-1.0
-            if(syl(j).ge.1.0)syl(j)=1.0
+ 54         if(syl(j).lt. -1.0) syl(j)=-1.0
+            if(syl(j).gt.  1.0) syl(j)= 1.0
  40      continue
 
          avsyl(numcl)=0.0
          do 60 j=1,ntt
             symax= -2.
             do 70 l=1,ntt
-               if(syl(l).le.symax)go to 70
-               symax=syl(l)
-               lang=l
+               if(syl(l).gt.symax) then
+                  symax=syl(l)
+                  lang=l
+               endif
  70         continue
             nsend(j)=lang
             srank(j)=syl(lang)

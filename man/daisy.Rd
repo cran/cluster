@@ -118,7 +118,7 @@ daisy(x, metric = "euclidean", stand = FALSE, type = list())
   \emph{Computational Statistics and Data Analysis, \bold{26}, 17-37.}
 }
 \seealso{
-  \code{\link{dissimilarity.object}}, \code{\link{dist}},
+  \code{\link{dissimilarity.object}}, \code{\link[mva]{dist}},
   \code{\link{pam}}, \code{\link{fanny}}, \code{\link{clara}},
   \code{\link{agnes}}, \code{\link{diana}}.
 }

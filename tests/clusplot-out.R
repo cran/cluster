@@ -25,6 +25,6 @@ for(k in 2:5)
 ## generate 25 objects, divided into 2 clusters.
 x <- rbind(cbind(rnorm(10,0,0.5), rnorm(10,0,0.5)),
            cbind(rnorm(15,5,0.5), rnorm(15,5,0.5)))
-print.default(clusplot(pam(x, 2)))
+print.default(clusplot(px2 <- pam(x, 2)))
 
-
+clusplot(px2, labels = 2, col.p = 1 + px2$clustering)

@@ -16,7 +16,7 @@ sizeDiss(d)
   \item{d}{any \R object with length (typically) \eqn{n(n-1)/2}.}
 }
 \value{
-  a number; \eqn{n(n-1)/2} if \code{length(d) == n}, \code{NA} otherwise.
+  a number; \eqn{n} if \code{length(d) == n(n-1)/2}, \code{NA} otherwise.
 }
 \seealso{\code{\link{dissimilarity.object}} and also
   \code{\link[mva]{as.dist}} for class \code{dissimilarity} and

@@ -1,4 +1,4 @@
-#### $Id: daisy.q,v 1.6 2002/03/04 10:44:45 maechler Exp maechler $
+#### $Id: daisy.q,v 1.8 2002/07/29 15:39:55 maechler Exp $
 daisy <-
 function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 {
@@ -134,15 +134,21 @@ print.dissimilarity <- function(x, ...)
 
 summary.dissimilarity <- function(object, ...)
 {
-    cat(length(object), "dissimilarities, summarized :\n")
-    print(sx <- summary(as.vector(object), ...))
-    ## now exactly as print.<class> :
-    cat("\n")
-    if(!is.null(attr(object, "na.message")))
-        cat("Warning : ", attr(object, "NA.message"), "\n")
-    cat("Metric : ", attr(object, "Metric"),
-        if(!is.null(aT <- attr(object,"Types")))
+    sx <- summary(as.vector(object), ...)
+    r <- c(list(summ = sx), attributes(object))
+    class(r) <- "summary.dissimilarity"
+    r
+}
+
+print.summary.dissimilarity <- function(x, ...)
+{
+    cat(length(x$summ), "dissimilarities, summarized :\n")
+    print(x$summ, ...)
+    cat("Metric : ", x $ Metric,
+        if(!is.null(aT <- x $ Types))
         paste(";  Types =", paste(aT, collapse=", ")), "\n")
-    cat("Number of objects : ", attr(object, "Size"), "\n", sep="")
-    invisible(sx)
+    cat("Number of objects : ", x $ Size, "\n", sep="")
+    if(!is.null(x $ na.message))
+        cat("Warning : ", x $ NA.message, "\n")
+    invisible(x)
 }
