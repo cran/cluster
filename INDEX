@@ -45,3 +45,10 @@ summary.fanny            Summary Method for `fanny' Objects
 summary.mona             Summary Method for `mona' Objects
 summary.pam              Summary Method for `pam' Objects
 twins.object             Hierarchical Clustering Object
+votes.repub              Votes for Republican Candidate in Presidential
+                         Elections
+agriculture              European Union Agricultural Workforces
+ruspini                  Ruspini Data
+animals                  Attributes of Animals
+flower                   Flower Characteristics
+xclara                   Bivariate Data Set with 3 Clusters
