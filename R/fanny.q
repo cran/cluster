@@ -1,10 +1,10 @@
-#### $Id: fanny.q,v 1.9 2002/07/29 08:10:46 maechler Exp $
+#### $Id: fanny.q,v 1.11 2002/09/09 09:38:27 maechler Exp $
 fanny <- function(x, k, diss = inherits(x, "dist"),
-                  metric = "euclidean", stand = FALSE)
+		  metric = "euclidean", stand = FALSE)
 {
     if(diss) {
 	## check type of input vector
-	if(is.na(min(x)))
+	if(any(is.na(x)))
 	    stop("NA-values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") {
 	    if(!is.numeric(x) || is.na(sizeDiss(x)))
@@ -18,33 +18,34 @@ fanny <- function(x, k, diss = inherits(x, "dist"),
 	n <- attr(x, "Size")
 	dv <- as.double(c(x, 0))
 	jp <- 1
-	valmd <- double(1)
-	jtmd <- integer(1)
+	mdata <- FALSE
 	ndyst <- 0
 	x2 <- double(n)
 	jdyss <- 1
     }
     else {
-        ## check input matrix and standardize, if necessary
+	## check input matrix and standardize, if necessary
 	x <- data.matrix(x)
 	if(!is.numeric(x)) stop("x is not a numeric dataframe or matrix.")
-        x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
+	x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
 	## put info about metric, size and NAs in arguments for the Fortran call
 	ndyst <- if(metric == "manhattan") 2 else 1
 	n <- nrow(x2)
 	jp <- ncol(x2)
-	jtmd <- ifelse(is.na(rep(1, n) %*% x2), -1, 1)
-	valmisdat <- min(x2, na.rm=TRUE) - 0.5 #(double) VALue for MISsing DATa
-	x2[is.na(x2)] <- valmisdat
-	valmd <- rep(valmisdat, jp)
-	jdyss <- 0
+	if((mdata <- any(inax <- is.na(x2)))) { # TRUE if x[] has any NAs
+	    jtmd <- as.integer(ifelse(apply(inax, 2, any), -1, 1))
+	    ## VALue for MISsing DATa
+	    valmisdat <- 1.1* max(abs(range(x2, na.rm=TRUE)))
+	    x2[inax] <- valmisdat
+	    valmd <- rep(valmisdat, jp)
+	}
 	dv <- double(1 + (n * (n - 1))/2)
+	jdyss <- 0
     }
     if((k <- as.integer(k)) < 1 || k > n%/%2 - 1)
-        stop("`k' (number of clusters) must be in {1,2, .., n/2 -1}")
+	stop("`k' (number of clusters) must be in {1,2, .., n/2 -1}")
     ## call Fortran routine
     storage.mode(x2) <- "double"
-    storage.mode(jtmd) <- "integer"
     res <- .Fortran("fanny",
 		    as.integer(n),
 		    as.integer(jp),
@@ -52,8 +53,8 @@ fanny <- function(x, k, diss = inherits(x, "dist"),
 		    x2,
 		    dis = dv,
 		    ok = as.integer(jdyss),
-		    valmd,
-		    jtmd,
+		    if(mdata)valmd else double(1),
+		    if(mdata) jtmd else integer(1),
 		    as.integer(ndyst),
 		    integer(n),
 		    integer(n),
@@ -106,23 +107,22 @@ fanny <- function(x, k, diss = inherits(x, "dist"),
     res$coeff <- c(res$eda, res$edb)
     names(res$coeff) <- c("dunn_coeff", "normalized")
 
-    clustering <- list(membership = res$p, coeff = res$coeff,
-                       clustering = res$clu, objective = res$obj,
-                       diss = disv, call = match.call())
+    r <- list(membership = res$p, coeff = res$coeff,
+		       clustering = res$clu, objective = res$obj,
+		       diss = disv, call = match.call())
     if(k != 1) {
 	dimnames(res$silinf) <- list(sildim,
 				     c("cluster", "neighbor", "sil_width", ""))
-	clustering <- c(clustering,
-                        list(silinfo = list(widths = res$silinf[, -4],
-                             clus.avg.widths = res$avsil[1:k],
-                             avg.width = res$ttsil)))
+	r$silinfo <- list(widths = res$silinf[, -4],
+                          clus.avg.widths = res$avsil[1:k],
+                          avg.width = res$ttsil)
     }
     if(!diss) {
-	x2[x2 == valmisdat] <- NA
-	clustering$data <- x2
+	if(mdata) x2[x2 == valmisdat] <- NA
+	r$data <- x2
     }
-    class(clustering) <- c("fanny", "partition")
-    clustering
+    class(r) <- c("fanny", "partition")
+    r
 }
 
 print.fanny <- function(x, ...)

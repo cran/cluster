@@ -7,38 +7,40 @@ cc   using association analysis.
 cc
 cc   list of functions and subroutines:
 cc       function kab
-cc
-      implicit double precision(a-h,o-z)
 
-      integer nn, jpp
-cc          nn = number of objects 
-cc          jpp = number of variables
+c Args
+      integer nn, jpp, jerr
+cc	nn   = number of objects
+cc      jpp  = number of variables
+cc      jerr : error return code in {1,2,3,4}
+      integer kx(nn,jpp), jlack(jpp), nban(nn),ner(nn),kwan(nn),lava(nn)
 
-cc The following vectors and matrices must be dimensioned in the main program:
-      integer nban(nn),ner(nn),kwan(nn),lava(nn)
-      integer jlack(jpp)
-      integer kx(nn,jpp)
-      integer jerr
-cc jerr : error return code in {1,2,3,4}
-
-      integer nzf
+c Function called:
+      integer kab
+c VARs
+      integer j, jpres, ja, jb, jnat, jma, jtel, jtelz, jtel2, jres
+      integer jhalt,jnul,jeen, jptwe
+      integer jva, jvb, jvc, jvd
+      integer k, ka, kb, kal, kalf, kva, kvb, kvc, kvd, km
+      integer l, lbb, laa, lcc, ldd, lee, lack,lama, lams
+      integer nel, nelbb, nzf, nnhal, npass, nclu,nsyn, myst, mysca
 
       lack=0
-      jhalt=0 
+      jhalt=0
       nnhal=(nn+1)/2
-      jptwe=(jpp+4)/5 
+      jptwe=(jpp+4)/5
       myst=0
       do 70 l=1,nn
-         mysca=0 
-         do 60 j=1,jpp 
+         mysca=0
+         do 60 j=1,jpp
             if(kx(l,j).eq.0)go to 60
             if(kx(l,j).eq.1)go to 60
-            mysca=mysca+1 
+            mysca=mysca+1
  60      continue
-         myst=myst+mysca 
+         myst=myst+mysca
          if(mysca .eq. jpp) then
 c     all variables missing for this object
-            jhalt=1 
+            jhalt=1
             jerr=1
          endif
  70   continue
@@ -51,16 +53,16 @@ c     all variables missing for this object
             if(kx(l,j).eq.0)jnul=jnul+1
             if(kx(l,j).eq.1)jeen=jeen+1
  80      continue
-         jlack(j)=nn-jnul-jeen 
+         jlack(j)=nn-jnul-jeen
          if(jlack(j).ne.0)lack=lack+1
          if(jlack(j).ge.nnhal) then
 c     at least 50% of the objects have missing values for this variable
             jhalt=1
             jerr=2
          endif
- 90      if(jnul.eq.0)go to 95 
-         if(jeen.eq.0)go to 95 
-         go to 100 
+ 90      if(jnul.eq.0)go to 95
+         if(jeen.eq.0)go to 95
+         go to 100
 cc   all non missing values are identical for this variable
  95      jhalt=1
          jerr=3
@@ -69,7 +71,7 @@ cc   all non missing values are identical for this variable
 
       jpres=jpp-lack
       if(jpres.eq.0) then
-c     all variables have missing values       
+c     all variables have missing values
          jerr=4
          return
       endif
@@ -78,15 +80,15 @@ cc   filling in missing values
 cc
       do 260 j=1,jpp
          if(jlack(j).eq.0)go to 260
-         lama=-1 
+         lama=-1
          nsyn=1
-         do 240 ja=1,jpp 
-            if(jlack(ja).ne.0)go to 240 
-            jva=0 
-            jvb=0 
-            jvc=0 
-            jvd=0 
-            do 230 k=1,nn 
+         do 240 ja=1,jpp
+            if(jlack(ja).ne.0)go to 240
+            jva=0
+            jvb=0
+            jvc=0
+            jvd=0
+            do 230 k=1,nn
                if(kx(k,j).eq.1)go to 220
                if(kx(k,ja).eq.0)jva=jva+1
                if(kx(k,ja).eq.1)jvb=jvb+1
@@ -97,12 +99,12 @@ cc
             kal=jva*jvd-jvb*jvc
             kalf=kab(kal)
             if(kalf.ge.lama)then
-               lama=kalf 
+               lama=kalf
                jma=ja
                if(kal.lt.0) nsyn=-1
             endif
  240     continue
-         do 250 l=1,nn 
+         do 250 l=1,nn
             if(kx(l,j).eq.0)go to 250
             if(kx(l,j).eq.1)go to 250
             if(nsyn.eq.1)then
@@ -114,14 +116,14 @@ cc
  250     continue
  260  continue
 cc
-cc   initialization 
+cc   initialization
 cc
- 290  do 300 k=1,nn 
-         kwan(k)=0 
+ 290  do 300 k=1,nn
+         kwan(k)=0
          ner(k)=k
-         lava(k)=0 
+         lava(k)=0
  300  continue
-      npass=1 
+      npass=1
       kwan(1)=nn
 cc
 cc   algorithm
@@ -130,7 +132,7 @@ cc
       ka=1
 C --- Loop ---
  310  kb=ka+kwan(ka)-1
-      lama=-1 
+      lama=-1
       jnat=jpp
       do 370 j=1,jpp
          if(nclu.eq.1)go to 330
@@ -143,14 +145,14 @@ C --- Loop ---
  325     continue
          if(jeen.eq.0)go to 370
          if(jnul.eq.0)go to 370
- 330     jnat=jnat-1 
+ 330     jnat=jnat-1
          lams=0
-         do 360 jb=1,jpp 
+         do 360 jb=1,jpp
             if(jb.eq.j)go to 360
-            kva=0 
-            kvb=0 
-            kvc=0 
-            kvd=0 
+            kva=0
+            kvb=0
+            kvc=0
+            kvd=0
             do 350 l=ka,kb
                nel=ner(l)
                if(kx(nel,j).eq.1)go to 340
@@ -162,17 +164,17 @@ C --- Loop ---
  350        continue
             lams=lams+kab(kva*kvd-kvb*kvc)
  360     continue
-         if(lams.le.lama)go to 370 
+         if(lams.le.lama)go to 370
          jtel=kvc+kvd
-         jtelz=kva+kvb 
-         lama=lams 
-         jma=j 
+         jtelz=kva+kvb
+         lama=lams
+         jma=j
  370  continue
       if(jnat.lt.jpp)go to 375
       kwan(ka)=-kwan(ka)
-      go to 400 
+      go to 400
 cc
-cc    splitting 
+cc    splitting
 cc
  375  nel=ner(ka)
       if(kx(nel,jma).eq.1)then
@@ -188,49 +190,47 @@ cc
 c  -- inner loop --
  378  nel=ner(l)
       if(kx(nel,jma).eq.nzf)go to 380
-      l=l+1 
+      l=l+1
       if(l.lt.km)go to 378
-      go to 390 
+      go to 390
 
- 380  do 381 lbb=l,kb 
+ 380  do 381 lbb=l,kb
          nelbb=ner(lbb)
          if(kx(nelbb,jma).eq.nzf)go to 381
-         lcc=lbb-1 
-         go to 382 
+         lcc=lbb-1
+         go to 382
  381  continue
  382  do 383 laa=l,lcc
-         ldd=lcc+l-laa 
-         lee=ldd+1 
-         ner(lee)=ner(ldd) 
+         ldd=lcc+l-laa
+         lee=ldd+1
+         ner(lee)=ner(ldd)
  383  continue
       ner(l)=nelbb
-      go to 378 
+      go to 378
 
- 390  nclu=nclu+1 
+ 390  nclu=nclu+1
       nban(km)=npass
       kwan(ka)=jtel2
       kwan(km)=jres
       lava(km)=jma
       ka=ka+kwan(ka)
- 400  if(kb.eq.nn)go to 500 
- 410  ka=ka+kab(kwan(ka)) 
-      if(ka.gt.nn)go to 500 
+ 400  if(kb.eq.nn)go to 500
+ 410  ka=ka+kab(kwan(ka))
+      if(ka.gt.nn)go to 500
       if(kwan(ka).lt.2)go to 410
-      go to 310 
+      go to 310
 
- 500  npass=npass+1 
+ 500  npass=npass+1
       do 510 ka=1,nn
          if(kwan(ka).ge.2)go to 310
  510  continue
-      end 
-cc  
-cc kab(j) = |j| 
+      end
 cc
-      integer function kab(j) 
-
-      implicit none
+cc kab(j) = |j|
+cc
+      integer function kab(j)
       integer j
-      kab=j 
+      kab=j
       if(j.lt.0) kab=-j
       return
       end

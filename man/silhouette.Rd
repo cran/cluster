@@ -1,0 +1,117 @@
+\name{silhouette}
+\alias{silhouette}
+\alias{silhouette.default}
+\alias{silhouette.partition}
+\alias{sortSilhouette}
+\alias{summary.silhouette}
+\alias{print.summary.silhouette}
+\alias{plot.silhouette}
+\title{Compute or Extract Silhouette Information from Clustering}
+\description{
+  Compute silhouette information according to a given clustering in
+  \eqn{k} clusters.
+}
+\usage{
+silhouette(x, \dots)
+silhouette.default  (x, dist, \dots)
+silhouette.partition(x, \dots)
+
+sortSilhouette(object, \dots)
+\method{summary}{silhouette}(object, FUN = mean, \dots)
+\method{plot}{silhouette}(x, nmax.lab = 40, max.strlen = 5,
+     main = NULL, sub = NULL, xlab = expression("Silhouette width "* s[i]),
+     col = heat.colors(n), cex.names = par("cex.axis"),
+     do.n.k = TRUE, do.clus.stat = TRUE, \dots)
+}
+\arguments{
+  \item{x}{an object of appropriate class; for the \code{default}
+    method an integer vector with cluster codes in \code{1:k} or a list
+    with such an \code{x$clustering} component.}
+  \item{dist}{a dissimilarity object inheriting from class
+    \code{\link{dist}} or coercible to one.}
+  \item{object}{an object of class \code{silhouette}.}
+  \item{\dots}{further arguments passed to and from methods.}
+  \item{FUN}{function used summarize silhouette widths.}
+  \item{nmax.lab}{integer indicating the number of labels which is
+    considered too large for single-name labeling the silhouette plot.}
+  \item{max.strlen}{positive integer giving the length to which
+    strings are truncated in silhouette plot labeling.}
+  \item{main, sub, xlab}{arguments to \code{\link{title}}; have a
+    sensible non-NULL default here.}
+  \item{col, cex.names}{arguments passed \code{\link{barplot}()}.}
+  \item{do.n.k}{logical indicating if \eqn{n} and \eqn{k} ``title text''
+    should be written.}
+  \item{do.clus.stat}{logical indicating if cluster size and averages
+    should be written right to the silhouettes.}
+}
+\details{
+    For each observation i, the \emph{silhouette width} \eqn{s(i)} is
+    defined as follows: \cr
+    Put a(i) = average dissimilarity between i and all other points of the
+    cluster to which i belongs.  For all \emph{other} clusters C, put
+    \eqn{d(i,C)} = average dissimilarity of i to all observations of C.  The
+    smallest of these \eqn{d(i,C)} is \eqn{b(i) := \min_C d(i,C)},
+    and can be seen as the dissimilarity between i and its ``neighbor''
+    cluster, i.e., the nearest one to which it does \emph{not} belong.
+    Finally, \deqn{s(i) := \frac{b(i) - a(i) }{max(a(i), b(i))}}{%
+      s(i) := ( b(i) - a(i) ) / max( a(i), b(i) )}.
+
+    Observations with a large \eqn{s(i)} (almost 1) are very well
+    clustered, a small \eqn{s(i)} (around 0) means that the observation
+    lies between two clusters, and observations with a negative
+    \eqn{s(i)} are probably placed in the wrong cluster.
+}
+\note{
+  While \code{silhouette()} is \emph{intrinsic} to the
+  \code{\link{partition}} clusterings, and hence has a (trivial) method
+  for these, it is straightforward to get silhouettes from hierarchical
+  clusterings from \code{silhouette.default()} with
+  \code{\link{cutree}()} and distance as input.
+}
+\value{
+  \code{silhouette()} returns an object, \code{sil}, of class
+  \code{silhouette} which is an [n x 3] matrix with attributes.  For
+  each observation i, \code{sil[i,]} contains the cluster to which i
+  belongs as well as the neighbor cluster of i (the cluster, not
+  containing i, for which the average dissimilarity between its
+  observations and i is minimal), and the silhouette width \eqn{s(i)} of
+  the observation.  The \code{\link{colnames}} correspondingly are
+  \code{c("cluster", "neighbor", "sil_width")}.
+
+  \code{sortSilhouette(sil)} orders the rows of \code{sil} as in the
+  silhouette plot, by cluster (increasingly) and decreasing silhouette
+  width \eqn{s(i)}.
+  \cr
+  \code{attr(sil, "Ordered")} is a logical indicating if \code{sil} \emph{is}
+  ordered as by \code{sortSilhouette()}. In that case,
+  \code{rownames(sil)} will contain case labels or numbers.
+}
+\references{
+  Rousseeuw, P.J. (1987)
+  Silhouettes: A graphical aid to the interpretation and validation of
+  cluster analysis. \emph{J. Comput. Appl. Math.}, \bold{20}, 53--65.
+
+  chapter 2 of  Kaufman, L. and Rousseeuw, P.J. (1990), see
+  the references in \code{\link{plot.agnes}}.
+}
+\seealso{\code{\link{partition.object}}, \code{\link{plot.partition}}.
+}
+\examples{
+ data(ruspini)
+ pr4 <- pam(ruspini, 4)
+ str(si <- silhouette(pr4))
+ (ssi <- summary(si))
+ plot(si) # silhouette plot
+
+ si2 <- silhouette(pr4$clustering, dist(ruspini, "canberra"))
+ summary(si2) # has small values: "canberra"'s fault
+ plot(si2, nmax= 80, cex.names=0.6)
+
+ ## Silhouette for a hierarchical clustering:
+ ar <- agnes(ruspini)
+ si3 <- silhouette(cutree(ar, k = 5), # k = 4 gave the same as pam() above
+     	           daisy(ruspini))
+ plot(si3, nmax = 80, cex.names = 0.5)
+}
+\keyword{cluster}
+

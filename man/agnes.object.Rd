@@ -14,8 +14,10 @@
 }
 \section{INHERITANCE}{
   The class \code{"agnes"} inherits from \code{"twins"}.
-  Therefore, the generic function \code{pltree} can be used on an
-  \code{agnes} object.
+  Therefore, the generic functions \code{\link{pltree}} and
+  \code{\link[mva]{as.hclust}} are available for \code{agnes} objects.
+  After applying \code{as.hclust()}, all \emph{its} methods are
+  available, of course.
 }
 \value{
   A legitimate \code{agnes} object is a list with the following components:
@@ -35,7 +37,7 @@
   \item{ac}{
     the agglomerative coefficient, measuring the clustering structure of the
     dataset.
-    
+
     For each observation i, denote by m(i) its dissimilarity to the
     first cluster it is merged with, divided by the dissimilarity of the
     merger in the final step of the algorithm.  The \code{ac} is the
@@ -57,15 +59,16 @@
     dissimilarity matrix of the dataset.
   }
   \item{data}{
-    a matrix containing the original or standardized measurements, depending 
+    a matrix containing the original or standardized measurements, depending
     on the \code{stand} option of the function \code{agnes}. If a
     dissimilarity matrix was given as input structure, then this
     component is not available.
   }
 }
 \seealso{
-  \code{\link{agnes}}, \code{\link{diana}}, \code{\link{hclust}},
-  \code{\link{plot.agnes}}, \code{\link{twins.object}}. 
+  \code{\link{agnes}}, \code{\link{diana}},
+  \code{\link[mva]{as.hclust}}, \code{\link[mva]{hclust}},
+  \code{\link{plot.agnes}}, \code{\link{twins.object}}.
 }
 \keyword{cluster}
 

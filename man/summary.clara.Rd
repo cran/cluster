@@ -27,12 +27,15 @@ x <- rbind(cbind(rnorm(400, 0,4), rnorm(400, 0,4)),
 )
 clx5 <- clara(x, 5)
 ## Mis`classification' table:
-table(rep(1:5, each = 400), clx5$clust) # -> 1 "error"
+% R version >= 1.5 :
+% table(rep(1:5, each = 400), clx5$clust) # -> 1 "error"
+table(rep(1:5, rep(400,5)), clx5$clust) # -> 1 "error"
 summary(clx5)
 
 ## Graphically:
 par(mfrow = c(3,1), mgp = c(1.5, 0.6, 0), mar = par("mar") - c(0,0,2,0))
-plot(x, col = rep(2:6, each = 400))
+%>1.5: plot(x, col = rep(2:6, each = 400))
+plot(x, col = rep(2:6, rep(400,5)))
 plot(clx5)
 }
 \keyword{cluster}

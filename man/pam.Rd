@@ -14,7 +14,8 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
 
     In case of a matrix or data frame, each row corresponds to an observation,
     and each column corresponds to a variable.  All variables must be numeric.
-    Missing values (\code{\link{NA}}s) \emph{are} allowed.
+    Missing values (\code{\link{NA}}s) \emph{are} allowed---as long as
+    every pair of observations has at least one case not missing.
 
     In case of a dissimilarity matrix, \code{x} is typically the output
     of \code{\link{daisy}} or \code{\link{dist}}.  Also a vector of
@@ -52,24 +53,28 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
 }
 \details{
   \code{pam} is fully described in chapter 2 of Kaufman and Rousseeuw (1990).
-Compared to the k-means approach in \code{kmeans}, the function \code{pam} has
-the following features: (a) it also accepts a dissimilarity matrix;
-(b) it is more robust because it minimizes a sum of dissimilarities
-instead of a sum of squared euclidean distances; (c) it provides a novel
-graphical display, the silhouette plot (see \code{plot.partition})
-which also allows to select the number of clusters.
+  Compared to the k-means approach in \code{kmeans}, the function \code{pam} has
+  the following features: (a) it also accepts a dissimilarity matrix;
+  (b) it is more robust because it minimizes a sum of dissimilarities
+  instead of a sum of squared euclidean distances; (c) it provides a novel
+  graphical display, the silhouette plot (see \code{plot.partition})
+  (d) it allows to select the number of clusters (from component
+  \code{silinfo} of the return value, see \code{\link{pam.object}}).
 
-The \code{pam}-algorithm is based on the search for \code{k} representative objects or
-medoids among the observations of the dataset. These observations should
-represent the structure of the data. After finding a set of \code{k} medoids,
-\code{k} clusters are constructed by assigning each observation to the nearest
-medoid. The goal is to find \code{k} representative objects which minimize the
-sum of the dissimilarities of the observations to their closest representative
-object.\cr
-The algorithm first looks for a good initial set of medoids (this is called
-the BUILD phase). Then it finds a local minimum for the objective function,
-that is, a solution such that there is no single switch of an observation with
-a medoid that will decrease the objective (this is called the SWAP phase).
+  The \code{pam}-algorithm is based on the search for \code{k}
+  representative objects or medoids among the observations of the
+  dataset. These observations should represent the structure of the
+  data. After finding a set of \code{k} medoids, \code{k} clusters are
+  constructed by assigning each observation to the nearest medoid. The
+  goal is to find \code{k} representative objects which minimize the sum
+  of the dissimilarities of the observations to their closest
+  representative object.
+  \cr
+  The algorithm first looks for a good initial set of medoids (this is
+  called the BUILD phase). Then it finds a local minimum for the
+  objective function, that is, a solution such that there is no single
+  switch of an observation with a medoid that will decrease the
+  objective (this is called the SWAP phase).
 }
 \note{
   For datasets larger than (say) 200 observations, \code{pam} will take a lot of

@@ -59,7 +59,7 @@ c
 
       integer nn, jpp, ndyst, jtmd(jpp), jhalt
       double precision x(nn,jpp), dys(1+nn*(nn-1)/2), valmd(jpp)
-
+c VARs
       integer nlk,j,l,k, lsubt, npres
       double precision pp, clk, rpres
 
@@ -349,6 +349,8 @@ c              l*-cluster
  300  end
 c     -----------------------------------------------------------
 c
+c Compute Silhouette Information :
+c
       subroutine dark(kk,nn,hh,ncluv,nsend,nelem,negbr,
      f     syl,srank,avsyl,ttsyl,dys,s,sylinf)
 
@@ -384,8 +386,10 @@ c
                   do 43 l=1,nn
                      if(ncluv(l).eq.nclu)then
                         nbb=nbb+1
-                        mjl=meet(nj,l)
-                        db=db+dys(mjl)
+                        if(l .ne. nj) then
+                           mjl=meet(nj,l)
+                           db=db+dys(mjl)
+                        endif
                      endif
  43               continue
                   btt=nbb
@@ -401,8 +405,10 @@ c
                dysa=0.0
                do 45 l=1,ntt
                   nl=nelem(l)
-                  njl=meet(nj,nl)
-                  dysa=dysa+dys(njl)
+                  if(nj .ne. nl) then
+                     njl=meet(nj,nl)
+                     dysa=dysa+dys(njl)
+                  endif
  45            continue
                dysa=dysa/(ntt - 1)
                if(dysa.gt.0.0)then

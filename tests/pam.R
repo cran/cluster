@@ -1,5 +1,8 @@
 library(cluster)
 
+(x <- cbind((-3:4)^2, c(0:6,NA), c(1,2,NA,7,NA,8:9,8)))
+pam(x,2, metric="manhattan")
+
 ## generate 250 objects, divided into 2 clusters.
 set.seed(625)
 x <- rbind(cbind(rnorm(120, 0,8), rnorm(120, 0,8)),

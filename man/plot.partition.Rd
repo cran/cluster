@@ -4,7 +4,7 @@
 \description{Creates plots for visualizing a \code{partition} object.}
 \usage{
 plot.partition(x, ask = FALSE, which.plots = NULL,
-               nmax.lab = 40, max.strlen = 5,
+               nmax.lab = 40, max.strlen = 5, data = x$data,
 	       cor = TRUE, stand = FALSE, lines = 2,
 	       shade = FALSE, color = FALSE, labels = 0, plotchar = TRUE,
 	       span = TRUE, xlim = NULL, ylim = NULL, \dots)
@@ -20,6 +20,8 @@ plot.partition(x, ask = FALSE, which.plots = NULL,
     \emph{silhouette}.}
   \item{nmax.lab}{integer indicating the number of labels which is
     considered too large for single-name labeling the banner plot.}
+  \item{data}{numeric matrix with the scaled data; per default taken
+    from the partition object \code{x}, but can be specified explicitly.}
   \item{max.strlen}{positive integer giving the length to which
     strings are truncated in banner plot labeling.}
   \item{cor,stand,lines,shade,color,labels,plotchar,span,xlim,ylim, \dots}{
@@ -35,42 +37,37 @@ plot.partition(x, ask = FALSE, which.plots = NULL,
  \cr Silhouette plot
 }
 \details{
-When \code{ask= TRUE}, rather than producing each plot sequentially,
-\code{plot.partition} displays a menu listing all the plots that can be produced.
-If the menu is not desired but a pause between plots is still wanted
-one must set \code{par(ask= TRUE)} before invoking the plot command.
+  When \code{ask= TRUE}, rather than producing each plot sequentially,
+  \code{plot.partition} displays a menu listing all the plots that can
+  be produced.
+  If the menu is not desired but a pause between plots is still wanted,
+  call \code{par(ask= TRUE)} before invoking the plot command.
 
-The clusplot of a cluster partition consists of a two-dimensional
-representation of the observations, in which the clusters are
-indicated by ellipses. (See clusplot.partition for more details.)
+  The \emph{clusplot} of a cluster partition consists of a two-dimensional
+  representation of the observations, in which the clusters are
+  indicated by ellipses (see \code{\link{clusplot.partition}} for more
+  details).
 
-The silhouette plot of a nonhierarchical clustering is fully described in
-Rousseeuw (1987) and in chapter 2 of Kaufman and Rousseeuw (1990).
-For each observation i, a bar is drawn, representing the silhouette width s(i)
-of the observation. Observations are grouped per cluster, starting with
-cluster 1 at the top. Observations with a large s(i) (almost 1) are very well
-clustered, a small s(i) (around 0) means that the observation lies between
-two clusters, and observations with a negative s(i) are probably placed in
-the wrong cluster.
-A clustering can be performed for several values of \code{k} (the number of
-clusters). Finally, choose the value of \code{k} with the largest overall
-average silhouette width.
+  The \emph{silhouette plot} of a nonhierarchical clustering is fully
+  described in Rousseeuw (1987) and in chapter 2 of Kaufman and
+  Rousseeuw (1990).
+  For each observation i, a bar is drawn, representing its silhouette
+  width s(i), see \code{\link{silhouette}} for details.
+  Observations are grouped per cluster, starting with cluster 1 at the
+  top.  Observations with a large s(i) (almost 1) are very well
+  clustered, a small s(i) (around 0) means that the observation lies
+  between two clusters, and observations with a negative s(i) are
+  probably placed in the wrong cluster.
 
-The silhouette width is computed as follows:
-Put a(i) = average dissimilarity between i and all other points of the
-cluster to which i belongs. For all clusters C, put d(i,C) = average
-dissimilarity of i to all observations of C. The smallest of these d(i,C) is
-denoted as b(i), and can be seen as the dissimilarity between i and its
-neighbor cluster. Finally, put s(i) = ( b(i) - a(i) ) / max( a(i), b(i) ).
-The overall average silhouette width is then simply the average of s(i) over
-all observations i.
+  A clustering can be performed for several values of \code{k} (the number of
+  clusters).  Finally, choose the value of \code{k} with the largest overall
+  average silhouette width.
 }
 \note{
-  In the silhouette plot,
-  observation labels are only printed when the number of observations is
-  limited less than \code{nmax.lab} (35, by default), for readability.
-  Moreover, observation labels are truncated to maximally
-  \code{max.strlen} (5) characters.
+  In the silhouette plot, observation labels are only printed when the
+  number of observations is less than \code{nmax.lab} (40, by default),
+  for readability.  Moreover, observation labels are truncated to
+  maximally \code{max.strlen} (5) characters.
 }
 \references{
   Rousseeuw, P.J. (1987)
@@ -91,6 +88,12 @@ all observations i.
 x <- rbind(cbind(rnorm(10,0,0.5), rnorm(10,0,0.5)),
            cbind(rnorm(15,5,0.5), rnorm(15,5,0.5)))
 plot(pam(x, 2))
+
+## Save space not keeping data in clus.object, and still clusplot() it:
+data(xclara)
+cx <- clara(xclara, 3, keepdata = FALSE)
+cx$data # is NULL
+plot(cx, data = xclara)
 }
 \keyword{cluster}
 \keyword{hplot}

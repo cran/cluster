@@ -1,13 +1,11 @@
-% %Z%%M% version %I% created %G%
-% %Z%%Q%
 \name{twins.object}
 \alias{twins.object}
+\alias{twins}% == class
 \title{Hierarchical Clustering Object}
 }
 \description{
-  The objects of class \code{"twins"}
-  represent an agglomerative or divisive (polythetic) hierarchical 
-  clustering of a dataset.
+  The objects of class \code{"twins"} represent an agglomerative or
+  divisive (polythetic) hierarchical clustering of a dataset.
 }
 \section{GENERATION}{
   This class of objects is returned from \code{agnes} or \code{diana}.
@@ -26,4 +24,3 @@
 \seealso{\code{\link{agnes}},\code{\link{diana}}.
 }
 \keyword{cluster}
-% Converted by Sd2Rd version 0.3-2.

@@ -7,6 +7,12 @@ if(interactive()) {
     (verC <- readLines(Dfile <- file.path(pkgPath, "DESCRIPTION"), n = 2)[2])
 }
 
+## trivial cases should `work':
+daisy(cbind(1))
+(d10 <- daisy(matrix(0., 1,0))); str(d10)
+(d01 <- daisy(matrix(0., 0,1))); str(d01)
+
+
 str(d5 <- data.frame(a= c(0, 0, 0,1,0,0, 0,0,1, 0,NA),
                      b= c(NA,0, 1,1,0,1, 0,1,0, 1,0),
                      c= c(0, 1, 1,0,1,NA,1,0,1, 0,NA),

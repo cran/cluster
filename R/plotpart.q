@@ -1,31 +1,19 @@
-### $Id: plotpart.q,v 1.13 2002/07/27 21:31:15 maechler Exp $
+### $Id: plotpart.q,v 1.17 2002/09/09 09:39:34 maechler Exp $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
-         nmax.lab = 40, max.strlen = 5,
+         nmax.lab = 40, max.strlen = 5, data = x$data,
          cor = TRUE, stand = FALSE, lines = 2,
          shade = FALSE, color = FALSE, labels = 0, plotchar = TRUE,
          span = TRUE, xlim = NULL, ylim = NULL, ...)
 {
-    silhouPlot <- function(x, nmax.lab, max.strlen) {
-        if(length(x$silinfo) == 0)
-            stop("No silhouette plot available when the number of clusters equals 1." )
-        s <- rev(x$silinfo[[1]][, 3])
-        space <- c(0, rev(diff(x$silinfo[[1]][, 1])))
-        space[space != 0] <- 0.5
-        names <- if(length(s) < nmax.lab)
-            substring(rev(dimnames(x$silinfo[[1]])[[1]]), 1, max.strlen)
-        barplot(s, space = space, names = names,
-                xlab = "Silhouette width",
-                xlim = c(min(0, min(s)), 1), horiz = TRUE,
-                mgp = c(2.5, 1, 0), ...)
-        title(main = paste("Silhouette plot of ",
-              deparse(x$call)),
-              sub = paste("Average silhouette width : ",
-              round(x$ silinfo$avg.width, digits = 2)), adj = 0)
-    }
-
+    if(is.null(x$data))# data not kept
+        x$data <- data
     if(is.null(which.plots) && !ask)
-        which.plots <- 1:2
+        which.plots <- { ## Default: no clusplot if data not kept nor specified:
+            if(inherits(x, "clara") && is.null(x$data))
+                2
+            else 1:2
+        }
     if(ask && is.null(which.plots)) { ## Use `menu' ..
         tmenu <- paste("plot ", ## choices :
                        c("All", "Clusplot", "Silhouette Plot"))
@@ -44,7 +32,7 @@ function(x, ask = FALSE, which.plots = NULL,
                             plotchar = plotchar, span = span,
                             xlim = xlim, ylim = ylim, ...)
                    ,
-                   silhouPlot(x, nmax.lab, max.strlen)
+                   plot(silhouette(x), nmax.lab, max.strlen)
                    )
             if(do.all) { pick <- pick + 1; do.all <- pick <= length(tmenu) + 1}
         }
@@ -59,7 +47,7 @@ function(x, ask = FALSE, which.plots = NULL,
                         plotchar = plotchar, span = span,
                         xlim = xlim, ylim = ylim, ...)
                ,
-               silhouPlot(x, nmax.lab, max.strlen)
+               plot(silhouette(x), nmax.lab, max.strlen)
                )
     }
     invisible()
@@ -78,7 +66,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
          ...)
 {
     if(paste(R.version$major, R.version$minor, sep=".") < 1.5) {
-        ## a simplified (add = T) version of R 1.5's cmdscale():
+        ## a simplified (add = T) version of R 1.5's cmdscale(), s/La.eigen/eigen/
         cmdscale <- function (d, k = 2, add = TRUE, ...) {
             if (any(is.na(d)))
                 stop("NA values not allowed in d")
@@ -106,13 +94,13 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
                 Z[cbind(i2,i)] <- -1
                 Z[ i, i2] <- -x
                 Z[i2, i2] <- .C("dblcen", x= 2*d, as.integer(n),PACKAGE="mva")$x
-                e <- La.eigen(Z,symmetric = FALSE, only.val = TRUE)$values
+                e <- eigen(Z,symmetric = FALSE, only.val = TRUE)$values
                 add.c <- max(Re(e))
                 x <- matrix(double(n*n), n, n)
                 non.diag <- row(d) != col(d)
                 x[non.diag] <- (d[non.diag] + add.c)^2
             }
-            e <- La.eigen(-x/2, symmetric = TRUE)
+            e <- eigen(-x/2, symmetric = TRUE)
             ev <- e$values[1:k]
             points <- e$vectors[, 1:k] %*% diag(sqrt(ev), k)
             rn <- if(is.matrix(d)) rownames(d) else names(d)
@@ -330,20 +318,20 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
                 if(verbose)
                     cat("span & rank2 : calling \"spannel\" ..\n")
                 k <- as.integer(2)
-                res <- .Fortran("spannel",
-                                aantal,
-                                ndep= k,
-                                dat = cbind(1., x),
-                                sqdist = double(aantal),
-                                l1 = double((k+1) ^ 2),
-                                double(k),
-                                double(k),
-                                prob = double(aantal),
-                                double(k+1),
-                                eps = as.double(0.01),## convergence tol.
-                                maxit = as.integer(5000),
-                                ierr = as.integer(0),
-                                PACKAGE = "cluster")
+		res <- .C("spannel",
+			  aantal,
+			  ndep= k,
+			  dat = cbind(1., x),
+			  sqdist = double(aantal),
+			  l1 = double((k+1) ^ 2),
+			  double(k),
+			  double(k),
+			  prob = double(aantal),
+			  double(k+1),
+			  eps = (0.01),## convergence tol.
+			  maxit = as.integer(5000),
+			  ierr = integer(1),
+			  PACKAGE = "cluster")
                 if(res$ierr != 0)
                     ## MM : exactmve not available here !
                     cat("Error in Fortran routine for the spanning ellipsoid,",
@@ -393,20 +381,13 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
             maxy <- x1[1, 2] + 1
         }
     }
-    if(!is.null(xlim)) {
-        if(xlim[1] < minx) minx <- xlim[1]
-        if(xlim[2] > maxx) maxx <- xlim[2]
-    }
-    if(!is.null(ylim)) {
-        if(ylim[1] < miny) miny <- ylim[1]
-        if(ylim[2] > maxy) maxy <- ylim[2]
-    }
-
+    if(is.null(xlim)) xlim <- c(minx,maxx)
+    if(is.null(ylim)) ylim <- c(miny,maxy)
     if(length(col.p) < n) col.p <- rep(col.p, length= n)
 
     ## --- Now plotting starts ---
 
-    plot(x1[, 1], x1[, 2], xlim = c(minx, maxx), ylim = c(miny, maxy),
+    plot(x1[, 1], x1[, 2], xlim = xlim, ylim = ylim,
          xlab = "Component 1", ylab = "Component 2",
          main = main,
          type = if(plotchar) "n" else "p", # if(plotchar) add points later
@@ -538,6 +519,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
         }
         else {
             Stext <- function(xy, labs, ...) {
+                ## FIXME: these displacements are not quite ok!
                 xy[, 1] <- xy[, 1] + (maxx - minx)/130
                 xy[, 2] <- xy[, 2] + (maxy - miny)/50
                 text(xy, labels = labs, ...)
@@ -562,5 +544,4 @@ clusplot.partition <- function(x, main = NULL, ...)
        (!any(is.na(x$data)) || data.class(x) == "clara"))
 	clusplot.default(x$data, x$clustering, diss = FALSE, main = main, ...)
     else clusplot.default(x$diss, x$clustering, diss = TRUE, main = main, ...)
-
 }

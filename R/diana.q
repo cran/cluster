@@ -1,11 +1,11 @@
-### $Id: diana.q,v 1.10 2002/07/29 08:10:46 maechler Exp $
+### $Id: diana.q,v 1.11 2002/09/03 17:00:17 maechler Exp maechler $
 
 diana <- function(x, diss = inherits(x, "dist"),
-                  metric = "euclidean", stand = FALSE)
+		  metric = "euclidean", stand = FALSE)
 {
     if(diss) {
 	## check type of input vector
-	if(is.na(min(x)))
+	if(any(is.na(x)))
 	    stop("NA-values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") {
 	    if(!is.numeric(x) || is.na(sizeDiss(x)))
@@ -20,23 +20,25 @@ diana <- function(x, diss = inherits(x, "dist"),
 	## prepare arguments for the Fortran call
 	dv <- c(0., dv)# double
 	jp <- as.integer(1)
-	valmd <- double(1)
-	jtmd <- integer(1)
+	mdata <- FALSE
 	ndyst <- 0
 	x2 <- double(n)
     }
     else {
-        ## check input matrix and standardize, if necessary
+	## check input matrix and standardize, if necessary
 	x <- data.matrix(x)
 	if(!is.numeric(x)) stop("x is not a numeric dataframe or matrix.")
-        x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
+	x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
 	ndyst <- if(metric == "manhattan") 2 else 1
 	n <- nrow(x2)
 	jp <- ncol(x2)
-	jtmd <- as.integer(ifelse(is.na(rep(1, n) %*% x2), -1, 1))
-	valmisdat <- min(x2, na.rm=TRUE) - 0.5 #(double) VALue for MISsing DATa
-	x2[is.na(x2)] <- valmisdat
-	valmd <- rep(valmisdat, jp)
+	if((mdata <- any(inax <- is.na(x2)))) { # TRUE if x[] has any NAs
+	    jtmd <- as.integer(ifelse(apply(inax, 2, any), -1, 1))
+	    ## VALue for MISsing DATa
+	    valmisdat <- 1.1* max(abs(range(x2, na.rm=TRUE)))
+	    x2[inax] <- valmisdat
+	    valmd <- rep(valmisdat, jp)
+	}
 	dv <- double(1 + (n * (n - 1))/2)
     }
     res <- .Fortran("twins",
@@ -46,16 +48,16 @@ diana <- function(x, diss = inherits(x, "dist"),
 		    dv,
 		    dis = double(1 + (n * (n - 1))/2),
 		    ok = as.integer(diss), # = jdyss
-		    valmd,
-		    jtmd,
+		    if(mdata)valmd else double(1),
+		    if(mdata) jtmd else integer(1),
 		    as.integer(ndyst),
-                    as.integer(2),# jalg = 2 <==> DIANA
+		    as.integer(2),# jalg = 2 <==> DIANA
 		    as.integer(0),# ~ method
 		    integer(n),
 		    ner = integer(n),
 		    ban = double(n),
 		    dc = as.double(0),
-                    merge = matrix(0:0, n - 1, 2), # integer
+		    merge = matrix(0:0, n - 1, 2), # integer
 		    PACKAGE = "cluster")
     if(!diss) {
 	## give warning if some dissimilarities are missing.
@@ -85,7 +87,7 @@ diana <- function(x, diss = inherits(x, "dist"),
     if(exists("order.lab"))
 	clustering$order.lab <- order.lab
     if(!diss) {
-	x2[x2 == valmisdat] <- NA
+	if(mdata) x2[x2 == valmisdat] <- NA
 	clustering$data <- x2
     }
     class(clustering) <- c("diana", "twins")

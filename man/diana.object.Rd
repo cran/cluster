@@ -29,18 +29,18 @@
   }
   \item{order.lab}{
     a vector similar to \code{order}, but containing observation labels
-    instead of observation numbers. This component is only available if
+    instead of observation numbers.  This component is only available if
     the original observations were labelled.
   }
   \item{height}{a vector with the diameters of the clusters prior to splitting.
   }
   \item{dc}{
     the divisive coefficient, measuring the clustering structure of the
-    dataset.  For each observation i, denote by d(i) the diameter of the
+    dataset.  For each observation i, denote by \eqn{d(i)} the diameter of the
     last cluster to which it belongs (before being split off as a single
     observation), divided by the diameter of the whole dataset.  The
-    \code{dc} is the average of all 1 - d(i).  It can also be seen as the
-    average width (or the percentage filled) of the banner plot.
+    \code{dc} is the average of all \eqn{1 - d(i)}.  It can also be seen
+    as the average width (or the percentage filled) of the banner plot.
     Because \code{dc} grows with the number of observations, this
     measure should not be used to compare datasets of very different
     sizes.
@@ -48,8 +48,8 @@
   \item{merge}{
     an (n-1) by 2 matrix, where n is the number of
     observations. Row i of \code{merge} describes the split at step n-i of
-    the clustering. If a number j in row r is negative, then the single
-    observation |j| is split off at stage n-r. If j is positive, then the
+    the clustering. If a number \eqn{j} in row r is negative, then the single
+    observation \eqn{|j|} is split off at stage n-r. If j is positive, then the
     cluster that will be splitted at stage n-j (described by row j), is
     split off at stage n-r.
   }
@@ -58,9 +58,10 @@
     dissimilarity matrix of the dataset.
   }
   \item{data}{
-a matrix containing the original or standardized measurements, depending
-on the \code{stand} option of the function \code{agnes}. If a dissimilarity matrix was
-given as input structure, then this component is not available.
+    a matrix containing the original or standardized measurements, depending
+    on the \code{stand} option of the function \code{agnes}.  If a
+    dissimilarity matrix was given as input structure, then this component
+    is not available.
   }
 }
 \seealso{

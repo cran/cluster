@@ -7,7 +7,7 @@
 }
 \usage{
 clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
-      sampsize = 40 + 2 * k)
+      sampsize = 40 + 2 * k, trace = 0, keepdata = TRUE)
 }
 \arguments{
   \item{x}{
@@ -34,6 +34,12 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
   \item{sampsize}{integer, number of observations in each
     sample. \code{sampsize} should be higher than the number of clusters
     (\code{k}) and at most the number of observations (n = \code{nrow(x)}).}
+  \item{trace}{integer indicating a \emph{trace level} for diagnostic
+    output during the algorithm.}
+  \item{keepdata}{logical indicating if the (\emph{scaled} if
+    \code{stand} is true) data should be kept in the result.
+    Setting this to \code{FALSE} saves memory (and hence time), but
+    disables \code{\link{clusplot}()}ing of the result.}
 }
 \value{
   an object of class \code{"clara"} representing the clustering.  See

@@ -9,7 +9,7 @@
 }
 \usage{
 ellipsoidhull(x, tol=0.01, maxit=5000,
-              ret.wt = FALSE, ret.sqdist = FALSE)
+              ret.wt = FALSE, ret.sqdist = FALSE, ret.pr = FALSE)
 \method{print}{ellipsoid}(x, digits = NULL, \dots)
 }
 \arguments{
@@ -20,11 +20,11 @@ ellipsoidhull(x, tol=0.01, maxit=5000,
     iterations needed, and you may want to increas \code{maxit} as well.}
   \item{maxit}{integer giving the maximal number of iteration steps for
     the algorithm.}
-  \item{ret.wt, ret.sqdist}{logicals indicating if additional
+  \item{ret.wt, ret.sqdist, ret.pr}{logicals indicating if additional
     information should be returned, \code{ret.wt} specifying the
-    \emph{weights} and \code{ret.sqdist} the \emph{\bold{sq}uared
-      \bold{dist}ances}.}
-
+    \emph{weights}, \code{ret.sqdist} the \emph{\bold{sq}uared
+      \bold{dist}ances} and \code{ret.pr} the final \bold{pr}obabilities
+    in the algorithms.}
   \item{digits,\dots}{the usual arguments to \code{\link{print}} methods.}
 }
 \details{
@@ -44,6 +44,14 @@ ellipsoidhull(x, tol=0.01, maxit=5000,
   \item{d2}{average squared radius.}
   \item{wt}{the vector of weights iff \code{ret.wt} was true.}
   \item{sqdist}{the vector of squared distances iff \code{ret.sqdist} was true.}
+  \item{prob}{the vector of algorithm probabilities iff \code{ret.pr} was true.}
+  \item{it}{number of iterations used.}
+  \item{tol, maxit}{just the input argument, see above.}
+  \item{eps}{the achieved tolerance which is the maximal squared radius
+    minus \eqn{p}.}
+  \item{ierr}{error code as from the algorithm; \code{0} means \emph{ok}.}
+  \item{conv}{logical indicating if the converged.  This is defined as
+    \code{it < maxit && ierr == 0}.}
 }
 \references{
   Pison, G., Struyf, A. and Rousseeuw, P.J. (1999)

@@ -1,6 +1,6 @@
 
 R : Copyright 2002, The R Development Core Team
-Version 1.6.0 Under development (unstable) (2002-07-29)
+Version 1.6.0 Under development (unstable) (2002-09-03)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -24,6 +24,33 @@ Loading required package: mva
 +     (pkgPath <- .find.package("cluster", verbose = TRUE))
 +     (verC <- readLines(Dfile <- file.path(pkgPath, "DESCRIPTION"), n = 2)[2])
 + }
+> 
+> ## trivial cases should `work':
+> daisy(cbind(1))
+Dissimilarities :
+numeric(0)
+
+Metric :  euclidean 
+Number of objects : 1
+> (d10 <- daisy(matrix(0., 1,0))); str(d10)
+Dissimilarities :
+numeric(0)
+
+Metric :  euclidean 
+Number of objects : 1
+Classes 'dissimilarity', 'dist'  atomic (0) 
+  ..- attr(*, "Size")= int 1
+  ..- attr(*, "Metric")= chr "euclidean"
+> (d01 <- daisy(matrix(0., 0,1))); str(d01)
+Dissimilarities :
+numeric(0)
+
+Metric :  euclidean 
+Number of objects : 0
+Classes 'dissimilarity', 'dist'  atomic (0) 
+  ..- attr(*, "Size")= int 0
+  ..- attr(*, "Metric")= chr "euclidean"
+> 
 > 
 > str(d5 <- data.frame(a= c(0, 0, 0,1,0,0, 0,0,1, 0,NA),
 +                      b= c(NA,0, 1,1,0,1, 0,1,0, 1,0),

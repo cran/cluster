@@ -1,6 +1,6 @@
 
 R : Copyright 2002, The R Development Core Team
-Version 1.6.0 Under development (unstable) (2002-07-29)
+Version 1.6.0 Under development (unstable) (2002-09-03)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -15,6 +15,31 @@ Type `q()' to quit R.
 
 > library(cluster)
 Loading required package: mva 
+> 
+> (x <- cbind((-3:4)^2, c(0:6,NA), c(1,2,NA,7,NA,8:9,8)))
+     [,1] [,2] [,3]
+[1,]    9    0    1
+[2,]    4    1    2
+[3,]    1    2   NA
+[4,]    0    3    7
+[5,]    1    4   NA
+[6,]    4    5    8
+[7,]    9    6    9
+[8,]   16   NA    8
+> pam(x,2, metric="manhattan")
+Medoids:
+     [,1] [,2] [,3]
+[1,]    4    1    2
+[2,]    4    5    8
+Clustering vector:
+[1] 1 1 1 2 2 2 2 2
+Objective function:
+build  swap 
+6.375 6.375 
+
+Available components:
+[1] "medoids"    "clustering" "objective"  "isolation"  "clusinfo"  
+[6] "silinfo"    "diss"       "call"       "data"      
 > 
 > ## generate 250 objects, divided into 2 clusters.
 > set.seed(625)
@@ -306,7 +331,7 @@ Average silhouette width per cluster:
 Average silhouette width of total data set:
 [1] 0.7310283
 
-6 dissimilarities, summarized :
+31125 dissimilarities, summarized :
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   0.022  13.060  32.140  33.060  52.110  86.380 
 Metric :  euclidean 
@@ -428,7 +453,7 @@ Average silhouette width per cluster:
 Average silhouette width of total data set:
 [1] 0.737657
 
-6 dissimilarities, summarized :
+2775 dissimilarities, summarized :
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   1.414  40.110  75.590  71.540  99.170 154.500 
 Metric :  euclidean 
@@ -587,7 +612,7 @@ Average silhouette width per cluster:
 Average silhouette width of total data set:
 [1] 0.1147212
 
-6 dissimilarities, summarized :
+1225 dissimilarities, summarized :
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   17.20   48.34   64.68   82.23  105.50  282.00 
 Metric :  euclidean 
@@ -703,6 +728,6 @@ Available components:
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  0.31 0.03 0.36 0 0 
+Time elapsed:  0.31 0.04 0.4 0 0 
 > 
 > 

@@ -125,8 +125,8 @@
   \item{col.clus}{color code for the ellipses (and their labels);
     only one if color is false (as per default).}
 
-  \item{xlim, ylim}{length 2 vectors giving the x- and y- ranges as in
-    \code{\link{plot.default}}.}
+  \item{xlim, ylim}{numeric vectors of length 2, giving the x- and y-
+    ranges as in \code{\link{plot.default}}.}
   \item{main}{main title for the plot; by default, one is constructed.}
   \item{verbose}{a logical indicating, if there should be extra
     diagnostic output; mainly for `debugging'.}
@@ -209,16 +209,28 @@ clusplot(votes.diss, votes.clus, diss = TRUE, span = FALSE)# simple ellipses
 
 if(interactive()) { #  uses identify() *interactively* :
   clusplot(votes.diss, votes.clus, diss = TRUE, shade = TRUE, labels = 1)
-  clusplot(votes.diss, votes.clus, labels = 5)# ident. only points
+  clusplot(votes.diss, votes.clus, diss = TRUE, labels = 5)# ident. only points
 }
 
 ## plotting iris (data frame) in a 2-dimensional plot and partitioning
 ## into 3 clusters.
 data(iris)
 iris.x <- iris[, 1:4]
-clusplot(iris.x, pam(iris.x, 3)$clustering, diss = FALSE,
-         plotchar = TRUE, color = TRUE)
+cl3 <- pam(iris.x, 3)$clustering
+op <- par(mfrow= c(2,2))
+clusplot(iris.x, cl3, color = TRUE)
+U <- par("usr")
+## zoom in :
+rect(0,-1, 2,1, border = "orange", lwd=2)
+clusplot(iris.x, cl3, color = TRUE, xlim = c(0,2), ylim = c(-1,1))
+box(col="orange",lwd=2); mtext("sub region", font = 4, cex = 2)
+##  or zoom out :
+clusplot(iris.x, cl3, color = TRUE, xlim = c(-4,4), ylim = c(-4,4))
+mtext("`super' region", font = 4, cex = 2)
+rect(U[1],U[3], U[2],U[4], lwd=2, lty = 3)
+
+# reset graphics
+par(op)
 }
 \keyword{cluster}
 \keyword{hplot}
-% Converted by Sd2Rd version 0.3-2.

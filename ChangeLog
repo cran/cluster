@@ -1,3 +1,101 @@
+2002-09-09  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.6-1 ==> for CRAN and R 1.6.0
+
+2002-09-07  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/silhouette.R (silhouette): New class, generic generator, methods;
+		particularly, plot.silhouette() was plot.partition internal.
+		improve documentation about silhouette info; update
+	* R/clara.q:
+	* R/plotpart.q (plot.partition):
+
+2002-09-06  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/partition.object.Rd,
+	* man/pam.object.Rd, man/clara.object.Rd, man/fanny.object.Rd,
+	* man/plot.partition.Rd:
+	reorganize documentation on silhouette information, thanks to
+	thoughts from Christian Hennig.
+
+2002-09-04  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+        * man/agnes.object.Rd: mention as.hclust() properly
+
+	* src/spannel.c (spannel): bail out also when *last* deter became <= 0
+	* tests/ellipsoid-ex.R (and *.Rout.save): updated
+
+	* DESCRIPTION (Version): 1.6-0
+
+	* R/zzz.R: dev.interactive(), warnings(),... for old R versions
+	* man/summary.clara.Rd: make example run for R versions < 1.5.0
+
+2002-09-03  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/plotpart.q (plot.partition): new `data' argument and
+	smart `which.plots' default for clara(*, keep = FALSE)
+
+	* R/daisy.q (summary.dissimilarity): fix ``number of dissim''
+
+	* R/*.q: 1) use apply(inax,2, any)--- really want colNAs()
+	         2) use better "valmisdat" (missing value).
+
+	* tests/dysta-ex.R (dysta): new file, explore "dysta" & "dysta3"
+	in Fortran
+
+	* src/fanny.f: get rid of many gotos
+
+2002-09-02  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/fanny-ex.R: and ...Rout.save : new files
+
+	* src/twins.f (twins): drop dysta4(), use dysta() from pam.f
+
+2002-08-31  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.5-4  -- have achieved something {want more}
+
+	* src/clara.c (clara): finally found and fixed the rare segfault bug:
+	   jran == 1 was wrong test (when 1st sample was unusable)
+
+	   (randm): faster implementation of primitive RNG
+
+	* src/spannel.c: new translated from src/spannel.f
+	  in order to debug the compiler-dependent outputs in
+	* tests/ellipsoid-ex.Rout.save  etc
+	* tests/sweep-ex.R (.C)
+
+2002-08-30  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/clara.c (clara):
+	* man/clara.object.Rd:
+	* R/clara.q: new argument `keepdata' and `trace'
+
+	* R/plotpart.q (clusplot.default): xlim, ylim: believe user
+
+2002-08-27  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/clara.c (clara): new file, translated from Fortran; easier
+	to debug the (rare!) seg.fault. "make check fine"
+
+	* DESCRIPTION (Depends): R >= 1.2
+	* R/plothier.q (pltree.twins): (drop code for R version < 1.2.0)
+
+2002-08-23  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.5-3 {released only locally}
+
+	* R/plotpart.q (clusplot.default): xlim, ylim had "<" and ">" reversed
+	* man/clusplot.default.Rd: fix interactive(), add x- and ylim example
+
+2002-08-02  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/twins.f (twins) et al:
+	* src/fanny.f (fanny) et al:
+	* src/mona.f (mona):
+	* src/daisy.f (daisy): explicit instead of "implicit" var.declaration
+	* src/spannel.f (spannel) et al: no "implicit none"
+
 2002-07-29  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.5-2
