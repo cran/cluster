@@ -1,3 +1,8 @@
+2004-06-18  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.9.3 {only change = below}
+	* src/ind_2.h (ind_2): use __inline__ only for gcc (__GNUC__)
+
 2004-06-11  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* man/clara.Rd: finish \note{} about 'rngR' (thanks to Christian H).

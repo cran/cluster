@@ -1,6 +1,9 @@
 /* inlined, to be included in pam.c and clara.c */
 
-static __inline__
+static
+#ifdef __GNUC__
+__inline__
+#endif
 int ind_2(int l, int j)
 {
 /* Utility, originally FORTRAN,	 called "meet"; called from CLARA, PAM & TWINS.
