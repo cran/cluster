@@ -1,6 +1,6 @@
 
-R : Copyright 2003, The R Foundation for Statistical Computing
-Version 1.9.0 Under development (unstable) (2003-11-28), ISBN 3-900051-00-3
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 2.0.0 Under development (unstable) (2004-08-12), ISBN 3-900051-00-3
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -140,6 +140,23 @@ Number of objects : 11
 Warning message: 
 binary variable(s) 1, 2 treated as interval scaled in: daisy(d5, type = list(asymm = 3:5)) 
 > stopifnot(identical(c(d2), c(d2.)))
+> (dS <- daisy(d5, stand = TRUE))# gave error in some versions
+Dissimilarities :
+ [1] 2.614264 4.010913 3.493856 4.010913 3.823025 4.010913 3.310837 5.558018
+ [9] 0.000000 3.416389 3.291786 4.725761 2.415752 3.801028 2.415752 3.995202
+[17] 4.247692 3.182103 3.416389 4.757684 2.000000 0.000000 2.000000 2.025000
+[25] 4.148136 3.587469 3.674376 5.160965 4.813384 5.160965 4.305222 3.995202
+[33] 3.125000 3.801028 2.236068 0.000000 2.846160 3.493856 4.107303 2.614264
+[41] 2.236068 0.000000 4.789855 3.310837 3.674376 2.846160 3.493856 4.107303
+[49] 2.614264 4.725761 2.961302 3.674376 5.307417 0.000000 3.801028
+
+Metric :  euclidean 
+Number of objects : 11
+Warning message: 
+binary variable(s) 1, 2, 3, 4, 5 treated as interval scaled in: daisy(d5, stand = TRUE) 
+> stopifnot(all.equal(as.vector(summary(c(dS), digits=9)),
++                     c(0, 2.6142638, 3.4938562, 3.2933687, 4.0591077, 5.5580177),
++                     tol = 1e-7))# 7.88e-9
 > 
 > d5[,4] <- 1 # binary with only one instead of two values
 > (d0 <- daisy(d5))

@@ -1,3 +1,21 @@
+2004-08-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (LazyData): yes
+
+2004-08-12  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.9.6
+		      (Depends): added standard packages
+
+	* R/daisy.q (daisy): scale=TRUE didn't collaborate with NAs
+				(since 2003-11-29).
+	* tests/daisy-ex.R: add an example, testing the above
+
+
+2004-08-03  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.9.5 --> to CRAN
+
 2004-07-21  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* man/mona.Rd: drop an extraneous "}\n" that Kurt's new tools found

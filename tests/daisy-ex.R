@@ -27,6 +27,10 @@ str(d5 <- data.frame(a= c(0, 0, 0,1,0,0, 0,0,1, 0,NA),
 (d2 <- daisy(d5, type = list(symm = 1:2, asymm= 3:5)))
 (d2.<- daisy(d5, type = list(     asymm= 3:5)))
 stopifnot(identical(c(d2), c(d2.)))
+(dS <- daisy(d5, stand = TRUE))# gave error in some versions
+stopifnot(all.equal(as.vector(summary(c(dS), digits=9)),
+                    c(0, 2.6142638, 3.4938562, 3.2933687, 4.0591077, 5.5580177),
+                    tol = 1e-7))# 7.88e-9
 
 d5[,4] <- 1 # binary with only one instead of two values
 (d0 <- daisy(d5))
