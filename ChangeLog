@@ -1,3 +1,40 @@
+2005-06-09  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.10.0
+
+2005-06-08  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/pam.q (pam): new argument 'trace.lev = 0'
+
+	* man/pam.object.Rd: pam() also return $medID
+
+	* src/pam.c (dark): take special care of empty clusters (ntt == 0)
+	* src/pam.c (pam): also work when medoids are not increasing.
+
+	* R/pam.q (pam): user-supplied 'medoids': even more checks
+
+2005-06-02  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/fanny-ex.R: use new RNG (hence change example); add samples
+	of memb.exp -> 1
+
+	* DESCRIPTION (Author): new formulation for better auto-citation()
+
+	* src/fanny.f (fanny): 'r' ("membership exponent") becomes
+		user-specifiable argument; dito for 'maxit'
+
+	* R/fanny.q (fanny): new arguments 'memb.exp' ("membership exponent");
+			     'tol' and 'maxit'
+	* R/fanny.q (.print.fanny): utility to be used in both print.*()
+			methods; nicer, using formatC() and 'digits' explicitly.
+
+	* man/fanny.Rd: new arguments, see above
+
+	* man/fanny.object.Rd: mention new '$ objective' result component
+
+	* man/print.fanny.Rd: now also for [print.]summary.fanny();
+		mention new explicit 'digits' argument to print methods.
+
 2005-04-04  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.9.8

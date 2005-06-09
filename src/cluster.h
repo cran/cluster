@@ -83,7 +83,7 @@ int F77_NAME(dysta)(int *nn, int *jpp, double *x, double *dys, int *ndyst,
 
 /* --------- ./pam.c ------------------*/
 
-void bswap(int *kk, int *nn, int *nrepr, Rboolean med_given,
+void bswap(int *kk, int *nn, int *nrepr, Rboolean med_given, int trace_lev,
 	   double *dysma, double *dysmb, double *beter,
 	   double *dys, double *sky, double *s, double *obj);
 

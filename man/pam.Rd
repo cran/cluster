@@ -10,7 +10,7 @@
 pam(x, k, diss = inherits(x, "dist"), metric = "euclidean",
     medoids = NULL, stand = FALSE, cluster.only = FALSE,
     keep.diss = !diss && !cluster.only && n < 100,
-    keep.data = !diss && !cluster.only)
+    keep.data = !diss && !cluster.only, trace.lev = 0)
 }
 \arguments{
   \item{x}{
@@ -62,6 +62,10 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean",
     and/or input data \code{x} should be kept in the result.  Setting
     these to \code{FALSE} can give much smaller results and hence even save
     memory allocation \emph{time}.}
+  \item{trace.lev}{integer specifying a trace level for printing
+    diagnostics during the build and swap phase of the algorithm.
+    Default \code{0} does not print anything; higher values print
+    increasingly more.}
 }
 \value{
   an object of class \code{"pam"} representing the clustering.  See
@@ -99,6 +103,10 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean",
   objective function, that is, a solution such that there is no single
   switch of an observation with a medoid that will decrease the
   objective (this is called the \bold{swap} phase).
+
+  When the \code{medoids} are specified, their order does \emph{not}
+  matter; in general, the algorithms have been designed to not depend on
+  the order of the observations.
 }
 \note{
   For datasets larger than (say) 200 observations, \code{pam} will take a lot of
@@ -120,9 +128,15 @@ summary(pamx)
 plot(pamx)
 ## use obs. 1 & 16 as starting medoids -- same result (typically)
 (p2m <- pam(x, 2, medoids = c(1,16)))
+
+p3m <- pam(x, 3, trace = 2)
+## rather stupid initial medoids:
+(p3m. <- pam(x, 3, medoids = 3:1, trace = 1))
+
 \dontshow{
- stopifnot(all.equal(pamx[-c(3,8)], p2m[-c(3,8)], tol=1e-14),
-           all.equal(pamx[[3]][2],  p2m[[3]][2],  tol=1e-14))
+ ii <- pmatch(c("obj","call"), names(pamx))
+ stopifnot(all.equal(pamx[-ii], p2m[-ii], tol=1e-14),
+           all.equal(pamx[["obj"]][2], p2m[["obj"]][2], tol=1e-14))
 }
 pam(daisy(x, metric = "manhattan"), 2, diss = TRUE)
 

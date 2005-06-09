@@ -31,7 +31,7 @@ void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
     /* Local variables */
     Rboolean all_stats = (obj[0] == 0.),/* if false, only return 'ncluv[]' */
 	med_given = (med[0] != 0);/* if true, med[] contain initial medoids */
-    int k, i, nhalf, jhalt;
+    int k, i, nhalf, jhalt, trace_lev = (int) obj[1];
     double s, sky;
 
     /* Function Body */
@@ -52,23 +52,19 @@ void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
 
     /* FIXME: work with med[] = (i_1, i_2, ..., i_k)
      * ----- instead nrepr[] = (b_1, ... b_n)   b_i in {0,1} */
-    if(med_given) {
-	/* if true, med[] contain initial medoids */
+    for (i = 0; i < *nn; ++i)
+	nrepr[i] = 0;
+    if(med_given) { /* if true, med[] contain initial medoids */
 
-	/* for the moment, translate these to nrepr[] 0/1 : */
-	k = 0;
-	for (i = 0; i < *nn; ++i)
-	    if (med[k] == i+1) {
-		k++; nrepr[i] = 1;
-	    } else   nrepr[i] = 0;
+	/* for the moment, translate these to nrepr[] 0/1 :
+	 * not assuming that the med[] indices are sorted */
+	for (k = 0; k < *kk; k++)
+	    nrepr[med[k] - 1] = 1;
     }
-    else
-	for (i = 0; i < *nn; ++i)
-	    nrepr[i] = 0;
-
 
 /*     Build + Swap : */
-    bswap(kk, nn, nrepr, med_given, radus, damer, ttd, dys, &sky, &s, obj);
+    bswap(kk, nn, nrepr, med_given, trace_lev,
+	  radus, damer, ttd, dys, &sky, &s, obj);
 
 /*     Compute Clustering & STATs if(all_stats): */
     cstat(kk, nn, nsend, nrepr, all_stats,
@@ -95,7 +91,7 @@ void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
 
      bswap(): the clustering algorithm in 2 parts:  I. build,	II. swap
 */
-void bswap(int *kk, int *nn, int *nrepr, Rboolean med_given,
+void bswap(int *kk, int *nn, int *nrepr, Rboolean med_given, int trace_lev,
 	   /* nrepr[]: here is boolean (0/1): 1 = "is representative object"  */
 	   double *dysma, double *dysmb, double *beter,
 	   double *dys, double *sky, double *s, double *obj)
@@ -114,11 +110,13 @@ void bswap(int *kk, int *nn, int *nrepr, Rboolean med_given,
  * ----  rather use a "sparse" representation:
  * instead of boolean vector nrepr[] , use  ind_repr <- which(nrepr) !!
  */
-
     for (i = 1; i <= *nn; ++i)
 	dysma[i] = tmp1;
 
     if(med_given) {
+	if(trace_lev)
+	    Rprintf("pam()'s bswap(): medoids given\n");
+
 	/* compute dysma[] : dysma[j] = D(j, nearest_representative) */
 	for (i = 1; i <= *nn; ++i) {
 	    if (nrepr[i] == 1)
@@ -131,6 +129,8 @@ void bswap(int *kk, int *nn, int *nrepr, Rboolean med_given,
     }
     else {
 /* first algorithm: build :  find  *kk  representatives  aka medoids :  */
+	if(trace_lev)
+	    Rprintf("pam()'s bswap(): build %d medoids:\n", *kk);
 
 	for (k = 1; k <= *kk; ++k) {
 
@@ -155,7 +155,10 @@ void bswap(int *kk, int *nn, int *nrepr, Rboolean med_given,
 		}
 	    }
 
-	    nrepr[nmax] = 1;/* = .true. : *is* a representative */
+	    nrepr[nmax] = 1;/* = .true. : found new representative */
+	    if (trace_lev >= 2)
+		Rprintf("    new repr. %d\n", nmax);
+
 	    /* update dysma[] : dysma[j] = D(j, nearest_representative) */
 	    for (j = 1; j <= *nn; ++j) {
 		ij = ind_2(nmax, j);
@@ -166,40 +169,60 @@ void bswap(int *kk, int *nn, int *nrepr, Rboolean med_given,
 	/* output of the above loop:  nrepr[], dysma[], ... */
     }
 
+    if(trace_lev) /* >= 2 (?) */ {
+	Rprintf("  after build: medoids are");
+	for (i = 1; i <= *nn; ++i)
+	    if(nrepr[i] == 1) Rprintf(" %2d", i);
+	if(trace_lev >= 2) {
+	    Rprintf("\n  and min.dist dysma[1:n] are\n");
+	    for (i = 1; i <= *nn; ++i) {
+		Rprintf(" %6.3g", dysma[i]);
+		if(i % 10 == 0) Rprintf("\n");
+	    }
+	    if(*nn % 10 != 0) Rprintf("\n");
+	} else Rprintf("\n");
+    }
+
     *sky = 0.;
     for (j = 1; j <= *nn; ++j)
 	*sky += dysma[j];
     obj[0] = *sky / *nn;
 
-    if (*kk > 1) {
+    if (*kk > 1 || med_given) {
 
 	double small, dz, dzsky;
 	int kj, kbest = -1, nbest = -1;/* init: -Wall*/
 
 	/*     second algorithm: swap. */
 
+	/* Hmm: In the following, we RE-compute dysma[];
+	 *      don't need it first time; then only need *update* after swap */
+
 /*--   Loop : */
 L60:
 	for (j = 1; j <= *nn; ++j) {
+	    /*  dysma[j] := D_j  d(j, <closest medi>)  [KR p.102, 104]
+	     *  dysmb[j] := E_j  d(j, <2-nd cl.medi>)  [p.103] */
 	    dysma[j] = tmp1;
 	    dysmb[j] = tmp1;
 	    for (i = 1; i <= *nn; ++i) {
 		if (nrepr[i] == 1) {
 		    ij = ind_2(i, j);
-		    if (dys[ij] < dysma[j]) {
+		    if (dysma[j] > dys[ij]) {
 			dysmb[j] = dysma[j];
 			dysma[j] = dys[ij];
-		    } else {
-			if (dysmb[j] > dys[ij])
-			    dysmb[j] = dys[ij];
+		    } else if (dysmb[j] > dys[ij]) {
+			dysmb[j] = dys[ij];
 		    }
 		}
 	    }
 	}
+
 	dzsky = 1.;
 	for (k = 1; k <= *nn; ++k) if (nrepr[k] == 0) {
 	    for (i = 1; i <= *nn; ++i) if (nrepr[i] == 1) {
 		dz = 0.;
+		/* dz := T_{ih} := sum_j C_{jih}  [p.104] : */
 		for (j = 1; j <= *nn; ++j) {
 		    ij = ind_2(i, j);
 		    kj = ind_2(k, j);
@@ -218,7 +241,10 @@ L60:
 		}
 	    }
 	}
-	if (dzsky < 0.) {
+	if (dzsky < 0.) { /* found an improving swap */
+	    if(trace_lev >= 2)
+		Rprintf( "   swp new %d <-> %d old; decreasing diss. by %g\n",
+			kbest, nbest, dzsky);
 	    nrepr[kbest] = 1;
 	    nrepr[nbest] = 0;
 	    *sky += dzsky;
@@ -421,6 +447,8 @@ void dark(int *kk, int *nn, int *hh, int *ncluv,
     nsylr = 0;
     *ttsyl = 0.;
     for (k = 1; k <= *kk; ++k) {
+
+	/* nelem[0:(ntt-1)] := indices (1-based) of obs. in cluster k : */
 	ntt = 0;
 	for (j = 1; j <= *nn; ++j) {
 	    if (ncluv[j] == k) {
@@ -428,10 +456,12 @@ void dark(int *kk, int *nn, int *hh, int *ncluv,
 		++ntt;
 	    }
 	}
+
 	for (j = 0; j < ntt; ++j) {/* (j+1)-th obs. in cluster k */
 	    nj = nelem[j];
 	    dysb = *s * 1.1f + 1.;
 	    negbr[j] = -1;
+	    /* for all clusters  k_ != k : */
 	    for (k_ = 1; k_ <= *kk; ++k_) if (k_ != k) {
 		nbb = 0;
 		db = 0.;
@@ -440,12 +470,12 @@ void dark(int *kk, int *nn, int *hh, int *ncluv,
 		    if (l != nj)
 			db += dys[ind_2(nj, l)];
 		}
-		db /= nbb;
+		db /= nbb; /* now  db(k_) := mean( d[j, l]; l in C_{k_} ) */
 		if (dysb > db) {
 		    dysb = db;
 		    negbr[j] = k_;
 		}
-	    }
+	    }/* negbr[j] := arg max_{k_} db(k_) */
 	    if (ntt > 1) {
 		dysa = 0.;
 		for (l = 0; l < ntt; ++l) {
@@ -482,6 +512,9 @@ void dark(int *kk, int *nn, int *hh, int *ncluv,
 	    }
 	} /* for( j ) */
 	avsyl[k] = 0.;
+	if (ntt == 0) /* this can happen when medoids are user-specified !*/
+	    continue; /* next k */
+
 	for (j = 0; j < ntt; ++j) {
 	    symax = -2.;
 	    for (l = 0; l < ntt; ++l) {
@@ -497,7 +530,7 @@ void dark(int *kk, int *nn, int *hh, int *ncluv,
 	}
 	*ttsyl += avsyl[k];
 	avsyl[k] /= ntt;
-	if (ntt < 2) {
+	if (ntt == 1) {
 	    sylinf  [nsylr] = (double) k;
 	    sylinf_2[nsylr] = (double) negbr[0];
 	    sylinf_3[nsylr] = 0.;

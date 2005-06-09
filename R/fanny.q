@@ -1,13 +1,14 @@
-#### $Id: fanny.q,v 1.16 2004/06/25 16:11:46 maechler Exp $
+#### $Id: fanny.q,v 1.17 2005/06/03 06:21:13 maechler Exp $
 fanny <- function(x, k, diss = inherits(x, "dist"),
-		  metric = "euclidean", stand = FALSE)
+                  memb.exp = 2, metric = "euclidean", stand = FALSE,
+                  maxit = 500, tol = 1e-15)
 {
-   if((diss <- as.logical(diss))) {
+    if((diss <- as.logical(diss))) {
 	## check type of input vector
 	if(any(is.na(x))) stop(..msg$error["NAdiss"])
 	if(data.class(x) != "dissimilarity") { # try to convert to
 	    if(!is.null(dim(x))) {
-		x <- as.dist(x) # or give an error
+		x <- as.dist(x)         # or give an error
 	    } else {
 		## possibly convert input *vector*
 		if(!is.numeric(x) || is.na(n <- sizeDiss(x)))
@@ -46,7 +47,13 @@ fanny <- function(x, k, diss = inherits(x, "dist"),
 	jdyss <- 0
     }
     if((k <- as.integer(k)) < 1 || k > n%/%2 - 1)
-	stop("`k' (number of clusters) must be in {1,2, .., n/2 -1}")
+	stop("'k' (number of clusters) must be in {1,2, .., n/2 -1}")
+    if(length(memb.exp) != 1 || (memb.exp <- as.double(memb.exp)) < 1
+       || memb.exp == Inf)
+        stop("'memb.exp' must be a finite number > 1")
+    if((maxit <- as.integer(maxit)[1]) < 0)
+        stop("'maxit' must be non-negative integer")
+
     ## call Fortran routine
     storage.mode(x2) <- "double"
     res <- .Fortran("fanny",
@@ -76,7 +83,9 @@ fanny <- function(x, k, diss = inherits(x, "dist"),
 		    obj = double(2),
 		    clu = integer(n),
 		    silinf = matrix(0., n, 4),
-		    as.double(1e-15),
+                    memb.exp = memb.exp,
+		    tol = as.double(tol),
+                    maxit = maxit,
 		    PACKAGE = "cluster")
     sildim <- res$silinf[, 4]
     if(diss) {
@@ -105,14 +114,24 @@ fanny <- function(x, k, diss = inherits(x, "dist"),
 	    names(res$clu) <- dimnames(x)[[1]]
 	}
     }
+    if(!(converged <- res$maxit > 0)) {
+        warning(sprintf(
+            "FANNY algorithm has not converged in 'maxit' = %d iterations",
+                        maxit))
+    }
+
     ## add dimnames to Fortran output
     names(res$obj) <- c("iterations", "objective")
     res$coeff <- c(res$eda, res$edb)
     names(res$coeff) <- c("dunn_coeff", "normalized")
 
     r <- list(membership = res$p, coeff = res$coeff,
-		       clustering = res$clu, objective = res$obj,
-		       diss = disv, call = match.call())
+              memb.exp = memb.exp,
+              clustering = res$clu,
+              # 'obj*': also containing iterations for back compatibility:
+              objective = c(res$obj, "tolerance" = res$tol),
+              convergence = c(res$obj[1], converged = converged),
+              diss = disv, call = match.call())
     if(k != 1) {
 	dimnames(res$silinf) <- list(sildim,
 				     c("cluster", "neighbor", "sil_width", ""))
@@ -128,15 +147,22 @@ fanny <- function(x, k, diss = inherits(x, "dist"),
     r
 }
 
-print.fanny <- function(x, ...)
+## non-exported:
+.print.fanny <- function(x, digits = getOption("digits"), ...) {
+    cat("Fuzzy Clustering object of class 'fanny' :")
+    print(formatC(cbind(" " = c("m.ship.expon." = x$memb.exp,
+                        x$objective[c("objective", "tolerance")],
+                        x$convergence)),
+                  digits = digits),
+	  quote = FALSE, ...)
+    cat("Membership coefficients:\n");  print(x$membership, ...)
+    cat("Coefficients:\n");             print(x$coeff, ...)
+    cat("Closest hard clustering:\n");  print(x$clustering, ...)
+}
+
+print.fanny <- function(x, digits = getOption("digits"), ...)
 {
-    print(x$objective, ...)
-    cat("Membership coefficients:\n")
-    print(x$membership, ...)
-    cat("Coefficients:\n")
-    print(x$coeff, ...)
-    cat("Closest hard clustering:\n")
-    print(x$clustering, ...)
+    .print.fanny(x, digits = digits, ...)
     cat("\nAvailable components:\n")
     print(names(x), ...)
     invisible(x)
@@ -148,12 +174,9 @@ summary.fanny <- function(object, ...)
     object
 }
 
-print.summary.fanny <- function(x, ...)
+print.summary.fanny <- function(x, digits = getOption("digits"), ...)
 {
-    print(x$objective, ...)
-    cat("Membership coefficients:\n");	print(x$membership, ...)
-    cat("Coefficients:\n");		print(x$coeff, ...)
-    cat("Closest hard clustering:\n");	print(x$clustering, ...)
+    .print.fanny(x, digits = digits, ...)
     if(length(x$silinfo) != 0) {
 	cat("\nSilhouette plot information:\n")
 	print(x$silinfo[[1]], ...)

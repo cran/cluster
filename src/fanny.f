@@ -1,15 +1,15 @@
-C-- $Id: fanny.f,v 1.8 2002/12/30 22:06:37 maechler Exp $
+C-- $Id: fanny.f,v 1.9 2005/06/03 06:20:20 maechler Exp $
 C   program for Fuzzy cluster ANalysis
 C
       subroutine fanny(nn,jpp,kk,x,dss,jdyss,valmd,jtmd,ndyst,
      1	   nsend,nelem,negbr, syl,p,dp,pt,nfuzz,esp,ef,dvec,
-     2	   ttsyl,eda,edb,obj,ncluv,sylinf,eps)
+     2	   ttsyl,eda,edb,obj,ncluv,sylinf,r,tol,maxit)
 c Arguments
-      integer nn,jpp,kk, jdyss, ndyst
+      integer nn,jpp,kk, jdyss, ndyst, maxit
 C	  nn   = number of objects
 C	  jpp  = number of variables for clustering
 C	  kk   = number of clusters
-      double precision ttsyl, eda,edb, eps
+      double precision ttsyl, eda,edb, r, tol
       double precision x(nn,jpp),p(nn,kk),dp(nn,kk)
       double precision dss(nn*(nn-1)/2)
 
@@ -41,7 +41,7 @@ C
  130  l=l+1
       if(dss(l).gt.s)s=dss(l)
       if(l.lt.nhalf)go to 130
-      call fuzzy(nn,nhalf,p,dp,pt,dss,esp,ef,eda,edb,kk,obj,eps)
+      call fuzzy(nn,nhalf,p,dp,pt,dss,esp,ef,eda,edb,kk,obj,r,tol,maxit)
       call caddy(nn,p,kk,ktrue,nfuzz,ncluv,pt,nelem)
       if(2.le.ktrue .and. ktrue.lt.nn) then
 	 call fygur(ktrue,nn,kk,nhalf,ncluv,nsend,nelem,
@@ -95,24 +95,24 @@ c VARs
       end
 C
 C
-      subroutine fuzzy(nn,hh,p,dp,pt,dss,esp,ef,eda,edb,k,obj,eps)
+      subroutine fuzzy(nn,hh, p, dp, pt, dss, esp,ef, eda,edb,
+     +     k, obj, r, tol, nit)
 
 c     Args
-      integer nn,hh, k
+      integer nn,hh, k, nit
       double precision p(nn,k),dp(nn,k),pt(k), dss(hh)
-      double precision esp(k),ef(k), eda,edb, obj(2), eps
-C     eps is the precision for the iterations
+      double precision esp(k),ef(k), eda,edb, obj(2), r, tol
+C     r	  is the exponent, strictly larger than 1.0 -- was fixed to 2
+C     tol is the precision for the iterations
+C     nit is the maximal number of iterations -- was fixed to 500
 
 C
 c     VARs
-      integer kaunt, j,j1,j2,l,lx,m, nd,ndk, nyt
-      double precision ann,crt,cryt,dt,ddd, r, reen, rvers,rkme, xx, zk
-C     r	  is the exponent, strictly larger than 1.0
-C     nyt is the maximal number of iterations
+      integer it, j,jm,l,lx,m, nd,ndk
+      double precision ann,crt,cryt,dt,ddd, reen, rvers,rkme, xx, zk
+
 C
-      r=2.0
-      rvers=1./r
-      nyt=500
+      rvers= 1./r
 C
 C     initial fuzzy clustering
 C
@@ -147,10 +147,10 @@ C
 	    esp(l)=esp(l)+p(m,l)
 	    do 80 j=1,nn
 	       if(j.ne.m) then
-		  j2=min0(m,j)
-		  j1=(j2-1)*nn-(j2*(j2+1))/2+max0(m,j)
-		  dp(m,l)=dp(m,l)+ p(j,l)*dss(j1)
-		  ef(l)	 =ef(l)	 + p(j,l)*p(m,l)*dss(j1)
+		  jm=min0(m,j)
+		  jm=(jm-1)*nn-(jm*(jm+1))/2+max0(m,j)
+		  dp(m,l)=dp(m,l)+ p(j,l)*dss(jm)
+		  ef(l)	 =ef(l)	 + p(j,l)*p(m,l)*dss(jm)
 	       endif
  80	    continue
  90	 continue
@@ -161,7 +161,7 @@ C
 C
 C     start of iterations
 C
-      kaunt=1
+      it=1
       m=0
 C
 C     the new membership coefficients of the objects are calculated,
@@ -184,16 +184,17 @@ C
 	 esp(l)=esp(l)+pt(l)-p(m,l)
 	 do 230 j=1,nn
 	    if(j.ne.m) then
-	       j2=min0(m,j)
-	       j1=(j2-1)*nn-(j2*(j2+1))/2+max0(m,j)
-	       ddd=(pt(l)-p(m,l))*dss(j1)
+	       jm=min0(m,j)
+	       jm=(jm-1)*nn-(jm*(jm+1))/2+max0(m,j)
+	       ddd=(pt(l)-p(m,l))*dss(jm)
 	       dp(j,l)= dp(j,l)+ ddd
 	       ef(l)  = ef(l)  + 2.*p(j,l)*ddd
 	    endif
  230	 continue
 	 p(m,l)=pt(l)
  240  continue
-      if(m.lt.nn)go to 200
+      if(m.lt.nn) go to 200
+
       cryt=0.
       eda=0.
       do 250 l=1,k
@@ -202,19 +203,23 @@ C
 	 cryt=cryt+ef(l)/(esp(l)*2.)
  250  continue
 C
-C     criterion is printed and tested for convergence
+C     Convergence check
 C
-      if((crt/cryt-1.).le.eps)go to 500
-      if(kaunt.lt.nyt)go to 300
-      go to 500
- 300  m=0
-      kaunt=kaunt+1
+      if(dabs(cryt - crt) .le. tol*cryt) go to 500
+      if(it .ge. nit) then
+c        non-convergence
+         nit = -1
+         go to 500
+      endif
+
+      m=0
+      it=it+1
       crt=cryt
       go to 200
 C
 C     non-fuzzyness index of libert is computed
 C
- 500  obj(1)=kaunt
+ 500  obj(1)=it
       obj(2)=cryt
       zk=k
       edb=(zk*eda-1.)/(zk-1.)

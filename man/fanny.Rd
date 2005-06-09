@@ -5,7 +5,9 @@
   Computes a fuzzy clustering of the data into \code{k} clusters.
 }
 \usage{
-fanny(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
+fanny(x, k, diss = inherits(x, "dist"),
+      memb.exp = 2, metric = "euclidean", stand = FALSE,
+      maxit = 500, tol = 1e-15)
 }
 \arguments{
   \item{x}{
@@ -31,6 +33,10 @@ fanny(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
     dissimilarity matrix.  If FALSE, then \code{x} is treated as
     a matrix of observations by variables.
   }
+  \item{memb.exp}{number \eqn{r} strictly larger than 1 specifying the
+    \emph{membership exponent} used in the fit criterion; see the
+    \sQuote{Details} below. Default: \code{2} which used to be hardwired
+    inside FANNY.}
   \item{metric}{
     character string specifying the metric to be used for calculating
     dissimilarities between observations.
@@ -46,6 +52,10 @@ fanny(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
     variable's mean value and dividing by the variable's mean absolute
     deviation.  If \code{x} is already a dissimilarity matrix, then this
     argument will be ignored.}
+  \item{maxit, tol}{maximal number of iterations and default tolerance
+    for convergence (relative convergence of the fit criterion) for the
+    FANNY algorithm.  The defaults \code{maxit = 500} and \code{tol =
+      1e-15} used to be hardwired inside the algorithm.}
 }
 \value{
   an object of class \code{"fanny"} representing the clustering.
@@ -56,21 +66,28 @@ fanny(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
   clusters. Denote by u(i,v) the membership of observation i to cluster v.
   The memberships are nonnegative, and for a fixed observation i they sum to 1.
   The particular method \code{fanny} stems from chapter 4 of
-  Kaufman and Rousseeuw (1990).\cr
+  Kaufman and Rousseeuw (1990) (see the references in
+  \code{\link{daisy}}) and has been extended to allow user specified
+  \code{memb.exp}.
+
+  Fanny aims to minimize the objective function
+  \deqn{\sum_{v=1}^k
+    \frac{\sum_{i=1}^n\sum_{j=1}^n u_{iv}^r u_{jv}^r d(i,j)}{
+      2 \sum_{j=1}^n u_{jv}^r}}{%
+    SUM_[v=1..k] (SUM_(i,j) u(i,v)^r u(j,v)^r d(i,j)) / (2 SUM_j u(j,v)^r)}
+  where \eqn{n} is the number of observations, \eqn{k} is the number of
+  clusters, \eqn{r} is the membership exponent \code{memb.exp} and
+  \eqn{d(i,j)} is the dissimilarity between observations \eqn{i} and \eqn{j}.
+  \cr Note that \eqn{r \to 1}{r -> 1} gives increasingly crisper
+  clusterings whereas \eqn{r \to \infty}{r -> Inf} leads to complete
+  fuzzyness.  K\&R(1990), p.191 note that values too close to 1 can lead
+  to slow convergence.
+
   Compared to other fuzzy clustering methods, \code{fanny} has the following
   features: (a) it also accepts a dissimilarity matrix; (b) it is
   more robust to the \code{spherical cluster} assumption; (c) it provides
   a novel graphical display, the silhouette plot (see
   \code{\link{plot.partition}}).
-
-  Fanny aims to minimize the objective function
-  \deqn{\sum_{v=1}^k
-    \frac{\sum_{i=1}^n\sum_{j=1}^n u_{iv}^2 u_{jv}^2 d(i,j)}{
-      2 \sum_{j=1}^n u_{jv}^2}}{%
-    SUM_[v=1..k] (SUM_(i,j) u(i,v)^2 u(j,v)^2 d(i,j)) / (2 SUM_j u(j,v)^2)}
-  where \eqn{n} is the number of observations, \eqn{k} is the number of
-  clusters and \eqn{d(i,j)} is the dissimilarity between observations
-  \eqn{i} and \eqn{j}.
 }
 \seealso{
   \code{\link{agnes}} for background and references;
@@ -78,19 +95,22 @@ fanny(x, k, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE)
   \code{\link{plot.partition}}, \code{\link{daisy}}, \code{\link{dist}}.
 }
 \examples{
-## generate 25 objects, divided into two clusters, and 3 objects lying
+## generate 10+15 objects in two clusters, plus 3 objects lying
 ## between those clusters.
 x <- rbind(cbind(rnorm(10, 0, 0.5), rnorm(10, 0, 0.5)),
            cbind(rnorm(15, 5, 0.5), rnorm(15, 5, 0.5)),
-           cbind(rnorm( 3,3.5,0.5), rnorm( 3,3.5,0.5)))
+           cbind(rnorm( 3,3.2,0.5), rnorm( 3,3.2,0.5)))
 fannyx <- fanny(x, 2)
+## Note that observations 26:28 are "fuzzy" (closer to # 2):
 fannyx
 summary(fannyx)
 plot(fannyx)
+
+(fan.x.15 <- fanny(x, 2, memb.exp = 1.5)) # 'crispier' for obs. 26:28
+(fanny(x, 2, memb.exp = 3))               # more fuzzy in general
 
 data(ruspini)
 ## Plot similar to Figure 6 in Stryuf et al (1996)
 plot(fanny(ruspini, 5))
 }
 \keyword{cluster}
-

@@ -1,0 +1,51 @@
+From Kurt.Hornik@wu-wien.ac.at  Thu Apr 28 16:06:17 2005
+X-VM-v5-Data: ([nil nil nil nil nil nil nil nil nil]
+	["659" "Thursday" "28" "April" "2005" "16:07:01" "+0200" "Kurt Hornik" "Kurt.Hornik@wu-wien.ac.at" "<17008.60933.545007.577225@mithrandir.hornik.net>" "18" "daisy" "^From:" nil nil "4" "2005042816:07:01" "daisy" nil nil nil nil nil nil nil]
+	nil)
+Return-Path: <Kurt.Hornik@wu-wien.ac.at>
+Received: from isis.wu-wien.ac.at (isis.wu-wien.ac.at [137.208.3.42])
+	by hypatia.math.ethz.ch (8.13.4/8.13.4) with ESMTP id j3SE6HNR004694
+	for <maechler@stat.math.ethz.ch>; Thu, 28 Apr 2005 16:06:17 +0200
+Received: from mithrandir.hornik.net ([137.208.58.157])
+	by isis.wu-wien.ac.at (8.12.11/8.12.9) with ESMTP id j3SE6DWG099806
+	for <maechler@stat.math.ethz.ch>; Thu, 28 Apr 2005 16:06:14 +0200
+	(envelope-from Kurt.Hornik@wu-wien.ac.at)
+Received: from hornik by mithrandir.hornik.net with local (Exim 3.36 #1 (Debian))
+	id 1DR9fR-0005kU-00
+	for <maechler@stat.math.ethz.ch>; Thu, 28 Apr 2005 16:07:01 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <17008.60933.545007.577225@mithrandir.hornik.net>
+X-Mailer: VM 7.19 under Emacs 21.4.1
+Reply-To: Kurt.Hornik@wu-wien.ac.at
+X-WU-wumi-status: clean v4.4.00/v4478 hiphop wu 9e22a9ad53645ec30ea11c46ccb35b63
+Received-SPF: none (hypatia: domain of kurt.hornik@wu-wien.ac.at does not designate permitted sender hosts)
+X-Virus-Scanned: by amavisd-new at stat.math.ethz.ch
+X-Spam-Checker-Version: SpamAssassin 3.0.2 (2004-11-16) on hypatia.math.ethz.ch
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.4 required=5.0 tests=AWL,BAYES_50 autolearn=no version=3.0.2
+From: Kurt Hornik <Kurt.Hornik@wu-wien.ac.at>
+To: Martin Maechler <maechler@stat.math.ethz.ch>
+Subject: daisy
+Date: Thu, 28 Apr 2005 16:07:01 +0200
+
+Du hast ja mein voriges mail re dist(method = "binary") gesehen.
+
+Mit daisy ist das muehsamer, aber
+
+R> x <- matrix(0, 2, 2)
+R> colnames(x) <- c("A", "B")
+R> daisy(x, type = list(asymm = c("A", "B")))
+Error in apply(x[, tI, drop = FALSE], 2, function(v) length(table(v)) ==  : 
+        (subscript) logical subscript too long
+In addition: Warning message:
+at least one binary variable has not 2 different levels. in: daisy(x, type = list(asymm = c("A", "B"))) 
+
+ist auch nicht das gelbe vom ei.  Vielleicht verwende ich das auch
+falsch, aber ich glaube nicht dass so ein fehler kommen sollte wenn in
+einer binary variable nur 0 oder nur 1 vorkommen ...
+
+lg
+-k
+

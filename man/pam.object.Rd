@@ -24,6 +24,8 @@
     \code{pam}, then a vector of numbers or labels of observations is
     given, else \code{medoids} is a matrix with in each row the
     coordinates of one medoid.}
+  \item{id.med}{integer vector of \emph{indices} giving the medoid
+    observation numbers.}
   \item{clustering}{the clustering vector, see \code{\link{partition.object}}.}
   \item{objective}{the objective function after the first and second
     step of the \code{pam} algorithm.}

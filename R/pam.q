@@ -4,9 +4,9 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 		metric = "euclidean", medoids = NULL,
                 stand = FALSE, cluster.only = FALSE,
                 keep.diss = !diss && !cluster.only && n < 100,
-                keep.data = !diss && !cluster.only)
+                keep.data = !diss && !cluster.only, trace.lev = 0)
 {
-   if((diss <- as.logical(diss))) {
+    if((diss <- as.logical(diss))) {
 	## check type of input vector
 	if(any(is.na(x))) stop(..msg$error["NAdiss"])
 	if(data.class(x) != "dissimilarity") { # try to convert to
@@ -55,12 +55,15 @@ pam <- function(x, k, diss = inherits(x, "dist"),
     if(is.null(medoids))# default: using "build & swap" to determine medoids"
         medID <- integer(k)# all 0 -> will be used as `code' in C
     else {
-        if(length(medID <- as.integer(medoids)) != k ||
-           any(medID < 1) || any(medID > n))
-            stop("'medoids' must be NULL or vector of ",
-                 k, "indices in {1,2, .., n}, n=", n)
+        ## 'fixme': consider  sort(medoids) {and rely on it in ../src/pam.c }
+	if(length(medID <- as.integer(medoids)) != k ||
+	   any(medID < 1) || any(medID > n) || any(duplicated(medID)))
+	    stop("'medoids' must be NULL or vector of ",
+		 k, " distinct indices in {1,2, .., n}, n=", n)
         ## use observation numbers  'medID' as starting medoids for 'swap' only
     }
+    stopifnot(length(cluster.only) == 1)
+    stopifnot(length(trace.lev) == 1)
     ## call Fortran routine
     storage.mode(dv) <- "double"
     storage.mode(x2) <- "double"
@@ -82,7 +85,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	      avsil = double(n),	# `ttd'
 	      double(n),		# separ[]
 	      ttsil = as.double(0),
-	      obj = c(as.double(cluster.only), 0.),# in & out!
+	      obj = as.double(c(cluster.only, trace.lev)),# in & out!
 	      med = medID,# in & out(if !cluster.only)
 	      clu = integer(n),
 	      clusinf = if(cluster.only) 0. else matrix(0., k, 5),
@@ -98,13 +101,14 @@ pam <- function(x, k, diss = inherits(x, "dist"),
         return(res$clu)
 
     ## Else, usually
+    medID <- res$med
     sildim <- res$silinf[, 4]
     if(diss) {
 	disv <- x
 	## add labels to Fortran output
 	if(length(xLab) > 0) {
 	    sildim <- xLab[sildim]
-	    res$med <- xLab[res$med]
+	    res$med <- xLab[medID]
 	}
     }
     else {
@@ -123,7 +127,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
             attr(disv, "Labels") <- dimnames(x)[[1]]
         }
 	## add labels to Fortran output
-	res$med <- x[res$med,  , drop =FALSE]
+	res$med <- x[medID,  , drop =FALSE]
 	if(length(xLab) > 0)
 	    sildim <- xLab[sildim]
     }
@@ -135,7 +139,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 					  "diameter", "separation"))
     ## construct S object
     r <-
-	list(medoids = res$med, clustering = res$clu,
+	list(medoids = res$med, id.med = medID, clustering = res$clu,
 	     objective = res$obj, isolation = res$isol,
 	     clusinfo = res$clusinf,
 	     silinfo = if(k != 1) {
@@ -155,14 +159,16 @@ pam <- function(x, k, diss = inherits(x, "dist"),
     r
 }
 
+## non-exported:
+.print.pam <- function(x, ...) {
+    cat("Medoids:\n");		print(cbind(ID = x$id.med, x$medoids), ...)
+    cat("Clustering vector:\n");	print(x$clustering, ...)
+    cat("Objective function:\n");	print(x$objective, ...)
+}
+
 print.pam <- function(x, ...)
 {
-    cat("Medoids:\n")
-    print(x$medoids, ...)
-    cat("Clustering vector:\n")
-    print(x$clustering, ...)
-    cat("Objective function:\n")
-    print(x$objective, ...)
+    .print.pam(x, ...)
     cat("\nAvailable components:\n")
     print(names(x), ...)
     invisible(x)
@@ -176,9 +182,7 @@ summary.pam <- function(object, ...)
 
 print.summary.pam <- function(x, ...)
 {
-    cat("Medoids:\n");			print(x$medoids, ...)
-    cat("Clustering vector:\n");	print(x$clustering, ...)
-    cat("Objective function:\n");	print(x$objective, ...)
+    .print.pam(x, ...)
     cat("\nNumerical information per cluster:\n"); print(x$clusinfo, ...)
     cat("\nIsolated clusters:\n L-clusters: ")
     print(names(x$isolation[x$isolation == "L"]), quote = FALSE, ...)
