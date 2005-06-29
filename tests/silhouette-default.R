@@ -1,8 +1,12 @@
 ## This came from a bug report on R-help by ge yreyt <tothri2000@yahoo.ca>
 ## Date: Mon, 9 Jun 2003 16:06:53 -0400 (EDT)
 library(cluster)
+library(cluster, lib="~/R/Pkgs/cluster.Rcheck")
 
 data(iris)
+
+.proctime00 <- proc.time()
+
 mdist <- as.dist(1 - cor(t(iris[,1:4])))#dissimlarity
 ## this is always the same:
 hc <- diana(mdist, diss = TRUE, stand = FALSE)
@@ -24,7 +28,35 @@ for(k in 2:maxk) {
 # the widths:
 silh.wid
 #select the number of k clusters with the largest si value :
-(myk <- which.min(silh.wid))
+(myk <- which.min(silh.wid)) # -> 8 (here)
+
+postscript(file="silhouette-ex.ps")
+## MM:  plot to see how the decision is made
+plot(silh.wid, type = 'b', col= "blue", xlab = "k")
+axis(1, at=myk, col.axis= "red", font.axis= 2)
+
+##--- PAM()'s silhouette should give same as silh*.default()!
+Eq <- function(x,y, tol = 1e-12) x == y | abs(x - y) < tol * abs((x+y)/2)
+if(paste(R.version$major, R.version$minor, sep=".") < 2.1)
+    isTRUE <- function (x) identical(TRUE, x)
+
+for(k in 2:40) {
+    cat("\n", k,":\n==\n")
+    p.k <- pam(mdist, k = k)
+    k.gr <- p.k$clustering
+    si.p <- silhouette(p.k)
+    si.g <- silhouette(k.gr, mdist)
+    si.g[] <- si.g[ rownames(si.p), ]
+    cat("grouping table: "); print(table(k.gr))
+    if(!isTRUE(a.eq <- all.equal(si.g[], si.p[]))) {
+	cat("silhouettes differ:")
+	if(any(neq <- !Eq(si.g[,3], si.p[,3]))) {
+	    cat("\n")
+	    print( cbind(si.p[], si.g[,2:3])[ neq, ] )
+	} else cat(" -- but not in col.3 !\n")
+    }
+}
+
 
 ## "pathological" case where a_i == b_i == 0 :
 D6 <- structure(c(0, 0, 0, 0.4, 1, 0.05, 1, 1, 0, 1, 1, 0, 0.25, 1, 1),
@@ -36,9 +68,8 @@ silhouette(kl6, D6)# had one NaN
 summary(silhouette(kl6, D6))
 plot(silhouette(kl6, D6))# gives error in earlier cluster versions
 
-postscript(file="silhouette-ex.ps")
-## MM:  plot to see how the decision is made
-plot(silh.wid, type = 'b', col= "blue", xlab = "k")
-axis(1, at=myk, col.axis= "red", font.axis= 2)
-
 dev.off()
+
+## Last Line:
+cat('Time elapsed: ', proc.time() - .proctime00,'\n')
+

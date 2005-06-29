@@ -26,8 +26,8 @@ daisy(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
     Euclidean distances are root sum-of-squares of differences, and
     manhattan distances are the sum of absolute differences.
 
-    If not all columns of \code{x} are numeric, then this argument
-    will be ignored.
+    If not all columns of \code{x} are numeric, \code{metric} will be
+    ignored.
   }
   \item{stand}{logical flag: if TRUE, then the measurements in \code{x}
     are standardized before calculating the
@@ -35,8 +35,9 @@ daisy(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
     (column), by subtracting the variable's mean value and dividing by
     the variable's mean absolute deviation.
 
-    If not all columns of
-    \code{x} are numeric, then this argument will be ignored.
+    If not all columns of \code{x} are numeric, \code{stand} will
+    be ignored and Gower's standardization (based on the
+    \code{\link{range}}) will be applied in any case.
   }
   \item{type}{list for specifying some (or all) of the types of the
     variables (columns) in \code{x}.  The list may contain the following

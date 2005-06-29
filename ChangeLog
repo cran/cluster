@@ -1,3 +1,30 @@
+2005-06-30  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/silhouette-default.R (isTRUE): need for R < 2.1.x
+
+2005-06-29  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Date):
+	* DESCRIPTION (Version): 1.10.1
+
+	* R/silhouette.R (plot.silhouette): format() clus.avg.widths more nicely
+	* R/silhouette.R (silhouette.default): don't use max.col() which
+	returns random.
+	* tests/silhouette-default.R: test only 3rd column difference
+	* tests/silhouette-default.Rout: update {for non-random sil*.default()}
+
+2005-06-20  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/silhouette-default.R: added test for equivalence of
+	  silhouette.default() and silhouette.partition()
+	* tests/silhouette-default.Rout.save: new output
+	  --> The silhouette() results are *still* not always the same (-> fixed)
+
+	* R/silhouette.R (silhouette.default): if Nj := #{obs. in C_j} = 1
+	  the silhouette width is 0, not 1, as in pam's original code.
+
+	* man/silhouette.Rd: document the case of 1-obs-clusters.
+
 2005-06-09  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.10.0

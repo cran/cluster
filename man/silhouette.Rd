@@ -36,7 +36,7 @@ sortSilhouette(object, \dots)
     specified instead of \code{dist}, which can be more efficient.}
   \item{object}{an object of class \code{silhouette}.}
   \item{\dots}{further arguments passed to and from methods.}
-  \item{FUN}{function used summarize silhouette widths.}
+  \item{FUN}{function used to summarize silhouette widths.}
   \item{nmax.lab}{integer indicating the number of labels which is
     considered too large for single-name labeling the silhouette plot.}
   \item{max.strlen}{positive integer giving the length to which
@@ -50,9 +50,9 @@ sortSilhouette(object, \dots)
     clusterwise coloring, see also \code{do.col.sort}:
   }
   \item{do.col.sort}{logical indicating if the colors \code{col} should
-    be sorted ``along'' the silhouette; this is useful for casewise or
+    be sorted \dQuote{along} the silhouette; this is useful for casewise or
     clusterwise coloring.}
-  \item{do.n.k}{logical indicating if \eqn{n} and \eqn{k} ``title text''
+  \item{do.n.k}{logical indicating if \eqn{n} and \eqn{k} \dQuote{title text}
     should be written.}
   \item{do.clus.stat}{logical indicating if cluster size and averages
     should be written right to the silhouettes.}
@@ -61,10 +61,12 @@ sortSilhouette(object, \dots)
     For each observation i, the \emph{silhouette width} \eqn{s(i)} is
     defined as follows: \cr
     Put a(i) = average dissimilarity between i and all other points of the
-    cluster to which i belongs.  For all \emph{other} clusters C, put
-    \eqn{d(i,C)} = average dissimilarity of i to all observations of C.  The
-    smallest of these \eqn{d(i,C)} is \eqn{b(i) := \min_C d(i,C)},
-    and can be seen as the dissimilarity between i and its ``neighbor''
+    cluster to which i belongs (if i is the \emph{only} observation in
+    its cluster, \eqn{s(i) := 0} without further calculations).
+    For all \emph{other} clusters C, put \eqn{d(i,C)} = average
+    dissimilarity of i to all observations of C.  The smallest of these
+    \eqn{d(i,C)} is \eqn{b(i) := \min_C d(i,C)},
+    and can be seen as the dissimilarity between i and its \dQuote{neighbor}
     cluster, i.e., the nearest one to which it does \emph{not} belong.
     Finally, \deqn{s(i) := \frac{b(i) - a(i) }{max(a(i), b(i))}.}{%
       s(i) := ( b(i) - a(i) ) / max( a(i), b(i) ).}
@@ -136,11 +138,13 @@ sortSilhouette(object, \dots)
  summary(si2) # has small values: "canberra"'s fault
  plot(si2, nmax= 80, cex.names=0.6)
 
- par(mfrow = c(3,2), oma = c(0,0, 3, 0))
+ op <- par(mfrow= c(3,2), oma= c(0,0, 3, 0),
+           mgp= c(1.6,.8,0), mar= .1+c(4,2,2,2))
  for(k in 2:6)
     plot(silhouette(pam(ruspini, k=k)), main = paste("k = ",k), do.n.k=FALSE)
  mtext("PAM(Ruspini) as in Kaufman & Rousseeuw, p.101",
        outer = TRUE, font = par("font.main"), cex = par("cex.main"))
+ par(op)
 
  ## Silhouette for a hierarchical clustering:
  ar <- agnes(ruspini)
