@@ -1,9 +1,7 @@
-/* -*- mode: c; kept-new-versions: 25; kept-old-versions: 20 -*- */
-
 /*
  * PAM := Partitioning Around Medoids
  *
- * $Id$
+ * $Id: pam.c,v 1.17 2005/08/06 08:06:44 maechler Exp maechler $
  * original Id: pam.f,v 1.16 2003/06/03 13:40:56 maechler translated by
  * f2c (version 20031025) and run through f2c-clean,v 1.10 2002/03/28
  */
@@ -63,8 +61,8 @@ void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
     }
 
 /*     Build + Swap : */
-    bswap(kk, nn, nrepr, med_given, trace_lev,
-	  radus, damer, ttd, dys, &sky, &s, obj);
+    bswap(*kk, *nn, nrepr, med_given, trace_lev,
+	  radus, damer, ttd, dys, &sky, s, obj);
 
 /*     Compute Clustering & STATs if(all_stats): */
     cstat(kk, nn, nsend, nrepr, all_stats,
@@ -91,36 +89,37 @@ void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
 
      bswap(): the clustering algorithm in 2 parts:  I. build,	II. swap
 */
-void bswap(int *kk, int *nn, int *nrepr, Rboolean med_given, int trace_lev,
+void bswap(int kk, int nsam, int *nrepr, Rboolean med_given, int trace_lev,
 	   /* nrepr[]: here is boolean (0/1): 1 = "is representative object"  */
 	   double *dysma, double *dysmb, double *beter,
-	   double *dys, double *sky, double *s, double *obj)
+	   double *dys, double *sky, double s, double *obj)
 {
     int i, j, ij, k;
 
-    double tmp1 = *s * 1.1f + 1.;/* larger than all dys[]; replacing
-				    by DBL_MAX  changes result - why ? */
      /* Parameter adjustments */
     --nrepr;
     --beter;
-    --dysma;
-    --dysmb;
 
-/* IDEA: when n (= *nn) is large compared to k (= *kk),
+    --dysma; --dysmb;
+
+    s = s * 1.1 + 1.;/* larger than all dys[];
+			replacing by DBL_MAX  changes result - why ? */
+
+/* IDEA: when n (= nsam) is large compared to k (= kk),
  * ----  rather use a "sparse" representation:
  * instead of boolean vector nrepr[] , use  ind_repr <- which(nrepr) !!
  */
-    for (i = 1; i <= *nn; ++i)
-	dysma[i] = tmp1;
+    for (i = 1; i <= nsam; ++i)
+	dysma[i] = s;
 
     if(med_given) {
 	if(trace_lev)
 	    Rprintf("pam()'s bswap(): medoids given\n");
 
 	/* compute dysma[] : dysma[j] = D(j, nearest_representative) */
-	for (i = 1; i <= *nn; ++i) {
+	for (i = 1; i <= nsam; ++i) {
 	    if (nrepr[i] == 1)
-		for (j = 1; j <= *nn; ++j) {
+		for (j = 1; j <= nsam; ++j) {
 		    ij = ind_2(i, j);
 		    if (dysma[j] > dys[ij])
 			dysma[j] = dys[ij];
@@ -128,21 +127,25 @@ void bswap(int *kk, int *nn, int *nrepr, Rboolean med_given, int trace_lev,
 	}
     }
     else {
-/* first algorithm: build :  find  *kk  representatives  aka medoids :  */
-	if(trace_lev)
-	    Rprintf("pam()'s bswap(): build %d medoids:\n", *kk);
 
-	for (k = 1; k <= *kk; ++k) {
+/*  ====== first algorithm: BUILD. ====== */
+
+	if(trace_lev)
+	    Rprintf("pam()'s bswap(): build %d medoids:\n", kk);
+
+	/* find  kk  representatives  aka medoids :  */
+
+	for (k = 1; k <= kk; ++k) {
 
 	    /* compute beter[i] for all non-representatives:
 	     * also find ammax := max_{..} and nmax := argmax_i{beter[i]} ... */
 	    int nmax = -1; /* -Wall */
 	    double ammax, cmd;
 	    ammax = 0.;
-	    for (i = 1; i <= *nn; ++i) {
+	    for (i = 1; i <= nsam; ++i) {
 		if (nrepr[i] == 0) {
 		    beter[i] = 0.;
-		    for (j = 1; j <= *nn; ++j) {
+		    for (j = 1; j <= nsam; ++j) {
 			cmd = dysma[j] - dys[ind_2(i, j)];
 			if (cmd > 0.)
 			    beter[i] += cmd;
@@ -160,7 +163,7 @@ void bswap(int *kk, int *nn, int *nrepr, Rboolean med_given, int trace_lev,
 		Rprintf("    new repr. %d\n", nmax);
 
 	    /* update dysma[] : dysma[j] = D(j, nearest_representative) */
-	    for (j = 1; j <= *nn; ++j) {
+	    for (j = 1; j <= nsam; ++j) {
 		ij = ind_2(nmax, j);
 		if (dysma[j] > dys[ij])
 		    dysma[j] = dys[ij];
@@ -171,41 +174,41 @@ void bswap(int *kk, int *nn, int *nrepr, Rboolean med_given, int trace_lev,
 
     if(trace_lev) /* >= 2 (?) */ {
 	Rprintf("  after build: medoids are");
-	for (i = 1; i <= *nn; ++i)
+	for (i = 1; i <= nsam; ++i)
 	    if(nrepr[i] == 1) Rprintf(" %2d", i);
 	if(trace_lev >= 2) {
 	    Rprintf("\n  and min.dist dysma[1:n] are\n");
-	    for (i = 1; i <= *nn; ++i) {
+	    for (i = 1; i <= nsam; ++i) {
 		Rprintf(" %6.3g", dysma[i]);
 		if(i % 10 == 0) Rprintf("\n");
 	    }
-	    if(*nn % 10 != 0) Rprintf("\n");
+	    if(nsam % 10 != 0) Rprintf("\n");
 	} else Rprintf("\n");
     }
 
     *sky = 0.;
-    for (j = 1; j <= *nn; ++j)
+    for (j = 1; j <= nsam; ++j)
 	*sky += dysma[j];
-    obj[0] = *sky / *nn;
+    obj[0] = *sky / nsam;
 
-    if (*kk > 1 || med_given) {
+    if (kk > 1 || med_given) {
 
 	double small, dz, dzsky;
 	int kj, kbest = -1, nbest = -1;/* init: -Wall*/
 
-	/*     second algorithm: swap. */
+/* ====== second algorithm: SWAP. ====== */
 
 	/* Hmm: In the following, we RE-compute dysma[];
 	 *      don't need it first time; then only need *update* after swap */
 
 /*--   Loop : */
 L60:
-	for (j = 1; j <= *nn; ++j) {
+	for (j = 1; j <= nsam; ++j) {
 	    /*  dysma[j] := D_j  d(j, <closest medi>)  [KR p.102, 104]
 	     *  dysmb[j] := E_j  d(j, <2-nd cl.medi>)  [p.103] */
-	    dysma[j] = tmp1;
-	    dysmb[j] = tmp1;
-	    for (i = 1; i <= *nn; ++i) {
+	    dysma[j] = s;
+	    dysmb[j] = s;
+	    for (i = 1; i <= nsam; ++i) {
 		if (nrepr[i] == 1) {
 		    ij = ind_2(i, j);
 		    if (dysma[j] > dys[ij]) {
@@ -219,20 +222,18 @@ L60:
 	}
 
 	dzsky = 1.;
-	for (k = 1; k <= *nn; ++k) if (nrepr[k] == 0) {
-	    for (i = 1; i <= *nn; ++i) if (nrepr[i] == 1) {
+	for (k = 1; k <= nsam; ++k) if (nrepr[k] == 0) {
+	    for (i = 1; i <= nsam; ++i) if (nrepr[i] != 0) {
 		dz = 0.;
 		/* dz := T_{ih} := sum_j C_{jih}  [p.104] : */
-		for (j = 1; j <= *nn; ++j) {
+		for (j = 1; j <= nsam; ++j) {
 		    ij = ind_2(i, j);
 		    kj = ind_2(k, j);
 		    if (dys[ij] == dysma[j]) {
 			small = dysmb[j] > dys[kj]? dys[kj] : dysmb[j];
 			dz += (- dysma[j] + small);
-		    } else {
-			if (dys[kj] < dysma[j])
-			    dz += (- dysma[j] + dys[kj]);
-		    }
+		    } else if (dys[kj] < dysma[j])
+			dz += (- dysma[j] + dys[kj]);
 		}
 		if (dzsky > dz) {
 		    dzsky = dz;
@@ -251,7 +252,7 @@ L60:
 	    goto L60;
 	}
     }
-    obj[1] = *sky / *nn;
+    obj[1] = *sky / nsam;
 } /* bswap */
 
 /* -----------------------------------------------------------

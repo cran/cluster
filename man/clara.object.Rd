@@ -19,9 +19,14 @@
   \item{sample}{
     labels or case numbers of the observations in the best sample, that is,
     the sample used by the \code{clara} algorithm for the final partition.}
-  \item{medoids}{
-    the medoids or representative objects of the clusters.
-    It is a matrix with in each row the coordinates of one medoid.}
+  \item{medoids}{the medoids or representative objects of the clusters.
+    It is a matrix with in each row the coordinates of one medoid.
+    Possibly \code{NULL}, namely when the object resulted from
+    \code{clara(*, medoids.x=FALSE)}. Use the following \code{i.med} in
+    that case.}
+  \item{i.med}{
+    the \emph{indices} of the \code{medoids} above: \code{medoids <- x[i.med,]}
+    where \code{x} is the original data matrix in \code{clara(x,*)}.}
   \item{clustering}{the clustering vector, see \code{\link{partition.object}}.}
   \item{objective}{the objective function for the final clustering of
     the entire dataset.}

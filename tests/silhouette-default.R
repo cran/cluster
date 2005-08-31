@@ -1,6 +1,7 @@
 ## This came from a bug report on R-help by ge yreyt <tothri2000@yahoo.ca>
 ## Date: Mon, 9 Jun 2003 16:06:53 -0400 (EDT)
 library(cluster)
+if(FALSE) # manual testing
 library(cluster, lib="~/R/Pkgs/cluster.Rcheck")
 
 data(iris)
@@ -48,7 +49,7 @@ for(k in 2:40) {
     si.g <- silhouette(k.gr, mdist)
     si.g[] <- si.g[ rownames(si.p), ]
     cat("grouping table: "); print(table(k.gr))
-    if(!isTRUE(a.eq <- all.equal(si.g[], si.p[]))) {
+    if(!isTRUE(all.equal(si.g[], si.p[]))) {
 	cat("silhouettes differ:")
 	if(any(neq <- !Eq(si.g[,3], si.p[,3]))) {
 	    cat("\n")

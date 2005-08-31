@@ -1,4 +1,4 @@
-C-- $Id: fanny.f,v 1.9 2005/06/03 06:20:20 maechler Exp $
+C-- $Id: fanny.f,v 1.10 2005/08/30 07:48:18 maechler Exp $
 C   program for Fuzzy cluster ANalysis
 C
       subroutine fanny(nn,jpp,kk,x,dss,jdyss,valmd,jtmd,ndyst,
@@ -42,7 +42,7 @@ C
       if(dss(l).gt.s)s=dss(l)
       if(l.lt.nhalf)go to 130
       call fuzzy(nn,nhalf,p,dp,pt,dss,esp,ef,eda,edb,kk,obj,r,tol,maxit)
-      call caddy(nn,p,kk,ktrue,nfuzz,ncluv,pt,nelem)
+      call caddy(nn,p,kk,ktrue,nfuzz,ncluv,pt)
       if(2.le.ktrue .and. ktrue.lt.nn) then
 	 call fygur(ktrue,nn,kk,nhalf,ncluv,nsend,nelem,
      1	      negbr,syl,dvec,pt,ttsyl,dss,s,sylinf)
@@ -232,11 +232,11 @@ C
       end
 C
 C
-      subroutine caddy(nn,p,k,ktrue,nfuzz,ncluv,rdraw,nelem)
+      subroutine caddy(nn,p,k,ktrue,nfuzz,ncluv,rdraw)
 
 c     Args
       integer nn, k, ktrue
-      integer nfuzz(k), ncluv(nn), nelem(nn)
+      integer nfuzz(k), ncluv(nn)
       double precision p(nn,k), rdraw(k)
 C
 c     VARs

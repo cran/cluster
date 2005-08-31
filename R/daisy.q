@@ -27,7 +27,7 @@ function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 	}
 	tA <- type$asymm
 	tS <- type$symm
-	if((!is.null(tA) || !is.null(tS))) {
+	if(!is.null(tA) || !is.null(tS)) {
 	    ## tA and tS might be character and integer!
 	    d.bin <- cbind(as.data.frame(x[, tA, drop= FALSE]),
 					 x[, tS, drop= FALSE])
@@ -44,14 +44,17 @@ function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 	    if(!all(sapply(d.bin, function(y)
 			   is.logical(y) ||
 			   all(sort(unique(as.numeric(y[!is.na(y)])))%in% 0:1))))
-		stop("at least one binary variable has values other than 0,1, and NA")
+		stop("at least one binary variable has values not in {0,1,NA}")
 	}
     }
     ## transform variables and construct `type' vector
     if(is.data.frame(x)) {
 	type2 <- sapply(x, data.class)
 	x <- data.matrix(x)
-    } else type2 <- rep("numeric", p)
+    } else { ## matrix
+        type2 <- rep("numeric", p)
+        names(type2) <- colnames(x)
+    }
     if(length(type)) {
 	tT <- type$ ordratio
 	tL <- type$ logratio

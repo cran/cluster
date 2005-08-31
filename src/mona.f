@@ -14,7 +14,8 @@ c	nn   = number of objects
 c	pp   = number of variables
 c	jerr : error return code in {1,2,3,4}
       integer x(nn,pp), jlack(pp), nban(nn),ner(nn),kwan(nn),lava(nn)
-c	x[i,j]: binary (0/1) data (obs. i, var.j) -- missing values > 1 --
+c	x[i,j]: binary (0/1/NA) data (obs. i, var.j)
+c		where "NA", missing values, are all values > 1
 
 c Function called:
       integer kab
@@ -58,7 +59,7 @@ c     at least 50% of the objects have missing values for this variable
 	    jerr=2
 	    return
 	 endif
- 90	 if(j0.eq.0 .or. j1.eq.0) then
+ 	 if(j0.eq.0 .or. j1.eq.0) then
 c	    all non missing values are identical for this variable
 	    jerr=3
 	    return

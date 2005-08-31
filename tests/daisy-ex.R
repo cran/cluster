@@ -43,10 +43,34 @@ d5[,4] <- 1 # binary with only one instead of two values
 ## better leave away the constant variable: it has no effect:
 stopifnot(identical(c(d1), c(daisy(d5[,-4], type = list(asymm = 1:4)))))
 
-data(flower)
-data(agriculture)
+###---- Trivial "binary only" matrices (not data frames) did fail:
+
+x <- matrix(0, 2, 2)
+dimnames(x)[[2]] <- c("A", "B")## colnames<- is missing in S+
+daisy(x, type = list(symm= "B", asymm="A"))
+daisy(x, type = list(symm= "B"))# 0 too
+
+x2 <- x; x2[2,2] <- 1
+daisy(x2, type= list(symm = "B"))# |-> 0.5  (gives 1 in S+)
+daisy(x2, type= list(symm = "B", asymm="A"))# 1
+
+x3 <- x; x3[] <- diag(2)
+daisy(x3) # warning: both as interval scaled -> sqrt(2)
+daisy(x3, type= list(symm="B", asymm="A"))#  1
+daisy(x3, type= list(symm =c("B","A")))   #  1, S+: sqrt(2)
+daisy(x3, type= list(asymm=c("B","A")))   #  1, S+ : sqrt(2)
+
+x4 <- rbind(x3, 1)
+daisy(x4, type= list(symm="B", asymm="A"))# 1   0.5 0.5
+daisy(x4, type= list(symm=c("B","A")))    # dito;  S+ : 1.41  1   1
+daisy(x4, type= list(asymm=c("A","B")))   # dito,     dito
+
+
 
 ## ----------- example(daisy) -----------------------
+
+data(flower)
+data(agriculture)
 
 ## Example 1 in ref:
 ##  Dissimilarities using Euclidean metric and without standardization

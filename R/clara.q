@@ -1,13 +1,10 @@
-### $Id: clara.q,v 1.23 2004/03/11 16:29:19 maechler Exp $
-
 #### CLARA := Clustering LARge Applications
 ####
 #### Note that the algorithm is O(n), but O(ns^2) where ns == sampsize
 
 clara <- function(x, k, metric = "euclidean", stand = FALSE,
-		  samples = 5, sampsize = min(n, 40 + 2 * k),
-		  trace = 0, keep.data = TRUE, keepdata,
-                  rngR = FALSE)
+		  samples = 5, sampsize = min(n, 40 + 2 * k), trace = 0,
+                  medoids.x = TRUE, keep.data = medoids.x, rngR = FALSE)
 {
     ## check type of input matrix and values of input numbers
     x <- data.matrix(x)
@@ -24,24 +21,25 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     if((samples <- as.integer(samples)) < 1)
 	stop("'samples' should be at least 1")
 
-    ## `keepdata' is just for back-compatibility; "keep.*" is R-like
-    if(!missing(keepdata) && missing(keep.data)) {
-        warning("argument name `keepdata' is deprecated;",
-                " use `keep.data' instead")
-        keep.data <- keepdata
-    }
+    jp <- ncol(x)
     namx <- dimnames(x)[[1]]
-    ## standardize, if necessary
-    data <- x2 <- if(stand) scale(x, scale = apply(x, 2, meanabsdev)) else x
+    ## standardize, if necessary {careful not to copy unnecessarily}:
+    if(medoids.x) ## need to save original 'x'
+        ox <- x
+    else if(keep.data)
+        stop("when 'medoids.x' is FALSE, 'keep.data' must be too")
+    if(stand)
+        x <- scale(x, scale = apply(x, 2, meanabsdev))
+    if(keep.data)
+        data <- x
     ## put info about metric, size and NAs in arguments for the .C call
-    jp <- ncol(x2)
 
-    if((mdata <- any(inax <- is.na(x2)))) { # TRUE if x[] has any NAs
+    if((mdata <- any(inax <- is.na(x)))) { # TRUE if x[] has any NAs
 	jtmd <- as.integer(ifelse(apply(inax, 2, any), -1, 1))
 	## VALue for MISsing DATa
-	valmisdat <- 1.1* max(abs(range(x2, na.rm=TRUE)))
-	x2[inax] <- valmisdat
-    }
+	valmisdat <- 1.1* max(abs(range(x, na.rm=TRUE)))
+	x[inax] <- valmisdat
+    } else rm(inax) # save space
 
     if((trace <- as.integer(trace)))
 	cat("calling .C(\"clara\", *):\n")
@@ -49,7 +47,7 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	      n,
 	      jp,
 	      k,
-	      clu = as.double(x2),
+	      clu = as.double(x),
 	      nran  = samples,
 	      nsam  = sampsize,
 	      dis   = double(1 + (sampsize * (sampsize - 1))/2),
@@ -62,7 +60,7 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	      integer(sampsize),# = nsel
 	      sample= integer(sampsize),# = nbest
 	      integer(k),		# = nr
-	      med = integer(k),		# = nrx
+	      imed = integer(k),	# = nrx
 	      double(k),		# = radus
 	      double(k),		# = ttd
 	      double(k),		# = ratt
@@ -99,6 +97,8 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	## else {cannot happen}
 	stop("invalid 'jstop' from .C(\"clara\",.): ", res$jstop)
     }
+    ## 'res$clu' is still large; cut down ASAP
+    res$clu <- as.integer(res$clu[1:n])
     sildim <- res$silinf[, 4]
     ## adapt C output to S:
     ## convert lower matrix, read by rows, to upper matrix, read by rows.
@@ -109,16 +109,15 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     attr(disv, "Size") <- sampsize
     attr(disv, "Metric") <- metric
     attr(disv, "Labels") <- namx[res$sample]
+    res$med <- if(medoids.x) ox[res$imed, , drop = FALSE]
     ## add labels to C output
-    res$med <- x[res$med, , drop = FALSE]
-    res$clu <- as.integer(res$clu[1:n])
     if(!is.null(namx)) {
 	sildim <- namx[sildim]
 	res$sample <- namx[res$sample]
 	names(res$clu) <- namx
     }
     ## add dimnames to C output
-    r <- list(sample = res$sample, medoids = res$med,
+    r <- list(sample = res$sample, medoids = res$med, i.med = res$imed,
 	      clustering = res$clu, objective = res$obj,
 	      clusinfo = cbind(size = res$size, "max_diss" = res$maxdis,
 	      "av_diss" = res$avdis, isolation = res$ratdis),

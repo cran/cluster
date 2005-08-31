@@ -1,3 +1,43 @@
+2005-08-31  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.10.2 released to CRAN
+
+	* src/clara.c (bswap2): minor cosmetic
+
+2005-08-30  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/daisy.q (daisy): the case of a *binary*-only matrix (not
+		data frame), used to fail, now works fine, tested in
+	* tests/daisy-ex.R:
+
+	* src/twins.f: get rid of gfortran warnings
+	* src/mona.f:  dito
+	* src/fanny.f:  "
+	* src/meet.f:   "
+
+2005-08-06  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/clara*: adapt to slightly changed output
+
+	* src/clara.c (clara), (bswap2): better trace_lev printing;
+		code more in line with 'pam'.
+
+2005-08-05  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.10.2 {not released}
+
+	* R/clara.q (clara): no longer support deprecated 'keepdata';
+		also return 'i.med'; new argument 'medoids.x' allowing to
+		save even more memory; do not assign 'data' when
+		keep.data=FALSE.
+
+	* man/clara.Rd: + 'i.med' + 'medoids.x' - 'keepdata'
+	* man/clara.object.Rd: dito
+
+2005-07-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/silhouette-default.R: if(FALSE) library(*, lib="..MM..")
+
 2005-06-30  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* tests/silhouette-default.R (isTRUE): need for R < 2.1.x

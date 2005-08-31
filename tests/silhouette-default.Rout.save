@@ -1,7 +1,6 @@
 
 R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.2.0 Under development (unstable) (2005-06-29 r34876)
-ISBN 3-900051-07-0
+Version 2.1.1 Patched (2005-08-05), ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -18,7 +17,8 @@ Type 'q()' to quit R.
 > ## This came from a bug report on R-help by ge yreyt <tothri2000@yahoo.ca>
 > ## Date: Mon, 9 Jun 2003 16:06:53 -0400 (EDT)
 > library(cluster)
-> library(cluster, lib="~/R/Pkgs/cluster.Rcheck")
+> if(FALSE) # manual testing
++ library(cluster, lib="~/R/Pkgs/cluster.Rcheck")
 > 
 > data(iris)
 > 
@@ -279,7 +279,7 @@ Individual silhouette widths:
 +     si.g <- silhouette(k.gr, mdist)
 +     si.g[] <- si.g[ rownames(si.p), ]
 +     cat("grouping table: "); print(table(k.gr))
-+     if(!isTRUE(a.eq <- all.equal(si.g[], si.p[]))) {
++     if(!isTRUE(all.equal(si.g[], si.p[]))) {
 + 	cat("silhouettes differ:")
 + 	if(any(neq <- !Eq(si.g[,3], si.p[,3]))) {
 + 	    cat("\n")
@@ -593,6 +593,6 @@ null device
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  17.79 0.56 29.65 0 0 
+Time elapsed:  22.83 0.03 23.2 0 0 
 > 
 > 

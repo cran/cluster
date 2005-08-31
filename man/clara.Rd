@@ -7,8 +7,8 @@
 }
 \usage{
 clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
-      sampsize = min(n, 40 + 2 * k), trace = 0, keep.data = TRUE, keepdata,
-      rngR = FALSE)
+      sampsize = min(n, 40 + 2 * k), trace = 0, medoids.x = TRUE,
+      keep.data = medoids.x, rngR = FALSE)
 }
 \arguments{
   \item{x}{
@@ -37,12 +37,19 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
     (\code{k}) and at most the number of observations (n = \code{nrow(x)}).}
   \item{trace}{integer indicating a \emph{trace level} for diagnostic
     output during the algorithm.}
-  \item{keep.data,keepdata}{logical indicating if the (\emph{scaled} if
+  \item{medoids.x}{logical indicating if the medoids should be
+    returned, identically to some rows of the input data \code{x}.  If
+    \code{FALSE}, \code{keep.data} must be false as well, and the medoid
+    indices, i.e., row numbers of the medoids will still be returned
+    (\code{i.med} component), and the algorithm saves space by needing
+    one copy less of \code{x}.}
+  \item{keep.data}{logical indicating if the (\emph{scaled} if
     \code{stand} is true) data should be kept in the result.
-    (\code{keepdata} is equivalent to \code{keep.data} where the former
-    is deprecated.)
+%     (\code{keepdata} is equivalent to \code{keep.data} where the former
+%     is deprecated.)
     Setting this to \code{FALSE} saves memory (and hence time), but
-    disables \code{\link{clusplot}()}ing of the result.}
+    disables \code{\link{clusplot}()}ing of the result.  Use
+    \code{medoids.x = FALSE} to save even more memory.}
   \item{rngR}{logical indicating if \R's random number generator should
     be used instead of the primitive clara()-builtin one.  If true, this
     also means that each call to \code{clara()} returns a different result
@@ -88,7 +95,7 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
   \code{k}) is about
   \eqn{O(n \times p) + O(j^2)}{O(n * p) + O(j^2)} where
   \eqn{j = \code{sampsize}}, and \eqn{(n,p) = \code{dim(x)}}.
-  The CPU computing time (again neglecting small \code{k}) is about
+  The CPU computing time (again assuming small \code{k}) is about
   \eqn{O(n \times p \times j^2 \times N)}{O(n * p * j^2 * N)}, where
   \eqn{N = \code{samples}}.
 
@@ -131,7 +138,8 @@ nSim <- 100
 nCl <- 3 # = no.classes
 set.seed(421)# (reproducibility)
 cl <- matrix(NA,nrow(xclara), nSim)
-for(i in 1:nSim) cl[,i] <- clara(xclara, nCl, rngR = TRUE)$cluster
+for(i in 1:nSim)
+   cl[,i] <- clara(xclara, nCl, medoids.x = FALSE, rngR = TRUE)$cluster
 tcl <- apply(cl,1, tabulate, nbins = nCl)
 ## those that are not always in same cluster (5 out of 3000 for this seed):
 (iDoubt <- which(apply(tcl,2, function(n) all(n < nSim))))

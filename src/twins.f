@@ -257,23 +257,23 @@ cd	   call dblepr(",", -1, cf,1)
       cf=cf/rnn
       end
 c     -----------------------------------------------------------
-c	DIANA "splitting"
+c     DIANA "splitting"
 c
       subroutine splyt(nn,kwan,ner,ban,dys,merge)
 
       integer nn, kwan(nn), ner(nn)
       double precision ban(nn), dys(1+nn*(nn-1)/2)
       integer merge(nn-1,2)
-c Function (defined in ./meet.f ):
+c     Function (defined in ./meet.f ):
       integer meet
-c VARs
+c     VARs
       double precision arest, dyff, bdyff, bygsd, cs, da,db, dmin
       double precision rest, splyn, sd
       integer j,k,l, ja,jb, jan,jbn,jab, jma, jmb, jaway, jner
       integer lndsd, lchan, lner, lmm, lmma, lmmb
       integer l1, l2, lgrb, llq, lmz, lxf, lxg, lxx,lxy, lxxa, lxxp
       integer nj, nlj, nclu, nhalf, nmerge
-c against (unnecessary) warnings [-Wall]:
+c     against (unnecessary) warnings [-Wall]:
       jaway= -1
       lndsd= -1
       lxg=   -1
@@ -317,7 +317,7 @@ c
 c
 c     finding first object to be shifted
 c
- 50	 bygsd=-1.
+	 bygsd=-1.
 	 do 110 l=ja,jb
 	    lner=ner(l)
 	    sd=0.
@@ -435,24 +435,25 @@ c
 
       endif
 
- 400  nclu=nclu+1
-      if(nclu.eq.nn)goto 500
+      nclu=nclu+1
+      if(nclu .lt. nn) then
 c
-c     continue splitting until all objects are separated
+c      continue splitting until all objects are separated
 c
-      if(jb.eq.nn)go to 430
- 420  ja=ja+kwan(ja)
-      if(ja.gt.nn)go to 430
-      if(kwan(ja).le.1)go to 420
-      go to 30
- 430  ja=1
-      if(kwan(ja).eq.1)go to 420
-      go to 30
+	 if(jb.eq.nn)go to 430
+ 420	 ja=ja+kwan(ja)
+	 if(ja.gt.nn)go to 430
+	 if(kwan(ja).le.1)go to 420
+	 go to 30
+ 430	 ja=1
+	 if(kwan(ja).eq.1)go to 420
+	 go to 30
+      endif
 
-c
+c 500
 c     merge-structure for plotting tree in S
 c
- 500  do 550 nmerge=1,(nn-1)
+      do 550 nmerge=1,(nn-1)
 	 dmin=cs
 	 do 560 j=2,nn
 	    if (kwan(j).ge.0 .and. dmin.ge.ban(j)) then

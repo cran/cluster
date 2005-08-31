@@ -1,5 +1,6 @@
 c Utility, called from TWINS;
-c	{originally also from  CLARA, PAM which now use C ind_2()  in ./ind_2.h
+c	   { originally also from CLARA, PAM
+c	     which now use C ind_2() in ./ind_2.h }
 c original had MEET(), MEET2(), and MEET3()
 c in the corresponding 3 source files
 

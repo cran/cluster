@@ -20,8 +20,8 @@ stopifnot(identical(clara0$clustering, pam0$clustering)
 
 summary(clara2 <- clara(x, 2))
 
-clInd <- c("objective", "medoids", "clusinfo")
-clIn4 <- c(clInd, "sample")
+clInd <- c("objective", "i.med", "medoids", "clusinfo")
+clInS <- c(clInd, "sample")
 ## clara() {as original code} always draws the *same* random samples !!!!
 clara(x, 2, samples = 50)[clInd]
 for(i in 1:20)
@@ -86,18 +86,18 @@ daisy(ru5, "manhattan")
 ## Dissimilarities :  11 118 143 107 132  89
 
 ## no problem anymore, since 2002-12-28:
-clara(ru5, k=3, met="manhattan", sampsize=3,trace=2)[clIn4]
-clara(ru5, k=3, met="manhattan", sampsize=4,trace=1)[clIn4]
+clara(ru5, k=3, met="manhattan", sampsize=3,trace=2)[clInS]
+clara(ru5, k=3, met="manhattan", sampsize=4,trace=1)[clInS]
 
 daisy(ru4, "manhattan")
 ## this one gives problem, from ss = 6 on ___ still after 2002-12-28 ___ :
 for(ss in 4:nrow(ru4)){
     cat("---\n\nsample size = ",ss,"\n")
-    print(clara(ru4,k=3,met="manhattan",sampsize=ss)[clIn4])
+    print(clara(ru4,k=3,met="manhattan",sampsize=ss)[clInS])
 }
 for(ss in 4:nrow(ru3)){
     cat("---\n\nsample size = ",ss,"\n")
-    print(clara(ru3,k=4,met="manhattan",sampsize=ss)[clIn4])
+    print(clara(ru3,k=4,met="manhattan",sampsize=ss)[clInS])
 }
 
 ## Last Line:
