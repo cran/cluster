@@ -1,21 +1,22 @@
 Things that were on my TODO list and have been accomplished
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (newest 1st)
 
-May, 2004:
+o  Jan.2006:
+   Create a new  silhoutte.clara(...., full = FALSE)
+   where "full = TRUE" would compute all the silhouttes, not just those of
+   the "best sample".
 
-o New agnes(*, method = "flexible", par.method = *) to allow
-  Lance-Williams formula.
+o  Dec.2005: need ./inst/CITATION  for getting a nice  citation()
 
-Mar, 2004:
+o  May, 2004: New agnes(*, method = "flexible", par.method = *) to allow
+   Lance-Williams formula.
 
-o  When using a NAMESPACE, can rename `..dClass' in R/0aaa.R (and *.q):
-   Renamed to 'dissiCl'
+o  Mar, 2004: When using a NAMESPACE, can rename `..dClass' in R/0aaa.R
+   (and *.q): Renamed to 'dissiCl'
 
-Dec, 2003:
-
-o cutree(diana(), h = h0)
-	gives complete non-sense without a warning
-  -- the same as in S-plus ..
+o  Dec, 2003: cutree(diana(), h = h0)
+ 	gives complete non-sense without a warning
+    -- the same as in S-plus ..
 
 
 

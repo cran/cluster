@@ -32,8 +32,8 @@ void clara(int *n,  /* = number of objects */
 	   double *valmd,/*[j]= missing value code (instead of NA) for x[,j]*/
 	   int *jtmd,	/* [j]= {-1,1};	 -1: x[,j] has NA; 1: no NAs in x[,j] */
 	   int *diss_kind,/*= {1,2};  1 : euclidean;  2 : manhattan*/
-	   int *rng_R,	/*  = {0,1};  0 : use clara's internal weak RNG;
-			 *	      1 : use R's RNG (and seed) */
+	   int/*logical*/ *rng_R,/*= {0,1};  0 : use clara's internal weak RNG;
+				  *	     1 : use R's RNG (and seed) */
 	   int *nrepr,
 	   int *nsel,
 	   int *nbest,/* x[nbest[j],] : the j-th obs in the final sample */

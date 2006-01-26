@@ -1,6 +1,8 @@
 \name{daisy}
 \alias{daisy}
 \title{Dissimilarity Matrix Calculation}
+\concept{Gower's formula}
+\concept{Gower coefficient}% FIXME: Give reference and more: see ../TODO-MM
 \description{
   Compute all the pairwise dissimilarities (distances) between observations
   in the dataset.  The original variables may be of mixed types.

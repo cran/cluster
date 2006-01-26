@@ -80,8 +80,16 @@ void black(int kk, int jpp, int nsam, int *nbest,
 /* -------- ./dysta.f --- (was in pam.f) -------------------- */
 int F77_NAME(dysta)(int *nn, int *jpp, double *x, double *dys, int *ndyst,
 		    int *jtmd, double *valmd, int *jhalt);
-
 /* --------- ./pam.c ------------------*/
+
+void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
+	 int *jdyss, /* jdyss = 0 : compute distances from x
+		      *	      = 1 : distances provided	in x */
+	 double *valmd, int *jtmd,
+	 int *ndyst, int *nsend, int *nrepr, int *nelem,
+	 double *radus, double *damer, double *ttd, double *separ,
+	 double *ttsyl, double *obj, int *med, int *ncluv,
+	 double *clusinf, double *sylinf, int *nisol);
 
 void bswap(int kk, int nsam, int *nrepr, Rboolean med_given, int trace_lev,
 	   double *dysma, double *dysmb, double *beter,
@@ -113,3 +121,44 @@ void spannel(int *ncas, /* = number of objects */
 	     double *eps,
 	     int *maxit, /* = maximal # iterations (and returns #{iter.})*/
 	     int *ierr);
+
+/* ================= Fortran things (remainder) ======================== */
+
+/* -------- ./daisy.f ---------------------------------- */
+int F77_NAME(daisy)(int *nn, int *jpp, double *x,
+		    double *valmd, int *jtmd, int *jdat, int *vtype,
+		    int *ndyst, int *mdata, double *disv);
+
+/* -------- ./fanny.f ---------------------------------- */
+int F77_NAME(fanny)(int *nn, int *jpp, int *kk,
+		    double *x, double *dss, int *jdyss, double *valmd,
+		    int *jtmd, int *ndyst, int *nsend, int *nelem,
+		    int *negbr, double *syl, double *p, double *dp,
+		    double *pt, int *nfuzz, double *esp, double *ef,
+		    double *dvec, double *ttsyl, double *eda, double *edb,
+		    double *obj, int *ncluv, double *sylinf, double *r,
+		    double *tol, int *maxit);
+
+/* only called from ../tests/dysta-ex.R */
+int F77_NAME(dysta3)(int *nn, int *jpp, double *x, double *dys, int *ndyst,
+		     int *jtmd, double *valmd, int *jhalt);
+
+
+/* -------- ./meet.f ---------------------------------- */
+int F77_NAME(meet)(int *l, int *j);
+
+/* -------- ./mona.f ---------------------------------- */
+int F77_NAME(mona)(int *nn, int *pp, int *x, int *jerr,
+		   int *nban, int *ner, int *kwan, int *lava, int *jlack);
+
+/* -------- ./twins.f ---------------------------------- */
+int F77_NAME(bncoef)(int *nn, int *jpp, double *x, double *dys, int *ndyst,
+		    int *jtmd, double *valmd, int *jhalt);
+
+int F77_NAME(twins)(int *nn, int *jpp, double *x,
+		    double *dys, double *dys2, int *jdyss, double *valmd,
+		    int *jtmd, int *ndyst, int *jalg, int *method,
+		    int *kwan, int *ner, double *ban, double *coef,
+		    double *alpha, int *merge);
+
+

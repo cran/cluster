@@ -25,6 +25,7 @@ S3method(clusplot, default)
 S3method(clusplot, partition)
 S3method(pltree, twins)
 S3method(silhouette, default)
+S3method(silhouette, clara)
 S3method(silhouette, partition)
 S3method(volume, ellipsoid)
 

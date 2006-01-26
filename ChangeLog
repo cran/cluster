@@ -1,3 +1,32 @@
+2006-01-25  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/silhouette.R (silhouette.clara): added (for "full = TRUE" option)
+
+2006-01-07  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.10.3
+
+	* src/init.c: registering all (R-callable) C and Fortran routines
+
+	* src/cluster.h: declare the remaining callable routines
+
+2005-12-30  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* inst/CITATION: first version
+
+	* R/silhouette.R (plot.silhouette): 'nmax.lab' was not obeyed
+		properly (labels were drawn for large n when the
+		silhouette had rownames).
+
+	* man/silhouette.Rd: explain clara's silhouette and "full" one.
+
+2005-09-06  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/pluton.Rd: \source: new URL @ www.agoras.ua.ac.be
+	* man/clusplot.default.Rd: dito
+	* man/ellipsoidhull.Rd: ""
+	* README: ""
+
 2005-08-31  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.10.2 released to CRAN
@@ -12,8 +41,8 @@
 
 	* src/twins.f: get rid of gfortran warnings
 	* src/mona.f:  dito
-	* src/fanny.f:  "
-	* src/meet.f:   "
+	* src/fanny.f:	"
+	* src/meet.f:	"
 
 2005-08-06  Martin Maechler  <maechler@stat.math.ethz.ch>
 
@@ -133,13 +162,13 @@
 
 2004-11-27  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-	* DESCRIPTION (Version): 1.9.7    (not yet CRAN)
+	* DESCRIPTION (Version): 1.9.7	  (not yet CRAN)
 
-	* R/plothier.q (bannerplot): use default 'main' and 'sub'
+	* R/plothier.q (bannerplot): ouse default 'main' and 'sub'
 	* man/bannerplot.Rd: + example
 
 	* R/coef.R (coef.hclust): Implement R function for
-	           computing the agglomerative/divisive coefficient.
+		   computing the agglomerative/divisive coefficient.
 	* man/coef.hclust.Rd: new; including example
 
 	* man/predict.ellipsoid.Rd: wrong link

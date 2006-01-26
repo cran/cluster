@@ -131,7 +131,7 @@ data(xclara)
 (clx3 <- clara(xclara, 3))
 ## Plot similar to Figure 5 in Struyf et al (1996)
 \dontrun{plot(clx3, ask = TRUE)}
-\testonly{plot(clx3)}
+\dontshow{plot(clx3)}
 
 ## Try 100 times *different* random samples -- for reliability:
 nSim <- 100

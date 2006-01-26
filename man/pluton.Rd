@@ -27,8 +27,10 @@
   combine these plutonium patches in three groups of similar size.
 }
 \source{
-  Available as \file{pluton.dat} in the archive
-  \url{http://win-www.uia.ac.be/u/statis/datasets/clusplot-examples.tar.gz}
+  Available as \file{pluton.dat} from the archive
+  %%   originally at
+  %%   \url{http://win-www.uia.ac.be/u/statis/datasets/clusplot-examples.tar.gz},
+  currently \url{http://www.agoras.ua.ac.be/datasets/clusplot-examples.tar.gz}.
 }
 \references{
   Rousseeuw, P.J. and Kaufman, L and Trauwaert, E. (1996)

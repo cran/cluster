@@ -179,7 +179,7 @@
   Displaying a Clustering with CLUSPLOT,
   \emph{Computational Statistics and Data Analysis}, \bold{30}, 381--392.\cr
   A version of this is available as technical report from
-  \url{http://win-www.uia.ac.be/u/statis/abstract/Disclu99.htm}
+  \url{http://www.agoras.ua.ac.be/abstract/Disclu99.htm}
 
   Kaufman, L. and Rousseeuw, P.J. (1990).
   \emph{Finding Groups in Data: An Introduction to Cluster Analysis.}

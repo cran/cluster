@@ -1,5 +1,3 @@
-####-*- mode: R; kept-old-versions: 12;  kept-new-versions: 20; -*-
-
 #### ellipsoidhull : Find (and optionally draw)
 #### -----------   the smallest ellipsoid containining a set of points
 ####

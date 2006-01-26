@@ -1,4 +1,3 @@
-####-*- mode: R; kept-old-versions: 12;  kept-new-versions: 20; -*-
 
 mona <- function(x)
 {

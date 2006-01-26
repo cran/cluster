@@ -1,5 +1,5 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q,v 1.21 2004/07/02 22:13:37 maechler Exp $
+#### --- $Id: pam.q,v 1.22 2005/06/09 09:40:25 maechler Exp $
 pam <- function(x, k, diss = inherits(x, "dist"),
 		metric = "euclidean", medoids = NULL,
                 stand = FALSE, cluster.only = FALSE,

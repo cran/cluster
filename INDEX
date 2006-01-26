@@ -21,6 +21,7 @@ sizeDiss		Sample Size of Dissimilarity Like Object
 clusplot		Cluster Plot - Generic Function
 clusplot.default	Bivariate Cluster Plot (Clusplot) Default Method
 clusplot.partition	Bivariate Clusplot of a Partitioning Object
+coef.hclust             Agglomerative Coefficient for 'hclust' Objects
 pltree			Clustering Trees - Generic Function
 pltree.twins		Clustering Tree of a Hierarchical Clustering
 

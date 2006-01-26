@@ -11,6 +11,23 @@ silhouette.partition <- function(x, ...) {
     r
 }
 
+silhouette.clara <- function(x, full = FALSE, ...)
+{
+    if(!full)
+	return(NextMethod()) ##-> silh*.partition()
+
+    ## else : full = TRUE
+    if(is.null(x$data))
+	stop("full silhouette is only available for results of",
+	     " 'clara(*, keep.data = TRUE)'")
+    ## Compute "full" silhouette -- from clustering + full distances:
+    r <- silhouette(x$clustering,
+		    daisy(x$data, metric = attr(x, "Metric")))
+    attr(r, "call") <-
+	substitute(silhouette(CL, full = TRUE), list(CL = x$call))
+    r
+}
+
 silhouette.default <- function(x, dist, dmatrix, ...) {
     cll <- match.call()
     if(!is.null(cl <- x$clustering)) x <- cl
@@ -121,8 +138,9 @@ plot.silhouette <-
     s <- rev(x[, "sil_width"])
     space <- c(0, rev(diff(cli <- x[, "cluster"])))
     space[space != 0] <- 0.5 # gap between clusters
-    names <- if(n < nmax.lab)
-	substring(rev(rownames(x)), 1, max.strlen)
+    axisnames <- (n < nmax.lab)
+    if(axisnames)
+        names <- substring(rev(rownames(x)), 1, max.strlen)
     if(is.null(main)) {
 	main <- "Silhouette plot"
 	if(!is.null(cll <- attr(x,"call"))) { # drop initial "silhouette":
@@ -146,7 +164,8 @@ plot.silhouette <-
     y <- barplot(s, space = space, names = names, xlab = xlab,
 		 xlim = c(min(0, min(s)), 1),
 		 horiz = TRUE, las = 1, mgp = c(2.5, 1, 0),
-		 col = col, border = border, cex.names = cex.names, ...)
+		 col = col, border = border, cex.names = cex.names,
+                 axisnames = axisnames, ...)
     title(main = main, sub = sub, adj = 0)
     if(do.n.k) {
 	mtext(paste("n =", n),	adj = 0)
