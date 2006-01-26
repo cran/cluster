@@ -1,5 +1,5 @@
 Package: cluster
-Version: 1.10.3
+Version: 1.10.4
 Date: 2006-01-26
 Priority: recommended
 Author: Martin Maechler, based on S original by Peter Rousseeuw <rousse@uia.ua.ac.be>,
@@ -13,4 +13,4 @@ Depends: R (>= 1.9), stats, graphics, utils
 LazyLoad: yes
 LazyData: yes
 License: GPL version 2 or later
-Packaged: Thu Jan 26 12:40:56 2006; maechler
+Packaged: Thu Jan 26 15:38:29 2006; hornik
