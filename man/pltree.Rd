@@ -3,9 +3,8 @@
 \title{Clustering Trees - Generic Function}
 \description{
   Generic function drawing a clustering tree (``dendrogram'') on the
-  current graphics device.
-  There is Functions with names beginning in \code{pltree.} will be
-  methods for this function.
+  current graphics device.  There is a \code{twins} method, see
+  \code{\link{pltree.twins}} for usage and examples.
 }
 \usage{
 pltree(x, \dots)
@@ -16,12 +15,7 @@ pltree(x, \dots)
     parameters (see \code{\link{par}}) may also be supplied as arguments
     to this function.}
 }
-\section{Side Effects}{
-  a clustering tree is created on the current graphics device.
-}
-\seealso{
-  \code{\link{twins.object}}, \code{\link{agnes}}, \code{\link{diana}},
-  \code{\link{par}}.
+\seealso{\code{\link{pltree.twins}}, \code{\link{twins.object}}.
 }
 \keyword{cluster}
 \keyword{hplot}

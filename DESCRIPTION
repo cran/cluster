@@ -1,6 +1,6 @@
 Package: cluster
-Version: 1.10.4
-Date: 2006-01-26
+Version: 1.10.5
+Date: 2006-03-20
 Priority: recommended
 Author: Martin Maechler, based on S original by Peter Rousseeuw <rousse@uia.ua.ac.be>,
 	Anja.Struyf@uia.ua.ac.be and Mia.Hubert@uia.ua.ac.be,
@@ -13,4 +13,4 @@ Depends: R (>= 1.9), stats, graphics, utils
 LazyLoad: yes
 LazyData: yes
 License: GPL version 2 or later
-Packaged: Thu Jan 26 15:38:29 2006; hornik
+Packaged: Mon Mar 20 18:23:36 2006; maechler

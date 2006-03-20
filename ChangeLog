@@ -1,3 +1,41 @@
+2006-03-20  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.10.5  for CRAN
+
+	* .rsync-exclude: new file useful since I moved my RCS archive to SVN
+		(using 'cvs2svn' and a perl script on 'svn-stat').
+
+2006-02-27  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/sildist.c (sildist): 2nd round (by Romain and me)
+
+2006-02-25  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/silhouette.R (silhouette.default): new C version in file
+	* src/sildist.c (sildist): provided by Romain Francois
+
+2006-02-04  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/ellipsoidhull.R (print.ellipsoid): also work without 'conv' slot
+
+	* man/ellipsoidhull.Rd: finally explain 'd2'; and \link to other
+		ellipse implementations.
+
+	* man/volume.ellipsoid.Rd: + example of 'ellipsoid' construction
+
+2006-01-31  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/bannerplot.Rd: (et al.): use \dQuote{} and \sQuote{}
+
+2006-01-27  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/pltree.twins.Rd: explain the as.hclust() dispatch; add
+		example, particularly for plot(as.dendrogram(.)).
+
+2006-01-26  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.10.4 -- released to CRAN
+
 2006-01-25  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* R/silhouette.R (silhouette.clara): added (for "full = TRUE" option)

@@ -1,4 +1,3 @@
-c -*- mode: fortran; kept-old-versions: 12;  kept-new-versions: 20; -*-
 
       subroutine daisy(nn,jpp,x,valmd,jtmd,jdat,vtype,ndyst,mdata,disv)
 c     c

@@ -1,6 +1,7 @@
 
-R : Copyright 2004, The R Foundation for Statistical Computing
-Version 2.0.1  (2004-11-15), ISBN 3-900051-07-0
+R : Copyright 2006, The R Foundation for Statistical Computing
+Version 2.3.0 Under development (unstable) (2006-02-26 r37442)
+ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -11,7 +12,7 @@ Type 'contributors()' for more information and
 'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for a HTML browser interface to help.
+'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
 > library(cluster)
@@ -480,7 +481,7 @@ List of 9
  - attr(*, "class")= chr [1:2] "agnes" "twins"
 > 
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  0.38 0.07 0.5 0 0 
+Time elapsed:  0.52 0.01 0.54 0 0 
 > 
 > summary(ar2 <- agnes(ruspini, metric="manhattan", method = "weighted"))
 Object of class `agnes' from call:
@@ -597,7 +598,7 @@ Order of objects:
 [51] 40 33 34 37 38 41 42 43 44 45 49 51 53 50 54 52 55 56 57 59 60 58 46 47 48
 Height (summary):
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   2.00    5.00    8.13   14.20   15.60  115.00 
+   2.00    5.00    8.12   14.20   15.60  115.00 
 
 Available components:
 [1] "order"     "height"    "ac"        "merge"     "diss"      "call"     
@@ -605,5 +606,5 @@ Available components:
 > stopifnot(all.equal(ar2[1:4], ar3[1:4], tol=1e-12))
 > 
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  0.43 0.07 0.55 0 0 
+Time elapsed:  0.57 0.02 0.6 0 0 
 > 

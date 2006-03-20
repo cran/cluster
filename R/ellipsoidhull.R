@@ -73,7 +73,7 @@ print.ellipsoid <- function(x, digits = max(1, getOption("digits") - 2), ...)
     print(x$cov, digits = digits, ...)
     cat("  hence,",if(d==2)"area" else "volume"," = ",
         format(volume(x), digits=digits),"\n")
-    if(!x$conv) {
+    if(!is.null(x$conv) && !x$conv) {
         cat("\n** Warning: ** the algorithm did not terminate reliably!\n  ",
             if(x$ierr) "most probably because of collinear data"
             else "(in the available number of iterations)", "\n")
@@ -90,16 +90,16 @@ volume.ellipsoid <- function(object) {
 ## For p = 2 :
 ##   Return (x[i],y[i]) points, i = 1:n, on boundary of ellipse, given
 ##   by 2 x 2 matrix A[], origin `loc' and d(xy, loc) ^2 = `d2'
-ellipsoidPoints <- function(A, d2, loc, n = 201)
+ellipsoidPoints <- function(A, d2, loc, n.half = 201)
 {
     if(length(d <- dim(A)) != 2 || (p <- d[1]) != d[2])
         stop("`A' must be p x p  cov-matrix defining an ellipsoid")
     if(p == 2) {
         detA <- A[1, 1] * A[2, 2] - A[1, 2]^2
-        yl2 <- A[2, 2] * d2
-        y <- seq( - sqrt(yl2), sqrt(yl2), leng = n)
+        yl2 <- A[2, 2] * d2 # = (y_max - y_loc)^2
+        y <- seq( - sqrt(yl2), sqrt(yl2), length = n.half)
         sqrt.discr <- sqrt(detA * pmax(0, yl2 - y^2))/A[2, 2]
-        sqrt.discr[c(1, n)] <- 0
+        sqrt.discr[c(1, n.half)] <- 0
         b <- loc[1] + A[1, 2]/A[2, 2] * y
         y <- loc[2] + y
         return(rbind(cbind(    b - sqrt.discr,      y),

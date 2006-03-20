@@ -1,4 +1,3 @@
-c -*- mode: Fortran; kept-new-versions: 15; kept-old-versions: 10 -*-
 c
 c     This program performs agglomerative nesting (AGNES) using the
 c     group average method (_or others_) of Sokal and Michener (1958),

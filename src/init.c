@@ -5,6 +5,9 @@
 
 #include <R_ext/Rdynload.h>
 
+#define CDEF(name)  {#name, (DL_FUNC) &name, sizeof(name ## _t)/sizeof(name ## _t[0]), name ##_t}
+
+
 static R_NativePrimitiveArgType clara_t[32] = {
     /*n:*/ INTSXP, INTSXP, INTSXP, REALSXP, INTSXP, INTSXP, REALSXP, INTSXP,
     /*valmd:*/ REALSXP, INTSXP, INTSXP, /* rng_R: */ LGLSXP,
@@ -26,6 +29,11 @@ static R_NativePrimitiveArgType spannel_t[12] = {
     /*varss: */ REALSXP, REALSXP, REALSXP, REALSXP, INTSXP, INTSXP
 };
 
+static R_NativePrimitiveArgType sildist_t[] = {
+    REALSXP, INTSXP, INTSXP, INTSXP, REALSXP, INTSXP,
+    /* si: */ REALSXP, INTSXP, LGLSXP
+};
+
 /* is only .C()-called from ../tests/sweep-ex.R : */
 static R_NativePrimitiveArgType sweep_t[5] = {
     REALSXP, INTSXP, INTSXP, INTSXP, REALSXP
@@ -36,6 +44,7 @@ static const R_CMethodDef CEntries[]  = {
     {"pam", (DL_FUNC) &pam, 23, pam_t},
     {"spannel", (DL_FUNC) &spannel, 12, spannel_t},
     {"sweep", (DL_FUNC) &sweep, 5, sweep_t},
+    CDEF(sildist),
     {NULL, NULL, 0}
 };
 

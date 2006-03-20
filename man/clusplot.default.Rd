@@ -129,7 +129,7 @@
     ranges as in \code{\link{plot.default}}.}
   \item{main}{main title for the plot; by default, one is constructed.}
   \item{verbose}{a logical indicating, if there should be extra
-    diagnostic output; mainly for `debugging'.}
+    diagnostic output; mainly for \sQuote{debugging}.}
   \item{\dots}{Further graphical parameters may also be supplied, see
     \code{\link{par}}.}
 }% End Arguments

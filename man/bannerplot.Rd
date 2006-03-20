@@ -2,7 +2,7 @@
 \alias{bannerplot}
 \title{Plot Banner (of Hierarchical Clustering)}
 \description{
-  Draws a ``banner'', i.e. basically a horizontal \code{\link{barplot}}
+  Draws a \dQuote{banner}, i.e. basically a horizontal \code{\link{barplot}}
   visualizing the (agglomerative or divisive) hierarchical clustering or
   an other binary dendrogram structure.
 }
@@ -21,7 +21,8 @@ bannerplot(x, w = rev(x$height), fromLeft = TRUE,
   \item{w}{non-negative numeric vector of bar widths.}
   \item{fromLeft}{logical, indicating if the banner is from the left or not.}
   \item{main,sub}{main and sub titles, see \code{\link{title}}.}
-  \item{xlab}{x axis label (with `correct' default e.g. for \code{plot.agnes}).}
+  \item{xlab}{x axis label (with \sQuote{correct} default e.g. for
+    \code{plot.agnes}).}
   \item{adj}{passed to \code{\link{title}(main,sub)} for string adjustment.}
   \item{col}{vector of length 2, for two horizontal segments.}
   \item{border}{color for bar border; now defaults to background (no border).}

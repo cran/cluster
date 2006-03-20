@@ -1,4 +1,4 @@
-/* At least for the things in C */
+/* Declare everything, Fortran & C -- so we can register them */
 
 #include <R.h>
 /* -> Rconfig.h, but also Boolean.h RS.h */
@@ -121,6 +121,18 @@ void spannel(int *ncas, /* = number of objects */
 	     double *eps,
 	     int *maxit, /* = maximal # iterations (and returns #{iter.})*/
 	     int *ierr);
+
+void sildist(double *d,		/* distance : in matrix or dist format; i.e.,
+				   of length n^2 or n*(n-1)/2; see 'ismat' */
+	     int    *n,		/* number of Subjects (attr(d,'Size')) */
+	     int    *clustering,/* clustering vector, values from {1..k} */
+	     int    *k,		/* number of clusters */
+	     double *diC,	/* diC */
+	     int    *counts,	/* counts[k] :=  #{cluster k} */
+	     double *si,	/* (a_i - b_i) / max(ai,bi) */
+	     int    *neighbor,	/* neighbor */
+	     int    *ismat);	/* boolean : is 'd' a matrix or 'dist' ? */
+
 
 /* ================= Fortran things (remainder) ======================== */
 

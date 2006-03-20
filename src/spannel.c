@@ -1,4 +1,4 @@
-/* Compute the SPANNing ELlipsoid --
+/* Compute the SPANNing ELlipsoid
  * ------------------------------ for clusplot.default(*, span = TRUE)
 
  * Original spannel.f -- translated by f2c (version 20010821).

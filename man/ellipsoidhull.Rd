@@ -3,8 +3,8 @@
 \alias{print.ellipsoid}
 \title{Compute the Ellipsoid Hull or Spanning Ellipsoid of a Point Set}
 \description{
-  Compute the ``ellipsoid hull'' or ``spanning ellipsoid'', i.e. the
-  ellipsoid of minimal volume (`area' in 2D) such that all given points
+  Compute the \dQuote{ellipsoid hull} or \dQuote{spanning ellipsoid}, i.e. the
+  ellipsoid of minimal volume (\sQuote{area} in 2D) such that all given points
   lie just inside or on the boundary of the ellipsoid.
 }
 \usage{
@@ -28,10 +28,10 @@ ellipsoidhull(x, tol=0.01, maxit=5000,
   \item{digits,\dots}{the usual arguments to \code{\link{print}} methods.}
 }
 \details{
-  The ``spanning ellipsoid'' algorithm is said to stem from
+  The \dQuote{spanning ellipsoid} algorithm is said to stem from
   Titterington(1976), in Pison et al(1999) who use it for
   \code{\link{clusplot.default}}.\cr
-  The problem can be seen as a special case of the ``Min.Vol.''
+  The problem can be seen as a special case of the \dQuote{Min.Vol.}
   ellipsoid of which a more more flexible and general implementation is
   \code{\link[MASS]{cov.mve}} in the \code{MASS} package.
 }
@@ -41,7 +41,14 @@ ellipsoidhull(x, tol=0.01, maxit=5000,
   \item{cov}{\eqn{p\times p}{p x p} \emph{covariance} matrix description
     the ellipsoid.}
   \item{loc}{\eqn{p}-dimensional location of the ellipsoid center.}
-  \item{d2}{average squared radius.}
+  \item{d2}{average squared radius.  Further, \eqn{d2 = t^2}, where
+    \eqn{t} is \dQuote{the value of a t-statistic on the ellipse
+      boundary} (from \code{\link[ellipse]{ellipse}} in the
+    \pkg{ellipse} package), and hence, more usefully,
+    \code{d2 = qchisq(alpha, df = p)}, where \code{alpha} is the
+    confidence level for p-variate normally distributed data with
+    location and covariance \code{loc} and \code{cov} to lie inside the
+    ellipsoid.}
   \item{wt}{the vector of weights iff \code{ret.wt} was true.}
   \item{sqdist}{the vector of squared distances iff \code{ret.sqdist} was true.}
   \item{prob}{the vector of algorithm probabilities iff \code{ret.pr} was true.}
@@ -70,6 +77,10 @@ ellipsoidhull(x, tol=0.01, maxit=5000,
   et al did the underlying code.}
 \seealso{\code{\link{predict.ellipsoid}} which is also the
   \code{\link{predict}} method for \code{ellipsoid} objects.
+  \code{\link{volume.ellipsoid}} for an example of \sQuote{manual}
+  \code{ellipsoid} object construction;\cr
+  further \code{\link[ellipse]{ellipse}} from package \pkg{ellipse}
+  and \code{\link[sfsmisc]{ellipsePoints}} from package \pkg{sfsmisc}.
 
   \code{\link[graphics]{chull}} for the convex hull,
   \code{\link{clusplot}} which makes use of this; \code{\link[MASS]{cov.mve}}.

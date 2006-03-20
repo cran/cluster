@@ -1,4 +1,4 @@
-#### $Id: agnes.q,v 1.18 2004/06/25 16:16:51 maechler Exp $
+#### $Id: agnes.q 2838 2004-06-25 16:16:51Z maechler $
 agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		  stand = FALSE, method = "average", par.method,
                   keep.diss = n < 100, keep.data = !diss)

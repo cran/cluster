@@ -62,8 +62,10 @@ fanny(x, k, diss = inherits(x, "dist"),
   See \code{\link{fanny.object}} for details.
 }
 \details{
-  In a fuzzy clustering, each observation is ``spread out'' over the various
-  clusters. Denote by u(i,v) the membership of observation i to cluster v.
+  In a fuzzy clustering, each observation is \dQuote{spread out} over
+  the various clusters.  Denote by \eqn{u_{iv}}{u(i,v)} the membership
+  of observation \eqn{i} to cluster \eqn{v}.
+
   The memberships are nonnegative, and for a fixed observation i they sum to 1.
   The particular method \code{fanny} stems from chapter 4 of
   Kaufman and Rousseeuw (1990) (see the references in

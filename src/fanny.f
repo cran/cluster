@@ -1,4 +1,4 @@
-C-- $Id: fanny.f,v 1.10 2005/08/30 07:48:18 maechler Exp $
+C-- $Id: fanny.f 2934 2005-08-30 07:48:18Z maechler $
 C   program for Fuzzy cluster ANalysis
 C
       subroutine fanny(nn,jpp,kk,x,dss,jdyss,valmd,jtmd,ndyst,

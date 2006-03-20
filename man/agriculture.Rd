@@ -20,7 +20,7 @@
   \emph{Cijfers en feiten: Een statistisch portret van de Europese Unie}.
 }
 \details{
-  The data seem to show two clusters, the ``more agricultural'' one
+  The data seem to show two clusters, the \dQuote{more agricultural} one
   consisting of Greece, Portugal, Spain, and Ireland.
 }
 \seealso{\code{\link{agnes}}, \code{\link{daisy}}, \code{\link{diana}}.

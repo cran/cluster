@@ -1,4 +1,4 @@
-#### $Id: daisy.q,v 1.17 2004/06/25 16:17:47 maechler Exp $
+#### $Id: daisy.q 2937 2005-08-30 16:29:14Z maechler $
 daisy <-
 function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 {

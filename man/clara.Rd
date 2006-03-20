@@ -99,12 +99,12 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
   \eqn{O(n \times p \times j^2 \times N)}{O(n * p * j^2 * N)}, where
   \eqn{N = \code{samples}}.
 
-  For ``small'' datasets, the function \code{\link{pam}} can be used
+  For \dQuote{small} datasets, the function \code{\link{pam}} can be used
   directly.  What can be considered \emph{small}, is really a function
   of available computing power, both memory (RAM) and speed.
-  Originally (1990), ``small'' meant less than 100 observations;
-  later, the authors said \emph{``small (say with fewer than 200
-  observations)''}..
+  Originally (1990), \dQuote{small} meant less than 100 observations;
+  later, the authors said \emph{\dQuote{small (say with fewer than 200
+  observations)}}...
 }
 \author{
   Kaufman and Rousseuw, originally.

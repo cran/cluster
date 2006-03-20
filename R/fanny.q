@@ -1,4 +1,4 @@
-#### $Id: fanny.q,v 1.17 2005/06/03 06:21:13 maechler Exp $
+#### $Id: fanny.q 2886 2005-06-03 06:21:13Z maechler $
 fanny <- function(x, k, diss = inherits(x, "dist"),
                   memb.exp = 2, metric = "euclidean", stand = FALSE,
                   maxit = 500, tol = 1e-15)

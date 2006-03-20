@@ -1,4 +1,4 @@
-### $Id: diana.q,v 1.17 2004/06/25 16:15:14 maechler Exp $
+### $Id: diana.q 2837 2004-06-25 16:15:14Z maechler $
 
 diana <- function(x, diss = inherits(x, "dist"),
 		  metric = "euclidean", stand = FALSE,
