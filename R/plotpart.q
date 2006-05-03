@@ -1,4 +1,4 @@
-### $Id: plotpart.q 2786 2004-03-08 10:56:34Z maechler $
+### $Id: plotpart.q 3083 2006-04-19 14:36:37Z maechler $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
          nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
@@ -38,6 +38,7 @@ function(x, ask = FALSE, which.plots = NULL,
                    )
             if(do.all) { pick <- pick + 1; do.all <- pick <= length(tmenu) + 1}
         }
+        invisible()
     }
     else {
         ask <- prod(par("mfcol")) < length(which.plots) && dev.interactive()
@@ -50,9 +51,8 @@ function(x, ask = FALSE, which.plots = NULL,
                         xlim = xlim, ylim = ylim, main = main, ...)
                ,
                plot(silhouette(x), nmax.lab, max.strlen, main = main)
-               )
+               ) ## and return() whatever  *plot(..) returns
     }
-    invisible()
 }
 
 clusplot <- function(x, ...) UseMethod("clusplot")

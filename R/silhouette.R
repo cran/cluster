@@ -28,24 +28,25 @@ silhouette.clara <- function(x, full = FALSE, ...)
     r
 }
 
-silhouette.default <- function(x, dist, dmatrix, ...) {
+## R-only implementation -- no longer used nor exported:
+silhouette.default.R <- function(x, dist, dmatrix, ...) {
     cll <- match.call()
     if(!is.null(cl <- x$clustering)) x <- cl
     n <- length(x)
-    if(!all(x == round(x))) stop("`x' must only have integer codes")
+    if(!all(x == round(x))) stop("'x' must only have integer codes")
     k <- length(clid <- sort(unique(x)))
     if(k <= 1 || k >= n)
         return(NA)
     ## check dist/dmatrix
     if(missing(dist)) {
         if(missing(dmatrix))
-            stop("Need either a dissimilarity `dist' or diss.matrix `dmatrix'")
+            stop("Need either a dissimilarity 'dist' or diss.matrix 'dmatrix'")
         if(is.null(dm <- dim(dmatrix)) || length(dm) != 2 || !all(n == dm))
-            stop("`dmatrix' is not a dissimilarity matrix compatible to `x'")
-    } else { # `dist'
+            stop("'dmatrix' is not a dissimilarity matrix compatible to 'x'")
+    } else { # 'dist'
         dist <- as.dist(dist) # hopefully
         if(n != attr(dist, "Size"))
-            stop("clustering `x' and dissimilarity `dist' are incompatible")
+            stop("clustering 'x' and dissimilarity 'dist' are incompatible")
         dmatrix <- as.matrix(dist)# so we can apply(.) below
     }
     wds <- matrix(NA, n,3, dimnames =
@@ -73,6 +74,49 @@ silhouette.default <- function(x, dist, dmatrix, ...) {
     attr(wds, "call") <- cll
     class(wds) <- "silhouette"
     wds
+} ## silhouette.default.R
+
+silhouette.default <- function(x, dist, dmatrix, ...) {
+    cll <- match.call()
+    if(!is.null(cl <- x$clustering)) x <- cl
+    n <- length(x)
+    if(!all(x == round(x))) stop("'x' must only have integer codes")
+    k <- length(unique(x))
+    if(k <= 1 || k >= n) # silhouette undefined for trivial clusterings
+        return(NA)
+
+    ## check dist/dmatrix
+    has.dmatrix <- missing(dist)
+    if(has.dmatrix) {
+        if(missing(dmatrix))
+            stop("Need either a dissimilarity 'dist' or diss.matrix 'dmatrix'")
+        if(is.null(dm <- dim(dmatrix)) || length(dm) != 2 || !all(n == dm))
+            stop("'dmatrix' is not a dissimilarity matrix compatible to 'x'")
+    } else { # 'dist'
+        dist <- as.dist(dist) # hopefully
+        if(n != attr(dist, "Size"))
+            stop("clustering 'x' and dissimilarity 'dist' are incompatible")
+    }
+
+    out <- .C('sildist',
+              d = as.numeric(if(has.dmatrix) dmatrix else dist),
+              as.integer(n),
+              as.integer(x),
+              as.integer(k),
+              diC =    numeric(n*k),
+              counts = integer(k),
+              si = numeric(n),
+              neighbor = integer(n),
+              ismat = has.dmatrix,
+              DUP = FALSE,
+              PACKAGE = "cluster")[c("si", "neighbor")]
+
+    wds <- cbind(cluster = x, neighbor = out$neighbor, "sil_width" = out$si)
+
+    attr(wds, "Ordered") <- FALSE
+    attr(wds, "call") <- cll
+    class(wds) <- "silhouette"
+    wds
 }
 
 
@@ -94,7 +138,7 @@ sortSilhouette <- function(object, ...) {
 
 summary.silhouette <- function(object, FUN = mean, ...)
 {
-    if(ncol(object) != 3) stop("invalid `silhouette' object")
+    if(ncol(object) != 3) stop("invalid 'silhouette' object")
     cl <- object[, "cluster"]
     si <- object[, "sil_width"]
     r <- list(si.summary = summary(si, ...),

@@ -1,6 +1,7 @@
 
-R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.1.1 Patched (2005-08-05), ISBN 3-900051-07-0
+R : Copyright 2006, The R Foundation for Statistical Computing
+Version 2.3.0 Under development (unstable) (2006-02-26 r37442)
+ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -11,7 +12,7 @@ Type 'contributors()' for more information and
 'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for a HTML browser interface to help.
+'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
 > ## This came from a bug report on R-help by ge yreyt <tothri2000@yahoo.ca>
@@ -277,9 +278,10 @@ Individual silhouette widths:
 +     k.gr <- p.k$clustering
 +     si.p <- silhouette(p.k)
 +     si.g <- silhouette(k.gr, mdist)
-+     si.g[] <- si.g[ rownames(si.p), ]
++     ## since the obs.order may differ (within cluster):
++     si.g <- si.g[ rownames(si.p), ]
 +     cat("grouping table: "); print(table(k.gr))
-+     if(!isTRUE(all.equal(si.g[], si.p[]))) {
++     if(!isTRUE(all.equal(c(si.g), c(si.p)))) {
 + 	cat("silhouettes differ:")
 + 	if(any(neq <- !Eq(si.g[,3], si.p[,3]))) {
 + 	    cat("\n")
@@ -593,6 +595,6 @@ null device
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  22.83 0.03 23.2 0 0 
+Time elapsed:  3.84 0.02 3.95 0 0 
 > 
 > 

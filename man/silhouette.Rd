@@ -77,6 +77,10 @@ sortSilhouette(object, \dots)
     Finally, \deqn{s(i) := \frac{b(i) - a(i) }{max(a(i), b(i))}.}{%
       s(i) := ( b(i) - a(i) ) / max( a(i), b(i) ).}
 
+    \code{silhouette.default()} is now based on C code donated by Romain
+    Francois (the R version being still available as
+    \code{cluster:::silhouette.default.R}).
+
     Observations with a large \eqn{s(i)} (almost 1) are very well
     clustered, a small \eqn{s(i)} (around 0) means that the observation
     lies between two clusters, and observations with a negative

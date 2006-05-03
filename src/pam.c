@@ -14,7 +14,7 @@
 
 /*     carries out a clustering using the k-medoid approach.
  */
-void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
+void pam(int *nn, int *p, int *kk, double *x, double *dys,
 	 int *jdyss, /* jdyss = 0 : compute distances from x
 		      *	      = 1 : distances provided	in x */
 	 double *valmd, int *jtmd,
@@ -34,8 +34,7 @@ void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
     /* Function Body */
     if (*jdyss != 1) {
 	jhalt = 0;
-	F77_CALL(dysta)(nn, jpp, x, dys, ndyst,
-			jtmd, valmd, &jhalt);
+	F77_CALL(dysta)(nn, p, x, dys, ndyst, jtmd, valmd, &jhalt);
 	if (jhalt != 0) {
 	    *jdyss = -1; return;
 	}
@@ -43,7 +42,7 @@ void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
     nhalf = *nn * (*nn - 1) / 2 + 1; /* nhalf := #{distances}+1 = length(dys) */
 
     /* s := max( dys[.] ), the largest distance */
-    for (i = 1, s = 0.; i < nhalf; ++i) /* dys[0] == 0. is NOT used !*/
+    for (i = 1, s = 0.; i < nhalf; ++i) /* dys[0] == 0. not used here */
 	if (s < dys[i])
 	    s = dys[i];
 
@@ -76,7 +75,7 @@ void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
 	}
 	if (1 < *kk && *kk < *nn) {
 	    /* Compute Silhouette info : */
-	    dark(kk, nn, &nhalf, ncluv, nsend, nelem, nrepr,
+	    dark(*kk, *nn, ncluv, nsend, nelem, nrepr,
 		 radus, damer, ttd, ttsyl, dys, &s, sylinf);
 	}
     }
@@ -427,30 +426,31 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
 /* -----------------------------------------------------------
      Compute Silhouette Information :
  */
-void dark(int *kk, int *nn, int *hh, int *ncluv,
+void dark(int kk, int nn, int *ncluv,
 	  int *nsend, int *nelem, int *negbr,
 	  double *syl, double *srank, double *avsyl, double *ttsyl,
 	  double *dys, double *s, double *sylinf)
 {
-    int sylinf_dim1 = *nn; /* sylinf[*nn, 4] */
+    int sylinf_d = nn; /* sylinf[nn, 4] */
     int j, k, l, lang=-1 /*Wall*/, lplac, k_, nj, nl, nbb, ntt, nsylr;
     double db, dysa, dysb, symax;
     /* pointers to sylinf[] columns:*/
     double *sylinf_2, *sylinf_3, *sylinf_4;
-    sylinf_2 = sylinf	+ sylinf_dim1;
-    sylinf_3 = sylinf_2 + sylinf_dim1;
-    sylinf_4 = sylinf_3 + sylinf_dim1;
+    sylinf_2 = sylinf	+ sylinf_d;
+    sylinf_3 = sylinf_2 + sylinf_d;
+    sylinf_4 = sylinf_3 + sylinf_d;
+
     /* Parameter adjustments */
     --avsyl;
     --ncluv;
 
     nsylr = 0;
     *ttsyl = 0.;
-    for (k = 1; k <= *kk; ++k) {
+    for (k = 1; k <= kk; ++k) {
 
 	/* nelem[0:(ntt-1)] := indices (1-based) of obs. in cluster k : */
 	ntt = 0;
-	for (j = 1; j <= *nn; ++j) {
+	for (j = 1; j <= nn; ++j) {
 	    if (ncluv[j] == k) {
 		nelem[ntt] = j;
 		++ntt;
@@ -459,13 +459,13 @@ void dark(int *kk, int *nn, int *hh, int *ncluv,
 
 	for (j = 0; j < ntt; ++j) {/* (j+1)-th obs. in cluster k */
 	    nj = nelem[j];
-	    dysb = *s * 1.1f + 1.;
+	    dysb = *s * 1.1 + 1.;
 	    negbr[j] = -1;
 	    /* for all clusters  k_ != k : */
-	    for (k_ = 1; k_ <= *kk; ++k_) if (k_ != k) {
+	    for (k_ = 1; k_ <= kk; ++k_) if (k_ != k) {
 		nbb = 0;
 		db = 0.;
-		for (l = 1; l <= *nn; ++l) if (ncluv[l] == k_) {
+		for (l = 1; l <= nn; ++l) if (ncluv[l] == k_) {
 		    ++nbb;
 		    if (l != nj)
 			db += dys[ind_2(nj, l)];
@@ -547,5 +547,5 @@ void dark(int *kk, int *nn, int *hh, int *ncluv,
 	    }
 	}
     } /* for (k) */
-    *ttsyl /= *nn;
+    *ttsyl /= nn;
 } /* dark */

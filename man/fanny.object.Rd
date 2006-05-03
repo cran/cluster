@@ -23,24 +23,24 @@
     matrix containing the memberships for each pair consisting of an
     observation and a cluster.
   }
-  \item{memb.exp}{the membership exponent used in the fitting criterion.
-  }
+  \item{memb.exp}{the membership exponent used in the fitting criterion.}
   \item{coeff}{
     Dunn's partition coefficient \eqn{F(k)} of the clustering, where
     \eqn{k} is the number of clusters. \eqn{F(k)} is the sum of all
-    squared membership coefficients, divided by the number of
-    observations.  Its value is between \eqn{1/k} and 1
-    \emph{iff} \code{memb.exp = 2}.
+    \emph{squared} membership coefficients, divided by the number of
+    observations.  Its value is between \eqn{1/k} and 1.
 
-    The normalized form of the coefficient is also given. It is defined as
-    \eqn{(F(k) - 1/k) / (1 - 1/k)}, and ranges between 0 and 1
-    (currently, only when \code{memb.exp = 2}; this may change in the future).
+    The normalized form of the coefficient is also given.  It is defined
+    as \eqn{(F(k) - 1/k) / (1 - 1/k)}, and ranges between 0 and 1.
     A low value of Dunn's coefficient indicates a very fuzzy clustering,
     whereas a value close to 1 indicates a near-crisp clustering.
   }
   \item{clustering}{
     the clustering vector of the nearest crisp clustering, see
     \code{\link{partition.object}}.}
+  \item{k.crisp}{integer (\eqn{\le k}{<= k}) giving the number of \emph{crisp}
+    clusters; can be less than \eqn{k}, where it's recommended to
+    decrease \code{memb.exp}.}
   \item{objective}{
     named vector containing the minimal value of the objective function
     reached by the FANNY algorithm and the relative convergence

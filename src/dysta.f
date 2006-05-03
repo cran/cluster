@@ -7,10 +7,10 @@ c
 c was part of  pam.f --- now called both from Fortran & C
 c "keep in sync" with  daisy.f {move both to C or replace by R's dist!}
 c
-      subroutine dysta(nn,jpp,x,dys,ndyst,jtmd,valmd,jhalt)
+      subroutine dysta(nn,p,x,dys,ndyst,jtmd,valmd,jhalt)
 
-      integer nn, jpp, ndyst, jtmd(jpp), jhalt
-      double precision x(nn,jpp), dys(1+nn*(nn-1)/2), valmd(jpp)
+      integer nn, p, ndyst, jtmd(p), jhalt
+      double precision x(nn,p), dys(1+nn*(nn-1)/2), valmd(p)
 c ndyst = 1 : euclidean
 c "else"    : manhattan
 
@@ -20,14 +20,15 @@ c VARs
 
       nlk=1
       dys(1)=0.0
-      pp=jpp
+c     ---------- is used potentially for  d[i,i] == dys[1] == 0
+      pp=p
       do 100 l=2,nn
 	 lsubt=l-1
 	 do 20 k=1,lsubt
 	    clk=0.0
 	    nlk=nlk+1
 	    npres=0
-	    do 30 j=1,jpp
+	    do 30 j=1,p
 	       if(jtmd(j).lt.0) then
 		  if(x(l,j).eq.valmd(j))goto 30
 		  if(x(k,j).eq.valmd(j))goto 30

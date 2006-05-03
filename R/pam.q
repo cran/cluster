@@ -1,5 +1,5 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q 2894 2005-06-09 09:40:25Z maechler $
+#### --- $Id: pam.q 3083 2006-04-19 14:36:37Z maechler $
 pam <- function(x, k, diss = inherits(x, "dist"),
 		metric = "euclidean", medoids = NULL,
                 stand = FALSE, cluster.only = FALSE,
@@ -104,7 +104,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
     medID <- res$med
     sildim <- res$silinf[, 4]
     if(diss) {
-	disv <- x
+	if(keep.diss) disv <- x
 	## add labels to Fortran output
 	if(length(xLab) > 0) {
 	    sildim <- xLab[sildim]

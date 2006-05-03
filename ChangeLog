@@ -1,3 +1,43 @@
+2006-05-17  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.11.0, to be released to CRAN
+
+2006-05-03  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Depends): require R >= 2.2.1 -- which should have
+	happened earlier, since registration of Fortran symbols failed before.
+
+2006-04-18  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/plantTraits.Rd: new dataset with many variables, including
+		all kinds of factors, provided by Jeanne Vallet.
+	* data/chorSub.Rd: useful for daisy() illustrations
+
+2006-04-12  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/fanny.q (fanny): several new options: metric = "SqEuclidean",
+		iniMem.p: initial membership matrix can be specified;
+		cluster.only, keep.diss, keep.data: for saving memory/speed.
+		warning when k.crisp < k.
+		printing of $membership is now in rounded percent
+	* man/fanny.Rd: document the above
+	* tests/fanny-ex.R: much extended
+
+2006-04-11  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/chorSub.Rd: new dataset;
+	* data/chorSub.Rd: useful for fanny() illustrations
+
+	* R/fanny.q (fanny): Dunn's partition coefficient (and its
+	normalization) now always use sum.. u.. ^ 2  (and not "^ memb.exp").
+	option 'trace.lev' for iteration monitoring
+	* src/fanny.c (fuzzy): (dito)
+
+2006-04-08  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/fanny.c: Translated from Fortran (fanny.f); potentially with
+		more options, etc.
+
 2006-03-20  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.10.5  for CRAN

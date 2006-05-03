@@ -47,9 +47,10 @@ for(k in 2:40) {
     k.gr <- p.k$clustering
     si.p <- silhouette(p.k)
     si.g <- silhouette(k.gr, mdist)
-    si.g[] <- si.g[ rownames(si.p), ]
+    ## since the obs.order may differ (within cluster):
+    si.g <- si.g[ rownames(si.p), ]
     cat("grouping table: "); print(table(k.gr))
-    if(!isTRUE(all.equal(si.g[], si.p[]))) {
+    if(!isTRUE(all.equal(c(si.g), c(si.p)))) {
 	cat("silhouettes differ:")
 	if(any(neq <- !Eq(si.g[,3], si.p[,3]))) {
 	    cat("\n")

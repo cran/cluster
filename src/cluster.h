@@ -99,7 +99,7 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
 	   double *radus, double *damer, double *ttd, double *separ, double *s,
 	   double *dys, int *ncluv, int *nelem, int *med, int *nisol);
 
-void dark(int *kk, int *nn, int *hh, int *ncluv,
+void dark(int kk, int nn, int *ncluv,
 	  int *nsend, int *nelem, int *negbr,
 	  double *syl, double *srank, double *avsyl, double *ttsyl,
 	  double *dys, double *s, double *sylinf);
@@ -133,6 +133,14 @@ void sildist(double *d,		/* distance : in matrix or dist format; i.e.,
 	     int    *neighbor,	/* neighbor */
 	     int    *ismat);	/* boolean : is 'd' a matrix or 'dist' ? */
 
+void fanny(int *nn, int *jpp, int *kk,
+	   double *x, double *dss, int *jdyss, double *valmd,
+	   int *jtmd, int *ndyst, int *nsend, int *nelem,
+	   int *negbr, double *syl, double *p, double *dp,
+	   double *pt, int *nfuzz, double *esp, double *ef,
+	   double *dvec, double *ttsyl, double *obj,
+	   int *ncluv, double *sylinf, double *r, double *tol, int *maxit);
+
 
 /* ================= Fortran things (remainder) ======================== */
 
@@ -141,20 +149,10 @@ int F77_NAME(daisy)(int *nn, int *jpp, double *x,
 		    double *valmd, int *jtmd, int *jdat, int *vtype,
 		    int *ndyst, int *mdata, double *disv);
 
-/* -------- ./fanny.f ---------------------------------- */
-int F77_NAME(fanny)(int *nn, int *jpp, int *kk,
-		    double *x, double *dss, int *jdyss, double *valmd,
-		    int *jtmd, int *ndyst, int *nsend, int *nelem,
-		    int *negbr, double *syl, double *p, double *dp,
-		    double *pt, int *nfuzz, double *esp, double *ef,
-		    double *dvec, double *ttsyl, double *eda, double *edb,
-		    double *obj, int *ncluv, double *sylinf, double *r,
-		    double *tol, int *maxit);
-
-/* only called from ../tests/dysta-ex.R */
-int F77_NAME(dysta3)(int *nn, int *jpp, double *x, double *dys, int *ndyst,
-		     int *jtmd, double *valmd, int *jhalt);
-
+/* -------- ./fanny.c ---------------------------------- */
+/* R-level: called only from ../tests/dysta-ex.R  (via .Fortran()): */
+void dysta3_(int *nn, int *p, double *x, double *dys,
+	     int *ndyst, int *jtmd, double *valmd, int *jhalt);
 
 /* -------- ./meet.f ---------------------------------- */
 int F77_NAME(meet)(int *l, int *j);

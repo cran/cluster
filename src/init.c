@@ -17,6 +17,14 @@ static R_NativePrimitiveArgType clara_t[32] = {
     /*tmp: */ REALSXP,INTSXP
 };
 
+static R_NativePrimitiveArgType fanny_t[29] = {
+    INTSXP, INTSXP, INTSXP, REALSXP, REALSXP,
+    /*jdyss: */ INTSXP, REALSXP, INTSXP,  INTSXP, INTSXP, INTSXP,
+    /*negbr: */ INTSXP, /*syl: */ REALSXP, REALSXP, REALSXP, REALSXP,
+    /*nfuzz: */ INTSXP, REALSXP, REALSXP, REALSXP, REALSXP,
+    /*obj: */ REALSXP, INTSXP, REALSXP, REALSXP, REALSXP, INTSXP
+};
+
 static R_NativePrimitiveArgType pam_t[23] = {
     INTSXP, INTSXP, INTSXP, REALSXP, REALSXP,
     /*jdyss: */ INTSXP, REALSXP, INTSXP,  INTSXP, INTSXP,
@@ -41,6 +49,7 @@ static R_NativePrimitiveArgType sweep_t[5] = {
 
 static const R_CMethodDef CEntries[]  = {
     {"clara", (DL_FUNC) &clara, 32, clara_t},
+    {"fanny", (DL_FUNC) &fanny, 27, fanny_t},
     {"pam", (DL_FUNC) &pam, 23, pam_t},
     {"spannel", (DL_FUNC) &spannel, 12, spannel_t},
     {"sweep", (DL_FUNC) &sweep, 5, sweep_t},
@@ -56,7 +65,6 @@ static const R_CMethodDef CEntries[]  = {
 static R_FortranMethodDef FortEntries[] = {
     {"bncoef", (DL_FUNC) &F77_SUB(bncoef), 3},/* ./twins.f */
     {"daisy", (DL_FUNC) &F77_SUB(daisy), 10},
-    {"fanny", (DL_FUNC) &F77_SUB(fanny), 29},
     {"mona", (DL_FUNC) &F77_SUB(mona), 9},
     {"twins", (DL_FUNC) &F77_SUB(twins), 17},
     {"dysta", (DL_FUNC) &F77_SUB(dysta), 8},

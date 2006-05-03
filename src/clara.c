@@ -341,7 +341,7 @@ void dysta2(int nsam, int jpp, int *nsel,
     double clk, d1;
 
     nlk = 0;
-    dys[0] = 0.;/* very first index; *is* used in ?? (it is, not in R!) */
+    dys[0] = 0.;/* very first index; *is* used because ind_2(i,i) |-> 0 ! */
     for (l = 1; l < nsam; ++l) {
 	lsel = nsel[l];
 	if(lsel <= 0 || lsel > n)
