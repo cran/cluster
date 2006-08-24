@@ -4,10 +4,10 @@
 \description{Creates plots for visualizing a \code{partition} object.}
 \usage{
 \method{plot}{partition}(x, ask = FALSE, which.plots = NULL,
-               nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
-	       cor = TRUE, stand = FALSE, lines = 2,
-	       shade = FALSE, color = FALSE, labels = 0, plotchar = TRUE,
-	       span = TRUE, xlim = NULL, ylim = NULL, main = NULL, \dots)
+     nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
+     cor = TRUE, stand = FALSE, lines = 2,
+     shade = FALSE, color = FALSE, labels = 0, plotchar = TRUE,
+     span = TRUE, xlim = NULL, ylim = NULL, main = NULL, \dots)
 }
 \arguments{
   \item{x}{an object of class \code{"partition"}, typically created by the

@@ -1,24 +1,27 @@
 
 mona <- function(x)
 {
-    levs <- function(y) levels(as.factor(y))
-
     ## check type of input matrix
     if(!is.matrix(x) && !is.data.frame(x))
         stop("x must be a matrix or data frame.")
-    if(!all(sapply(lapply(as.data.frame(x), levs), length) == 2))
+    if(!all(sapply(lapply(as.data.frame(x),
+                          function(y) levels(as.factor(y))),
+                   length) == 2))
         stop("All variables must be binary (factor with 2 levels).")
     n <- nrow(x)
     jp <- ncol(x)
     ## change levels of input matrix
-    x2 <- apply(as.matrix(x), 2, factor)
-    x2[x2 == "1"] <- "0"
-    x2[x2 == "2"] <- "1"
-    x2[is.na(x2)] <- "2"
-    ##	x2 <- paste(x2, collapse = "")
-    ##	storage.mode(x2) <- "character"
+
+    x2 <- apply(as.matrix(x), 2, function(x) as.integer(factor(x))) - 1:1
+    x2[is.na(x2)] <- 2:2
+## was
+##     x2 <- apply(as.matrix(x), 2, factor)
+##     x2[x2 == "1"] <- "0"
+##     x2[x2 == "2"] <- "1"
+##     x2[is.na(x2)] <- "2"
+##     storage.mode(x2) <- "integer"
+
     ## call Fortran routine
-    storage.mode(x2) <- "integer"
     res <- .Fortran("mona",
                     as.integer(n),
                     as.integer(jp),

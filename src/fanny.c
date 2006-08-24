@@ -1,6 +1,6 @@
 /* FANNY : program for Fuzzy cluster ANalysis */
 
-/* was $Id: fanny.c 3083 2006-04-19 14:36:37Z maechler $
+/* was $Id: fanny.c 3143 2006-05-17 13:51:20Z maechler $
  * fanny.f -- translated by f2c (version 20020621).
  * and treated by  f2c-clean v 1.10, and manually by Martin Maechler
  */

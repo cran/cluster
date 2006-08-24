@@ -15,6 +15,8 @@
           col.clus = if(color) c(2, 4, 6, 3) else 5,
           span = TRUE, xlim = NULL, ylim = NULL,
           main = paste("CLUSPLOT(", deparse(substitute(x)),")"),
+          sub = paste("These two components explain",
+             round(100 * var.dec, digits = 2), "\% of the point variability."),
           verbose = getOption("verbose"),
           \dots)
 }
@@ -128,6 +130,7 @@
   \item{xlim, ylim}{numeric vectors of length 2, giving the x- and y-
     ranges as in \code{\link{plot.default}}.}
   \item{main}{main title for the plot; by default, one is constructed.}
+  \item{sub}{sub title for the plot; by default, one is constructed.}
   \item{verbose}{a logical indicating, if there should be extra
     diagnostic output; mainly for \sQuote{debugging}.}
   \item{\dots}{Further graphical parameters may also be supplied, see

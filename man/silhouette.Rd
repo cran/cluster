@@ -147,6 +147,7 @@ pr4 <- pam(ruspini, 4)
 str(si <- silhouette(pr4))
 (ssi <- summary(si))
 plot(si) # silhouette plot
+plot(si, col = c("red", "green", "blue", "purple"))# with cluster-wise coloring
 
 si2 <- silhouette(pr4$clustering, dist(ruspini, "canberra"))
 summary(si2) # has small values: "canberra"'s fault

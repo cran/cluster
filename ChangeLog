@@ -1,4 +1,25 @@
+2006-08-24  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/silhouette.R (sortSilhouette): make sure "iOrd" is there also
+	if "Ordered" is TRUE. (fixes plotting w/ col = 'clusterwise'.)
+
+2006-08-23  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/mona.R: update (slightly extend) regression test
+	* tests/mona.Rout.save: consequence
+
+	* R/mona.q (mona): replace apply(<matrix>, 2, factor) with safer
+	code, to work correctly in R 2.4.0 and later (thanks to Brian).
+
+2006-06-12  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/plotpart.q (clusplot.default): new argument 'sub'; default is
+	unchanged, but you can suppress the subtitle.
+
 2006-05-17  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/fanny.c (fygur): a little more cleanup --
+		for compatibility with dark() in src/pam.c
 
 	* DESCRIPTION (Version): 1.11.0, to be released to CRAN
 
@@ -11,7 +32,7 @@
 
 	* man/plantTraits.Rd: new dataset with many variables, including
 		all kinds of factors, provided by Jeanne Vallet.
-	* data/chorSub.Rd: useful for daisy() illustrations
+	* data/plantTraits.rda: useful for daisy() illustrations
 
 2006-04-12  Martin Maechler  <maechler@stat.math.ethz.ch>
 

@@ -1,0 +1,66 @@
+#!/bin/bash
+#
+## With no arguments, swap the  *Rout.save --> *Rout-(32|64)b symbolic links
+## with argument '64' (or '64b'), force '64b' ; analogously with arg  '32'
+##
+
+cwd=`pwd` ; thisdir=`basename $cwd`
+if [ $thisdir != tests ]
+then ## 2nd try:
+  cmddir=`dirname $0`
+  cd $cmddir
+  cwd=`pwd` ; thisdir=`basename $cwd`
+  if [ $thisdir != tests ]
+  then echo Must be inside 'tests' directory but am not:
+      echo "pwd = '`pwd`'"
+     exit 1
+  fi
+fi
+## Dbg: set -v -x
+if [ $# -eq 0 ]
+then
+    NOswap='.'
+else
+    NOswap=yes
+    want_end=`echo $1 | sed 's/^\(..\).*/\1/'`
+fi
+
+## Find the symbolic links:
+flinks=`/bin/ls -AlF --time-style=long-iso *.Rout.save |fgrep -e '->' | sed -e '/.* -> /s///'`
+ending=`echo $flinks | tr ' ' '\012' | sed 's/.*-//' | uniq`
+if [ 1 -eq `echo $ending | wc -w` ]
+then
+    if [ $ending == 64b ]
+    then o_end=32b
+    elif [ $ending == 32b ]
+    then o_end=64b
+    else
+	echo 'Unknown ending'
+	echo 'Do not know what do to ---> exiting .. '
+	exit 2
+    fi
+    if [ $NOswap = yes ]
+    then
+	if [ x$ending = x64b  -a $want_end = 64 ]
+	then echo 'have 64-bit already' ; exit 0 ; fi
+	if [ x$ending = x32b  -a $want_end = 32 ]
+	then echo 'have 32-bit already' ; exit 0 ; fi
+    fi
+
+else echo Have no or more than one ending in the symbolic links of '*.Rout.save'
+     echo $flinks
+     echo ' not clear what to do ---> exiting .. '
+     exit 3
+fi
+for f in $flinks
+do
+  ## echo $f
+  bf=`basename $f -${ending}`
+  echo -n "$bf	"
+  if [ -f $bf ]
+  then relink s/${ending}/${o_end}/ $bf
+       ls -l $bf | /u/maechler/bin/perl/ls-l-nice
+  else echo "** No file '$bf' ... skipping ..."
+  fi
+done
+

@@ -120,11 +120,16 @@ silhouette.default <- function(x, dist, dmatrix, ...) {
 }
 
 
-sortSilhouette <- function(object, ...) {
-    if(attr(object,"Ordered")) return(object)
-    ## Else :
+sortSilhouette <- function(object, ...)
+{
     if(is.null(n <- nrow(object)) || n < 1)
-        stop("invalid silhouette structure")
+	stop("invalid silhouette structure")
+    if(attr(object,"Ordered")) {
+	if(is.null(attr(object, "iOrd")))
+	    attr(object, "iOrd") <- 1:n
+	return(object)
+    }
+    ## Else :
     if(is.null(rownames(object)))
         rownames(object) <- as.character(1:n)
     ## k <- length(clid <- sort(unique(cl <- object[,"cluster"])))# cluster ID s
@@ -201,8 +206,9 @@ plot.silhouette <-
     if(do.col.sort && (lc <- length(col)) > 1) {
 	if(lc == k)# cluster wise coloring
 	    col <- col[cli]
-	else if(lc != n)
-	    col <- rep(col, length = n)
+	else ## unit wise coloring
+            if(lc != n)
+                col <- rep(col, length = n)
 	col <- rev(col[attr(x, "iOrd")])
     }
     y <- barplot(s, space = space, names = names, xlab = xlab,
