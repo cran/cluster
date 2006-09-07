@@ -1,4 +1,17 @@
+2006-09-07  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.11.2  released
+
+	* src/init.c: register dysta3 as C, not Fortran; drop trailing "_"
+		==> need to adapt these:
+	* src/fanny.c:
+	* src/cluster.h:
+	* tests/dysta-ex.R:
+	* tests/dysta-ex.Rout.save:
+
 2006-08-24  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+        * DESCRIPTION (Version): 1.11.1 released to CRAN
 
 	* R/silhouette.R (sortSilhouette): make sure "iOrd" is there also
 	if "Ordered" is TRUE. (fixes plotting w/ col = 'clusterwise'.)

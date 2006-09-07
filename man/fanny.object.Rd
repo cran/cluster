@@ -67,4 +67,3 @@
   \code{\link{partition.object}}, \code{\link{plot.partition}}.
 }
 \keyword{cluster}
-

@@ -49,6 +49,7 @@ static R_NativePrimitiveArgType sweep_t[5] = {
 
 static const R_CMethodDef CEntries[]  = {
     {"clara", (DL_FUNC) &clara, 32, clara_t},
+    {"dysta3", (DL_FUNC) &dysta3, 8},/* ./fanny.c */
     {"fanny", (DL_FUNC) &fanny, 27, fanny_t},
     {"pam", (DL_FUNC) &pam, 23, pam_t},
     {"spannel", (DL_FUNC) &spannel, 12, spannel_t},
@@ -68,7 +69,6 @@ static R_FortranMethodDef FortEntries[] = {
     {"mona", (DL_FUNC) &F77_SUB(mona), 9},
     {"twins", (DL_FUNC) &F77_SUB(twins), 17},
     {"dysta", (DL_FUNC) &F77_SUB(dysta), 8},
-    {"dysta3", (DL_FUNC) &F77_SUB(dysta3), 8},/* ./fanny.f */
     {NULL, NULL, 0}
 };
 
