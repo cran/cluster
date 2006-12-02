@@ -1,6 +1,6 @@
-#### $Id: daisy.q 2937 2005-08-30 16:29:14Z maechler $
-daisy <-
-function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
+
+daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
+		  stand = FALSE, type = list())
 {
     ## check type of input matrix
     if(length(dx <- dim(x)) != 2 || !(is.data.frame(x) || is.numeric(x)))
@@ -78,7 +78,8 @@ function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 	type2[ilog] <- "A"
     }
     ## standardize, if necessary
-    if(all(type2 == "I")) {
+    all.I <- all(type2 == "I")
+    if(all.I && { metric <- match.arg(metric); metric != "gower" }) {
 	if(stand) {
 	    x <- scale(x, center = TRUE, scale = FALSE) #-> 0-means
 	    sx <- colMeans(abs(x), na.rm = TRUE)# can still have NA's
@@ -90,12 +91,11 @@ function(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 	    x <- scale(x, center = FALSE, scale = sx)
 	}
 	jdat <- 2
-	metric <- match.arg(metric)
 	ndyst <- if(metric == "manhattan") 2 else 1
     }
-    else { ## mixed case
-	if(!missing(metric))
-	    warning("`metric' is not used with mixed variables")
+    else { ## mixed case or  "gower"
+	if(!missing(metric) && metric != "gower" && !all.I)
+	    warning("with mixed variables, metric \"gower\" is used automatically")
 	colR <- apply(x, 2, range, na.rm = TRUE)
 	colmin <- colR[1,]
 	sx <- colR[2,] - colmin

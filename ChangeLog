@@ -1,3 +1,15 @@
+2006-12-02  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/daisy.q (daisy): finish metric "gower", and test an example
+
+2006-12-01  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/daisy.Rd: more content about Gower; thanks to Gavin Simpson
+
+2006-11-23  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/daisy.q (daisy): metric = "gower" -- not yet finished
+
 2006-09-07  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.11.2  released

@@ -1,6 +1,6 @@
 
-R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.2.0 Under development (unstable) (2005-08-29 r35457)
+R version 2.5.0 Under development (unstable) (2006-10-25 r39724)
+Copyright (C) 2006 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -12,7 +12,7 @@ Type 'contributors()' for more information and
 'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for a HTML browser interface to help.
+'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
 > ## For different cluster versions
@@ -72,7 +72,7 @@ C 0 0
 Metric :  euclidean 
 Number of objects : 3
 Warning message:
-'x' has constant columns 1, 2; these are standardized to 0 in: daisy(d32, stand = TRUE) 
+‘x’ has constant columns 1, 2; these are standardized to 0 in: daisy(d32, stand = TRUE) 
 > daisy(d32, type = list(ordratio="zwei"))
 Dissimilarities :
   A B
@@ -88,7 +88,7 @@ Number of objects : 3
 +                      c= c(0, 1, 1,0,1,NA,1,0,1, 0,NA),
 +                      d= c(1, 1, 0,1,0,0, 0,0,0, 1,0),
 +                      e= c(1, NA,0,1,0,0, 0,0,NA,1,1)))
-`data.frame':	11 obs. of  5 variables:
+'data.frame':	11 obs. of  5 variables:
  $ a: num  0 0 0 1 0 0 0 0 1 0 ...
  $ b: num  NA 0 1 1 0 1 0 1 0 1 ...
  $ c: num  0 1 1 0 1 NA 1 0 1 0 ...
@@ -367,7 +367,8 @@ Warning messages:
 > dimnames(x)[[2]] <- c("A", "B")## colnames<- is missing in S+
 > daisy(x, type = list(symm= "B", asymm="A"))
 Dissimilarities :
-[1] 0
+  1
+2 0
 
 Metric :  mixed ;  Types = A, S 
 Number of objects : 2
@@ -375,7 +376,8 @@ Warning message:
 at least one binary variable has not 2 different levels. in: daisy(x, type = list(symm = "B", asymm = "A")) 
 > daisy(x, type = list(symm= "B"))# 0 too
 Dissimilarities :
-[1] 0
+  1
+2 0
 
 Metric :  mixed ;  Types = I, S 
 Number of objects : 2
@@ -385,13 +387,15 @@ at least one binary variable has not 2 different levels. in: daisy(x, type = lis
 > x2 <- x; x2[2,2] <- 1
 > daisy(x2, type= list(symm = "B"))# |-> 0.5  (gives 1 in S+)
 Dissimilarities :
-[1] 0.5
+    1
+2 0.5
 
 Metric :  mixed ;  Types = I, S 
 Number of objects : 2
 > daisy(x2, type= list(symm = "B", asymm="A"))# 1
 Dissimilarities :
-[1] 1
+  1
+2 1
 
 Metric :  mixed ;  Types = A, S 
 Number of objects : 2
@@ -401,7 +405,8 @@ at least one binary variable has not 2 different levels. in: daisy(x2, type = li
 > x3 <- x; x3[] <- diag(2)
 > daisy(x3) # warning: both as interval scaled -> sqrt(2)
 Dissimilarities :
-[1] 1.414214
+         1
+2 1.414214
 
 Metric :  euclidean 
 Number of objects : 2
@@ -409,19 +414,22 @@ Warning message:
 binary variable(s) 1, 2 treated as interval scaled in: daisy(x3) 
 > daisy(x3, type= list(symm="B", asymm="A"))#  1
 Dissimilarities :
-[1] 1
+  1
+2 1
 
 Metric :  mixed ;  Types = A, S 
 Number of objects : 2
 > daisy(x3, type= list(symm =c("B","A")))   #  1, S+: sqrt(2)
 Dissimilarities :
-[1] 1
+  1
+2 1
 
 Metric :  mixed ;  Types = S, S 
 Number of objects : 2
 > daisy(x3, type= list(asymm=c("B","A")))   #  1, S+ : sqrt(2)
 Dissimilarities :
-[1] 1
+  1
+2 1
 
 Metric :  mixed ;  Types = A, A 
 Number of objects : 2

@@ -1,6 +1,11 @@
 Things that were on my TODO list and have been accomplished
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ (newest 1st)
 
+o  daisy() -- now allows 'metric = "gower"'
+	  which allows to use "Gower's formula" also for the
+	  all-continuous case.
+   The help page contains "Gower" much more visibly
+
 o  Jan.2006:
    Create a new  silhoutte.clara(...., full = FALSE)
    where "full = TRUE" would compute all the silhouttes, not just those of

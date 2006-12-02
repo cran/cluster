@@ -2,13 +2,15 @@
 \alias{daisy}
 \title{Dissimilarity Matrix Calculation}
 \concept{Gower's formula}
-\concept{Gower coefficient}% FIXME: Give reference and more: see ../TODO-MM
+\concept{Gower's distance}
+\concept{Gower's coefficient}% FIXME: see ../TODO-MM
 \description{
   Compute all the pairwise dissimilarities (distances) between observations
-  in the dataset.  The original variables may be of mixed types.
+  in the data set.  The original variables may be of mixed types.
 }
 \usage{
-daisy(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
+daisy(x, metric = c("euclidean", "manhattan", "gower"),
+      stand = FALSE, type = list())
 }
 \arguments{
   \item{x}{
@@ -23,13 +25,18 @@ daisy(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
   }
   \item{metric}{
     character string specifying the metric to be used.
-    The currently available options are \code{"euclidean"} (the default)
-    and \code{"manhattan"}.\cr
+    The currently available options are \code{"euclidean"} (the default),
+    \code{"manhattan"} and \code{"gower"}.\cr
     Euclidean distances are root sum-of-squares of differences, and
     manhattan distances are the sum of absolute differences.
 
-    If not all columns of \code{x} are numeric, \code{metric} will be
-    ignored.
+    \dQuote{Gower's distance} is chosen by metric \code{"gower"}
+    or automatically if some columns of \code{x} are not numeric. Also
+    known as Gower's coefficient (1971),
+    expressed as a dissimilarity, this implies that a particular
+    standardisation will be applied to each variable, and the
+    \dQuote{distance} between two units is the sum of all the
+    variable-specific distances, see the details section.
   }
   \item{stand}{logical flag: if TRUE, then the measurements in \code{x}
     are standardized before calculating the
@@ -39,7 +46,8 @@ daisy(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 
     If not all columns of \code{x} are numeric, \code{stand} will
     be ignored and Gower's standardization (based on the
-    \code{\link{range}}) will be applied in any case.
+    \code{\link{range}}) will be applied in any case, see argument
+    \code{metric}, above, and the details section.
   }
   \item{type}{list for specifying some (or all) of the types of the
     variables (columns) in \code{x}.  The list may contain the following
@@ -55,17 +63,26 @@ daisy(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
 }% end{arg..}
 
 \value{
-  an object of class \code{"dissimilarity"} containing the dissimilarities among
-  the rows of x.  This is typically the input for the functions \code{pam},
-  \code{fanny}, \code{agnes} or \code{diana}.  See
-  \code{\link{dissimilarity.object}} for details.
+  an object of class \code{"dissimilarity"} containing the
+  dissimilarities among the rows of \code{x}.  This is typically the
+  input for the functions \code{pam}, \code{fanny}, \code{agnes} or
+  \code{diana}.  For more details, see \code{\link{dissimilarity.object}}.
 }
 \details{
   \code{daisy} is fully described in chapter 1 of Kaufman and Rousseeuw (1990).
   Compared to \code{\link{dist}} whose input must be numeric
   variables, the main feature of \code{daisy} is its ability to handle
   other variable types as well (e.g. nominal, ordinal, (a)symmetric
-  binary) even when different types occur in the same dataset.
+  binary) even when different types occur in the same data set.
+
+  The handling of nominal, ordinal, and (a)symmetric binary data is
+  achieved by using the general dissimilarity coefficient of Gower
+  (1971).  If \code{x} contains any columns of these
+  data-types, both arguments \code{metric} and \code{stand} will be
+  ignored and Gower's coefficient will be used as the metric.  This can
+  also be activated for purely numeric data by \code{metric = "gower"}.
+  With that, each variable (column) is first standardized by dividing
+  each entry by the range of the corresponding variable.
 
   Note that setting the type to \code{symm} (symmetric binary) gives the
   same dissimilarities as using \emph{nominal} (which is chosen for
@@ -106,19 +123,23 @@ daisy(x, metric = c("euclidean","manhattan"), stand = FALSE, type = list())
       If \code{nok = 0}, the dissimilarity is set to \code{\link{NA}}.
   }
 }
-\section{BACKGROUND}{
+\section{Background}{
   Dissimilarities are used as inputs to cluster analysis and
   multidimensional scaling.  The choice of metric may have a
   large impact.
 }
 \references{
-  Kaufman, L. and Rousseeuw, P.J. (1990).
-  \emph{Finding Groups in Data: An Introduction to Cluster Analysis. }
+  Gower, J. C. (1971)
+  A general coefficient of similarity and some of its properties,
+  \emph{Biometrics} \bold{27}, 623--637.
+
+  Kaufman, L. and Rousseeuw, P.J. (1990)
+  \emph{Finding Groups in Data: An Introduction to Cluster Analysis}.
   Wiley, New York.
 
-  Struyf, A., Hubert, M. and Rousseeuw, P.J. (1997). Integrating Robust
-  Clustering Techniques in S-PLUS,
-  \emph{Computational Statistics and Data Analysis, \bold{26}, 17-37.}
+  Struyf, A., Hubert, M. and Rousseeuw, P.J. (1997)
+  Integrating Robust Clustering Techniques in S-PLUS,
+  \emph{Computational Statistics and Data Analysis} \bold{26}, 17--37.
 }
 \seealso{
   \code{\link{dissimilarity.object}}, \code{\link{dist}},
@@ -132,6 +153,8 @@ data(agriculture)
 d.agr <- daisy(agriculture, metric = "euclidean", stand = FALSE)
 d.agr
 as.matrix(d.agr)[,"DK"] # via as.matrix.dist(.)
+## compare with
+as.matrix(daisy(agriculture, metric = "gower"))
 
 data(flower)
 ## Example 2 in ref
@@ -139,6 +162,8 @@ summary(dfl1 <- daisy(flower, type = list(asymm = 3)))
 summary(dfl2 <- daisy(flower, type = list(asymm = c(1, 3), ordratio = 7)))
 ## this failed earlier:
 summary(dfl3 <- daisy(flower,
-        type = list(asymm = c("V1", "V3"), symm= 2, ordratio= 7, logratio= 8)))
+        type = list(asymm = c("V1", "V3"), symm= 2,
+                    ordratio= 7, logratio= 8)))
+
 }
 \keyword{cluster}

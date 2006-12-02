@@ -10,6 +10,7 @@ export(bannerplot, ellipsoidhull, ellipsoidPoints,
        lower.to.upper.tri.inds, upper.to.lower.tri.inds,
        meanabsdev, sizeDiss, sortSilhouette)
 
+## Methods also useful as 'standalone functions':
 export(predict.ellipsoid)
 export(coef.hclust)
 
@@ -17,6 +18,7 @@ export(coef.hclust)
 #importFrom(stats, as.hclust, as.dist, as.dendrogram, cutree)
 
 importFrom(graphics, plot)
+importFrom(grDevices, dev.interactive)
 
 ###---- Methods ---- all documented but not exported
 
