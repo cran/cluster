@@ -107,7 +107,7 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
   observations)}}...
 }
 \author{
-  Kaufman and Rousseuw, originally.
+  Kaufman and Rousseeuw (see \code{\link{agnes}}), originally.
   All arguments from \code{trace} on, and most \R documentation and all
   tests by Martin Maechler.
 }
@@ -151,4 +151,3 @@ if(length(iDoubt)) { # (not for all seeds)
 
 }
 \keyword{cluster}
-

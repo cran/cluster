@@ -90,7 +90,7 @@ clara(ru5, k=3, met="manhattan", sampsize=3,trace=2)[clInS]
 clara(ru5, k=3, met="manhattan", sampsize=4,trace=1)[clInS]
 
 daisy(ru4, "manhattan")
-## this one gives problem, from ss = 6 on ___ still after 2002-12-28 ___ :
+## this one (k=3) gives problem, from ss = 6 on ___ still after 2002-12-28 ___ :
 for(ss in 4:nrow(ru4)){
     cat("---\n\nsample size = ",ss,"\n")
     print(clara(ru4,k=3,met="manhattan",sampsize=ss)[clInS])

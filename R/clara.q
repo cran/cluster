@@ -82,10 +82,16 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     if(res$jstop) {
 	if(mdata && any(aNA <- apply(inax,1, all))) {
 	    i <- which(aNA)
-	    stop(ngettext(length(i),
-                          sprintf("Observation %d has", i[1]),
-                          sprintf("Observations %s have", paste(i, collapse=","))),
-		 " *only* NAs --> omit for clustering")
+	    nNA <- length(i)
+	    pasteC <- function(...) paste(..., collapse= ",")
+	    stop(ngettext(nNA,
+			  sprintf("Observation %d has *only* NAs --> omit it for clustering",
+				  i[1]),
+			  ## nNA > 1 :
+			  paste(if(nNA < 13) sprintf("Observations %s", pasteC(i))
+			  else sprintf("%d observations (%s ...)", nNA, pasteC(i[1:12])),
+				"\thave *only* NAs --> na.omit() them for clustering!",
+				sep = "\n")))
 	} ## else
 	if(res$jstop == 1)
 	    stop("Each of the random samples contains objects between which\n",
@@ -116,12 +122,12 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	res$sample <- namx[res$sample]
 	names(res$clu) <- namx
     }
-    ## add dimnames to C output
     r <- list(sample = res$sample, medoids = res$med, i.med = res$imed,
 	      clustering = res$clu, objective = res$obj,
 	      clusinfo = cbind(size = res$size, "max_diss" = res$maxdis,
 	      "av_diss" = res$avdis, isolation = res$ratdis),
 	      diss = disv, call = match.call())
+    ## add dimnames to C output
     if(k > 1) {
 	dimnames(res$silinf) <- list(sildim,
 				     c("cluster", "neighbor", "sil_width", ""))

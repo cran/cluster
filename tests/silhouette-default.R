@@ -38,8 +38,6 @@ axis(1, at=myk, col.axis= "red", font.axis= 2)
 
 ##--- PAM()'s silhouette should give same as silh*.default()!
 Eq <- function(x,y, tol = 1e-12) x == y | abs(x - y) < tol * abs((x+y)/2)
-if(paste(R.version$major, R.version$minor, sep=".") < 2.1)
-    isTRUE <- function (x) identical(TRUE, x)
 
 for(k in 2:40) {
     cat("\n", k,":\n==\n")
@@ -48,7 +46,7 @@ for(k in 2:40) {
     si.p <- silhouette(p.k)
     si.g <- silhouette(k.gr, mdist)
     ## since the obs.order may differ (within cluster):
-    si.g <- si.g[ rownames(si.p), ]
+    si.g <- si.g[ as.integer(rownames(si.p)), ]
     cat("grouping table: "); print(table(k.gr))
     if(!isTRUE(all.equal(c(si.g), c(si.p)))) {
 	cat("silhouettes differ:")

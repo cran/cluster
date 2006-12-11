@@ -1,6 +1,6 @@
 
-R : Copyright 2006, The R Foundation for Statistical Computing
-Version 2.3.0 Under development (unstable) (2006-02-26 r37442)
+R version 2.5.0 Under development (unstable) (2006-12-09 r40144)
+Copyright (C) 2006 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -269,8 +269,6 @@ Individual silhouette widths:
 > 
 > ##--- PAM()'s silhouette should give same as silh*.default()!
 > Eq <- function(x,y, tol = 1e-12) x == y | abs(x - y) < tol * abs((x+y)/2)
-> if(paste(R.version$major, R.version$minor, sep=".") < 2.1)
-+     isTRUE <- function (x) identical(TRUE, x)
 > 
 > for(k in 2:40) {
 +     cat("\n", k,":\n==\n")
@@ -279,7 +277,7 @@ Individual silhouette widths:
 +     si.p <- silhouette(p.k)
 +     si.g <- silhouette(k.gr, mdist)
 +     ## since the obs.order may differ (within cluster):
-+     si.g <- si.g[ rownames(si.p), ]
++     si.g <- si.g[ as.integer(rownames(si.p)), ]
 +     cat("grouping table: "); print(table(k.gr))
 +     if(!isTRUE(all.equal(c(si.g), c(si.p)))) {
 + 	cat("silhouettes differ:")
@@ -595,6 +593,6 @@ null device
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  3.84 0.02 3.95 0 0 
+Time elapsed:  2.964 0.032 3.018 0 0 
 > 
 > 

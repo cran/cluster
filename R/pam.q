@@ -26,7 +26,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	n <- attr(x, "Size")
 	dv <- x[lower.to.upper.tri.inds(n)]
 	## prepare arguments for the Fortran call
-	dv <- c(0, dv)
+	dv <- c(0, dv) ## <- internally needed {FIXME! memory hog!}
 	jp <- 1
 	mdata <- FALSE
 	ndyst <- 0
@@ -62,8 +62,8 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 		 k, " distinct indices in {1,2, .., n}, n=", n)
         ## use observation numbers  'medID' as starting medoids for 'swap' only
     }
-    stopifnot(length(cluster.only) == 1)
-    stopifnot(length(trace.lev) == 1)
+    stopifnot(length(cluster.only) == 1,
+	      length(trace.lev) == 1)
     ## call Fortran routine
     storage.mode(dv) <- "double"
     storage.mode(x2) <- "double"

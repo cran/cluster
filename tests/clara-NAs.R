@@ -1,5 +1,3 @@
-if(FALSE)
-    library(cluster, lib.loc="/u/maechler/R/Pkgs/cluster.Rcheck")
 library(cluster)
 
 x <- cbind(c(0, -4, -22, -14, 0, NA, -28, 1, 10, -1,
@@ -41,3 +39,8 @@ try(clara(rbind(NA,x), 2))
 x <- x[-33,]
 ## still had the ** dysta2() .. OUT" problem {no longer!}
 clara(x, 2, samples = 12, trace = 3)
+
+data(xclara)
+set.seed(123)
+xclara[sample(nrow(xclara), 50),] <- NA
+try( clara(xclara, k = 3) ) #-> "nice" error message depicting first 12 missing obs

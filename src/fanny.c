@@ -241,7 +241,7 @@ void fuzzy(int nn, int k, double *p,
 	for (j = 0; j < k; ++j)
 	    cryt += ef[j] / (esp[j] * 2.);
 
-	if(trace_lev >= 2) Rprintf("  m == n:  obj = %#20.15g", cryt);
+	if(trace_lev >= 2) Rprintf("  m == n:  obj = %#20.14g", cryt);
 
 	/* Convergence check */
 	if((converged = (fabs(cryt - crt) <= tol * cryt)))

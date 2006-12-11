@@ -63,7 +63,7 @@ void clara(int *n,  /* = number of objects */
     Rboolean nafs, kall, full_sample, lrg_sam, dyst_toomany_NA,
 	has_NA = *mdata;
     int j, jk, jkk, js, jsm, jran, l, n_sam;
-    int nsm, ntt, nad, nadv, kran, kans, nrun, n_dys, nsamb, nunfs;
+    int nsm, ntt, nad, nadv, rand_k, kans, nrun, n_dys, nsamb, nunfs;
     double rnn, sky, zb, s, sx = -1., zba = -1.;/* Wall */
 
     *jstop = 0;
@@ -88,17 +88,17 @@ void clara(int *n,  /* = number of objects */
     else /* << initialize `random seed' of the very simple randm() below */
 	nrun = 0;
 
-#define SET_kran_trace_print(_nr_)					\
-	kran= 1+ (int)(rnn* ((*rng_R)? unif_rand(): randm(&nrun)));	\
-	if (kran > *n) {/* should never happen */			\
-	    REprintf("** C clara(): random k=%d > n **\n", kran);	\
-	    kran = *n;							\
+#define NEW_rand_k_trace_print(_nr_)					\
+	rand_k= 1+ (int)(rnn* ((*rng_R)? unif_rand(): randm(&nrun)));	\
+	if (rand_k > *n) {/* should never happen */			\
+	    REprintf("** C clara(): random k=%d > n **\n", rand_k);	\
+	    rand_k = *n;							\
 	}								\
 	if(*trace_lev >= 4) {						\
 	    Rprintf("... {" #_nr_ "}");					\
 	    if(*rng_R) Rprintf("R unif_rand()");			\
 	    else       Rprintf("nrun=%5d", nrun);			\
-	    Rprintf(" -> k{ran}=%d\n", kran);				\
+	    Rprintf(" -> k{ran}=%d\n", rand_k);				\
 	}
 
 
@@ -119,7 +119,7 @@ void clara(int *n,  /* = number of objects */
 
 		for (jk = 0; jk < *kk; ++jk)
 		    nsel[jk] = nrx[jk];
-		for (jk = 0; jk < *kk-1; ++jk) {
+		for (jk = 0; jk < *kk-1; ++jk) { /* sort(nsel[0:(kk-1)] */
 		    /* FIXME: nsel[] is 0-indexed, but *contains* 1-indices*/
 		    nsm = nsel[jk];
 		    jsm = jk;
@@ -129,8 +129,7 @@ void clara(int *n,  /* = number of objects */
 			    jsm = jkk;
 			}
 		    }
-		    nsel[jsm] = nsel[jk];
-		    nsel[jk] = nsm;
+		    nsel[jsm] = nsel[jk]; nsel[jk] = nsm;
 		}
 		ntt = *kk;
 
@@ -138,18 +137,18 @@ void clara(int *n,  /* = number of objects */
 	    else { /* no valid sample  _OR_  lrg_sam */
 		if(*trace_lev >= 2) Rprintf(" finding 1st... new k{ran}:\n");
 
-		/* Loop finding random index `kran' not yet in nrx[] : */
+		/* Loop finding random index `rand_k' not yet in nrx[0:(*kk-1)] : */
 	    L180:
-		SET_kran_trace_print(180)
+		NEW_rand_k_trace_print(180)
 
 		if (kall) {
 		    for (jk = 0; jk < *kk; ++jk)
-			if (kran == nrx[jk])
+			if (rand_k == nrx[jk])
 			    goto L180;
 		}
 		/* end Loop */
 
-		nsel[ntt] = kran;
+		nsel[ntt] = rand_k;
 		if (++ntt == n_sam)
 		    goto L295;
 	    }
@@ -168,32 +167,32 @@ void clara(int *n,  /* = number of objects */
 	    }
 
 	    do {
-		/* Loop finding random index 'kran' in {1:n},
+		/* Loop finding random index 'rand_k' in {1:n},
 		 * not in nrx[0:(k-1)] nor nsel[1:ntt] : */
 	    L210:
-		SET_kran_trace_print(210)
+		NEW_rand_k_trace_print(210)
 
 		if (kall && lrg_sam) {
 		    for (jk = 0; jk < *kk; ++jk) {
-			if (kran == nrx[jk])
+			if (rand_k == nrx[jk])
 			    goto L210;
 		    }
 		}
-		/* insert kran into nsel[1:ntt] or after  and increase ntt : */
+		/* insert rand_k into nsel[1:ntt] or after  and increase ntt : */
 		for (kans = 0; kans < ntt; ++kans)
-		    if (nsel[kans] >= kran) {
-			if (nsel[kans] == kran)
+		    if (nsel[kans] >= rand_k) {
+			if (nsel[kans] == rand_k)
 			    goto L210;
 			else {
 			    for (nad = kans; nad <= ntt; ++nad) {
 				nadv = ntt - nad + kans;
 				nsel[nadv] = nsel[nadv-1];
 			    }
-			    nsel[kans] = kran;
+			    nsel[kans] = rand_k;
 			    /* continue _outer_ loop */ goto L290;
 			}
 		    }
-		nsel[ntt] = kran;
+		nsel[ntt] = rand_k;
 
 	    L290:
 		++ntt;
@@ -234,15 +233,11 @@ void clara(int *n,  /* = number of objects */
 	}
 
 	s = 0.;
-	l = 0;/* dys[0] is not used here */
-	do {
-	    ++l;
+	for(l = 1; l < n_dys; l++) /* dys[0] is not used here */
 	    if (s < dys[l])
 		s = dys[l];
-	} while (l+1 < n_dys);
-
 	if(*trace_lev >= 2)
-	    Rprintf(". clara(): s:= max dys[l=%d] = %g;", l,s);
+	    Rprintf(". clara(): s:= max dys[1..%d] = %g;", l-1,s);
 
 	bswap2(*kk, *nsam, nrepr, dys, &sky, s,
 	       /* dysma */tmp1, /*dysmb*/tmp2,
@@ -353,9 +348,8 @@ void dysta2(int nsam, int jpp, int *nsel,
 	    clk = 0.;
 	    ++nlk;
 	    npres = 0;
-	    for (j = 0; j < jpp; ++j) {
-		lj = lsel-1 + j * n;
-		kj = ksel-1 + j * n;
+	    for (j = 0, lj = lsel-1, kj = ksel-1; j < jpp;
+		 ++j, lj += n, kj += n) {
 		if (has_NA && jtmd[j] < 0) { /* x[,j] has some Missing (NA) */
 		    /* in the following line (Fortran!), x[-2] ==> seg.fault
 		       {BDR to R-core, Sat, 3 Aug 2002} */
@@ -435,7 +429,8 @@ void bswap2(int kk, int nsam, int *nrepr,
 		}
 	    }
 	}
-	nrepr[nmax] = 1;
+
+	nrepr[nmax] = 1;/* = .true. : found new representative */
 
 	/* update dysma[] : dysma[j] = D(j, nearest_representative) */
 	for (j = 1; j <= nsam; ++j) {
@@ -460,6 +455,8 @@ void bswap2(int kk, int nsam, int *nrepr,
 L60:
 
     for (j = 1; j <= nsam; ++j) {
+	/*  dysma[j] := D_j  d(j, <closest medi>)  [KR p.102, 104]
+	 *  dysmb[j] := E_j  d(j, <2-nd cl.medi>)  [p.103] */
 	dysma[j] = s;
 	dysmb[j] = s;
 	for (i = 1; i <= nsam; ++i) {
@@ -482,8 +479,12 @@ L60:
 	    /* dz := T_{ih} := sum_j C_{jih}  [p.104] : */
 	    for (j = 1; j <= nsam; ++j) {
 		ij = ind_2(i, j);
-		kj  = ind_2(k, j);
+		kj = ind_2(k, j);
 		if (dys[ij] == dysma[j]) {
+/* FIXME: The following correction *does* change results ....
+ *should we do it? -- not yet*/
+		    /* correction below {from pam()}: was .. > dys[ij] ? ..*/
+		    /* small = dysmb[j] > dys[kj] ? dys[kj] : dysmb[j]; */
 		    small = dysmb[j] > dys[ij] ? dys[kj] : dysmb[j];
 		    dz += (- dysma[j] + small);
 		}
