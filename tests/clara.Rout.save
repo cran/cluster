@@ -1,6 +1,6 @@
 
-R version 2.4.1 beta (2006-12-07 r40136)
-Copyright (C) 2006 The R Foundation for Statistical Computing
+R version 2.5.0 alpha (2007-03-28 r40917)
+Copyright (C) 2007 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -959,15 +959,14 @@ Available components:
 Call:	 clara(x = xclara, k = 3) 
 Medoids:
             V1        V2
-450   5.553391 13.306260
-1791 43.198760 60.360720
-2797 74.591890 -6.969018
+[1,]  5.553391 13.306260
+[2,] 43.198760 60.360720
+[3,] 74.591890 -6.969018
 Objective function:	 13.22500
-Clustering vector: 	 Named int [1:3000] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ...
- - attr(*, "names")= chr [1:3000] "1" "2" "3" "4" "5" "6" "7" ...
+Clustering vector: 	 int [1:3000] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ...
 Cluster sizes:	    	 900 1148 952 
 Best sample:
- [1] 20   30   46   91   92   169  179  187  209  223  382  450  555  971  1004
+ [1]   20   30   46   91   92  169  179  187  209  223  382  450  555  971 1004
 [16] 1025 1058 1277 1281 1302 1319 1361 1362 1513 1591 1623 1628 1729 1752 1791
 [31] 1907 1917 1946 2064 2089 2498 2527 2537 2545 2591 2672 2722 2729 2790 2797
 [46] 2852
@@ -1551,7 +1550,7 @@ $sample
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  9.916 0.036 10.04 0 0 
+Time elapsed:  4.868 0.018 5.046 0 0 
 > ## Lynne (P IV, 1.6 GHz): 18.81; then (no NA; R 1.9.0-alpha): 15.07
 > ## nb-mm (P III,700 MHz): 27.97
 > 

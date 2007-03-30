@@ -1,3 +1,14 @@
+2007-03-30  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/diana.Rd: merge man/diana.object.Rd into *one* help file
+
+	* DESCRIPTION (Version): 1.11.5 - for R 2.5.0
+
+2007-03-29  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/silhouette.R (silhouette.default): use x$clustering only when x is
+	a list.
+
 2006-12-11  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.11.4 -- ready

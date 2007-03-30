@@ -1,6 +1,7 @@
 \name{diana}
-\alias{diana}
 \title{DIvisive ANAlysis Clustering}
+\alias{diana}
+\alias{diana.object}
 \description{
   Computes a divisive hierarchical clustering of the dataset
   returning an object of class \code{diana}.
@@ -51,8 +52,58 @@ diana(x, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE,
     memory allocation \emph{time}.}
 }
 \value{
-  an object of class \code{"diana"} representing the clustering.  See
-  \code{?\link{diana.object}} for details.
+  an object of class \code{"diana"} representing the clustering;
+  this class has methods for the following generic functions:
+  \code{print}, \code{summary}, \code{plot}.
+
+  Further, the class \code{"diana"} inherits from
+  \code{"twins"}.  Therefore, the generic function \code{pltree} can be
+  used on a \code{diana} object, and an \code{\link{as.hclust}} method
+  is available.
+
+  A legitimate \code{diana} object is a list with the following components:
+  \item{order}{
+    a vector giving a permutation of the original observations to allow for
+    plotting, in the sense that the branches of a clustering tree will
+    not cross.
+  }
+  \item{order.lab}{
+    a vector similar to \code{order}, but containing observation labels
+    instead of observation numbers.  This component is only available if
+    the original observations were labelled.
+  }
+  \item{height}{a vector with the diameters of the clusters prior to splitting.
+  }
+  \item{dc}{
+    the divisive coefficient, measuring the clustering structure of the
+    dataset.  For each observation i, denote by \eqn{d(i)} the diameter of the
+    last cluster to which it belongs (before being split off as a single
+    observation), divided by the diameter of the whole dataset.  The
+    \code{dc} is the average of all \eqn{1 - d(i)}.  It can also be seen
+    as the average width (or the percentage filled) of the banner plot.
+    Because \code{dc} grows with the number of observations, this
+    measure should not be used to compare datasets of very different
+    sizes.
+  }
+  \item{merge}{
+    an (n-1) by 2 matrix, where n is the number of
+    observations. Row i of \code{merge} describes the split at step n-i of
+    the clustering. If a number \eqn{j} in row r is negative, then the single
+    observation \eqn{|j|} is split off at stage n-r. If j is positive, then the
+    cluster that will be splitted at stage n-j (described by row j), is
+    split off at stage n-r.
+  }
+  \item{diss}{
+    an object of class \code{"dissimilarity"}, representing the total
+    dissimilarity matrix of the dataset.
+  }
+  \item{data}{
+    a matrix containing the original or standardized measurements, depending
+    on the \code{stand} option of the function \code{agnes}.  If a
+    dissimilarity matrix was given as input structure, then this component
+    is not available.
+  }
+
 }
 \details{
 \code{diana} is fully described in chapter 6 of Kaufman and Rousseeuw (1990).
@@ -79,7 +130,8 @@ is a division of the selected cluster into two new clusters.
 }
 \seealso{
   \code{\link{agnes}} also for background and references;
-  \code{\link{diana.object}}, \code{\link{daisy}}, \code{\link{dist}},
+  \code{\link{cutree}} (and \code{\link{as.hclust}}) for grouping
+  extraction; \code{\link{daisy}}, \code{\link{dist}},
   \code{\link{plot.diana}}, \code{\link{twins.object}}.
 }
 \examples{
@@ -88,10 +140,19 @@ dv <- diana(votes.repub, metric = "manhattan", stand = TRUE)
 print(dv)
 plot(dv)
 
+## Cut into 2 groups:
+dv2 <- cutree(as.hclust(dv), k = 2)
+table(dv2) # 8 and 42 group members
+rownames(votes.repub)[dv2 == 1]
+
+## For two groups, does the metric matter ?
+dv0 <- diana(votes.repub, stand = TRUE) # default: Euclidean
+dv.2 <- cutree(as.hclust(dv0), k = 2)
+table(dv2 == dv.2)## identical group assignments
+
 data(agriculture)
 ## Plot similar to Figure 8 in ref
 \dontrun{plot(diana(agriculture), ask = TRUE)}
 \testonly{plot(diana(agriculture))}
 }
 \keyword{cluster}
-% Converted by Sd2Rd version 0.3-2.

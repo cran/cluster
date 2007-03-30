@@ -78,7 +78,7 @@ silhouette.default.R <- function(x, dist, dmatrix, ...) {
 
 silhouette.default <- function(x, dist, dmatrix, ...) {
     cll <- match.call()
-    if(!is.null(cl <- x$clustering)) x <- cl
+    if(is.list(x) && !is.null(cl <- x$clustering)) x <- cl
     n <- length(x)
     if(!all(x == round(x))) stop("'x' must only have integer codes")
     k <- length(unique(x))

@@ -149,6 +149,12 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
   Struyf, A., Hubert, M. and Rousseeuw, P.J. (1997). Integrating
   Robust Clustering Techniques in S-PLUS,
   \emph{Computational Statistics and Data Analysis}, \bold{26}, 17--37.
+
+  Lance, G.N., and W.T. Williams (1966).
+  A General Theory of Classifactory Sorting Strategies, I. Hierarchical
+  Systems.
+  \emph{Computer J.} \bold{9}, 373--380.
+
 }
 \seealso{
   \code{\link{agnes.object}}, \code{\link{daisy}}, \code{\link{diana}},
