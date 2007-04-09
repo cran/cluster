@@ -60,7 +60,7 @@ diana <- function(x, diss = inherits(x, "dist"),
 		    integer(n),
 		    ner = integer(n),
 		    ban = double(n),
-		    dc = as.double(0),
+		    dc = double(1),# care! as.double() is copy-less from 2.6.0
 		    double(1),
 		    merge = matrix(0:0, n - 1, 2), # integer
 		    DUP = FALSE,

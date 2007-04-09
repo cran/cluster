@@ -65,8 +65,9 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
 	type2[tT] <- "T" # was "O" (till 2000-12-14) accidentally !
     }
     type2[tI <- type2 %in% c("numeric", "integer") ] <- "I"
-    if(any(tI) && any(iBin <- apply(x[,tI, drop = FALSE],2,
-				    function(v) length(table(v)) == 2)))
+    if(n > 9 && any(tI) &&
+       any(iBin <- apply(x[, tI, drop = FALSE], 2,
+			 function(v) length(table(v)) == 2)))
 	warning("binary variable(s) ", pColl(which(tI)[iBin]),
 		" treated as interval scaled")
 
@@ -77,6 +78,9 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
 		pColl(which(ilog)), " to type `asymm'")
 	type2[ilog] <- "A"
     }
+    ## Note: We have 2 status codings:  ndyst = (0,1,2) and jdat = (1,2);
+    ##       the latter is superfluous in principle
+
     ## standardize, if necessary
     all.I <- all(type2 == "I")
     if(all.I && { metric <- match.arg(metric); metric != "gower" }) {

@@ -1,3 +1,14 @@
+2007-04-09  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.11.6 - for R version >= 2.6.0
+
+	* R/daisy.q (daisy): for 2-valued variables only warn about
+	non-specified type when  n >= 10.
+
+2007-04-07  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/diana.q (diana): don't use as.double(.) and DUP=FALSE !
+
 2007-03-30  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* man/diana.Rd: merge man/diana.object.Rd into *one* help file

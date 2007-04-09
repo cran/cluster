@@ -333,7 +333,7 @@ void dysta2(int nsam, int jpp, int *nsel,
 
     /* Local variables */
     int j, k, kj, l, lj, ksel, lsel, nlk, npres;
-    double clk, d1;
+    double clk, d1, pp = (double) jpp;
 
     nlk = 0;
     dys[0] = 0.;/* very first index; *is* used because ind_2(i,i) |-> 0 ! */
@@ -367,7 +367,7 @@ void dysta2(int nsam, int jpp, int *nsel,
 		*toomany_NA = TRUE;
 		dys[nlk] = -1.;
 	    } else {
-		d1 = clk * (((double) (jpp)) / (double) npres);
+		d1 = clk * (pp / (double) npres);
 		dys[nlk] = (diss_kind == 1) ? sqrt(d1) : d1 ;
 	    }
 	} /* for( k ) */
@@ -525,7 +525,7 @@ void selec(int kk, int n, int jpp, int diss_kind,
     int j, jk, jj, jp, jnew, ka, kb, jkabc = -1/* -Wall */;
     int newf, nrjk,  npab, nstrt, na, nb, npa, npb, njk, nobs;
 
-    double dsum, pp, tra, rns, dnull = -9./* -Wall */;
+    double dsum, pp = (double) (jpp), tra, rns, dnull = -9./* -Wall */;
 
 /* Parameter adjustments */
     --nsel;    --nrepr;
@@ -557,7 +557,6 @@ void selec(int kk, int n, int jpp, int diss_kind,
  * - determination of the new ordering of the clusters */
 
     *zb = 0.;
-    pp = (double) (jpp);
     newf = 0;
 
     for(jj = 1; jj <= n; jj++) {
@@ -605,6 +604,7 @@ void selec(int kk, int n, int jpp, int diss_kind,
 		    if (nobs == 0) /* all pairs partially missing */
 			continue /* next jk */;
 		    dsum *= (nobs / pp);
+		    /*  MM:  ^^^^^^^^^ fishy; rather * (pp/nobs) as in dysta2*/
 		}
 		if (!pres)
 		    pres = TRUE;
@@ -702,12 +702,10 @@ void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
 	   int *jtmd, double *valmd, double *x, int *nrx, int *mtt)
 {
     /* Local variables */
-    int j, jk, jj, ka, na, nb, njnb, nrjk, jksky = -1/* Wall */;
-    double pp, abc, dsum, tra, dnull = -9./* Wall */;
+    int j, jk, jj, ka, na, nb, njnb, nrjk, nobs, jksky = -1/* Wall */;
+    double pp = (double) (jpp), dsum, tra, dnull = -9./* Wall */;
 
 /* clustering vector is incorporated into x, and ``printed''. */
-
-    pp = (double) (jpp);
 
     for(jj = 0; jj < n; jj++) {
 
@@ -729,9 +727,7 @@ void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
 		}
 		if (diss_kind == 1)
 		    dsum = sqrt(dsum);
-		if (jk == 0)
-		    dnull = dsum + .1f;
-		if (dnull > dsum) {
+		if (jk == 0 || dnull > dsum) {
 		    dnull = dsum;
 		    jksky = jk;
 		}
@@ -741,7 +737,7 @@ void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
 	    for (jk = 0; jk < kk; ++jk) {
 		dsum = 0.;
 		nrjk = (nrx[jk] - 1);
-		abc = 0.;
+		nobs = 0;
 		for (j = 0; j < jpp; ++j) {
 		    na = nrjk + j * n;
 		    nb = njnb + j * n;
@@ -749,7 +745,7 @@ void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
 			if (x[na] == valmd[j] || x[nb] == valmd[j])
 			    continue /* next j */;
 		    }
-		    abc += 1.;
+		    nobs++;
 		    tra = fabs(x[na] - x[nb]);
 		    if (diss_kind == 1)
 			tra *= tra;
@@ -757,11 +753,10 @@ void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
 		}
 		if (diss_kind == 1)
 		    dsum = sqrt(dsum);
-		dsum *= (abc / pp);
-		if (jk == 0)
-		    dnull = dsum + .1f;
+		dsum *= (nobs / pp);
+		/* MM:   ^^^^^^^^  fishy; rather * (pp/nobs) as in dysta2 */
 
-		if (dnull > dsum) {
+		if (jk == 0 || dnull > dsum) {
 		    dnull = dsum;
 		    jksky = jk;
 		}

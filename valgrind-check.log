@@ -1,0 +1,854 @@
+MM@cmath-3:covMcd$ ~/R/Pkgs/cluster-check-me
++ cd cluster/tests
++ /u/maechler/bin/R-tests-swaplink-32-64 64
+have 64-bit already
++ set +x
+* checking for working latex ... OK
+* using log directory '/sfs/u/staff/maechler/R/Pkgs/cluster.Rcheck'
+* using R version 2.5.0 alpha (2007-04-08 r41095)
+* checking for file 'cluster/DESCRIPTION' ... OK
+* this is package 'cluster' version '1.11.5'
+* checking package dependencies ... OK
+* checking if this is a source package ... WARNING
+Subdirectory 'cluster/src' contains object files.
+* checking whether package 'cluster' can be installed ... OK
+* checking package directory ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking R files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the name space can be loaded with stated dependencies ... OK
+* checking for unstated dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... OK
+* checking Rd files ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking data for non-ASCII characters ... OK
+* checking for CRLF line endings in C/C++/Fortran sources/headers ... OK
+* checking for portable use of $BLAS_LIBS ... OK
+* creating cluster-Ex.R ... OK
+* checking examples ... OK
+* checking tests ...
+make[1]: Entering directory `/sfs/u/staff/maechler/R/Pkgs/cluster.Rcheck/tests'
+  Running 'agnes-ex.R'
+  Comparing 'agnes-ex.Rout' to 'agnes-ex.Rout.save' ... OK
+  Running 'clara-151.R'
+  Running 'clara-2.R'
+  Comparing 'clara-2.Rout' to 'clara-2.Rout.save' ... OK
+  Running 'clara-MM.R'
+  Comparing 'clara-MM.Rout' to 'clara-MM.Rout.save' ... OK
+  Running 'clara-NAs.R'
+  Comparing 'clara-NAs.Rout' to 'clara-NAs.Rout.save' ... OK
+  Running 'clara-ex.R'
+  Comparing 'clara-ex.Rout' to 'clara-ex.Rout.save' ... OK
+  Running 'clara.R'
+  Comparing 'clara.Rout' to 'clara.Rout.save' ... OK
+  Running 'clusplot-out.R'
+  Comparing 'clusplot-out.Rout' to 'clusplot-out.Rout.save' ... OK
+  Running 'daisy-ex.R'
+  Comparing 'daisy-ex.Rout' to 'daisy-ex.Rout.save' ... OK
+  Running 'diana-ex.R'
+  Comparing 'diana-ex.Rout' to 'diana-ex.Rout.save' ... OK
+  Running 'dysta-ex.R'
+  Comparing 'dysta-ex.Rout' to 'dysta-ex.Rout.save' ... OK
+  Running 'ellipsoid-ex.R'
+  Comparing 'ellipsoid-ex.Rout' to 'ellipsoid-ex.Rout.save' ... OK
+  Running 'fanny-ex.R'
+  Comparing 'fanny-ex.Rout' to 'fanny-ex.Rout.save' ... OK
+  Running 'mona.R'
+  Comparing 'mona.Rout' to 'mona.Rout.save' ... OK
+  Running 'pam.R'
+  Comparing 'pam.Rout' to 'pam.Rout.save' ... OK
+  Running 'silhouette-default.R'
+  Comparing 'silhouette-default.Rout' to 'silhouette-default.Rout.save' ... OK
+  Running 'sweep-ex.R'
+make[1]: Leaving directory `/sfs/u/staff/maechler/R/Pkgs/cluster.Rcheck/tests'
+ OK
+* creating cluster-manual.tex ... OK
+* checking cluster-manual.tex ... OK
+
+WARNING: There was 1 warning, see
+  /sfs/u/staff/maechler/R/Pkgs/cluster.Rcheck/00check.log
+for details
+
+MM@cmath-3:covMcd$ R CMD check --help
+Usage: R CMD check [options] pkgs
+
+Check R packages from package sources, which can be directories or
+gzipped package 'tar' archives with extension '.tar.gz' or '.tgz'.
+
+A variety of diagnostic checks on directory structure, index and
+control files are performed.  The package is installed into the log
+directory (which includes the translation of all Rd files into several
+formats), and the Rd files are tested by LaTeX (if available).  All
+examples and tests provided by the package are tested to see if they
+run successfully.
+
+Options:
+  -h, --help            print short help message and exit
+  -v, --version         print 'check' version info and exit
+  -l, --library=LIB     library directory used for test installation
+                        of packages (default is outdir)
+  -o, --outdir=DIR      directory used for logfiles, R output, etc.
+                        (default is 'pkg.Rcheck' in current directory,
+			where 'pkg' is the name of the package checked)
+      --no-clean        do not clean outdir before using it
+      --no-codoc        do not check for code/documentation mismatches
+      --no-examples     do not run the examples in the Rd files
+      --no-install      skip installation and associated tests
+      --no-tests        do not run code in tests subdirectory
+      --no-vignettes    do not check vignettes in Sweave format
+      --no-latex        do not run LaTeX on help files
+      --use-gct         use 'gctorture(TRUE)' when running examples/tests
+      --use-valgrind    use 'valgrind' when running examples/tests/vignettes
+      --check-subdirs=default|yes|no
+                        run checks on the package subdirectories
+			(default is yes for a tarball, no otherwise)
+      --rcfile=FILE     read configuration values from FILE
+
+By default, all test sections are turned on.
+
+Email bug reports to <r-bugs@r-project.org>.
+MM@cmath-3:covMcd$ ~/R/Pkgs/cluster-check-me --no-clean --use-valgrind
++ cd cluster/tests
++ /u/maechler/bin/R-tests-swaplink-32-64 64
+have 64-bit already
++ set +x
+* checking for working latex ... OK
+* using log directory '/sfs/u/staff/maechler/R/Pkgs/cluster.Rcheck'
+* using R version 2.5.0 alpha (2007-04-08 r41095)
+* checking for file 'cluster/DESCRIPTION' ... OK
+* this is package 'cluster' version '1.11.5'
+* checking package dependencies ... ERROR
+
+Ausführung angehalten
+See the information on DESCRIPTION files in the chapter 'Creating R
+packages' of the 'Writing R Extensions' manual.
+MM@cmath-3:covMcd$ ~/R/Pkgs/cluster-rsync
+building file list ... done
+cluster/
+cluster/ChangeLog
+cluster/DESCRIPTION
+cluster/R/
+cluster/R/daisy.q
+cluster/R/diana.q
+cluster/TODO-MM
+cluster/man/
+cluster/src/
+cluster/src-compiler-warnings
+cluster/src/clara.c
+cluster/tests/
+
+sent 92357 bytes  received 160 bytes  61678.00 bytes/sec
+total size is 1705953  speedup is 18.44
+building file list ... done
+cluster/tests/swaplink-32-64 -> /u/maechler/bin/swaplink-32-64
+
+sent 2821 bytes  received 20 bytes  1894.00 bytes/sec
+total size is 710876  speedup is 250.22
+symbolic link: 'cluster/tests/fanny-ex.Rout.save'	copied ok
+symbolic link: 'cluster/tests/swaplink-32-64'	removed there
+sync'ed /u/maechler/R/Pkgs with /u/maechler/R/D/R-packages/cluster/ 
+MM@cmath-3:covMcd$ ~/R/Pkgs/cluster-check-me --no-clean --use-valgrind
++ cd cluster/tests
++ /u/maechler/bin/R-tests-swaplink-32-64 64
+have 64-bit already
++ set +x
+* checking for working latex ... OK
+* using log directory '/sfs/u/staff/maechler/R/Pkgs/cluster.Rcheck'
+* using R version 2.5.0 alpha (2007-04-08 r41095)
+* checking for file 'cluster/DESCRIPTION' ... OK
+* this is package 'cluster' version '1.11.6'
+* checking package dependencies ... OK
+* checking if this is a source package ... WARNING
+Subdirectory 'cluster/src' contains object files.
+* checking whether package 'cluster' can be installed ... ERROR
+Installation failed.
+See '/sfs/u/staff/maechler/R/Pkgs/cluster.Rcheck/00install.out' for details.
+MM@cmath-3:covMcd$ ~/R/Pkgs/cluster-check-me --use-valgrind
++ cd cluster/tests
++ /u/maechler/bin/R-tests-swaplink-32-64 64
+have 64-bit already
++ set +x
+* checking for working latex ... OK
+Can't remove file /sfs/u/staff/maechler/R/Pkgs/cluster.Rcheck/00LOCK/cluster/libs/.nfs00000000000ed4900000008d (Datei oder Verzeichnis nicht gefunden) at /u/maechler/R/D/r-pre-rel/64-linux-inst/bin/check line 251
+* using log directory '/sfs/u/staff/maechler/R/Pkgs/cluster.Rcheck'
+* using R version 2.5.0 alpha (2007-04-08 r41095)
+* checking for file 'cluster/DESCRIPTION' ... OK
+* this is package 'cluster' version '1.11.6'
+* checking package dependencies ... OK
+* checking if this is a source package ... WARNING
+Subdirectory 'cluster/src' contains object files.
+* checking whether package 'cluster' can be installed ... OK
+* checking package directory ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking DESCRIPTION meta-information ... OK
+* checking top-level files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking R files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the name space can be loaded with stated dependencies ... OK
+* checking for unstated dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... OK
+* checking Rd files ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking data for non-ASCII characters ... OK
+* checking for CRLF line endings in C/C++/Fortran sources/headers ... OK
+* checking for portable use of $BLAS_LIBS ... OK
+* creating cluster-Ex.R ... OK
+* checking examples ... OK
+* checking tests ...
+make[1]: Entering directory `/sfs/u/staff/maechler/R/Pkgs/cluster.Rcheck/tests'
+  Running 'agnes-ex.R'
+  Comparing 'agnes-ex.Rout' to 'agnes-ex.Rout.save' ...1,8d0
+< ==11091== Memcheck, a memory error detector.
+< ==11091== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==11091== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==11091== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==11091== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==11091== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==11091== For more details, rerun with: -v
+< ==11091== 
+602,630d593
+< ==11091== 
+< ==11091== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 14 from 1)
+< ==11091== malloc/free: in use at exit: 25,029,174 bytes in 12,268 blocks.
+< ==11091== malloc/free: 65,691 allocs, 53,423 frees, 81,074,845 bytes allocated.
+< ==11091== For counts of detected errors, rerun with: -v
+< ==11091== searching for pointers to 12,268 not-freed blocks.
+< ==11091== checked 21,368,440 bytes.
+< ==11091== 
+< ==11091== 56 bytes in 14 blocks are definitely lost in loss record 8 of 39
+< ==11091==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==11091==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==11091==    by 0x53B436: parse_bracket_exp (regex.c:5185)
+< ==11091==    by 0x53C823: parse_expression (regex.c:4764)
+< ==11091==    by 0x53D069: parse_branch (regex.c:4697)
+< ==11091==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==11091==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==11091==    by 0x4367FD: do_gsub (character.c:1081)
+< ==11091==    by 0x4D6610: do_internal (names.c:1120)
+< ==11091==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==11091==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==11091==    by 0x4A364F: do_begin (eval.c:1124)
+< ==11091== 
+< ==11091== LEAK SUMMARY:
+< ==11091==    definitely lost: 56 bytes in 14 blocks.
+< ==11091==      possibly lost: 0 bytes in 0 blocks.
+< ==11091==    still reachable: 25,029,118 bytes in 12,254 blocks.
+< ==11091==         suppressed: 0 bytes in 0 blocks.
+< ==11091== Reachable blocks (those to which a pointer was found) are not shown.
+< ==11091== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'clara-151.R'
+  Running 'clara-2.R'
+  Comparing 'clara-2.Rout' to 'clara-2.Rout.save' ...1,8d0
+< ==11510== Memcheck, a memory error detector.
+< ==11510== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==11510== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==11510== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==11510== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==11510== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==11510== For more details, rerun with: -v
+< ==11510== 
+1323,1351d1314
+< ==11510== 
+< ==11510== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 18 from 1)
+< ==11510== malloc/free: in use at exit: 24,282,505 bytes in 11,978 blocks.
+< ==11510== malloc/free: 62,042 allocs, 50,064 frees, 92,269,966 bytes allocated.
+< ==11510== For counts of detected errors, rerun with: -v
+< ==11510== searching for pointers to 11,978 not-freed blocks.
+< ==11510== checked 20,905,464 bytes.
+< ==11510== 
+< ==11510== 56 bytes in 14 blocks are definitely lost in loss record 10 of 52
+< ==11510==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==11510==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==11510==    by 0x53B436: parse_bracket_exp (regex.c:5185)
+< ==11510==    by 0x53C823: parse_expression (regex.c:4764)
+< ==11510==    by 0x53D069: parse_branch (regex.c:4697)
+< ==11510==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==11510==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==11510==    by 0x4367FD: do_gsub (character.c:1081)
+< ==11510==    by 0x4D6610: do_internal (names.c:1120)
+< ==11510==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==11510==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==11510==    by 0x4A364F: do_begin (eval.c:1124)
+< ==11510== 
+< ==11510== LEAK SUMMARY:
+< ==11510==    definitely lost: 56 bytes in 14 blocks.
+< ==11510==      possibly lost: 0 bytes in 0 blocks.
+< ==11510==    still reachable: 24,282,449 bytes in 11,964 blocks.
+< ==11510==         suppressed: 0 bytes in 0 blocks.
+< ==11510== Reachable blocks (those to which a pointer was found) are not shown.
+< ==11510== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'clara-MM.R'
+  Comparing 'clara-MM.Rout' to 'clara-MM.Rout.save' ...1,8d0
+< ==11611== Memcheck, a memory error detector.
+< ==11611== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==11611== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==11611== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==11611== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==11611== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==11611== For more details, rerun with: -v
+< ==11611== 
+189,217d180
+< ==11611== 
+< ==11611== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 12 from 1)
+< ==11611== malloc/free: in use at exit: 80,895,785 bytes in 11,370 blocks.
+< ==11611== malloc/free: 56,174 allocs, 44,804 frees, 343,326,469 bytes allocated.
+< ==11611== For counts of detected errors, rerun with: -v
+< ==11611== searching for pointers to 11,370 not-freed blocks.
+< ==11611== checked 77,353,368 bytes.
+< ==11611== 
+< ==11611== 56 bytes in 14 blocks are definitely lost in loss record 8 of 39
+< ==11611==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==11611==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==11611==    by 0x53B436: parse_bracket_exp (regex.c:5185)
+< ==11611==    by 0x53C823: parse_expression (regex.c:4764)
+< ==11611==    by 0x53D069: parse_branch (regex.c:4697)
+< ==11611==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==11611==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==11611==    by 0x4367FD: do_gsub (character.c:1081)
+< ==11611==    by 0x4D6610: do_internal (names.c:1120)
+< ==11611==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==11611==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==11611==    by 0x4A364F: do_begin (eval.c:1124)
+< ==11611== 
+< ==11611== LEAK SUMMARY:
+< ==11611==    definitely lost: 56 bytes in 14 blocks.
+< ==11611==      possibly lost: 0 bytes in 0 blocks.
+< ==11611==    still reachable: 80,895,729 bytes in 11,356 blocks.
+< ==11611==         suppressed: 0 bytes in 0 blocks.
+< ==11611== Reachable blocks (those to which a pointer was found) are not shown.
+< ==11611== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'clara-NAs.R'
+  Comparing 'clara-NAs.Rout' to 'clara-NAs.Rout.save' ...1,8d0
+< ==12821== Memcheck, a memory error detector.
+< ==12821== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==12821== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==12821== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==12821== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==12821== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==12821== For more details, rerun with: -v
+< ==12821== 
+350,378d341
+< ==12821== 
+< ==12821== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 14 from 1)
+< ==12821== malloc/free: in use at exit: 24,097,605 bytes in 11,742 blocks.
+< ==12821== malloc/free: 57,744 allocs, 46,002 frees, 76,245,395 bytes allocated.
+< ==12821== For counts of detected errors, rerun with: -v
+< ==12821== searching for pointers to 11,742 not-freed blocks.
+< ==12821== checked 20,433,128 bytes.
+< ==12821== 
+< ==12821== 56 bytes in 14 blocks are definitely lost in loss record 8 of 39
+< ==12821==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==12821==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==12821==    by 0x53B436: parse_bracket_exp (regex.c:5185)
+< ==12821==    by 0x53C823: parse_expression (regex.c:4764)
+< ==12821==    by 0x53D069: parse_branch (regex.c:4697)
+< ==12821==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==12821==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==12821==    by 0x4367FD: do_gsub (character.c:1081)
+< ==12821==    by 0x4D6610: do_internal (names.c:1120)
+< ==12821==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==12821==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==12821==    by 0x4A364F: do_begin (eval.c:1124)
+< ==12821== 
+< ==12821== LEAK SUMMARY:
+< ==12821==    definitely lost: 56 bytes in 14 blocks.
+< ==12821==      possibly lost: 0 bytes in 0 blocks.
+< ==12821==    still reachable: 24,097,549 bytes in 11,728 blocks.
+< ==12821==         suppressed: 0 bytes in 0 blocks.
+< ==12821== Reachable blocks (those to which a pointer was found) are not shown.
+< ==12821== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'clara-ex.R'
+  Comparing 'clara-ex.Rout' to 'clara-ex.Rout.save' ...1,8d0
+< ==12868== Memcheck, a memory error detector.
+< ==12868== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==12868== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==12868== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==12868== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==12868== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==12868== For more details, rerun with: -v
+< ==12868== 
+55,83d46
+< ==12868== 
+< ==12868== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 14 from 1)
+< ==12868== malloc/free: in use at exit: 24,931,558 bytes in 11,707 blocks.
+< ==12868== malloc/free: 81,870 allocs, 70,163 frees, 153,949,649 bytes allocated.
+< ==12868== For counts of detected errors, rerun with: -v
+< ==12868== searching for pointers to 11,707 not-freed blocks.
+< ==12868== checked 21,242,696 bytes.
+< ==12868== 
+< ==12868== 56 bytes in 14 blocks are definitely lost in loss record 8 of 39
+< ==12868==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==12868==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==12868==    by 0x53B436: parse_bracket_exp (regex.c:5185)
+< ==12868==    by 0x53C823: parse_expression (regex.c:4764)
+< ==12868==    by 0x53D069: parse_branch (regex.c:4697)
+< ==12868==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==12868==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==12868==    by 0x4367FD: do_gsub (character.c:1081)
+< ==12868==    by 0x4D6610: do_internal (names.c:1120)
+< ==12868==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==12868==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==12868==    by 0x4A364F: do_begin (eval.c:1124)
+< ==12868== 
+< ==12868== LEAK SUMMARY:
+< ==12868==    definitely lost: 56 bytes in 14 blocks.
+< ==12868==      possibly lost: 0 bytes in 0 blocks.
+< ==12868==    still reachable: 24,931,502 bytes in 11,693 blocks.
+< ==12868==         suppressed: 0 bytes in 0 blocks.
+< ==12868== Reachable blocks (those to which a pointer was found) are not shown.
+< ==12868== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'clara.R'
+  Comparing 'clara.Rout' to 'clara.Rout.save' ...1,8d0
+< ==12930== Memcheck, a memory error detector.
+< ==12930== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==12930== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==12930== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==12930== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==12930== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==12930== For more details, rerun with: -v
+< ==12930== 
+1549,1577d1540
+< ==12930== 
+< ==12930== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 18 from 1)
+< ==12930== malloc/free: in use at exit: 24,352,897 bytes in 12,078 blocks.
+< ==12930== malloc/free: 63,033 allocs, 50,955 frees, 92,721,033 bytes allocated.
+< ==12930== For counts of detected errors, rerun with: -v
+< ==12930== searching for pointers to 12,078 not-freed blocks.
+< ==12930== checked 20,978,528 bytes.
+< ==12930== 
+< ==12930== 56 bytes in 14 blocks are definitely lost in loss record 10 of 52
+< ==12930==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==12930==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==12930==    by 0x53B436: parse_bracket_exp (regex.c:5185)
+< ==12930==    by 0x53C823: parse_expression (regex.c:4764)
+< ==12930==    by 0x53D069: parse_branch (regex.c:4697)
+< ==12930==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==12930==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==12930==    by 0x4367FD: do_gsub (character.c:1081)
+< ==12930==    by 0x4D6610: do_internal (names.c:1120)
+< ==12930==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==12930==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==12930==    by 0x4A364F: do_begin (eval.c:1124)
+< ==12930== 
+< ==12930== LEAK SUMMARY:
+< ==12930==    definitely lost: 56 bytes in 14 blocks.
+< ==12930==      possibly lost: 0 bytes in 0 blocks.
+< ==12930==    still reachable: 24,352,841 bytes in 12,064 blocks.
+< ==12930==         suppressed: 0 bytes in 0 blocks.
+< ==12930== Reachable blocks (those to which a pointer was found) are not shown.
+< ==12930== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'clusplot-out.R'
+  Comparing 'clusplot-out.Rout' to 'clusplot-out.Rout.save' ...1,8d0
+< ==13345== Memcheck, a memory error detector.
+< ==13345== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13345== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==13345== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==13345== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==13345== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13345== For more details, rerun with: -v
+< ==13345== 
+115,143d106
+< ==13345== 
+< ==13345== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 18 from 1)
+< ==13345== malloc/free: in use at exit: 24,175,735 bytes in 11,943 blocks.
+< ==13345== malloc/free: 86,657 allocs, 74,714 frees, 132,414,386 bytes allocated.
+< ==13345== For counts of detected errors, rerun with: -v
+< ==13345== searching for pointers to 11,943 not-freed blocks.
+< ==13345== checked 20,930,752 bytes.
+< ==13345== 
+< ==13345== 56 bytes in 14 blocks are definitely lost in loss record 11 of 52
+< ==13345==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==13345==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==13345==    by 0x53B436: parse_bracket_exp (regex.c:5185)
+< ==13345==    by 0x53C823: parse_expression (regex.c:4764)
+< ==13345==    by 0x53D069: parse_branch (regex.c:4697)
+< ==13345==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==13345==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==13345==    by 0x4367FD: do_gsub (character.c:1081)
+< ==13345==    by 0x4D6610: do_internal (names.c:1120)
+< ==13345==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13345==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13345==    by 0x4A364F: do_begin (eval.c:1124)
+< ==13345== 
+< ==13345== LEAK SUMMARY:
+< ==13345==    definitely lost: 56 bytes in 14 blocks.
+< ==13345==      possibly lost: 0 bytes in 0 blocks.
+< ==13345==    still reachable: 24,175,679 bytes in 11,929 blocks.
+< ==13345==         suppressed: 0 bytes in 0 blocks.
+< ==13345== Reachable blocks (those to which a pointer was found) are not shown.
+< ==13345== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'daisy-ex.R'
+  Comparing 'daisy-ex.Rout' to 'daisy-ex.Rout.save' ...1,8d0
+< ==13404== Memcheck, a memory error detector.
+< ==13404== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13404== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==13404== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==13404== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==13404== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13404== For more details, rerun with: -v
+< ==13404== 
+404a397,398
+> Warning message:
+> binary variable(s) 1, 2 treated as interval scaled in: daisy(x3) 
+907,935d900
+< ==13404== 
+< ==13404== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 14 from 1)
+< ==13404== malloc/free: in use at exit: 23,979,812 bytes in 12,024 blocks.
+< ==13404== malloc/free: 63,362 allocs, 51,338 frees, 79,033,625 bytes allocated.
+< ==13404== For counts of detected errors, rerun with: -v
+< ==13404== searching for pointers to 12,024 not-freed blocks.
+< ==13404== checked 20,231,936 bytes.
+< ==13404== 
+< ==13404== 64 bytes in 16 blocks are definitely lost in loss record 10 of 49
+< ==13404==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==13404==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==13404==    by 0x53B44C: parse_bracket_exp (regex.c:5187)
+< ==13404==    by 0x53C823: parse_expression (regex.c:4764)
+< ==13404==    by 0x53D069: parse_branch (regex.c:4697)
+< ==13404==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==13404==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==13404==    by 0x4367FD: do_gsub (character.c:1081)
+< ==13404==    by 0x4D6610: do_internal (names.c:1120)
+< ==13404==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13404==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13404==    by 0x4A364F: do_begin (eval.c:1124)
+< ==13404== 
+< ==13404== LEAK SUMMARY:
+< ==13404==    definitely lost: 64 bytes in 16 blocks.
+< ==13404==      possibly lost: 0 bytes in 0 blocks.
+< ==13404==    still reachable: 23,979,748 bytes in 12,008 blocks.
+< ==13404==         suppressed: 0 bytes in 0 blocks.
+< ==13404== Reachable blocks (those to which a pointer was found) are not shown.
+< ==13404== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'diana-ex.R'
+  Comparing 'diana-ex.Rout' to 'diana-ex.Rout.save' ...1,8d0
+< ==13456== Memcheck, a memory error detector.
+< ==13456== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13456== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==13456== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==13456== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==13456== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13456== For more details, rerun with: -v
+< ==13456== 
+529,557d520
+< ==13456== 
+< ==13456== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 14 from 1)
+< ==13456== malloc/free: in use at exit: 24,102,348 bytes in 11,867 blocks.
+< ==13456== malloc/free: 68,086 allocs, 56,219 frees, 82,371,299 bytes allocated.
+< ==13456== For counts of detected errors, rerun with: -v
+< ==13456== searching for pointers to 11,867 not-freed blocks.
+< ==13456== checked 20,438,816 bytes.
+< ==13456== 
+< ==13456== 56 bytes in 14 blocks are definitely lost in loss record 8 of 39
+< ==13456==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==13456==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==13456==    by 0x53B436: parse_bracket_exp (regex.c:5185)
+< ==13456==    by 0x53C823: parse_expression (regex.c:4764)
+< ==13456==    by 0x53D069: parse_branch (regex.c:4697)
+< ==13456==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==13456==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==13456==    by 0x4367FD: do_gsub (character.c:1081)
+< ==13456==    by 0x4D6610: do_internal (names.c:1120)
+< ==13456==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13456==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13456==    by 0x4A364F: do_begin (eval.c:1124)
+< ==13456== 
+< ==13456== LEAK SUMMARY:
+< ==13456==    definitely lost: 56 bytes in 14 blocks.
+< ==13456==      possibly lost: 0 bytes in 0 blocks.
+< ==13456==    still reachable: 24,102,292 bytes in 11,853 blocks.
+< ==13456==         suppressed: 0 bytes in 0 blocks.
+< ==13456== Reachable blocks (those to which a pointer was found) are not shown.
+< ==13456== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'dysta-ex.R'
+  Comparing 'dysta-ex.Rout' to 'dysta-ex.Rout.save' ...1,8d0
+< ==13503== Memcheck, a memory error detector.
+< ==13503== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13503== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==13503== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==13503== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==13503== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13503== For more details, rerun with: -v
+< ==13503== 
+145,173d136
+< ==13503== 
+< ==13503== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 12 from 1)
+< ==13503== malloc/free: in use at exit: 23,490,409 bytes in 11,858 blocks.
+< ==13503== malloc/free: 55,171 allocs, 43,313 frees, 71,754,369 bytes allocated.
+< ==13503== For counts of detected errors, rerun with: -v
+< ==13503== searching for pointers to 11,858 not-freed blocks.
+< ==13503== checked 19,848,304 bytes.
+< ==13503== 
+< ==13503== 56 bytes in 14 blocks are definitely lost in loss record 8 of 39
+< ==13503==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==13503==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==13503==    by 0x53B436: parse_bracket_exp (regex.c:5185)
+< ==13503==    by 0x53C823: parse_expression (regex.c:4764)
+< ==13503==    by 0x53D069: parse_branch (regex.c:4697)
+< ==13503==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==13503==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==13503==    by 0x4367FD: do_gsub (character.c:1081)
+< ==13503==    by 0x4D6610: do_internal (names.c:1120)
+< ==13503==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13503==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13503==    by 0x4A364F: do_begin (eval.c:1124)
+< ==13503== 
+< ==13503== LEAK SUMMARY:
+< ==13503==    definitely lost: 56 bytes in 14 blocks.
+< ==13503==      possibly lost: 0 bytes in 0 blocks.
+< ==13503==    still reachable: 23,490,353 bytes in 11,844 blocks.
+< ==13503==         suppressed: 0 bytes in 0 blocks.
+< ==13503== Reachable blocks (those to which a pointer was found) are not shown.
+< ==13503== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'ellipsoid-ex.R'
+  Comparing 'ellipsoid-ex.Rout' to 'ellipsoid-ex.Rout.save' ...1,8d0
+< ==13832== Memcheck, a memory error detector.
+< ==13832== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13832== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==13832== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==13832== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==13832== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13832== For more details, rerun with: -v
+< ==13832== 
+171,199d162
+< ==13832== 
+< ==13832== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 16 from 1)
+< ==13832== malloc/free: in use at exit: 23,577,589 bytes in 11,848 blocks.
+< ==13832== malloc/free: 55,451 allocs, 43,603 frees, 72,165,906 bytes allocated.
+< ==13832== For counts of detected errors, rerun with: -v
+< ==13832== searching for pointers to 11,848 not-freed blocks.
+< ==13832== checked 20,424,520 bytes.
+< ==13832== 
+< ==13832== 56 bytes in 14 blocks are definitely lost in loss record 8 of 42
+< ==13832==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==13832==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==13832==    by 0x53B436: parse_bracket_exp (regex.c:5185)
+< ==13832==    by 0x53C823: parse_expression (regex.c:4764)
+< ==13832==    by 0x53D069: parse_branch (regex.c:4697)
+< ==13832==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==13832==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==13832==    by 0x4367FD: do_gsub (character.c:1081)
+< ==13832==    by 0x4D6610: do_internal (names.c:1120)
+< ==13832==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13832==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13832==    by 0x4A364F: do_begin (eval.c:1124)
+< ==13832== 
+< ==13832== LEAK SUMMARY:
+< ==13832==    definitely lost: 56 bytes in 14 blocks.
+< ==13832==      possibly lost: 0 bytes in 0 blocks.
+< ==13832==    still reachable: 23,577,533 bytes in 11,834 blocks.
+< ==13832==         suppressed: 0 bytes in 0 blocks.
+< ==13832== Reachable blocks (those to which a pointer was found) are not shown.
+< ==13832== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'fanny-ex.R'
+  Comparing 'fanny-ex.Rout' to 'fanny-ex.Rout.save' ...1,8d0
+< ==13875== Memcheck, a memory error detector.
+< ==13875== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13875== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==13875== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==13875== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==13875== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13875== For more details, rerun with: -v
+< ==13875== 
+1317,1345d1308
+< ==13875== 
+< ==13875== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 14 from 1)
+< ==13875== malloc/free: in use at exit: 24,411,542 bytes in 12,151 blocks.
+< ==13875== malloc/free: 60,073 allocs, 47,922 frees, 79,534,840 bytes allocated.
+< ==13875== For counts of detected errors, rerun with: -v
+< ==13875== searching for pointers to 12,151 not-freed blocks.
+< ==13875== checked 20,747,512 bytes.
+< ==13875== 
+< ==13875== 56 bytes in 14 blocks are definitely lost in loss record 8 of 39
+< ==13875==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==13875==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==13875==    by 0x53B436: parse_bracket_exp (regex.c:5185)
+< ==13875==    by 0x53C823: parse_expression (regex.c:4764)
+< ==13875==    by 0x53D069: parse_branch (regex.c:4697)
+< ==13875==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==13875==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==13875==    by 0x4367FD: do_gsub (character.c:1081)
+< ==13875==    by 0x4D6610: do_internal (names.c:1120)
+< ==13875==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13875==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13875==    by 0x4A364F: do_begin (eval.c:1124)
+< ==13875== 
+< ==13875== LEAK SUMMARY:
+< ==13875==    definitely lost: 56 bytes in 14 blocks.
+< ==13875==      possibly lost: 0 bytes in 0 blocks.
+< ==13875==    still reachable: 24,411,486 bytes in 12,137 blocks.
+< ==13875==         suppressed: 0 bytes in 0 blocks.
+< ==13875== Reachable blocks (those to which a pointer was found) are not shown.
+< ==13875== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'mona.R'
+  Comparing 'mona.Rout' to 'mona.Rout.save' ...1,8d0
+< ==13926== Memcheck, a memory error detector.
+< ==13926== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13926== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==13926== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==13926== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==13926== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13926== For more details, rerun with: -v
+< ==13926== 
+106,134d97
+< ==13926== 
+< ==13926== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 16 from 1)
+< ==13926== malloc/free: in use at exit: 23,573,658 bytes in 11,725 blocks.
+< ==13926== malloc/free: 62,570 allocs, 50,845 frees, 80,426,758 bytes allocated.
+< ==13926== For counts of detected errors, rerun with: -v
+< ==13926== searching for pointers to 11,725 not-freed blocks.
+< ==13926== checked 19,922,240 bytes.
+< ==13926== 
+< ==13926== 72 bytes in 18 blocks are definitely lost in loss record 8 of 39
+< ==13926==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==13926==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==13926==    by 0x53B436: parse_bracket_exp (regex.c:5185)
+< ==13926==    by 0x53C823: parse_expression (regex.c:4764)
+< ==13926==    by 0x53D069: parse_branch (regex.c:4697)
+< ==13926==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==13926==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==13926==    by 0x4367FD: do_gsub (character.c:1081)
+< ==13926==    by 0x4D6610: do_internal (names.c:1120)
+< ==13926==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13926==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13926==    by 0x4A364F: do_begin (eval.c:1124)
+< ==13926== 
+< ==13926== LEAK SUMMARY:
+< ==13926==    definitely lost: 72 bytes in 18 blocks.
+< ==13926==      possibly lost: 0 bytes in 0 blocks.
+< ==13926==    still reachable: 23,573,586 bytes in 11,707 blocks.
+< ==13926==         suppressed: 0 bytes in 0 blocks.
+< ==13926== Reachable blocks (those to which a pointer was found) are not shown.
+< ==13926== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'pam.R'
+  Comparing 'pam.Rout' to 'pam.Rout.save' ...1,8d0
+< ==13973== Memcheck, a memory error detector.
+< ==13973== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13973== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==13973== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==13973== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==13973== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==13973== For more details, rerun with: -v
+< ==13973== 
+1112,1140d1103
+< ==13973== 
+< ==13973== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 18 from 1)
+< ==13973== malloc/free: in use at exit: 33,009,081 bytes in 17,557 blocks.
+< ==13973== malloc/free: 67,384 allocs, 49,827 frees, 159,064,716 bytes allocated.
+< ==13973== For counts of detected errors, rerun with: -v
+< ==13973== searching for pointers to 17,557 not-freed blocks.
+< ==13973== checked 28,798,344 bytes.
+< ==13973== 
+< ==13973== 56 bytes in 14 blocks are definitely lost in loss record 10 of 52
+< ==13973==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==13973==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==13973==    by 0x53B436: parse_bracket_exp (regex.c:5185)
+< ==13973==    by 0x53C823: parse_expression (regex.c:4764)
+< ==13973==    by 0x53D069: parse_branch (regex.c:4697)
+< ==13973==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==13973==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==13973==    by 0x4367FD: do_gsub (character.c:1081)
+< ==13973==    by 0x4D6610: do_internal (names.c:1120)
+< ==13973==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13973==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==13973==    by 0x4A364F: do_begin (eval.c:1124)
+< ==13973== 
+< ==13973== LEAK SUMMARY:
+< ==13973==    definitely lost: 56 bytes in 14 blocks.
+< ==13973==      possibly lost: 0 bytes in 0 blocks.
+< ==13973==    still reachable: 33,009,025 bytes in 17,543 blocks.
+< ==13973==         suppressed: 0 bytes in 0 blocks.
+< ==13973== Reachable blocks (those to which a pointer was found) are not shown.
+< ==13973== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'silhouette-default.R'
+  Comparing 'silhouette-default.Rout' to 'silhouette-default.Rout.save' ...1,8d0
+< ==14334== Memcheck, a memory error detector.
+< ==14334== Copyright (C) 2002-2005, and GNU GPL'd, by Julian Seward et al.
+< ==14334== Using LibVEX rev 1575, a library for dynamic binary translation.
+< ==14334== Copyright (C) 2004-2005, and GNU GPL'd, by OpenWorks LLP.
+< ==14334== Using valgrind-3.1.1, a dynamic binary instrumentation framework.
+< ==14334== Copyright (C) 2000-2005, and GNU GPL'd, by Julian Seward et al.
+< ==14334== For more details, rerun with: -v
+< ==14334== 
+591,619d582
+< ==14334== 
+< ==14334== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 14 from 1)
+< ==14334== malloc/free: in use at exit: 24,144,510 bytes in 11,757 blocks.
+< ==14334== malloc/free: 82,096 allocs, 70,339 frees, 142,902,143 bytes allocated.
+< ==14334== For counts of detected errors, rerun with: -v
+< ==14334== searching for pointers to 11,757 not-freed blocks.
+< ==14334== checked 20,402,016 bytes.
+< ==14334== 
+< ==14334== 56 bytes in 14 blocks are definitely lost in loss record 10 of 49
+< ==14334==    at 0x4904A06: malloc (vg_replace_malloc.c:149)
+< ==14334==    by 0x4905D90: realloc (vg_replace_malloc.c:306)
+< ==14334==    by 0x53B436: parse_bracket_exp (regex.c:5185)
+< ==14334==    by 0x53C823: parse_expression (regex.c:4764)
+< ==14334==    by 0x53D069: parse_branch (regex.c:4697)
+< ==14334==    by 0x53D1BD: parse_reg_exp (regex.c:4649)
+< ==14334==    by 0x53DAAC: Rf_regcomp (regex.c:4618)
+< ==14334==    by 0x4367FD: do_gsub (character.c:1081)
+< ==14334==    by 0x4D6610: do_internal (names.c:1120)
+< ==14334==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==14334==    by 0x4A2382: Rf_eval (eval.c:434)
+< ==14334==    by 0x4A364F: do_begin (eval.c:1124)
+< ==14334== 
+< ==14334== LEAK SUMMARY:
+< ==14334==    definitely lost: 56 bytes in 14 blocks.
+< ==14334==      possibly lost: 0 bytes in 0 blocks.
+< ==14334==    still reachable: 24,144,454 bytes in 11,743 blocks.
+< ==14334==         suppressed: 0 bytes in 0 blocks.
+< ==14334== Reachable blocks (those to which a pointer was found) are not shown.
+< ==14334== To see them, rerun with: --show-reachable=yes
+ OK
+  Running 'sweep-ex.R'
+make[1]: Leaving directory `/sfs/u/staff/maechler/R/Pkgs/cluster.Rcheck/tests'
+ OK
+* creating cluster-manual.tex ... OK
+* checking cluster-manual.tex ... OK
+
+WARNING: There was 1 warning, see
+  /sfs/u/staff/maechler/R/Pkgs/cluster.Rcheck/00check.log
+for details
+
+MM@cmath-3:covMcd$ dirs
+~/R/MM/Pkg-ex/robustbase/covMcd
+MM@cmath-3:covMcd$ 
