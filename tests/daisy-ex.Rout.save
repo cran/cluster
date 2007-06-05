@@ -1,6 +1,6 @@
 
-R version 2.5.0 Under development (unstable) (2006-10-25 r39724)
-Copyright (C) 2006 The R Foundation for Statistical Computing
+R version 2.5.0 Patched (2007-06-04 r41817)
+Copyright (C) 2007 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -410,8 +410,6 @@ Dissimilarities :
 
 Metric :  euclidean 
 Number of objects : 2
-Warning message:
-binary variable(s) 1, 2 treated as interval scaled in: daisy(x3) 
 > daisy(x3, type= list(symm="B", asymm="A"))#  1
 Dissimilarities :
   1

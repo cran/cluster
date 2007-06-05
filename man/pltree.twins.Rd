@@ -2,7 +2,7 @@
 \alias{pltree.twins}
 \title{Clustering Tree of a Hierarchical Clustering}
 \description{
-  Draws a clustering tree (dendrogramm) of a \code{twins} object, i.e.,
+  Draws a clustering tree (dendrogram) of a \code{twins} object, i.e.,
   hierarchical clustering, typically resulting from
   \code{\link{agnes}()} or \code{\link{diana}()}.
 }

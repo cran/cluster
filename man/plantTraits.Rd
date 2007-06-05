@@ -1,7 +1,8 @@
 \name{plantTraits}
 \alias{plantTraits}
-\docType{data}
 \title{Plant Species Traits Data}
+\docType{data}
+\encoding{latin1}
 \description{
   This dataset constitutes a description of 136 plant species
   according to biological attributes (morphological or reproductive)
