@@ -470,7 +470,7 @@ void fygur(int kk, int nn,
 	} /* for( j ) */
 	avsyl[k] = 0.;
 	for (j = 0; j < ntt; ++j) {
-	    int lang;
+	    int lang = 0 /* -Wall */;
 	    double symax = -2.;
 	    for (l = 0; l < ntt; ++l) {
 		if (symax < syl[l]) {
