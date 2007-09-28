@@ -1,6 +1,7 @@
 
-R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.1.0 alpha (2005-04-04), ISBN 3-900051-07-0
+R version 2.7.0 Under development (unstable) (2007-09-24 r42966)
+Copyright (C) 2007 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -11,7 +12,7 @@ Type 'contributors()' for more information and
 'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for a HTML browser interface to help.
+'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
 > library(cluster)
@@ -20,7 +21,8 @@ Type 'q()' to quit R.
 Error in Fortran routine computing the spanning ellipsoid,
  probably collinear data
 Warning message:
-possibly not converged in 5000 iterations in: ellipsoidhull(cbind(x = 1:4, y = 1:4)) 
+In ellipsoidhull(cbind(x = 1:4, y = 1:4)) :
+  possibly not converged in 5000 iterations
 > eh
 `ellipsoid' in 2 dimensions:
  center = ( 2.5 2.5 ); squared ave.radius d^2 =  0 

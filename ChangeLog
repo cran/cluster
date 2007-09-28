@@ -1,3 +1,9 @@
+2007-09-28  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Date, Version): 1.11.9
+
+	* man/pam.Rd: in invisible example, do not use partially matched [[.
+
 2007-09-04  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* src/mona.f (mona): dummy initializations for "-Wall"
