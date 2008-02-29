@@ -8,6 +8,7 @@
 \usage{
 pam(x, k, diss = inherits(x, "dist"), metric = "euclidean",
     medoids = NULL, stand = FALSE, cluster.only = FALSE,
+    do.swap = TRUE,
     keep.diss = !diss && !cluster.only && n < 100,
     keep.data = !diss && !cluster.only, trace.lev = 0)
 }
@@ -57,6 +58,11 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean",
     argument will be ignored.}
   \item{cluster.only}{logical; if true, only the clustering will be
     computed and returned, see details.}
+  \item{do.swap}{logical indicating if the \bold{swap} phase should
+    happen. The default, \code{TRUE}, correspond to the
+    original algorithm.  On the other hand, the \bold{swap} phase is
+    much more computer intensive than the \bold{build} one for large
+    \eqn{n}, so can be skipped by \code{do.swap = FALSE}.}
   \item{keep.diss, keep.data}{logicals indicating if the dissimilarities
     and/or input data \code{x} should be kept in the result.  Setting
     these to \code{FALSE} can give much smaller results and hence even save
@@ -108,8 +114,9 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean",
   the order of the observations.
 }
 \note{
-  For datasets larger than (say) 200 observations, \code{pam} will take a lot of
-  computation time.  Then the function \code{\link{clara}} is preferable.
+  For large datasets, \code{pam} may need too much memory or too much
+  computation time since both are \eqn{O(n^2)}.  Then,
+  \code{\link{clara}()} is preferable, see its documentation.
 }
 \seealso{
   \code{\link{agnes}} for background and references;

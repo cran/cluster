@@ -8,6 +8,7 @@
 #include <float.h>
 
 #include <R_ext/Print.h>/* for diagnostics */
+#include <R_ext/Utils.h>/* for interrupting */
 
 #include "cluster.h"
 #include "ind_2.h"
@@ -19,7 +20,7 @@ void pam(int *nn, int *p, int *kk, double *x, double *dys,
 		      *	      = 1 : distances provided	in x */
 	 double *valmd, int *jtmd,
 	 int *ndyst, int *nsend, int/*logical*/ *nrepr, int *nelem,
-	 double *radus, double *damer, double *ttd, double *separ,
+	 double *radus, double *damer, double *avsyl, double *separ,
 	 double *ttsyl, double *obj, int *med, int *ncluv,
 	 double *clusinf, double *sylinf, int *nisol)
 {
@@ -27,7 +28,8 @@ void pam(int *nn, int *p, int *kk, double *x, double *dys,
 
     /* Local variables */
     Rboolean all_stats = (obj[0] == 0.),/* if false, only return 'ncluv[]' */
-	med_given = (med[0] != 0);/* if true, med[] contain initial medoids */
+	med_given = (med[0] != 0),/* if true, med[] contain initial medoids */
+	do_swap = (nisol[0] != 0);
     int k, i, nhalf, jhalt, trace_lev = (int) obj[1];
     double s, sky;
 
@@ -58,25 +60,28 @@ void pam(int *nn, int *p, int *kk, double *x, double *dys,
 	    nrepr[med[k] - 1] = 1;
     }
 
-/*     Build + Swap : */
-    bswap(*kk, *nn, nrepr, med_given, trace_lev,
-	  radus, damer, ttd, dys, &sky, s, obj);
+/*     Build + Swap [but no build if(med_given); swap only if(do_swap) : */
+    bswap(*kk, *nn, nrepr,
+	  med_given, do_swap, trace_lev,
+	  radus, damer, avsyl, dys, &sky, s, obj);
 
+    if(trace_lev) Rprintf("end{bswap()}, ");
 /*     Compute Clustering & STATs if(all_stats): */
     cstat(kk, nn, nsend, nrepr, all_stats,
-	  radus, damer, ttd, separ, &s, dys, ncluv, nelem, med, nisol);
+	  radus, damer, avsyl, separ, &s, dys, ncluv, nelem, med, nisol);
+    if(trace_lev) Rprintf("end{cstat()}\n");
     if(all_stats) {
 	for (k = 0; k < *kk; ++k) {
 	    clusinf[k]=		(double)       nrepr[k];
 	    clusinf[k + clusinf_dim1]	     = radus[k];
-	    clusinf[k + (clusinf_dim1 << 1)] = ttd  [k];
+	    clusinf[k + (clusinf_dim1 << 1)] = avsyl  [k];
 	    clusinf[k + clusinf_dim1 * 3]    = damer[k];
 	    clusinf[k + (clusinf_dim1 << 2)] = separ[k];
 	}
 	if (1 < *kk && *kk < *nn) {
 	    /* Compute Silhouette info : */
 	    dark(*kk, *nn, ncluv, nsend, nelem, nrepr,
-		 radus, damer, ttd, ttsyl, dys, &s, sylinf);
+		 radus, damer, avsyl, ttsyl, dys, &s, sylinf);
 	}
     }
 } /* pam */
@@ -87,12 +92,13 @@ void pam(int *nn, int *p, int *kk, double *x, double *dys,
 
      bswap(): the clustering algorithm in 2 parts:  I. build,	II. swap
 */
-void bswap(int kk, int nsam, int *nrepr, Rboolean med_given, int trace_lev,
+void bswap(int kk, int n, int *nrepr,
+	   Rboolean med_given, Rboolean do_swap, int trace_lev,
 	   /* nrepr[]: here is boolean (0/1): 1 = "is representative object"  */
 	   double *dysma, double *dysmb, double *beter,
 	   double *dys, double *sky, double s, double *obj)
 {
-    int i, j, ij, k;
+    int i, j, ij, k,h;
 
      /* Parameter adjustments */
     --nrepr;
@@ -100,24 +106,25 @@ void bswap(int kk, int nsam, int *nrepr, Rboolean med_given, int trace_lev,
 
     --dysma; --dysmb;
 
+    if(trace_lev) Rprintf("pam()'s bswap(*, s=%g): ", s);
+
     s = s * 1.1 + 1.;/* larger than all dys[];
 			replacing by DBL_MAX  changes result - why ? */
 
-/* IDEA: when n (= nsam) is large compared to k (= kk),
+/* IDEA: when n is large compared to k (= kk),
  * ----  rather use a "sparse" representation:
  * instead of boolean vector nrepr[] , use  ind_repr <- which(nrepr) !!
  */
-    for (i = 1; i <= nsam; ++i)
+    for (i = 1; i <= n; ++i)
 	dysma[i] = s;
 
     if(med_given) {
-	if(trace_lev)
-	    Rprintf("pam()'s bswap(): medoids given\n");
+	if(trace_lev) Rprintf("medoids given\n");
 
 	/* compute dysma[] : dysma[j] = D(j, nearest_representative) */
-	for (i = 1; i <= nsam; ++i) {
+	for (i = 1; i <= n; ++i) {
 	    if (nrepr[i] == 1)
-		for (j = 1; j <= nsam; ++j) {
+		for (j = 1; j <= n; ++j) {
 		    ij = ind_2(i, j);
 		    if (dysma[j] > dys[ij])
 			dysma[j] = dys[ij];
@@ -128,22 +135,23 @@ void bswap(int kk, int nsam, int *nrepr, Rboolean med_given, int trace_lev,
 
 /*  ====== first algorithm: BUILD. ====== */
 
-	if(trace_lev)
-	    Rprintf("pam()'s bswap(): build %d medoids:\n", kk);
+	if(trace_lev) Rprintf("build %d medoids:\n", kk);
 
 	/* find  kk  representatives  aka medoids :  */
 
 	for (k = 1; k <= kk; ++k) {
+
+	    R_CheckUserInterrupt();
 
 	    /* compute beter[i] for all non-representatives:
 	     * also find ammax := max_{..} and nmax := argmax_i{beter[i]} ... */
 	    int nmax = -1; /* -Wall */
 	    double ammax, cmd;
 	    ammax = 0.;
-	    for (i = 1; i <= nsam; ++i) {
+	    for (i = 1; i <= n; ++i) {
 		if (nrepr[i] == 0) {
 		    beter[i] = 0.;
-		    for (j = 1; j <= nsam; ++j) {
+		    for (j = 1; j <= n; ++j) {
 			cmd = dysma[j] - dys[ind_2(i, j)];
 			if (cmd > 0.)
 			    beter[i] += cmd;
@@ -161,7 +169,7 @@ void bswap(int kk, int nsam, int *nrepr, Rboolean med_given, int trace_lev,
 		Rprintf("    new repr. %d\n", nmax);
 
 	    /* update dysma[] : dysma[j] = D(j, nearest_representative) */
-	    for (j = 1; j <= nsam; ++j) {
+	    for (j = 1; j <= n; ++j) {
 		ij = ind_2(nmax, j);
 		if (dysma[j] > dys[ij])
 		    dysma[j] = dys[ij];
@@ -172,27 +180,27 @@ void bswap(int kk, int nsam, int *nrepr, Rboolean med_given, int trace_lev,
 
     if(trace_lev) /* >= 2 (?) */ {
 	Rprintf("  after build: medoids are");
-	for (i = 1; i <= nsam; ++i)
+	for (i = 1; i <= n; ++i)
 	    if(nrepr[i] == 1) Rprintf(" %2d", i);
-	if(trace_lev >= 2) {
+	if(trace_lev >= 3) {
 	    Rprintf("\n  and min.dist dysma[1:n] are\n");
-	    for (i = 1; i <= nsam; ++i) {
+	    for (i = 1; i <= n; ++i) {
 		Rprintf(" %6.3g", dysma[i]);
 		if(i % 10 == 0) Rprintf("\n");
 	    }
-	    if(nsam % 10 != 0) Rprintf("\n");
+	    if(n % 10 != 0) Rprintf("\n");
 	} else Rprintf("\n");
     }
 
     *sky = 0.;
-    for (j = 1; j <= nsam; ++j)
+    for (j = 1; j <= n; ++j)
 	*sky += dysma[j];
-    obj[0] = *sky / nsam;
+    obj[0] = *sky / n;
 
-    if (kk > 1 || med_given) {
+    if (do_swap && (kk > 1 || med_given)) {
 
-	double small, dz, dzsky;
-	int kj, kbest = -1, nbest = -1;/* init: -Wall*/
+	double dzsky;
+	int hbest = -1, nbest = -1;/* init: -Wall*/
 
 /* ====== second algorithm: SWAP. ====== */
 
@@ -201,13 +209,13 @@ void bswap(int kk, int nsam, int *nrepr, Rboolean med_given, int trace_lev,
 
 /*--   Loop : */
 L60:
-	for (j = 1; j <= nsam; ++j) {
+	for (j = 1; j <= n; ++j) {
 	    /*  dysma[j] := D_j  d(j, <closest medi>)  [KR p.102, 104]
 	     *  dysmb[j] := E_j  d(j, <2-nd cl.medi>)  [p.103] */
 	    dysma[j] = s;
 	    dysmb[j] = s;
-	    for (i = 1; i <= nsam; ++i) {
-		if (nrepr[i] == 1) {
+	    for (i = 1; i <= n; ++i) {
+		if (nrepr[i]) {
 		    ij = ind_2(i, j);
 		    if (dysma[j] > dys[ij]) {
 			dysmb[j] = dysma[j];
@@ -219,23 +227,24 @@ L60:
 	    }
 	}
 
-	dzsky = 1.;
-	for (k = 1; k <= nsam; ++k) if (nrepr[k] == 0) {
-	    for (i = 1; i <= nsam; ++i) if (nrepr[i] != 0) {
-		dz = 0.;
+	dzsky = 1.; /* 1 is arbitrary > 0; only dzsky < 0 matters in the end */
+	for (h = 1; h <= n; ++h) if (!nrepr[h]) {
+	    R_CheckUserInterrupt();
+            for (i = 1; i <= n; ++i) if (nrepr[i]) {
+		double dz = 0.;
 		/* dz := T_{ih} := sum_j C_{jih}  [p.104] : */
-		for (j = 1; j <= nsam; ++j) {
+		for (j = 1; j <= n; ++j) { /* if (!nrepr[j]) { */
+		    int hj = ind_2(h, j);
 		    ij = ind_2(i, j);
-		    kj = ind_2(k, j);
 		    if (dys[ij] == dysma[j]) {
-			small = dysmb[j] > dys[kj]? dys[kj] : dysmb[j];
+			double small = dysmb[j] > dys[hj]? dys[hj] : dysmb[j];
 			dz += (- dysma[j] + small);
-		    } else if (dys[kj] < dysma[j])
-			dz += (- dysma[j] + dys[kj]);
+		    } else if (dys[hj] < dysma[j]) /* 1c. */
+			dz += (- dysma[j] + dys[hj]);
 		}
 		if (dzsky > dz) {
-		    dzsky = dz;
-		    kbest = k;
+		    dzsky = dz; /* dzsky := min_{i,h} T_{i,h} */
+		    hbest = h;
 		    nbest = i;
 		}
 	    }
@@ -243,27 +252,25 @@ L60:
 	if (dzsky < 0.) { /* found an improving swap */
 	    if(trace_lev >= 2)
 		Rprintf( "   swp new %d <-> %d old; decreasing diss. by %g\n",
-			kbest, nbest, dzsky);
-	    nrepr[kbest] = 1;
+			hbest, nbest, dzsky);
+	    nrepr[hbest] = 1;
 	    nrepr[nbest] = 0;
 	    *sky += dzsky;
 	    goto L60;
 	}
     }
-    obj[1] = *sky / nsam;
+    obj[1] = *sky / n;
 } /* bswap */
 
 /* -----------------------------------------------------------
  cstat(): Compute STATistics (numerical output) concerning each partition
 */
 void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
-	   double *radus, double *damer, double *ttd, double *separ, double *s,
+	   double *radus, double *damer, double *avsyl, double *separ, double *s,
 	   double *dys, int *ncluv, int *nelem, int *med, int *nisol)
 {
-    Rboolean kand;
-    int j, k, m = -1, ja, jb, jk, jndz, ksmal = -1/* -Wall */;
-    int mevj, njaj, nel, nvn, ntt, nvna, numl, nplac;
-    double aja, ajb, dam, djm, dsmal, sep, ttt;
+    int j, k, ja, jk, nplac, ksmal = -1/* -Wall */;
+    double ss = *s * 1.1 + 1.;
 
     /* Parameter adjustments */
     --nisol;
@@ -271,7 +278,7 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
     --nelem;
     --ncluv;
     --separ;
-    --ttd;
+    --avsyl;
     --damer;
     --radus;
     --nrepr;
@@ -280,12 +287,12 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
     /* nsend[j] := i,  where x[i,] is the medoid to which x[j,] belongs */
     for (j = 1; j <= *nn; ++j) {
 	if (nrepr[j] == 0) {
-	    dsmal = *s * 1.1f + 1.;
+	    double dsmal = ss;
 	    for (k = 1; k <= *nn; ++k) {
 		if (nrepr[k] == 1) {
-		    njaj = ind_2(k, j);
-		    if (dsmal > dys[njaj]) {
-			dsmal = dys[njaj];
+		    int kj_ = ind_2(k, j);
+		    if (dsmal > dys[kj_]) {
+			dsmal = dys[kj_];
 			ksmal = k;
 		    }
 		}
@@ -317,13 +324,15 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
     }
 
     if(all_stats) { /*	   analysis of the clustering. */
-
+	int numl;
 	for (k = 1; k <= *kk; ++k) {
-	    ntt = 0;
+	    int ntt = 0, m = -1/* -Wall */;
+	    double ttt = 0.;
 	    radus[k] = -1.;
-	    ttt = 0.;
+	    R_CheckUserInterrupt();
 	    for (j = 1; j <= *nn; ++j) {
 		if (ncluv[j] == k) {
+		    double djm;
 		    ++ntt;
 		    m = nsend[j];
 		    nelem[ntt] = j;
@@ -333,9 +342,11 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
 			radus[k] = djm;
 		}
 	    }
-	    ttd[k] = ttt / ntt;
+	    if(ntt == 0) REprintf("bug in C cstat(): ntt=0 !!!\n");
+	    avsyl[k] = ttt / ntt;
 	    med[k] = m;
 	}
+
 	if (*kk == 1) {
 	    damer[1] = *s;
 	    nrepr[1] = *nn;
@@ -348,10 +359,12 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
 	for (k = 1; k <= *kk; ++k) {
 	    /*
 	      identification of cluster k:
+	      nelem= vector of object indices,
 	      nel  = number of objects
-	      nelem= vector of object indices */
+	    */
+	    int nel = 0;
+	    R_CheckUserInterrupt();
 
-	    nel = 0;
 	    for (j = 1; j <= *nn; ++j) {
 		if (ncluv[j] == k) {
 		    ++nel;
@@ -360,12 +373,12 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
 	    }
 	    nrepr[k] = nel;
 	    if (nel == 1) {
-		nvn = nelem[1];
+		int nvn = nelem[1];
 		damer[k] = 0.;
-		separ[k] = *s * 1.1f + 1.;
+		separ[k] = ss;
 		for (j = 1; j <= *nn; ++j) {
 		    if (j != nvn) {
-			mevj = ind_2(nvn, j);
+			int mevj = ind_2(nvn, j);
 			if (separ[k] > dys[mevj])
 			    separ[k] = dys[mevj];
 		    }
@@ -379,15 +392,13 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
 
 	    }
 	    else { /*	       nel != 1 : */
-		dam = -1.;
-		sep = *s * 1.1f + 1.;
-		kand = TRUE;
+		double dam = -1., sep = ss;
+		Rboolean kand = TRUE;
 		for (ja = 1; ja <= nel; ++ja) {
-		    nvna = nelem[ja];
-		    aja = -1.;
-		    ajb = *s * 1.1f + 1.;
+		    int jb, nvna = nelem[ja];
+		    double aja = -1., ajb = ss;
 		    for (jb = 1; jb <= *nn; ++jb) {
-			jndz = ind_2(nvna, jb);
+			int jndz = ind_2(nvna, jb);
 			if (ncluv[jb] == k) {
 			    if (aja < dys[jndz])
 				aja = dys[jndz];
@@ -431,14 +442,12 @@ void dark(int kk, int nn, int *ncluv,
 	  double *syl, double *srank, double *avsyl, double *ttsyl,
 	  double *dys, double *s, double *sylinf)
 {
-    int sylinf_d = nn; /* sylinf[nn, 4] */
-    int j, k, l, lang=-1 /*Wall*/, lplac, k_, nj, nl, nbb, ntt, nsylr;
-    double db, dysa, dysb, symax;
-    /* pointers to sylinf[] columns:*/
+    int k, nsylr;
+    /* pointers to sylinf[] columns -- sylinf[nn, 4] : */
     double *sylinf_2, *sylinf_3, *sylinf_4;
-    sylinf_2 = sylinf	+ sylinf_d;
-    sylinf_3 = sylinf_2 + sylinf_d;
-    sylinf_4 = sylinf_3 + sylinf_d;
+    sylinf_2 = sylinf	+ nn;
+    sylinf_3 = sylinf_2 + nn;
+    sylinf_4 = sylinf_3 + nn;
 
     /* Parameter adjustments */
     --avsyl;
@@ -447,9 +456,8 @@ void dark(int kk, int nn, int *ncluv,
     nsylr = 0;
     *ttsyl = 0.;
     for (k = 1; k <= kk; ++k) {
-
 	/* nelem[0:(ntt-1)] := indices (1-based) of obs. in cluster k : */
-	ntt = 0;
+	int j,l, ntt = 0;
 	for (j = 1; j <= nn; ++j) {
 	    if (ncluv[j] == k) {
 		nelem[ntt] = j;
@@ -458,13 +466,13 @@ void dark(int kk, int nn, int *ncluv,
 	}
 
 	for (j = 0; j < ntt; ++j) {/* (j+1)-th obs. in cluster k */
-	    nj = nelem[j];
-	    dysb = *s * 1.1 + 1.;
+	    int k_, nj = nelem[j];
+	    double dysb = *s * 1.1 + 1.;
 	    negbr[j] = -1;
 	    /* for all clusters  k_ != k : */
 	    for (k_ = 1; k_ <= kk; ++k_) if (k_ != k) {
-		nbb = 0;
-		db = 0.;
+		double db = 0.;
+		int nbb = 0;
 		for (l = 1; l <= nn; ++l) if (ncluv[l] == k_) {
 		    ++nbb;
 		    if (l != nj)
@@ -477,9 +485,9 @@ void dark(int kk, int nn, int *ncluv,
 		}
 	    }/* negbr[j] := arg max_{k_} db(k_) */
 	    if (ntt > 1) {
-		dysa = 0.;
+		double dysa = 0.;
 		for (l = 0; l < ntt; ++l) {
-		    nl = nelem[l];
+		    int nl = nelem[l];
 		    if (nj != nl)
 			dysa += dys[ind_2(nj, nl)];
 		}
@@ -516,7 +524,8 @@ void dark(int kk, int nn, int *ncluv,
 	    continue; /* next k */
 
 	for (j = 0; j < ntt; ++j) {
-	    symax = -2.;
+	    int lang=-1 /*Wall*/;
+	    double symax = -2.;
 	    for (l = 0; l < ntt; ++l) {
 		if (symax < syl[l]) {
 		    symax = syl[l];
@@ -538,7 +547,7 @@ void dark(int kk, int nn, int *ncluv,
 	    ++nsylr;
 	} else {
 	    for (j = 0; j < ntt; ++j) {
-		lplac = nsend[j];
+		int lplac = nsend[j];
 		sylinf	[nsylr] = (double) k;
 		sylinf_2[nsylr] = (double) negbr[lplac];
 		sylinf_3[nsylr] = srank[j];

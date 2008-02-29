@@ -1,4 +1,3 @@
-### SETUP
 library(cluster)
 
 ### clusplot() & pam() RESULT checking ...
@@ -21,7 +20,7 @@ for(k in 2:5)
     print(clusplot(iris.x, pam(iris.x, k)$clustering, diss = FALSE))
 
 
-.Random.seed <- c(0,rep(7654,3))
+.Random.seed <- c(0L,rep(7654L,3))
 ## generate 25 objects, divided into 2 clusters.
 x <- rbind(cbind(rnorm(10,0,0.5), rnorm(10,0,0.5)),
            cbind(rnorm(15,5,0.5), rnorm(15,5,0.5)))

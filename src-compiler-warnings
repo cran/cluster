@@ -1,0 +1,48 @@
+From: Paul Roebuck <roebuck@mdanderson.org>
+To: Martin Maechler <maechler@stat.math.ethz.ch>
+Subject: [cluster] Compiler warnings
+Date: Tue, 19 Dec 2006 16:21:51 -0600 (CST)
+
+
+Noticed compiler warnings for:
+
+<https://svn.r-project.org/R-packages/trunk/cluster/src/clara.c>
+clara.c:66: warning: 'nrun' may be used uninitialized in this function
+
+<https://svn.r-project.org/R-packages/trunk/cluster/src/fanny.c>
+fanny.c:473: warning: 'lang' may be used uninitialized in this function
+
+
+---------------------
+
+From: Prof Brian Ripley <ripley@stats.ox.ac.uk>
+To: Martin Maechler <maechler@stat.math.ethz.ch>
+Subject: cluster warnings
+Date: Wed, 4 Apr 2007 10:26:22 +0100 (BST)
+
+Martin,
+
+I am currently building R-devel under the gcc trunk (pre-4.3.0) on
+Windows.  (Not what I would usually recommend, but we are promised a MinGW
+release of 4.2.0 Real Soon Now, and I can get prebuilt 'trunk'.
+Hopefuilly before 2.5.1 we will be able to move to gcc4 on Windows, at
+long last.)
+
+I am seeing a lot of warnings from cluster along the lines of
+
+gfortran -O3 -Wall   -c daisy.f -o daisy.o
+Warning: Nonconforming tab character in column 1 of line 41
+Warning: Nonconforming tab character in column 1 of line 42
+
+I think you have entab-ed the files, so for the next release (no hurry at
+all) could you please detab them.
+
+Brian
+
+--
+Brian D. Ripley,                  ripley@stats.ox.ac.uk
+Professor of Applied Statistics,  http://www.stats.ox.ac.uk/~ripley/
+University of Oxford,             Tel:  +44 1865 272861 (self)
+1 South Parks Road,                     +44 1865 272866 (PA)
+Oxford OX1 3TG, UK                Fax:  +44 1865 272595
+

@@ -91,7 +91,8 @@ void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
 	 double *ttsyl, double *obj, int *med, int *ncluv,
 	 double *clusinf, double *sylinf, int *nisol);
 
-void bswap(int kk, int nsam, int *nrepr, Rboolean med_given, int trace_lev,
+void bswap(int kk, int nsam, int *nrepr,
+	   Rboolean med_given, Rboolean do_swap, int trace_lev,
 	   double *dysma, double *dysmb, double *beter,
 	   double *dys, double *sky, double s, double *obj);
 

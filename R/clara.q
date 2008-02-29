@@ -7,6 +7,8 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
                   medoids.x = TRUE, keep.data = medoids.x, rngR = FALSE)
 {
     ## check type of input matrix and values of input numbers
+    if(inherits(x, "dist"))# catch user error
+	stop("'x' is a \"dist\" object, but should be a data matrix or frame")
     x <- data.matrix(x)
     if(!is.numeric(x)) stop("x is not a numeric dataframe or matrix.")
     n <- nrow(x)

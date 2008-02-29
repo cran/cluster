@@ -1,3 +1,28 @@
+2008-02-29  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Date, Version): 1.11.10 and release
+
+2007-12-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/pam.c (cstat, dark): move variable declarations to local context.
+	(bswap): add a few R_CheckUserInterrupt() calls
+
+	* R/pam.q (pam): new argument 'do.swap = TRUE'.  Setting it to
+	FALSE allows to skip the more expensive "SWAP" phase.
+	* man/pam.Rd: (ditto)
+
+2007-12-18  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/ind_2.h (ind_2): for m := max(i,j) > 46342, (m-2)*(m-1) give
+	integer overflow which leads to a seg.fault.  Now fixed.
+	* src/pam.c (bswap): slightly improve trace output.
+	* tests/pam.R, tests/pam.Rout.save: corresponding slight adaptions.
+
+	* man/pam.Rd: "large" and
+	* man/clara.Rd: "small" datasets; pam() works with thousands ...
+
+	* R/clara.q (clara): error out when users try clara(<dist>, ...).
+
 2007-09-28  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Date, Version): 1.11.9

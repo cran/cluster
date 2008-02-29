@@ -2,7 +2,7 @@
 #### --- $Id: pam.q 4018 2006-12-11 17:55:32Z maechler $
 pam <- function(x, k, diss = inherits(x, "dist"),
 		metric = "euclidean", medoids = NULL,
-                stand = FALSE, cluster.only = FALSE,
+                stand = FALSE, cluster.only = FALSE, do.swap = TRUE,
                 keep.diss = !diss && !cluster.only && n < 100,
                 keep.data = !diss && !cluster.only, trace.lev = 0)
 {
@@ -62,6 +62,8 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 		 k, " distinct indices in {1,2, .., n}, n=", n)
         ## use observation numbers  'medID' as starting medoids for 'swap' only
     }
+    nisol <- integer(if(cluster.only) 1 else k)
+    if(do.swap) nisol[1] <- 1L
     stopifnot(length(cluster.only) == 1,
 	      length(trace.lev) == 1)
     ## call Fortran routine
@@ -90,7 +92,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	      clu = integer(n),
 	      clusinf = if(cluster.only) 0. else matrix(0., k, 5),
 	      silinf  = if(cluster.only) 0. else matrix(0., n, 4),
-	      isol = integer(if(cluster.only) 1 else k),
+	      isol = nisol,
 	      DUP = FALSE, # care!!
 	      PACKAGE = "cluster")
 
@@ -102,6 +104,8 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 
     ## Else, usually
     medID <- res$med
+    if(any(medID <= 0))
+	stop("error from .C(\"pam\", *): invalid medID's")
     sildim <- res$silinf[, 4]
     if(diss) {
 	if(keep.diss) disv <- x

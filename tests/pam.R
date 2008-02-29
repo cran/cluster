@@ -57,12 +57,12 @@ summary(pr4 <- pam(ruspini, 4))
 data(votes.repub)
 summary(pv3 <- pam(votes.repub, 3))
 (pv4 <- pam(votes.repub, 4))
-(pv6 <- pam(votes.repub, 6, trace = 2))
+(pv6 <- pam(votes.repub, 6, trace = 3))
 
 cat('Time elapsed: ', proc.time() - .proctime00,'\n')
 
 ## re-starting with medoids from pv6  shouldn't change:
-pv6. <- pam(votes.repub, 6, medoids = pv6$id.med, trace = 2)
+pv6. <- pam(votes.repub, 6, medoids = pv6$id.med, trace = 3)
 identical(pv6[nm3], pv6.[nm3])
 
 ## This example seg.faulted at some point:

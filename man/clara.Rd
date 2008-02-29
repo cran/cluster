@@ -103,8 +103,9 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
   directly.  What can be considered \emph{small}, is really a function
   of available computing power, both memory (RAM) and speed.
   Originally (1990), \dQuote{small} meant less than 100 observations;
-  later, the authors said \emph{\dQuote{small (say with fewer than 200
-  observations)}}...
+  in 1997, the authors said \emph{\dQuote{small (say with fewer than 200
+  observations)}}; as of 2006, you can use \code{\link{pam}} with
+  several thousand observations.
 }
 \author{
   Kaufman and Rousseeuw (see \code{\link{agnes}}), originally.

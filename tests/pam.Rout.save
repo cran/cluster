@@ -1,5 +1,5 @@
 
-R version 2.5.0 alpha (2007-03-28 r40917)
+R version 2.6.1 Patched (2007-12-18 r43730)
 Copyright (C) 2007 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
@@ -963,8 +963,8 @@ Objective function:
 Available components:
  [1] "medoids"    "id.med"     "clustering" "objective"  "isolation" 
  [6] "clusinfo"   "silinfo"    "diss"       "call"       "data"      
-> (pv6 <- pam(votes.repub, 6, trace = 2))
-pam()'s bswap(): build 6 medoids:
+> (pv6 <- pam(votes.repub, 6, trace = 3))
+pam()'s bswap(*, s=281.951): build 6 medoids:
     new repr. 2
     new repr. 1
     new repr. 31
@@ -979,6 +979,7 @@ pam()'s bswap(): build 6 medoids:
       0     32   29.9   35.7   30.9   35.1   27.8   35.7   50.2      0
    26.2   30.2   45.2   34.1   33.8      0   28.5   35.1   34.2   28.8
    swp new 10 <-> 1 old; decreasing diss. by -2.57067
+end{bswap()}, end{cstat()}
 Medoids:
                ID X1856 X1860 X1864 X1868 X1872 X1876 X1880 X1884 X1888 X1892
 Georgia        10    NA    NA    NA 35.72 43.77 27.94 34.33 33.84 28.33 21.80
@@ -1038,11 +1039,11 @@ Available components:
  [6] "clusinfo"   "silinfo"    "diss"       "call"       "data"      
 > 
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  4.183 0.179 6.408 0 0 
+Time elapsed:  2.067 0.031 2.115 0 0 
 > 
 > ## re-starting with medoids from pv6  shouldn't change:
-> pv6. <- pam(votes.repub, 6, medoids = pv6$id.med, trace = 2)
-pam()'s bswap(): medoids given
+> pv6. <- pam(votes.repub, 6, medoids = pv6$id.med, trace = 3)
+pam()'s bswap(*, s=281.951): medoids given
   after build: medoids are  2 10 15 31 40 46
   and min.dist dysma[1:n] are
    48.2      0   37.7     56   35.8   28.5   28.6   31.7   54.1      0
@@ -1050,6 +1051,7 @@ pam()'s bswap(): medoids given
    48.4   28.1   33.2   63.1   21.1   28.6   37.5   35.8   29.8   31.3
       0     32   29.9   35.7   30.9   35.1   27.8   35.7   50.2      0
    26.2   30.2   45.2   34.1   33.8      0   28.5   35.1   34.2   28.8
+end{bswap()}, end{cstat()}
 > identical(pv6[nm3], pv6.[nm3])
 [1] TRUE
 > 
@@ -1082,16 +1084,13 @@ Available components:
 [6] "clusinfo"   "silinfo"    "diss"       "call"      
 > ## This gave only 3 different medoids -> and seg.fault:
 > (r5 <- pam(dd, 5, medoids = c(1,3,20,2,5), trace = 2)) # now "fine"
-pam()'s bswap(): medoids given
+pam()'s bswap(*, s=8.51931): medoids given
   after build: medoids are  1  2  3  5 20
-  and min.dist dysma[1:n] are
-      0      0      0   1.58      0   2.45  0.635  0.586   3.32   1.25
-   1.43   2.25   1.74   1.74  0.744   1.11  0.771  0.839    2.3      0
-      2   1.25   3.89
    swp new 14 <-> 2 old; decreasing diss. by -5.50096
    swp new 15 <-> 1 old; decreasing diss. by -2.20162
    swp new 6 <-> 20 old; decreasing diss. by -2.12745
    swp new 8 <-> 3 old; decreasing diss. by -0.201608
+end{bswap()}, end{cstat()}
 Medoids:
      ID   
 [1,] 15 15
@@ -1115,6 +1114,6 @@ null device
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  4.205 0.184 6.451 0 0 
+Time elapsed:  2.079 0.032 2.135 0 0 
 > 
 > 
