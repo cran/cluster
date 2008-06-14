@@ -1,3 +1,4 @@
+.libPaths() # show full library tree {also as check of R CMD check!}
 library(cluster)
 
 ####---------- Tests for FANNY  i.e., fanny() --------------------------

@@ -135,7 +135,11 @@ sortSilhouette <- function(object, ...)
     ## k <- length(clid <- sort(unique(cl <- object[,"cluster"])))# cluster ID s
     cl <- object[,"cluster"]
     r <- object[iOrd <- order(cl, - object[,"sil_width"]) , , drop = FALSE]
-    attributes(r) <- attributes(object) # but:
+    ## r has lost attributes of object; restore them, but do *not*
+    ## change dimnames:
+    nms <- names(at <- attributes(object))
+    for(n in nms[!(nms %in% c("dim","dimnames","iOrd","Ordered"))])
+        attr(r, n) <- at[[n]]
     attr(r,"iOrd") <- iOrd # the ordering
     attr(r,"Ordered") <- TRUE
     r

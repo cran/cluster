@@ -142,7 +142,7 @@ p3m <- pam(x, 3, trace = 2)
 \dontshow{
  ii <- pmatch(c("obj","call"), names(pamx))
  stopifnot(all.equal(pamx [-ii],  p2m [-ii],  tol=1e-14),
-           all.equal(pamx$obj[2], p2m$obj[2], tol=1e-14))
+           all.equal(pamx$objective[2], p2m$objective[2], tol=1e-14))
 }
 pam(daisy(x, metric = "manhattan"), 2, diss = TRUE)
 

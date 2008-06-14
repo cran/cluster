@@ -1,3 +1,13 @@
+2008-06-15  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/silhouette.R (sortSilhouette): do *not* overwrite the
+	correctly reordered rownames: Fixes very long standing bug
+	which lead to wrong observation labels in silhouette plots.
+
+2008-04-10  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/zzz.R (.onUnload): add ..dynam.unload()ing
+
 2008-02-29  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Date, Version): 1.11.10 and release
