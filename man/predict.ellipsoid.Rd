@@ -29,6 +29,9 @@ ellipsoidPoints(A, d2, loc, n.half = 201)
    matrix \code{cov} (corresponding to \code{A}) and \code{d2} for the
    center, the shape (``covariance'') matrix and the squared average
    radius (or distance) or \code{\link{qchisq}(*, p)} quantile.
+
+   Unfortunately, this is only implemented for \eqn{p = 2}, currently;
+   contributions for \eqn{p \ge 3}{p >= 3} are \emph{very welcome}.
 }
 \value{
   a numeric matrix of dimension \code{2*n.out} times \eqn{p}.

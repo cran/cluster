@@ -1,6 +1,6 @@
 
-R : Copyright 2006, The R Foundation for Statistical Computing
-Version 2.3.0 Under development (unstable) (2006-02-26 r37442)
+R version 2.9.0 Under development (unstable) (2009-01-06 r47489)
+Copyright (C) 2009 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -464,7 +464,7 @@ Available components:
 > str(ar1)
 List of 9
  $ order    : int [1:75] 1 2 3 5 4 6 8 7 9 10 ...
- $ height   : num [1:74] 11.5  9.0 16.0 26.2 10.0 ...
+ $ height   : num [1:74] 11.5 9 16 26.2 10 ...
  $ ac       : num 0.947
  $ merge    : int [1:74, 1:2] -55 -27 -18 -49 -36 -33 -32 -23 -67 -59 ...
  $ diss     :Classes 'dissimilarity', 'dist'  atomic [1:2775] 11 12 29 13 25 43 33 22 27 39 ...
@@ -481,7 +481,7 @@ List of 9
  - attr(*, "class")= chr [1:2] "agnes" "twins"
 > 
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  0.52 0.01 0.54 0 0 
+Time elapsed:  0.101 0.008 0.115 0 0 
 > 
 > summary(ar2 <- agnes(ruspini, metric="manhattan", method = "weighted"))
 Object of class `agnes' from call:
@@ -606,5 +606,5 @@ Available components:
 > stopifnot(all.equal(ar2[1:4], ar3[1:4], tol=1e-12))
 > 
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  0.57 0.02 0.6 0 0 
+Time elapsed:  0.116 0.011 0.133 0 0 
 > 

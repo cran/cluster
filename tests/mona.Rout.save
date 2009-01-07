@@ -1,6 +1,6 @@
 
-R version 2.7.0 Under development (unstable) (2007-09-24 r42966)
-Copyright (C) 2007 The R Foundation for Statistical Computing
+R version 2.9.0 Under development (unstable) (2009-01-06 r47489)
+Copyright (C) 2009 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -110,5 +110,5 @@ $step
 
 Warning message:
 In RNGkind("Marsaglia-Multicarry", "Buggy Kinderman-Ramage") :
-  Buggy version of Kinderman-Ramage generator used.
+  Buggy version of Kinderman-Ramage generator used
 > 

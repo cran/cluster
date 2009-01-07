@@ -67,8 +67,8 @@ ellipsoidhull(x, tol=0.01, maxit=5000,
   A version of this is available as technical report from
   \url{http://www.agoras.ua.ac.be/abstract/Disclu99.htm}
 
-  D.N. Titterington. (1976)
-  Algorithms for computing {D}-optimal design on finite design spaces.  In
+  D.M. Titterington (1976)
+  Algorithms for computing D-optimal design on finite design spaces.  In
   \emph{Proc.\ of the 1976 Conf.\ on Information Science and Systems},
   213--216; John Hopkins University.
 }

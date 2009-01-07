@@ -11,7 +11,7 @@ ellipsoidhull <-
              ret.wt = FALSE, ret.sqdist = FALSE, ret.pr = FALSE)
 {
     if(!is.matrix(x) || !is.numeric(x))
-        stop("`x' must be numeric  n x p matrix")
+        stop("'x' must be numeric  n x p matrix")
     if(any(is.na(x))) {
         warning("omitting NAs")
         x <- na.omit(x)
@@ -38,7 +38,7 @@ ellipsoidhull <-
         cat("Error in Fortran routine computing the spanning ellipsoid,",
             "\n probably collinear data\n", sep="")
     if(any(res$prob < 0) || all(res$prob == 0))
-        stop("computed some negative or all 0 `prob'abilities")
+        stop("computed some negative or all 0 'prob'abilities")
     conv <- res$maxit  < maxit
     if(!conv)
         warning("possibly not converged in ", maxit, " iterations")
@@ -66,7 +66,7 @@ ellipsoidhull <-
 print.ellipsoid <- function(x, digits = max(1, getOption("digits") - 2), ...)
 {
     d <- length(x$loc)
-    cat("`ellipsoid' in", d, "dimensions:\n center = (",
+    cat("'ellipsoid' in", d, "dimensions:\n center = (",
         format(x$loc, digits=digits),
         "); squared ave.radius d^2 = ", format(x$d2, digits=digits),
         "\n and shape matrix =\n")
@@ -89,11 +89,11 @@ volume.ellipsoid <- function(object) {
 
 ## For p = 2 :
 ##   Return (x[i],y[i]) points, i = 1:n, on boundary of ellipse, given
-##   by 2 x 2 matrix A[], origin `loc' and d(xy, loc) ^2 = `d2'
+##   by 2 x 2 matrix A[], origin 'loc' and d(xy, loc) ^2 = 'd2'
 ellipsoidPoints <- function(A, d2, loc, n.half = 201)
 {
     if(length(d <- dim(A)) != 2 || (p <- d[1]) != d[2])
-        stop("`A' must be p x p  cov-matrix defining an ellipsoid")
+        stop("'A' must be p x p  cov-matrix defining an ellipsoid")
     if(p == 2) {
         detA <- A[1, 1] * A[2, 2] - A[1, 2]^2
         yl2 <- A[2, 2] * d2 # = (y_max - y_loc)^2

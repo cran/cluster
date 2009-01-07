@@ -1,26 +1,3 @@
-2009-01-07  Martin Maechler  <maechler@stat.math.ethz.ch>
-
-	* DESCRIPTION (Version, Date): 1.11.12
-
-2009-01-05  Martin Maechler  <maechler@stat.math.ethz.ch>
-
-	* man/ellipsoidhull.Rd: fix for more stringent Rd parsing
-
-2008-09-16  Martin Maechler  <maechler@stat.math.ethz.ch>
-
-	* R/ellipsoidhull.R (print.ellipsoid): and others: replace
-	backquotes ( ` ) by regular quotes.
-
-2008-06-15  Martin Maechler  <maechler@stat.math.ethz.ch>
-
-	* R/silhouette.R (sortSilhouette): do *not* overwrite the
-	correctly reordered rownames: Fixes very long standing bug
-	which lead to wrong observation labels in silhouette plots.
-
-2008-04-10  Martin Maechler  <maechler@stat.math.ethz.ch>
-
-	* R/zzz.R (.onUnload): add ..dynam.unload()ing
-
 2008-02-29  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Date, Version): 1.11.10 and release
@@ -36,8 +13,8 @@
 
 2007-12-18  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-	* src/ind_2.h (ind_2): for m := max(i,j) > 46342, (m-2)*(m-1) give
-	integer overflow which leads to a seg.fault.  Now fixed.
+	* src/ind_2.h (ind_2): for m := max(i,j) > 46342, (m-2)*(m-1) gave
+	integer overflow which lead to a seg.fault.  Now fixed.
 	* src/pam.c (bswap): slightly improve trace output.
 	* tests/pam.R, tests/pam.Rout.save: corresponding slight adaptions.
 
