@@ -31,7 +31,7 @@
     \code{xax.pretty = FALSE} is for back compatibility.}
   \item{\dots}{graphical parameters (see \code{\link{par}}) may also
     be supplied and are passed to \code{\link{bannerplot}()} or
-    \code{\link{pltree}()}, respectively.}
+    \code{pltree()} (see \code{\link{pltree.twins}}), respectively.}
 }
 \section{Side Effects}{
   Appropriate plots are produced on the current graphics device. This can
@@ -56,7 +56,10 @@
   branches come together at the distance between the two clusters being merged.
 
   For more customization of the plots, rather call
-  \code{\link{bannerplot}} and \code{\link{pltree}} directly with
+  \code{\link{bannerplot}} and \code{pltree()}, i.e., its method
+  \code{\link{pltree.twins}}, respectively.
+
+  directly with
   corresponding arguments, e.g., \code{xlab} or \code{ylab}.
 }
 \note{
@@ -64,6 +67,10 @@
   number of observations is limited less than \code{nmax.lab} (35, by
   default), for readability.  Moreover, observation labels are truncated
   to maximally \code{max.strlen} (5) characters.
+
+  For the dendrogram, more flexibility than via \code{pltree()} is
+  provided by \code{dg <- \link{as.dendrogram}(x)} and
+  plotting \code{dg} via \code{\link[stats]{plot.dendrogram}}.
 }
 \references{
   Kaufman, L. and Rousseeuw, P.J. (1990)
@@ -81,7 +88,8 @@
 }
 \seealso{
   \code{\link{agnes}} and \code{\link{agnes.object}};
-  \code{\link{bannerplot}}, \code{\link{pltree}}, and \code{\link{par}}.
+  \code{\link{bannerplot}}, \code{\link{pltree.twins}},
+  and \code{\link{par}}.
 }
 \examples{
 ## Can also pass `labels' to pltree() and bannerplot():

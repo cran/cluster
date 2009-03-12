@@ -1,5 +1,5 @@
 
-R version 2.9.0 Under development (unstable) (2009-01-06 r47489)
+R version 2.8.1 Patched (2009-01-19 r47658)
 Copyright (C) 2009 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
@@ -23,7 +23,7 @@ Type 'q()' to quit R.
 > 
 > agn1 <- agnes(votes.repub, metric = "manhattan", stand = TRUE)
 > summary(agn1)
-Object of class `agnes' from call:
+Object of class 'agnes' from call:
  agnes(x = votes.repub, metric = "manhattan", stand = TRUE) 
 Agglomerative coefficient:  0.797756 
 Order of objects:
@@ -109,7 +109,7 @@ Available components:
 > Dvr <- daisy(votes.repub)
 > agn2 <- agnes(Dvr, method = "complete")
 > summary(agn2)
-Object of class `agnes' from call:
+Object of class 'agnes' from call:
  agnes(x = Dvr, method = "complete") 
 Agglomerative coefficient:  0.88084 
 Order of objects:
@@ -222,7 +222,7 @@ Available components:
 > 
 > data(agriculture)
 > summary(agnes(agriculture))
-Object of class `agnes' from call:
+Object of class 'agnes' from call:
  agnes(x = agriculture) 
 Agglomerative coefficient:  0.781893 
 Order of objects:
@@ -256,7 +256,7 @@ Available components:
 > 
 > data(ruspini)
 > summary(ar0 <- agnes(ruspini, keep.diss=FALSE, keep.data=FALSE))
-Object of class `agnes' from call:
+Object of class 'agnes' from call:
  agnes(x = ruspini, keep.diss = FALSE, keep.data = FALSE) 
 Agglomerative coefficient:  0.947954 
 Order of objects:
@@ -356,7 +356,7 @@ Available components:
 [1] "order"     "height"    "ac"        "merge"     "diss"      "call"     
 [7] "method"    "order.lab"
 > summary(ar1 <- agnes(ruspini, metric = "manhattan"))
-Object of class `agnes' from call:
+Object of class 'agnes' from call:
  agnes(x = ruspini, metric = "manhattan") 
 Agglomerative coefficient:  0.946667 
 Order of objects:
@@ -481,10 +481,10 @@ List of 9
  - attr(*, "class")= chr [1:2] "agnes" "twins"
 > 
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  0.101 0.008 0.115 0 0 
+Time elapsed:  0.11 0.02 0.136 0 0 
 > 
 > summary(ar2 <- agnes(ruspini, metric="manhattan", method = "weighted"))
-Object of class `agnes' from call:
+Object of class 'agnes' from call:
  agnes(x = ruspini, metric = "manhattan", method = "weighted") 
 Agglomerative coefficient:  0.942387 
 Order of objects:
@@ -606,5 +606,5 @@ Available components:
 > stopifnot(all.equal(ar2[1:4], ar3[1:4], tol=1e-12))
 > 
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  0.116 0.011 0.133 0 0 
+Time elapsed:  0.123 0.028 0.157 0 0 
 > 

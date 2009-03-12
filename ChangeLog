@@ -1,6 +1,21 @@
+2009-03-12  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/daisy.Rd: fix typo/thinko (thanks to Felix Mueller).
+
+2009-01-21  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/agnes.q (as.dendrogram.agnes): new utility
+	* NAMESPACE: exported
+
+2009-01-17  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/plot.agnes.Rd: link to pltree.twins() directly
+
+	* R/agnes.q (print.summary.agnes): output 'agnes' instead of `agnes'
+
 2009-01-07  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-	* DESCRIPTION (Version, Date): 1.11.12
+	* DESCRIPTION (Version, Date): 1.11.12 and CRAN-released
 
 2009-01-05  Martin Maechler  <maechler@stat.math.ethz.ch>
 

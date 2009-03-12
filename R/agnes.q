@@ -147,7 +147,7 @@ print.agnes <- function(x, ...)
 print.summary.agnes <- function(x, ...)
 {
     ## a bit more than print.agnes() ..
-    cat("Object of class `agnes' from call:\n", deparse(x$call),
+    cat("Object of class 'agnes' from call:\n", deparse(x$call),
 	"\nAgglomerative coefficient: ", format(x$ac, ...),
 	"\nOrder of objects:\n")
     print(if(length(x$order.lab) != 0) x$order.lab else x$order,
@@ -161,3 +161,5 @@ print.summary.agnes <- function(x, ...)
     invisible(x)
 }
 
+as.dendrogram.agnes <- function(object, ...) ## ... : really only 'hang'
+    as.dendrogram(as.hclust(object), ...)

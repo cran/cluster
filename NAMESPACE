@@ -16,6 +16,7 @@ export(coef.hclust)
 
 ## things from (ex-)mva -- not really needed..
 #importFrom(stats, as.hclust, as.dist, as.dendrogram, cutree)
+importFrom(stats, as.hclust, as.dendrogram)
 
 importFrom(graphics, plot)
 importFrom(grDevices, dev.interactive)
@@ -33,6 +34,7 @@ S3method(volume, ellipsoid)
 
 ## register all the method for generics elsewhere in case namespace is
 ## loaded but not currently attached.
+S3method(as.dendrogram, agnes)
 S3method(coef, hclust)
 S3method(coef, twins)
 

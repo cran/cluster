@@ -113,7 +113,7 @@ daisy(x, metric = c("euclidean", "manhattan", "gower"),
       zero.  In all other situations, the weight of the variable is 1.
 
       The contribution of a nominal or binary variable to the total
-      dissimilarity is 0 if both values are different, 1 otherwise.  The
+      dissimilarity is 0 if both values are equal, 1 otherwise.  The
       contribution of other variables is the absolute difference of both
       values, divided by the total range of that variable.  Ordinal
       variables are first converted to ranks.
