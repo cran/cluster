@@ -31,7 +31,7 @@ silhouette.clara <- function(x, full = FALSE, ...)
 ## R-only implementation -- no longer used nor exported:
 silhouette.default.R <- function(x, dist, dmatrix, ...) {
     cll <- match.call()
-    if(!is.null(cl <- x$clustering)) x <- cl
+    if(is.list(x) && !is.null(cl <- x$clustering)) x <- cl
     n <- length(x)
     if(!all(x == round(x))) stop("'x' must only have integer codes")
     k <- length(clid <- sort(unique(x)))
@@ -81,9 +81,12 @@ silhouette.default <- function(x, dist, dmatrix, ...) {
     if(is.list(x) && !is.null(cl <- x$clustering)) x <- cl
     n <- length(x)
     if(!all(x == round(x))) stop("'x' must only have integer codes")
-    k <- length(unique(x))
+    k <- length(ux <- unique(x <- as.integer(x)))
     if(k <= 1 || k >= n) # silhouette undefined for trivial clusterings
-        return(NA)
+	return(NA)
+    doRecode <- (any(ux < 1) || any(ux > k)) ## need to recode
+    if(doRecode)
+	x <- as.integer(fx <- factor(x)) # now *has* values in 1:k
 
     ## check dist/dmatrix
     has.dmatrix <- missing(dist)
@@ -101,7 +104,7 @@ silhouette.default <- function(x, dist, dmatrix, ...) {
     out <- .C('sildist',
               d = as.numeric(if(has.dmatrix) dmatrix else dist),
               as.integer(n),
-              as.integer(x),
+              x,
               as.integer(k),
               diC =    numeric(n*k),
               counts = integer(k),
@@ -111,8 +114,15 @@ silhouette.default <- function(x, dist, dmatrix, ...) {
               DUP = FALSE,
               PACKAGE = "cluster")[c("si", "neighbor")]
 
-    wds <- cbind(cluster = x, neighbor = out$neighbor, "sil_width" = out$si)
-
+    if(doRecode) {
+        code.x <- as.integer(levels(fx))
+        x <- code.x[x]
+    }
+    wds <- cbind(cluster = x,
+                 neighbor = if(doRecode) code.x[out$neighbor] else out$neighbor,
+                 "sil_width" = out$si)
+    if(doRecode)
+        attr(wds, "codes") <- code.x
     attr(wds, "Ordered") <- FALSE
     attr(wds, "call") <- cll
     class(wds) <- "silhouette"
@@ -151,11 +161,12 @@ summary.silhouette <- function(object, FUN = mean, ...)
     cl <- object[, "cluster"]
     si <- object[, "sil_width"]
     r <- list(si.summary = summary(si, ...),
-              clus.avg.widths = tapply(si, cl, FUN),
-              clus.sizes = table(cl),
-              avg.width = FUN(si),
-              call = attr(object,"call"),
-              Ordered = attr(object,"Ordered"))
+	      clus.avg.widths = tapply(si, cl, FUN),
+	      clus.sizes = table(cl),
+	      avg.width = FUN(si),
+	      call = attr(object,"call"),
+	      codes = attr(object,"codes"),
+	      Ordered = attr(object,"Ordered"))
     class(r) <- "summary.silhouette"
     r
 }
@@ -163,9 +174,13 @@ summary.silhouette <- function(object, FUN = mean, ...)
 print.summary.silhouette <- function(x, ...)
 {
     k <- length(csiz <- x$clus.sizes)
+    cls <- paste("Cluster sizes",
+                 if(!is.null(x$codes))
+                 paste(", ids = (",paste(x$codes, collapse=", "),"),", sep=""),
+                 sep="")
     cat("Silhouette of", sum(csiz), "units in", k, "clusters",
-        if(!is.null(x$call)) paste("from", deparse(x$call)),
-        ":\nCluster sizes and average silhouette widths:\n")
+        if(!is.null(x$call)) paste("from", deparse(x$call)), ":\n",
+        cls, "and average silhouette widths:\n")
     cwid <- x$clus.avg.widths
     names(cwid) <- csiz
     print(cwid, ...)
@@ -229,11 +244,13 @@ plot.silhouette <-
 	mtext(expression(paste(j," :  ", n[j]," | ", ave[i %in% Cj] ~~ s[i])),
 	      adj = 1.04, line = -1.2)
 	y <- rev(y)
+	hasCodes <- !is.null(cx <- attr(x,"codes"))
 	for(j in 1:k) {
-	    yj <- mean(y[cli == j])
+	    j. <- if(hasCodes) cx[j] else j
+	    yj <- mean(y[cli == j.])
 	    text(1, yj,
-                 paste(j,":  ", nj[j]," | ",
-                       format(smry$clus.avg.widths[j], digits = 1, nsmall = 2)),
+		 paste(j.,":  ", nj[j]," | ",
+		       format(smry$clus.avg.widths[j], digits = 1, nsmall = 2)),
 		 xpd = NA, adj = 0.8)
 	}
     }

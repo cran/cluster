@@ -1,3 +1,12 @@
+2009-05-13  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/silhouette.R (silhouette.default, print.summary.*, plot.*):
+	silhouette(x, *) and its methods now also work when x uses integer
+	codes different than 1:k.  Previously, this could seg.fault.
+
+	* tests/silhouette-default.R: test it.
+
+
 2009-03-12  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* man/daisy.Rd: fix typo/thinko (thanks to Felix Mueller).

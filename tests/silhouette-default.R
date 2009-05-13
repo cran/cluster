@@ -26,6 +26,10 @@ for(k in 2:maxk) {
     ##      ===
 }
 
+summary(si.p <- silhouette(50 - k.gr, mdist))
+stopifnot(identical(si.p[,3],         si[,3]),
+	  identical(si.p[, 1:2], 50 - si[, 1:2]))
+
 # the widths:
 silh.wid
 #select the number of k clusters with the largest si value :

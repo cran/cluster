@@ -1,6 +1,6 @@
 
-R version 2.5.0 Under development (unstable) (2006-12-09 r40144)
-Copyright (C) 2006 The R Foundation for Statistical Computing
+R version 2.9.0 Patched (2009-05-12 r48535)
+Copyright (C) 2009 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -50,7 +50,7 @@ grouping table: k.gr
  50 100 
 silhouette:
 Silhouette of 150 units in 2 clusters from silhouette.default(x = k.gr, dist = mdist) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
        50       100 
 0.9829965 0.9362626 
 Individual silhouette widths:
@@ -64,7 +64,7 @@ grouping table: k.gr
 50 50 50 
 silhouette:
 Silhouette of 150 units in 3 clusters from silhouette.default(x = k.gr, dist = mdist) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
        50        50        50 
 0.9773277 0.6926798 0.7467236 
 Individual silhouette widths:
@@ -78,7 +78,7 @@ grouping table: k.gr
 35 15 50 50 
 silhouette:
 Silhouette of 150 units in 4 clusters from silhouette.default(x = k.gr, dist = mdist) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
        35        15        50        50 
 0.5653722 0.5226372 0.6926798 0.7467236 
 Individual silhouette widths:
@@ -92,7 +92,7 @@ grouping table: k.gr
 35 15 29 21 50 
 silhouette:
 Silhouette of 150 units in 5 clusters from silhouette.default(x = k.gr, dist = mdist) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
        35        15        29        21        50 
 0.5653722 0.5226372 0.5776362 0.4625437 0.5296735 
 Individual silhouette widths:
@@ -106,7 +106,7 @@ grouping table: k.gr
 35 15 29 21 29 21 
 silhouette:
 Silhouette of 150 units in 6 clusters from silhouette.default(x = k.gr, dist = mdist) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
        35        15        29        21        29        21 
 0.5653722 0.5226372 0.5776362 0.3732981 0.3383135 0.5945444 
 Individual silhouette widths:
@@ -120,7 +120,7 @@ grouping table: k.gr
 35 14  1 29 21 29 21 
 silhouette:
 Silhouette of 150 units in 7 clusters from silhouette.default(x = k.gr, dist = mdist) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
        35        14         1        29        21        29        21 
 0.4165289 0.6671435 0.0000000 0.5776362 0.3732981 0.3383135 0.5945444 
 Individual silhouette widths:
@@ -134,7 +134,7 @@ grouping table: k.gr
 35 14  1 29 10 11 29 21 
 silhouette:
 Silhouette of 150 units in 8 clusters from silhouette.default(x = k.gr, dist = mdist) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
        35        14         1        29        10        11        29        21 
 0.4165289 0.6671435 0.0000000 0.4209012 0.6943265 0.7262601 0.2053018 0.5945444 
 Individual silhouette widths:
@@ -148,7 +148,7 @@ grouping table: k.gr
 35 14  1 26 10 11  3 29 21 
 silhouette:
 Silhouette of 150 units in 9 clusters from silhouette.default(x = k.gr, dist = mdist) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
        35        14         1        26        10        11         3        29 
 0.4165289 0.6671435 0.0000000 0.5318152 0.6673269 0.6944652 0.7957279 0.2053018 
        21 
@@ -164,7 +164,7 @@ grouping table: k.gr
 35 14  1 26 10 11  3 16 13 21 
 silhouette:
 Silhouette of 150 units in 10 clusters from silhouette.default(x = k.gr, dist = mdist) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
        35        14         1        26        10        11         3        16 
 0.4165289 0.6671435 0.0000000 0.5318152 0.6319149 0.6145837 0.7957279 0.4640123 
        13        21 
@@ -180,7 +180,7 @@ grouping table: k.gr
 35 14  1 26 10 11  3 16 13 11 10 
 silhouette:
 Silhouette of 150 units in 11 clusters from silhouette.default(x = k.gr, dist = mdist) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
        35        14         1        26        10        11         3        16 
 0.4165289 0.6671435 0.0000000 0.5318152 0.6319149 0.6145837 0.7957279 0.4064279 
        13        11        10 
@@ -196,7 +196,7 @@ grouping table: k.gr
 35 11  3  1 26 10 11  3 16 13 11 10 
 silhouette:
 Silhouette of 150 units in 12 clusters from silhouette.default(x = k.gr, dist = mdist) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
        35        11         3         1        26        10        11         3 
 0.2883758 0.7044155 0.4092330 0.0000000 0.5318152 0.6319149 0.6145837 0.7957279 
        16        13        11        10 
@@ -212,7 +212,7 @@ grouping table: k.gr
 28 11  3  7  1 26 10 11  3 16 13 11 10 
 silhouette:
 Silhouette of 150 units in 13 clusters from silhouette.default(x = k.gr, dist = mdist) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
        28        11         3         7         1        26        10        11 
 0.3783869 0.6827810 0.4092330 0.4285753 0.0000000 0.5318152 0.6319149 0.6145837 
         3        16        13        11        10 
@@ -228,7 +228,7 @@ grouping table: k.gr
 19 11  3  9  7  1 26 10 11  3 16 13 11 10 
 silhouette:
 Silhouette of 150 units in 14 clusters from silhouette.default(x = k.gr, dist = mdist) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
        19        11         3         9         7         1        26        10 
 0.5419530 0.6171802 0.3959926 0.4525348 0.1669077 0.0000000 0.5318152 0.6319149 
        11         3        16        13        11        10 
@@ -244,7 +244,7 @@ grouping table: k.gr
 19 11  3  9  7  1 18 10 11  8  3 16 13 11 10 
 silhouette:
 Silhouette of 150 units in 15 clusters from silhouette.default(x = k.gr, dist = mdist) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
        19        11         3         9         7         1        18        10 
 0.5419530 0.6171802 0.3959926 0.4525348 0.1669077 0.0000000 0.6616381 0.5871805 
        11         8         3        16        13        11        10 
@@ -252,6 +252,19 @@ Cluster sizes and average silhouette widths:
 Individual silhouette widths:
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 -0.5929  0.3859  0.6211  0.5335  0.7478  0.8551 
+> 
+> summary(si.p <- silhouette(50 - k.gr, mdist))
+Silhouette of 150 units in 15 clusters from silhouette.default(x = 50 - k.gr, dist = mdist) :
+ Cluster sizes, ids = (35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49), and average silhouette widths:
+       10        11        13        16         3         8        11        10 
+0.6590274 0.4297258 0.5866228 0.4064279 0.7444822 0.6705138 0.5171407 0.5871805 
+       18         1         7         9         3        11        19 
+0.6616381 0.0000000 0.1669077 0.4525348 0.3959926 0.6171802 0.5419530 
+Individual silhouette widths:
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-0.5929  0.3859  0.6211  0.5335  0.7478  0.8551 
+> stopifnot(identical(si.p[,3],         si[,3]),
++ 	  identical(si.p[, 1:2], 50 - si[, 1:2]))
 > 
 > # the widths:
 > silh.wid
@@ -579,7 +592,7 @@ attr(,"class")
 [1] "silhouette"
 > summary(silhouette(kl6, D6))
 Silhouette of 6 units in 3 clusters from silhouette.default(x = kl6, dist = D6) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
       2       2       2 
  0.5000 -0.7375 -0.4375 
 Individual silhouette widths:
@@ -593,6 +606,6 @@ null device
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  2.964 0.032 3.018 0 0 
+Time elapsed:  2.969 0.034 3.042 0 0 
 > 
 > 
