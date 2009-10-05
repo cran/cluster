@@ -82,7 +82,7 @@ ellipsoidhull(x, tol=0.01, maxit=5000,
   further \code{\link[ellipse]{ellipse}} from package \pkg{ellipse}
   and \code{\link[sfsmisc]{ellipsePoints}} from package \pkg{sfsmisc}.
 
-  \code{\link[graphics]{chull}} for the convex hull,
+  \code{\link[grDevices]{chull}} for the convex hull,
   \code{\link{clusplot}} which makes use of this; \code{\link[MASS]{cov.mve}}.
 }
 \examples{

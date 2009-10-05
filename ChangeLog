@@ -1,4 +1,13 @@
+2009-10-05  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.12.1
+
+	* man/ellipsoidhull.Rd: fix missing \link ((parts former 'graphics'
+	have long been moved to 'grDevices'.
+
 2009-05-13  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.12.0 -- released to CRAN
 
 	* R/silhouette.R (silhouette.default, print.summary.*, plot.*):
 	silhouette(x, *) and its methods now also work when x uses integer
