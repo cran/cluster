@@ -30,8 +30,11 @@ function(x, w = rev(x$height), fromLeft = TRUE, main=NULL, sub=NULL,
     m <- max(w)
     if(axes) {
 	if(xax.pretty) {
-	    n <- if(!is.logical(xax.pretty)) xax.pretty else formals(pretty)$n
-	    at.vals <- pretty(c(0,w), n = n)
+	    at.vals <- if(!is.logical(xax.pretty))
+		pretty(c(0,w), n = xax.pretty) else pretty(c(0,w))
+	    ## n <- if(!is.logical(xax.pretty)) xax.pretty else
+            ## formals(if(exists("pretty.default", mode="function")) pretty.default else pretty)$n
+	    ## at.vals <- pretty(c(0,w), n = n)
 	    n <- length(at.vals <- at.vals[at.vals <= m])
 	    if(at.vals[n] * 1.01 < m) {
 		lab.vals <- c(at.vals, signif(m, 3))

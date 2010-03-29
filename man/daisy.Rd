@@ -131,7 +131,7 @@ daisy(x, metric = c("euclidean", "manhattan", "gower"),
 \references{
   Gower, J. C. (1971)
   A general coefficient of similarity and some of its properties,
-  \emph{Biometrics} \bold{27}, 623--637.
+  \emph{Biometrics} \bold{27}, 857--874.
 
   Kaufman, L. and Rousseeuw, P.J. (1990)
   \emph{Finding Groups in Data: An Introduction to Cluster Analysis}.
