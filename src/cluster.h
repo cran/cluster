@@ -23,33 +23,33 @@
 
 double randm(int *nrun);
 
-void clara(int *n,  /* = number of objects */
-	   int *jpp,/* = number of variables */
-	   int *kk, /* = number of clusters, 1 <= kk <= n-1 */
-	   double *x,	/* Input:  the data x[n, jpp] _rowwise_ (transposed)
-			 * Output: the first `n' values are the `clustering'
-			 *	   (integers in 1,2,..,kk) */
-	   int *nran,	/* = #{random samples} drawn	   (= `samples' in R)*/
-	   int *nsam,	/* = #{objects} drawn from data set (`sampsize' in R) */
-	   double *dys,/* [1:(1 + (nsam * (nsam - 1))/2)]
-			* Output: to contain the distances */
-	   int *mdata,	/*= {0,1}; 1: min(x) is missing value (NA);  0: no NA */
-	   double *valmd,/*[j]= missing value code (instead of NA) for x[,j]*/
-	   int *jtmd,	/* [j]= {-1,1};	 -1: x[,j] has NA; 1: no NAs in x[,j] */
-	   int *diss_kind,/* = {1,2};  1 : euclidean;  2 : manhattan*/
-	   int *rng_R,	/*  = {0,1};  0 : use clara's internal weak RNG;
-			 *	      1 : use R's RNG (and seed) */
-	   int *nrepr,
-	   int *nsel,
-	   int *nbest,/* x[nbest[j]] will be the j-th obs in the final sample */
-	   int *nr, int *nrx,
-	   double *radus, double *ttd, double *ratt,
-	   double *ttbes, double *rdbes, double *rabes,
-	   int *mtt, double *obj,
-	   double *avsyl, double *ttsyl, double *sylinf,
-	   int *jstop, int *trace_lev,
-	   double *tmp, /* = double [ 3 * nsam ] */
-	   int *itmp	/* = integer[ 6 * nsam ] */
+void cl_clara(int *n,  /* = number of objects */
+	      int *jpp,/* = number of variables */
+	      int *kk, /* = number of clusters, 1 <= kk <= n-1 */
+	      double *x,	/* Input:  the data x[n, jpp] _rowwise_ (transposed)
+				 * Output: the first `n' values are the `clustering'
+				 *	   (integers in 1,2,..,kk) */
+	      int *nran,	/* = #{random samples} drawn	   (= `samples' in R)*/
+	      int *nsam,	/* = #{objects} drawn from data set (`sampsize' in R) */
+	      double *dys,/* [1:(1 + (nsam * (nsam - 1))/2)]
+			   * Output: to contain the distances */
+	      int *mdata,	/*= {0,1}; 1: min(x) is missing value (NA);  0: no NA */
+	      double *valmd,/*[j]= missing value code (instead of NA) for x[,j]*/
+	      int *jtmd,	/* [j]= {-1,1};	 -1: x[,j] has NA; 1: no NAs in x[,j] */
+	      int *diss_kind,/* = {1,2};  1 : euclidean;  2 : manhattan*/
+	      int *rng_R,	/*  = {0,1};  0 : use clara's internal weak RNG;
+				 *	      1 : use R's RNG (and seed) */
+	      int *nrepr,
+	      int *nsel,
+	      int *nbest,/* x[nbest[j]] will be the j-th obs in the final sample */
+	      int *nr, int *nrx,
+	      double *radus, double *ttd, double *ratt,
+	      double *ttbes, double *rdbes, double *rabes,
+	      int *mtt, double *obj,
+	      double *avsyl, double *ttsyl, double *sylinf,
+	      int *jstop, int *trace_lev,
+	      double *tmp, /* = double [ 3 * nsam ] */
+	      int *itmp	/* = integer[ 6 * nsam ] */
     );
 
 void dysta2(int nsam, int jpp, int *nsel,
@@ -82,14 +82,14 @@ int F77_NAME(dysta)(int *nn, int *jpp, double *x, double *dys, int *ndyst,
 		    int *jtmd, double *valmd, int *jhalt);
 /* --------- ./pam.c ------------------*/
 
-void pam(int *nn, int *jpp, int *kk, double *x, double *dys,
-	 int *jdyss, /* jdyss = 0 : compute distances from x
-		      *	      = 1 : distances provided	in x */
-	 double *valmd, int *jtmd,
-	 int *ndyst, int *nsend, int *nrepr, int *nelem,
-	 double *radus, double *damer, double *ttd, double *separ,
-	 double *ttsyl, double *obj, int *med, int *ncluv,
-	 double *clusinf, double *sylinf, int *nisol);
+void cl_pam(int *nn, int *jpp, int *kk, double *x, double *dys,
+	    int *jdyss, /* jdyss = 0 : compute distances from x
+			 *	      = 1 : distances provided	in x */
+	    double *valmd, int *jtmd,
+	    int *ndyst, int *nsend, int *nrepr, int *nelem,
+	    double *radus, double *damer, double *ttd, double *separ,
+	    double *ttsyl, double *obj, int *med, int *ncluv,
+	    double *clusinf, double *sylinf, int *nisol);
 
 void bswap(int kk, int nsam, int *nrepr,
 	   Rboolean med_given, Rboolean do_swap, int trace_lev,
@@ -108,7 +108,7 @@ void dark(int kk, int nn, int *ncluv,
 
 /* --------- ./spannel.c ------------------*/
 
-void sweep(double *, int *, int *, int *, double *);
+void cl_sweep(double *, int *, int *, int *, double *);
 
 void spannel(int *ncas, /* = number of objects */
 	     int *ndep, /* = number of variables */
@@ -134,21 +134,21 @@ void sildist(double *d,		/* distance : in matrix or dist format; i.e.,
 	     int    *neighbor,	/* neighbor */
 	     int    *ismat);	/* boolean : is 'd' a matrix or 'dist' ? */
 
-void fanny(int *nn, int *jpp, int *kk,
-	   double *x, double *dss, int *jdyss, double *valmd,
-	   int *jtmd, int *ndyst, int *nsend, int *nelem,
-	   int *negbr, double *syl, double *p, double *dp,
-	   double *pt, int *nfuzz, double *esp, double *ef,
-	   double *dvec, double *ttsyl, double *obj,
-	   int *ncluv, double *sylinf, double *r, double *tol, int *maxit);
+void cl_fanny(int *nn, int *jpp, int *kk,
+	      double *x, double *dss, int *jdyss, double *valmd,
+	      int *jtmd, int *ndyst, int *nsend, int *nelem,
+	      int *negbr, double *syl, double *p, double *dp,
+	      double *pt, int *nfuzz, double *esp, double *ef,
+	      double *dvec, double *ttsyl, double *obj,
+	      int *ncluv, double *sylinf, double *r, double *tol, int *maxit);
 
 
 /* ================= Fortran things (remainder) ======================== */
 
 /* -------- ./daisy.f ---------------------------------- */
-int F77_NAME(daisy)(int *nn, int *jpp, double *x,
-		    double *valmd, int *jtmd, int *jdat, int *vtype,
-		    int *ndyst, int *mdata, double *disv);
+int F77_NAME(cl_daisy)(int *nn, int *jpp, double *x,
+		       double *valmd, int *jtmd, int *jdat, int *vtype,
+		       int *ndyst, int *mdata, double *disv);
 
 /* -------- ./fanny.c ---------------------------------- */
 /* R-level: called only from ../tests/dysta-ex.R  (now via .C()): */
@@ -159,8 +159,8 @@ void dysta3(int *nn, int *p, double *x, double *dys,
 int F77_NAME(meet)(int *l, int *j);
 
 /* -------- ./mona.f ---------------------------------- */
-int F77_NAME(mona)(int *nn, int *pp, int *x, int *jerr,
-		   int *nban, int *ner, int *kwan, int *lava, int *jlack);
+int F77_NAME(cl_mona)(int *nn, int *pp, int *x, int *jerr,
+		      int *nban, int *ner, int *kwan, int *lava, int *jlack);
 
 /* -------- ./twins.f ---------------------------------- */
 int F77_NAME(bncoef)(int *nn, int *jpp, double *x, double *dys, int *ndyst,

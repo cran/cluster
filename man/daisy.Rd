@@ -6,15 +6,19 @@
 \concept{Gower's coefficient}% FIXME: see ../TODO-MM
 \description{
   Compute all the pairwise dissimilarities (distances) between observations
-  in the data set.  The original variables may be of mixed types.
+  in the data set.  The original variables may be of mixed types.  In
+  that case, or whenever \code{metric = "gower"} is set, a
+  generalization of Gower's formula is used, see \sQuote{Details}
+  below.
 }
 \usage{
 daisy(x, metric = c("euclidean", "manhattan", "gower"),
-      stand = FALSE, type = list())
+      stand = FALSE, type = list(), weights = rep.int(1, p))
 }
 \arguments{
   \item{x}{
-    numeric matrix or data frame.  Dissimilarities will be computed
+    numeric matrix or data frame, of dimension \eqn{n\times p}{n x p},
+    say.  Dissimilarities will be computed
     between the rows of \code{x}.  Columns of mode \code{numeric}
     (i.e. all columns when \code{x} is a matrix) will be recognized as
     interval scaled variables, columns of class \code{factor} will be
@@ -60,6 +64,10 @@ daisy(x, metric = c("euclidean", "manhattan", "gower"),
     Variables not mentioned in the \code{type} list are interpreted as
     usual (see argument \code{x}).
   }
+  \item{weights}{an optional numeric vector of length \eqn{p}(=\code{ncol(x)}); to
+    be used in \dQuote{case 2} (mixed variables, or \code{metric = "gower"}),
+    specifying a weight for each variable (\code{x[,k]}) instead of
+    \eqn{1} in Gower's original formula.}
 }% end{arg..}
 
 \value{
@@ -69,7 +77,8 @@ daisy(x, metric = c("euclidean", "manhattan", "gower"),
   \code{diana}.  For more details, see \code{\link{dissimilarity.object}}.
 }
 \details{
-  \code{daisy} is fully described in chapter 1 of Kaufman and Rousseeuw (1990).
+  The original version of \code{daisy} is fully described in chapter 1
+  of Kaufman and Rousseeuw (1990).
   Compared to \code{\link{dist}} whose input must be numeric
   variables, the main feature of \code{daisy} is its ability to handle
   other variable types as well (e.g. nominal, ordinal, (a)symmetric
@@ -82,7 +91,10 @@ daisy(x, metric = c("euclidean", "manhattan", "gower"),
   ignored and Gower's coefficient will be used as the metric.  This can
   also be activated for purely numeric data by \code{metric = "gower"}.
   With that, each variable (column) is first standardized by dividing
-  each entry by the range of the corresponding variable.
+  each entry by the range of the corresponding variable, after
+  subtracting the minimum value; consequently the rescaled variable has
+  range \eqn{[0,1]}, exactly.
+  %% FIXME: Use something like  "gowerRob" which uses *robust* rescaling
 
   Note that setting the type to \code{symm} (symmetric binary) gives the
   same dissimilarities as using \emph{nominal} (which is chosen for
@@ -90,37 +102,59 @@ daisy(x, metric = c("euclidean", "manhattan", "gower"),
   efficiently.
 
   Note that \code{daisy} now gives a warning when 2-valued numerical
-  variables don't have an explicit \code{type} specified, because the
+  variables do not have an explicit \code{type} specified, because the
   reference authors recommend to consider using \code{"asymm"}.
 
   In the \code{daisy} algorithm, missing values in a row of x are not
   included in the dissimilarities involving that row.  There are two
   main cases,
   \enumerate{
-    \item If all variables are interval scaled,
-      the metric is "euclidean", and ng is the number of columns in which
+    \item If all variables are interval scaled (and \code{metric} is
+      \emph{not} \code{"gower"}), the metric is "euclidean", and
+      \eqn{n_g} is the number of columns in which
       neither row i and j have NAs, then the dissimilarity d(i,j) returned is
-      sqrt(ncol(x)/ng) times the Euclidean distance between the two vectors
-      of length ng shortened to exclude NAs.  The rule is similar for the
-      "manhattan" metric, except that the coefficient is ncol(x)/ng.
-      If ng is zero, the dissimilarity is NA.
+      \eqn{\sqrt{p/n_g}}{sqrt(p/n_g)} (\eqn{p=}ncol(x)) times the
+      Euclidean distance between the two vectors of length \eqn{n_g}
+      shortened to exclude NAs.  The rule is similar for the "manhattan"
+      metric, except that the coefficient is \eqn{p/n_g}.  If \eqn{n_g = 0},
+      the dissimilarity is NA.
 
-    \item When some variables have a type other than interval scaled, the
-      dissimilarity between two rows is the weighted sum of the contributions of
-      each variable.\cr
-      The weight becomes zero when that variable is missing in either or both
-      rows, or when the variable is asymmetric binary and both values are
-      zero.  In all other situations, the weight of the variable is 1.
+    \item When some variables have a type other than interval scaled, or
+      if \code{metric = "gower"} is specified, the
+      dissimilarity between two rows is the weighted mean of the contributions of
+      each variable.  Specifically,
+      \deqn{d_{ij} = d(i,j) = \frac{\sum_{k=1}^p w_k \delta_{ij}^{(k)} d_{ij}^{(k)}}{
+	  \sum_{k=1}^p w_k \delta_{ij}^{(k)}}.
+      }{d_ij = d(i,j) =	sum(k=1:p; w_k delta(ij;k) d(ij,k)) / sum(k=1:p; w_k delta(ij;k)).}
+      In other words, \eqn{d_{ij}}{d_ij} is a weighted mean of
+      \eqn{d_{ij}^{(k)}}{d(ij,k)} with weights \eqn{w_k \delta_{ij}^{(k)}}{w_k delta(ij;k)},
+      where \eqn{w_k}\code{= weigths[k]},
+      \eqn{\delta_{ij}^{(k)}}{delta(ij;k)} is 0 or 1, and
+      \eqn{d_{ij}^{(k)}}{d(ij,k)}, the k-th variable contribution to the
+      total distance, is a distance between \code{x[i,k]} and \code{x[j,k]},
+      see below.
 
-      The contribution of a nominal or binary variable to the total
-      dissimilarity is 0 if both values are equal, 1 otherwise.  The
-      contribution of other variables is the absolute difference of both
-      values, divided by the total range of that variable.  Ordinal
-      variables are first converted to ranks.
+      The 0-1 weight \eqn{\delta_{ij}^{(k)}}{delta(ij;k)} becomes zero
+      when the variable \code{x[,k]} is missing in either or both rows
+      (i and j), or when the variable is asymmetric binary and both
+      values are zero.  In all other situations it is 1.
 
-      If \code{nok} is the number of nonzero weights, the dissimilarity is
-      multiplied by the factor \code{1/nok} and thus ranges between 0 and 1.
-      If \code{nok = 0}, the dissimilarity is set to \code{\link{NA}}.
+      The contribution \eqn{d_{ij}^{(k)}}{d(ij,k)} of a nominal or binary variable to the total
+      dissimilarity is 0 if both values are equal, 1 otherwise.
+      The contribution of other variables is the absolute difference of
+      both values, divided by the total range of that variable.  Note
+      that \dQuote{standard scoring} is applied to ordinal variables,
+      i.e., they are replaced by their integer codes \code{1:K}.  Note
+      that this is not the same as using their ranks (since there
+      typically are ties).
+      % contrary to what Kaufman & Rousseeuw  write in their book, and
+      % the original help page.
+
+      As the individual contributions \eqn{d_{ij}^{(k)}}{d(ij,k)} are in
+      \eqn{[0,1]}, the dissimilarity \eqn{d_{ij}}{d_ij} will remain in
+      this range.
+      If all weights \eqn{w_k \delta_{ij}^{(k)}}{w_k delta(ij;k)} are zero,
+      the dissimilarity is set to \code{\link{NA}}.
   }
 }
 \section{Background}{
@@ -140,6 +174,14 @@ daisy(x, metric = c("euclidean", "manhattan", "gower"),
   Struyf, A., Hubert, M. and Rousseeuw, P.J. (1997)
   Integrating Robust Clustering Techniques in S-PLUS,
   \emph{Computational Statistics and Data Analysis} \bold{26}, 17--37.
+}
+\author{
+  Anja Struyf, Mia Hubert, and Peter and Rousseeuw, for the original
+  version.
+  \cr
+  Martin Maechler improved the \code{\link{NA}} handling and
+  \code{type} specification checking, and extended functionality to
+  \code{metric = "gower"} and the optional \code{weights} argument.
 }
 \seealso{
   \code{\link{dissimilarity.object}}, \code{\link{dist}},

@@ -20,7 +20,7 @@ ellipsoidhull <-
     if(n == 0) stop("no points without missing values")
     p <- ncol(x)
 
-    res <- .C("spannel",
+    res <- .C(spannel,
               n,
               ndep= p,
               dat = cbind(1., x),
@@ -32,8 +32,7 @@ ellipsoidhull <-
               double(p+1),
               eps = as.double(tol),
               maxit = as.integer(maxit),
-              ierr = integer(1),# 0 or non-zero
-              PACKAGE = "cluster")
+              ierr = integer(1))# 0 or non-zero
     if(res$ierr != 0)
         cat("Error in Fortran routine computing the spanning ellipsoid,",
             "\n probably collinear data\n", sep="")

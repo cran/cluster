@@ -1,6 +1,6 @@
 
 daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
-		  stand = FALSE, type = list())
+		  stand = FALSE, type = list(), weights = rep.int(1, p))
 {
     ## check type of input matrix
     if(length(dx <- dim(x)) != 2 || !(is.data.frame(x) || is.numeric(x)))
@@ -94,23 +94,32 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
 	    }
 	    x <- scale(x, center = FALSE, scale = sx)
 	}
-	jdat <- 2
-	ndyst <- if(metric == "manhattan") 2 else 1
+	jdat <- 2L
+	ndyst <- if(metric == "manhattan") 2L else 1L
     }
-    else { ## mixed case or  "gower"
+    else { ## mixed case or explicit "gower"
 	if(!missing(metric) && metric != "gower" && !all.I)
 	    warning("with mixed variables, metric \"gower\" is used automatically")
+        ## FIXME: think of a robust alternative scaling to
+        ##        Gower's  (x - min(x)) / (max(x) - min(x))
 	colR <- apply(x, 2, range, na.rm = TRUE)
 	colmin <- colR[1,]
 	sx <- colR[2,] - colmin
 	if(any(sx == 0))
 	    sx[sx == 0] <- 1
 	x <- scale(x, center = colmin, scale = sx)
-	jdat <- 1
-	ndyst <- 0
+	jdat <- 1L
+	ndyst <- 0L
+        ## weights only used in this "gower" case
+        if(length(weights) == 1)
+            weights <- rep.int(weights, p)
+        else if(length(weights) != p)
+            stop("'weights' must be of length p (or 1)")
     }
+
     ##	type2 <- paste(type2, collapse = "")
     typeCodes <- c('A','S','N','O','I','T')
+    ##              1   2   3   4   5   6  --> passed to Fortran below
     type3 <- match(type2, typeCodes)# integer
     if(any(ina <- is.na(type3)))
 	stop("invalid type ", type2[ina],
@@ -124,20 +133,20 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     }
     ## call Fortran routine
     storage.mode(x) <- "double"
-    disv <- .Fortran("daisy",
+    disv <- .Fortran(cl_daisy,
 		     n,
 		     p,
 		     x,
 		     if(mdata)valmd else double(1),
+                     as.double(weights),
 		     if(mdata) jtmd else integer(1),
-		     as.integer(jdat),
+		     jdat,
 		     type3,		# vtype
-		     as.integer(ndyst),
+		     ndyst,
 		     as.integer(mdata),
 		     dis = double((n * (n - 1))/2),
 		     NAOK = TRUE,# only to allow "+- Inf"
-		     DUP = FALSE,
-		     PACKAGE = "cluster")$dis
+		     DUP = FALSE)$dis
     ## adapt Fortran output to S:
     ## convert lower matrix, read by rows, to upper matrix, read by rows.
     disv[disv == -1] <- NA
@@ -148,10 +157,10 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     if(any(is.na(disv))) attr(disv, "NA.message") <-
 	"NA-values in the dissimilarity matrix !"
     ## construct S object -- "dist" methods are *there* !
-    class(disv) <- dissiCl
+    class(disv) <- dissiCl # see ./0aaa.R
     attr(disv, "Labels") <- dimnames(x)[[1]]
     attr(disv, "Size") <- n
-    attr(disv, "Metric") <- ifelse(!ndyst, "mixed", metric)
+    attr(disv, "Metric") <- if(!ndyst) "mixed" else metric
     if(!ndyst) attr(disv, "Types") <- typeCodes[type3]
     disv
 }

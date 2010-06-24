@@ -22,7 +22,7 @@ mona <- function(x)
 ##     storage.mode(x2) <- "integer"
 
     ## call Fortran routine
-    res <- .Fortran("mona",
+    res <- .Fortran(cl_mona,
                     as.integer(n),
                     as.integer(jp),
                     x2 = x2,# x[,]
@@ -31,8 +31,8 @@ mona <- function(x)
                     ner = integer(n),
                     integer(n),
                     lava = integer(n),
-                    integer(jp),
-                    PACKAGE = "cluster")
+                    integer(jp))
+
     ## stop with a message when two many missing values:
     if(res$error != 0) {
         ch <- "No clustering performed, "

@@ -84,11 +84,12 @@ for f in $flinks
 do
   ## echo $f
   bf=`basename $f -${ending}`
+  if echo $bf | grep -s '\.Rout$' > /dev/null ; then bf="$bf.save" ; fi
   echo -n "$bf	"
   if [ -f $bf ]
   then relink s/${ending}/${o_end}/ $bf
        ls -l $bf | /u/maechler/bin/perl/ls-l-nice
-  else echo "** No file '$bf' in directory `pwd` ... skipping ..."
+  else echo "** No file '$bf' in directory `pwd`: Not relink'ing ..."
   fi
 done
 

@@ -72,10 +72,11 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
   sub-dataset, each observation of the entire dataset is assigned
   to the nearest medoid.
 
-  The sum of the dissimilarities of the observations to their closest
-  medoid is used as a measure of the quality of the clustering.  The
-  sub-dataset for which the sum is minimal, is retained.  A further
-  analysis is carried out on the final partition.
+  The mean (equivalent to the sum) of the dissimilarities of the
+  observations to their closest medoid is used as a measure of the
+  quality of the clustering.  The sub-dataset for which the mean (or
+  sum) is minimal, is retained.  A further analysis is carried out on
+  the final partition.
 
   Each sub-dataset is forced to contain the medoids obtained from the
   best sub-dataset until then.  Randomly drawn observations are added to

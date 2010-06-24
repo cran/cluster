@@ -23,12 +23,12 @@ sweep1 <- function(cov, i, det = 1)
     if(0 > (i <- as.integer(i)) || i > nord)
         stop("`i' must be in 0:nord, where nord = nrow(cov)-1")
     storage.mode(cov) <- "double"
-    .C("sweep",
-             cov,
-             nord,
-             ixlo = 0:0,
-             i = i,
-             deter=det, package = "cluster")
+    .C(cluster:::cl_sweep,
+       cov,
+       nord,
+       ixlo = 0:0,
+       i = i,
+       deter=det)
 }
 
 sweepAll <- function(cov, det = 1)
@@ -44,21 +44,20 @@ sweepAll <- function(cov, det = 1)
         stop("`cov' must be at least 2 x 2")
     storage.mode(cov) <- "double"
     for(i in 0:nord) {
-        .C("sweep",
-                 cov,
-                 nord,
-                 ixlo = 0:0,
-                 i = i,
-                 deter = det,
-                 DUP = FALSE, # i.e. work on `cov' and `det' directly
-                 PACKAGE = "cluster")
+	.C(cluster:::cl_sweep,
+	   cov,
+	   nord,
+	   ixlo = 0:0,
+	   i = i,
+	   deter = det,
+	   DUP = FALSE) # i.e. work on `cov' and `det' directly
         if(det <= 0)
             cat("** i = ", i, "; deter = ", format(det)," <= 0\n",sep="")
     }
     list(cov = cov, deter = det)
 }
 
-library(cluster)
+require(cluster)
 
 ## Examples with errors
 m1 <- cov(cbind(1, 1:5))

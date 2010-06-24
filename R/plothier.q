@@ -1,4 +1,4 @@
-### $Id: plothier.q 2856 2004-11-27 14:58:18Z maechler $
+### $Id: plothier.q 5594 2010-06-20 20:32:33Z maechler $
 
 pltree <- function(x, ...) UseMethod("pltree")
 
@@ -32,9 +32,6 @@ function(x, w = rev(x$height), fromLeft = TRUE, main=NULL, sub=NULL,
 	if(xax.pretty) {
 	    at.vals <- if(!is.logical(xax.pretty))
 		pretty(c(0,w), n = xax.pretty) else pretty(c(0,w))
-	    ## n <- if(!is.logical(xax.pretty)) xax.pretty else
-            ## formals(if(exists("pretty.default", mode="function")) pretty.default else pretty)$n
-	    ## at.vals <- pretty(c(0,w), n = n)
 	    n <- length(at.vals <- at.vals[at.vals <= m])
 	    if(at.vals[n] * 1.01 < m) {
 		lab.vals <- c(at.vals, signif(m, 3))

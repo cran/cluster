@@ -1,4 +1,4 @@
-useDynLib(cluster)
+useDynLib(cluster, .registration=TRUE)
 
 ## S3 Generics:
 export(clusplot, pltree, silhouette, volume)

@@ -48,12 +48,12 @@ static R_NativePrimitiveArgType sweep_t[5] = {
 };
 
 static const R_CMethodDef CEntries[]  = {
-    {"clara", (DL_FUNC) &clara, 32, clara_t},
+    {"cl_clara", (DL_FUNC) &cl_clara, 32, clara_t},
     {"dysta3", (DL_FUNC) &dysta3, 8},/* ./fanny.c */
-    {"fanny", (DL_FUNC) &fanny, 27, fanny_t},
-    {"pam", (DL_FUNC) &pam, 23, pam_t},
+    {"cl_fanny", (DL_FUNC) &cl_fanny, 27, fanny_t},
+    {"cl_pam", (DL_FUNC) &cl_pam, 23, pam_t},
     {"spannel", (DL_FUNC) &spannel, 12, spannel_t},
-    {"sweep", (DL_FUNC) &sweep, 5, sweep_t},
+    {"cl_sweep", (DL_FUNC) &cl_sweep, 5, sweep_t},
     CDEF(sildist),
     {NULL, NULL, 0}
 };
@@ -65,8 +65,8 @@ static const R_CMethodDef CEntries[]  = {
 
 static R_FortranMethodDef FortEntries[] = {
     {"bncoef", (DL_FUNC) &F77_SUB(bncoef), 3},/* ./twins.f */
-    {"daisy", (DL_FUNC) &F77_SUB(daisy), 10},
-    {"mona", (DL_FUNC) &F77_SUB(mona), 9},
+    {"cl_daisy", (DL_FUNC) &F77_SUB(cl_daisy), 11},
+    {"cl_mona", (DL_FUNC) &F77_SUB(cl_mona), 9},
     {"twins", (DL_FUNC) &F77_SUB(twins), 17},
     {"dysta", (DL_FUNC) &F77_SUB(dysta), 8},
     {NULL, NULL, 0}

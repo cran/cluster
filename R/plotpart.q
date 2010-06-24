@@ -1,4 +1,4 @@
-### $Id: plotpart.q 3239 2006-06-12 17:14:29Z maechler $
+### $Id: plotpart.q 5598 2010-06-24 10:20:48Z maechler $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
          nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
@@ -115,53 +115,6 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
 	    }
 	}
 	if(is.null(labels1)) labels1 <- 1:n
-
-	if(paste(R.version$major, R.version$minor, sep=".") < 1.5) {
-	    ## a simplified (add = T) version of R 1.5's cmdscale()
-	    cmdscale <- function (d, k = 2, add = TRUE, ...) {
-		if (any(is.na(d)))
-		    stop("NA values not allowed in d")
-		if (is.null(n <- attr(d, "Size"))) {
-		    d <- as.matrix(d)
-		    x <- d^2
-		    if ((n <- nrow(x)) != ncol(x))
-			stop("Distances must be result of dist or a square matrix")
-		}
-		else {
-		    x <- matrix(0, n, n)
-		    if(add) d0 <- x
-		    x[row(x) > col(x)] <- d^2
-		    x <- x + t(x)
-		    if(add) {
-			d0[row(x) > col(x)] <- d
-			d <- d0 + t(d0)
-		    }
-		}
-		storage.mode(x) <- "double"
-		x <- .C("dblcen", x=x, as.integer(n), PACKAGE="mva")$x
-		if(add) { ## solve the additive constant problem
-		    i2 <- n + (i <- 1:n)
-		    Z <- matrix(0, 2*n, 2*n)
-		    Z[cbind(i2,i)] <- -1
-		    Z[ i, i2] <- -x
-		    Z[i2, i2] <- .C("dblcen", x= 2*d, as.integer(n),PACKAGE="mva")$x
-		    e <- eigen(Z,symmetric = FALSE, only.val = TRUE)$values
-		    add.c <- max(Re(e))
-		    x <- matrix(double(n*n), n, n)
-		    non.diag <- row(d) != col(d)
-		    x[non.diag] <- (d[non.diag] + add.c)^2
-		}
-		e <- eigen(-x/2, symmetric = TRUE)
-		ev <- e$values[1:k]
-		points <- e$vectors[, 1:k] %*% diag(sqrt(ev), k)
-		rn <- if(is.matrix(d)) rownames(d) else names(d)
-		dimnames(points) <- list(rn, NULL)
-		evalus <- e$values[-n]
-		list(points = points, eig = ev, ac = if(add) add.c else 0,
-		     GOF = sum(ev)/c(sum(abs(evalus)),
-		     sum(evalus[evalus > 0])))
-	    }
-	} ## cmdscale() -- if R version < 1.5
 
 	x1 <- cmdscale(x, k = 2, eig = TRUE, add = TRUE)
 	if(x1$ac < 0)
@@ -322,7 +275,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
 		if(verbose)
 		    cat("span & rank2 : calling \"spannel\" ..\n")
 		k <- as.integer(2)
-		res <- .C("spannel",
+		res <- .C(spannel,
 			  aantal,
 			  ndep= k,
 			  dat = cbind(1., x),
@@ -334,8 +287,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
 			  double(k+1),
 			  eps = (0.01),## convergence tol.
 			  maxit = as.integer(5000),
-			  ierr = integer(1),
-			  PACKAGE = "cluster")
+			  ierr = integer(1))
 		if(res$ierr != 0)
 		    ## MM : exactmve not available here !
 		    cat("Error in Fortran routine for the spanning ellipsoid,",

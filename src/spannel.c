@@ -89,7 +89,7 @@ void spannel(int *ncas, /* = number of objects */
 
 	deter = 1.;
 	for (i = 0; i <= *ndep; ++i) {
-	    sweep(cov, ndep, &c__0, &i, &deter);
+	    cl_sweep(cov, ndep, &c__0, &i, &deter);
 	    if (deter <= 0.) { *ierr = 2; return; }
 	}
 #ifdef DEBUG_spannel
@@ -126,7 +126,7 @@ void spannel(int *ncas, /* = number of objects */
 
 /* This is currently also called from R : ../tests/sweep-ex.R
  * ==> keep pointer args !*/
-void sweep(double *cov, int *nord, int *ixlo, int *nel, double *deter)
+void cl_sweep(double *cov, int *nord, int *ixlo, int *nel, double *deter)
 {
     /* Local variables */
     double temp;
@@ -156,5 +156,5 @@ void sweep(double *cov, int *nord, int *ixlo, int *nel, double *deter)
 	}
     }
     return;
-} /* sweep */
+} /* cl_sweep */
 #undef COV

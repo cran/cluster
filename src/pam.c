@@ -15,14 +15,14 @@
 
 /*     carries out a clustering using the k-medoid approach.
  */
-void pam(int *nn, int *p, int *kk, double *x, double *dys,
-	 int *jdyss, /* jdyss = 0 : compute distances from x
-		      *	      = 1 : distances provided	in x */
-	 double *valmd, int *jtmd,
-	 int *ndyst, int *nsend, int/*logical*/ *nrepr, int *nelem,
-	 double *radus, double *damer, double *avsyl, double *separ,
-	 double *ttsyl, double *obj, int *med, int *ncluv,
-	 double *clusinf, double *sylinf, int *nisol)
+void cl_pam(int *nn, int *p, int *kk, double *x, double *dys,
+	    int *jdyss, /* jdyss = 0 : compute distances from x
+			 *	 = 1 : distances provided in x */
+	    double *valmd, int *jtmd,
+	    int *ndyst, int *nsend, int/*logical*/ *nrepr, int *nelem,
+	    double *radus, double *damer, double *avsyl, double *separ,
+	    double *ttsyl, double *obj, int *med, int *ncluv,
+	    double *clusinf, double *sylinf, int *nisol)
 {
     int clusinf_dim1 = *kk;
 

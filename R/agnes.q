@@ -1,4 +1,4 @@
-#### $Id: agnes.q 5328 2009-01-21 13:51:04Z maechler $
+#### $Id: agnes.q 5598 2010-06-24 10:20:48Z maechler $
 agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		  stand = FALSE, method = "average", par.method,
                   keep.diss = n < 100, keep.data = !diss)
@@ -68,7 +68,7 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
     }
     if(keep.diss) jdyss <- jdyss + 10
     ## call Fortran routine
-    res <- .Fortran("twins",
+    res <- .Fortran(twins,
 		    as.integer(n),
 		    as.integer(jp),
 		    x2,
@@ -86,8 +86,7 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		    ac = as.double(0),
                     par.method,
 		    merge = matrix(0:0, n - 1, 2), # integer
-                    DUP = FALSE,
-		    PACKAGE = "cluster")
+                    DUP = FALSE)
     if(!diss) {
 	##give warning if some dissimilarities are missing.
 	if(res$ok == -1)

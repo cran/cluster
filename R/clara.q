@@ -44,8 +44,8 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     } else rm(inax) # save space
 
     if((trace <- as.integer(trace)))
-	cat("calling .C(\"clara\", *):\n")
-    res <- .C("clara",
+	cat("calling .C(cl_clara, *):\n")
+    res <- .C(cl_clara,
 	      n,
 	      jp,
 	      k,
@@ -78,8 +78,7 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	      trace = trace,
 	      tmp  = double (3 * sampsize),
 	      itmp = integer(6 * sampsize),
-	      DUP = FALSE,
-	      PACKAGE = "cluster")
+	      DUP = FALSE)
     ## give a warning when errors occured
     if(res$jstop) {
 	if(mdata && any(aNA <- apply(inax,1, all))) {
@@ -103,7 +102,7 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 		 " samples, at least one object was found which\n could not",
 		 " be assigned to a cluster (because of missing values).")
 	## else {cannot happen}
-	stop("invalid 'jstop' from .C(\"clara\",.): ", res$jstop)
+	stop("invalid 'jstop' from .C(cl_clara,.): ", res$jstop)
     }
     ## 'res$clu' is still large; cut down ASAP
     res$clu <- as.integer(res$clu[1:n])

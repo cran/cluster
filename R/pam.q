@@ -1,5 +1,5 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q 4967 2008-02-29 11:13:02Z maechler $
+#### --- $Id: pam.q 5592 2010-06-19 16:37:03Z maechler $
 pam <- function(x, k, diss = inherits(x, "dist"),
 		metric = "euclidean", medoids = NULL,
                 stand = FALSE, cluster.only = FALSE, do.swap = TRUE,
@@ -69,7 +69,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
     ## call Fortran routine
     storage.mode(dv) <- "double"
     storage.mode(x2) <- "double"
-    res <- .C("pam",
+    res <- .C(cl_pam,
 	      as.integer(n),
 	      as.integer(jp),
 	      k,
@@ -93,8 +93,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	      clusinf = if(cluster.only) 0. else matrix(0., k, 5),
 	      silinf  = if(cluster.only) 0. else matrix(0., n, 4),
 	      isol = nisol,
-	      DUP = FALSE, # care!!
-	      PACKAGE = "cluster")
+	      DUP = FALSE) # care!!
 
     xLab <- if(diss) attr(x, "Labels") else dimnames(x)[[1]]
     if(length(xLab) > 0)
@@ -105,7 +104,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
     ## Else, usually
     medID <- res$med
     if(any(medID <= 0))
-	stop("error from .C(\"pam\", *): invalid medID's")
+	stop("error from .C(cl_pam, *): invalid medID's")
     sildim <- res$silinf[, 4]
     if(diss) {
 	if(keep.diss) disv <- x

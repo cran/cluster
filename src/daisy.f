@@ -1,5 +1,6 @@
 
-      subroutine daisy(nn,jpp,x,valmd,jtmd,jdat,vtype,ndyst,mdata,disv)
+      subroutine cl_daisy(nn,jpp,x,valmd,weights,
+     +     jtmd,jdat,vtype,ndyst,mdata,disv)
 c     c
 c     c  Calculating dissimilarities between objects or variables
 c     c
@@ -10,7 +11,7 @@ c     c          jpp = number of variables used for the calculations
 
 c     c  The following vectors and matrices must be dimensioned in the
 c     c  main program :
-      double precision x(nn,jpp), valmd(jpp)
+      double precision x(nn,jpp), valmd(jpp), weights(jpp)
       double precision disv(1+nn*(nn-1)/2)
       integer jtmd(jpp), jdat, vtype(jpp), ndyst, mdata
 
@@ -54,19 +55,19 @@ c               Dissimilarity between obs.  l & k
                            if(x(k,j).eq.valmd(j)) goto 420
                         endif
                      endif
-                     ppa=ppa+1.
+                     ppa=ppa + weights(j)
                      if(vtype(j).eq.3) then
-                        if(x(l,j).ne.x(k,j)) dlk=dlk+ 1.
+                        if(x(l,j).ne.x(k,j)) dlk=dlk+ weights(j)
                      else
-                        dlk=dlk+ dabs(x(l,j)-x(k,j))
+                        dlk=dlk+ weights(j)*dabs(x(l,j)-x(k,j))
                      endif
                   else
 c               binary variable x(*,j)
                      if(x(l,j).ne.0..and.x(l,j).ne.1.) goto 420
                      if(x(k,j).ne.0..and.x(k,j).ne.1.) goto 420
                      if(vtype(j).eq.2.or.x(l,j).ne.0.or.x(k,j).ne.0)
-     *                    ppa=ppa+1.
-                     if(x(l,j).ne.x(k,j)) dlk=dlk+1.
+     *                    ppa=ppa+weights(j)
+                     if(x(l,j).ne.x(k,j)) dlk=dlk+ weights(j)
                   endif
  420           continue
                if(ppa.le.0.5) then

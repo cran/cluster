@@ -1,3 +1,25 @@
+2010-06-24  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.13.1
+
+2010-06-23  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/daisy.Rd: add our *generalized* Gower formula (LaTeX), and
+	update the detailled description accordingly.
+
+2010-06-02  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.13.0
+
+	* src/daisy.f (cl_daisy): renamed from daisy
+	* src/init.c, src/*.[chf]: renamed others, so we can use
+	* NAMESPACE (useDynLib): .registration = TRUE
+
+2010-05-28  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/daisy.q (daisy): using variable weights (for gower).
+	* src/daisy.f: ditto
+
 2010-03-29  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.12.3
