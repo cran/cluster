@@ -1,7 +1,8 @@
 
-R version 2.6.1 Patched (2007-12-16 r43716)
-Copyright (C) 2007 The R Foundation for Statistical Computing
+R version 2.12.0 Patched (2010-10-19 r53372)
+Copyright (C) 2010 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
+Platform: i686-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -29,30 +30,30 @@ Type 'q()' to quit R.
 + }
 $Distances
          [,1]     [,2]
-[1,]   0.0000 191.3607
-[2,] 191.3607   0.0000
+[1,]   0.0000 154.8601
+[2,] 154.8601   0.0000
 
 $Shading
-[1] 20.92924 22.07076
+[1] 22.12103 20.87897
 
 $Distances
          [,1] [,2]     [,3]
-[1,]   0.0000   NA 166.9258
+[1,]   0.0000   NA 140.8008
 [2,]       NA    0       NA
-[3,] 166.9258   NA   0.0000
+[3,] 140.8008   NA   0.0000
 
 $Shading
-[1] 24.375330  5.142036 16.482634
+[1] 25.602967  5.292663 15.104370
 
 $Distances
          [,1] [,2]     [,3]     [,4]
-[1,]   0.0000   NA 146.3222 291.3211
+[1,]   0.0000   NA 117.2287 280.7259
 [2,]       NA    0       NA       NA
-[3,] 146.3222   NA   0.0000       NA
-[4,] 291.3211   NA       NA   0.0000
+[3,] 117.2287   NA   0.0000       NA
+[4,] 280.7259   NA       NA   0.0000
 
 $Shading
-[1] 14.151910  3.869265 10.873704 20.105120
+[1] 15.431339  3.980743 10.145454 19.442464
 
 > 
 > ## plotting iris (dataframe) in a 2-dimensional plot and partitioning

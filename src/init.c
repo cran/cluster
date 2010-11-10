@@ -52,6 +52,7 @@ static const R_CMethodDef CEntries[]  = {
     {"dysta3", (DL_FUNC) &dysta3, 8},/* ./fanny.c */
     {"cl_fanny", (DL_FUNC) &cl_fanny, 27, fanny_t},
     {"cl_pam", (DL_FUNC) &cl_pam, 23, pam_t},
+    // ./spannel.c :
     {"spannel", (DL_FUNC) &spannel, 12, spannel_t},
     {"cl_sweep", (DL_FUNC) &cl_sweep, 5, sweep_t},
     CDEF(sildist),
@@ -65,8 +66,8 @@ static const R_CMethodDef CEntries[]  = {
 
 static R_FortranMethodDef FortEntries[] = {
     {"bncoef", (DL_FUNC) &F77_SUB(bncoef), 3},/* ./twins.f */
-    {"cl_daisy", (DL_FUNC) &F77_SUB(cl_daisy), 11},
-    {"cl_mona", (DL_FUNC) &F77_SUB(cl_mona), 9},
+    {"cl_daisy", (DL_FUNC) &F77_SUB(cldaisy), 11},
+    {"cl_mona", (DL_FUNC) &F77_SUB(clmona), 9},
     {"twins", (DL_FUNC) &F77_SUB(twins), 17},
     {"dysta", (DL_FUNC) &F77_SUB(dysta), 8},
     {NULL, NULL, 0}

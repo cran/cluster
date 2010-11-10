@@ -14,9 +14,9 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     n <- nrow(x)
     if((k <- as.integer(k)) < 1 || k > n - 1)
 	stop("The number of cluster should be at least 1 and at most n-1." )
-    if((sampsize <- as.integer(sampsize)) < max(2,k))
-	stop(gettextf("'sampsize' should be at least %d = max(2, number of clusters)",
-                      max(2,k)), domain=NA)
+    if((sampsize <- as.integer(sampsize)) < max(2,k+1))
+	stop(gettextf("'sampsize' should be at least %d = max(2, 1+ number of clusters)",
+                      max(2,k+1)), domain=NA)
     if(n < sampsize)
 	stop(gettextf("'sampsize' = %d should not be larger than the number of objects, %d",
                       sampsize, n), domain=NA)
@@ -43,8 +43,9 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	x[inax] <- valmisdat
     } else rm(inax) # save space
 
+    doDUP <- nzchar(dup <- Sys.getenv("R_cluster_clara_dup")) && isTRUE(as.logical(dup))
     if((trace <- as.integer(trace)))
-	cat("calling .C(cl_clara, *):\n")
+	cat(sprintf("calling .C(cl_clara, ..., DUP = %s):\n", doDUP))
     res <- .C(cl_clara,
 	      n,
 	      jp,
@@ -78,7 +79,7 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	      trace = trace,
 	      tmp  = double (3 * sampsize),
 	      itmp = integer(6 * sampsize),
-	      DUP = FALSE)
+	      DUP = doDUP)
     ## give a warning when errors occured
     if(res$jstop) {
 	if(mdata && any(aNA <- apply(inax,1, all))) {
@@ -161,7 +162,7 @@ summary.clara <- function(object, ...)
 
 print.summary.clara <- function(x, ...)
 {
-    cat("Object of class `clara' from call:\n", deparse(x$call),
+    cat("Object of class 'clara' from call:\n", deparse(x$call),
 	"\nMedoids:\n");		print(x$medoids, ...)
     cat("Objective function:\t ", format(x$objective, ...),
 	"\nNumerical information per cluster:\n")

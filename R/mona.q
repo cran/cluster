@@ -12,7 +12,7 @@ mona <- function(x)
     jp <- ncol(x)
     ## change levels of input matrix
 
-    x2 <- apply(as.matrix(x), 2, function(x) as.integer(factor(x))) - 1:1
+    x2 <- apply(as.matrix(x), 2, function(x) as.integer(factor(x))) - 1L
     x2[is.na(x2)] <- 2:2
 ## was
 ##     x2 <- apply(as.matrix(x), 2, factor)

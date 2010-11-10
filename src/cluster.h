@@ -146,7 +146,7 @@ void cl_fanny(int *nn, int *jpp, int *kk,
 /* ================= Fortran things (remainder) ======================== */
 
 /* -------- ./daisy.f ---------------------------------- */
-int F77_NAME(cl_daisy)(int *nn, int *jpp, double *x,
+int F77_NAME(cldaisy)(int *nn, int *jpp, double *x,
 		       double *valmd, int *jtmd, int *jdat, int *vtype,
 		       int *ndyst, int *mdata, double *disv);
 
@@ -159,7 +159,7 @@ void dysta3(int *nn, int *p, double *x, double *dys,
 int F77_NAME(meet)(int *l, int *j);
 
 /* -------- ./mona.f ---------------------------------- */
-int F77_NAME(cl_mona)(int *nn, int *pp, int *x, int *jerr,
+int F77_NAME(clmona)(int *nn, int *pp, int *x, int *jerr,
 		      int *nban, int *ner, int *kwan, int *lava, int *jlack);
 
 /* -------- ./twins.f ---------------------------------- */

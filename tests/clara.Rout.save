@@ -1,7 +1,8 @@
 
-R version 2.11.1 Patched (2010-05-31 r52179)
+R version 2.12.0 Patched (2010-11-07 r53537)
 Copyright (C) 2010 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
+Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -30,7 +31,7 @@ Type 'q()' to quit R.
 > ## full size sample {should be = pam()}:
 > n0 <- length(iSml <- c(1:70, 701:720))
 > summary(clara0 <- clara(x[iSml,], k = 2, sampsize = n0))
-Object of class `clara' from call:
+Object of class 'clara' from call:
  clara(x = x[iSml, ], k = 2, sampsize = n0) 
 Medoids:
           [,1]      [,2]
@@ -163,7 +164,7 @@ Available components:
 +           )
 > 
 > summary(clara2 <- clara(x, 2))
-Object of class `clara' from call:
+Object of class 'clara' from call:
  clara(x = x, k = 2) 
 Medoids:
           [,1]      [,2]
@@ -719,7 +720,7 @@ Available components:
  [1] "sample"     "medoids"    "i.med"      "clustering" "objective" 
  [6] "clusinfo"   "diss"       "call"       "silinfo"    "data"      
 > summary(clara(x5, 5, samples = 50))
-Object of class `clara' from call:
+Object of class 'clara' from call:
  clara(x = x5, k = 5, samples = 50) 
 Medoids:
            [,1]       [,2]        [,3]
@@ -1023,50 +1024,10 @@ Number of objects : 4
 > ## Dissimilarities :  11 118 143 107 132  89
 > 
 > ## no problem anymore, since 2002-12-28:
-> clara(ru5, k=3, met="manhattan", sampsize=3,trace=2)[clInS]
-calling .C(cl_clara, *):
-C clara(): (nsam,nran,n) = (3,5,4); 'large_sample',
-C clara(): sample 1  finding 1st... new k{ran}:
- {295} [ntt=1, nunfs=0]  -> dysta2()
-. clara(): s:= max dys[1..3] = 132; bs2 1st proper or new best: obj= 2.75
-C clara(): sample 2  finding 1st... new k{ran}:
- {295} [ntt=1, nunfs=0]  -> dysta2()
-. clara(): s:= max dys[1..3] = 132; bs2 obj= 2.75
-C clara(): sample 3  finding 1st... new k{ran}:
- {295} [ntt=1, nunfs=0]  -> dysta2()
-. clara(): s:= max dys[1..3] = 132; bs2 obj= 2.75
-C clara(): sample 4  finding 1st... new k{ran}:
- {295} [ntt=1, nunfs=0]  -> dysta2()
-. clara(): s:= max dys[1..3] = 132; bs2 obj= 2.75
-C clara(): sample 5  finding 1st... new k{ran}:
- {295} [ntt=1, nunfs=0]  -> dysta2()
-. clara(): s:= max dys[1..3] = 132; bs2 obj= 2.75
-C clara(): best sample _found_ ; nbest[1:3] =
- c(2,3,4)
- --> dysta2(nbest), resul(), end
-$objective
-[1] 2.75
-
-$i.med
-[1] 2 3 4
-
-$medoids
-    x   y
-2   5  63
-21 28 147
-45 85 115
-
-$clusinfo
-     size max_diss av_diss isolation
-[1,]    2       11     5.5 0.1028037
-[2,]    1        0     0.0 0.0000000
-[3,]    1        0     0.0 0.0000000
-
-$sample
-[1] "2"  "21" "45"
-
+> ## sampsize >= k+1 is now enforced:
+> ## clara(ru5, k=3, met="manhattan", sampsize=3,trace=2)[clInS]
 > clara(ru5, k=3, met="manhattan", sampsize=4,trace=1)[clInS]
-calling .C(cl_clara, *):
+calling .C(cl_clara, ..., DUP = FALSE):
 C clara(): (nsam,nran,n) = (4,5,4); 'full_sample',
 C clara(): sample 1 C clara(): best sample _found_  --> dysta2(nbest), resul(), end
 $objective
@@ -1103,7 +1064,7 @@ Dissimilarities :
 
 Metric :  manhattan 
 Number of objects : 7
-> ## this one (k=3) gives problem, from ss = 6 on ___ still after 2002-12-28 ___ :
+> ## this one (k=3) gave problems, from ss = 6 on ___ still after 2002-12-28 ___ :
 > for(ss in 4:nrow(ru4)){
 +     cat("---\n\nsample size = ",ss,"\n")
 +     print(clara(ru4,k=3,met="manhattan",sampsize=ss)[clInS])
@@ -1204,36 +1165,10 @@ $clusinfo
 $sample
 [1] "1"  "2"  "21" "22" "45" "46" "47"
 
-> for(ss in 4:nrow(ru3)){
+> for(ss in 5:nrow(ru3)){
 +     cat("---\n\nsample size = ",ss,"\n")
 +     print(clara(ru3,k=4,met="manhattan",sampsize=ss)[clInS])
 + }
----
-
-sample size =  4 
-$objective
-[1] 29.1875
-
-$i.med
-[1]  1  4  5 10
-
-$medoids
-    x   y
-1   4  53
-4   9  77
-21 28 147
-45 85 115
-
-$clusinfo
-     size max_diss  av_diss isolation
-[1,]    4      115 34.50000 3.9655172
-[2,]    1        0  0.00000 0.0000000
-[3,]    5       14  9.00000 0.1573034
-[4,]    6      111 47.33333 1.2471910
-
-$sample
-[1] "1"  "4"  "21" "45"
-
 ---
 
 sample size =  5 
@@ -1550,7 +1485,7 @@ $sample
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  3.493 0.018 3.565 0 0 
+Time elapsed:  3.443 0.028 3.49 0 0 
 > ## Lynne (P IV, 1.6 GHz): 18.81; then (no NA; R 1.9.0-alpha): 15.07
 > ## nb-mm (P III,700 MHz): 27.97
 > 

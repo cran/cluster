@@ -1,4 +1,4 @@
-#### $Id: fanny.q 5592 2010-06-19 16:37:03Z maechler $
+#### $Id: fanny.q 5645 2010-11-08 22:33:44Z maechler $
 fanny <- function(x, k, diss = inherits(x, "dist"), memb.exp = 2,
                   metric = c("euclidean", "manhattan", "SqEuclidean"),
                   stand = FALSE, iniMem.p = NULL, cluster.only = FALSE,
@@ -59,7 +59,7 @@ fanny <- function(x, k, diss = inherits(x, "dist"), memb.exp = 2,
         stop("'maxit' must be non-negative integer")
     computeP <- is.null(iniMem.p) # default: determine initial membership in C
     if(computeP)# default: determine initial membership in C
-        iniMem.p <- matrix(0., n, k)# all 0 -> will be used as `code'
+        iniMem.p <- matrix(0., n, k)# all 0 -> will be used as 'code'
     else {
         dm <- dim(iniMem.p)
         if(length(dm) !=2 || !all(dm == c(n,k)) ||
@@ -226,7 +226,7 @@ as.membership <- function(clustering, keep.names = TRUE) {
     if(keep.names)
 	dimnames(r) <- list(names(clustering), NULL)
     if(any(u != 1:k)) clustering <- match(clustering, u)
-    r[cbind(1:n, clustering)] <- 1:1
+    r[cbind(1:n, clustering)] <- 1L
     r
 }
 

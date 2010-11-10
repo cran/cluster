@@ -1,8 +1,8 @@
-### $Id: plothier.q 5594 2010-06-20 20:32:33Z maechler $
+### $Id: plothier.q 5642 2010-11-03 09:33:50Z maechler $
 
 pltree <- function(x, ...) UseMethod("pltree")
 
-## note: pltree() can have an `xlab' in "..." (plot.hclust has an explicit one)
+## note: pltree() can have an 'xlab' in "..." (plot.hclust has an explicit one)
 pltree.twins <- function(x, main = paste("Dendrogram of ", deparse(x$call)),
 			 labels = NULL, ylab = "Height", ...)
 {
@@ -103,7 +103,7 @@ function(x, ask = FALSE, which.plots = NULL, main = NULL,
 
     if(is.null(which.plots) && !ask)
 	which.plots <- 1:2
-    if(ask && is.null(which.plots)) { ## Use `menu' ..
+    if(ask && is.null(which.plots)) { ## Use 'menu' ..
 	tmenu <- paste("plot ", ## choices :
 		       c("All", "Banner", "Clustering Tree"))
 	do.all <- FALSE
@@ -158,7 +158,7 @@ function(x, ask = FALSE, which.plots = NULL, main = NULL,
 
     if(is.null(which.plots) && !ask)
 	which.plots <- 1:2
-    if(ask && is.null(which.plots)) { ## Use `menu' ..
+    if(ask && is.null(which.plots)) { ## Use 'menu' ..
 	tmenu <- paste("plot ", ## choices :
 		       c("All", "Banner", "Clustering Tree"))
 	do.all <- FALSE

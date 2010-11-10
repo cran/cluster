@@ -1,7 +1,8 @@
 
-R version 2.11.1 Patched (2010-05-31 r52179)
+R version 2.12.0 Patched (2010-11-07 r53537)
 Copyright (C) 2010 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
+Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -63,7 +64,7 @@ Type 'q()' to quit R.
    2.00   27.25  147.50  114.60  188.50  270.00   16.00 
 > ## First call with "trace" (seg.fault typically later ...):
 > try( clara(x, k=2, metric="manhattan", sampsize=10, trace = 3) )
-calling .C(cl_clara, *):
+calling .C(cl_clara, ..., DUP = FALSE):
 C clara(): (nsam,nran,n) = (10,5,17); 'large_sample',
 C clara(): sample 1  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -122,7 +123,7 @@ Error in clara(x, k = 2, metric = "manhattan", sampsize = 10, trace = 3) :
 > str(x) # 88 x 2
  num [1:88, 1:2] 0 3 -4 62 1 3 -7 45 36 46 ...
 > try(clara(x, 2, samples = 20, trace = 3))# 2nd sample did show dysta2() problem
-calling .C(cl_clara, *):
+calling .C(cl_clara, ..., DUP = FALSE):
 C clara(): (nsam,nran,n) = (44,20,88);
 C clara(): sample 1  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -254,7 +255,7 @@ Error in clara(rbind(NA, x), 2) : Observations 1,34
 > x <- x[-33,]
 > ## still had the ** dysta2() .. OUT" problem {no longer!}
 > clara(x, 2, samples = 12, trace = 3)
-calling .C(cl_clara, *):
+calling .C(cl_clara, ..., DUP = FALSE):
 C clara(): (nsam,nran,n) = (44,12,87); 'large_sample',
 C clara(): sample 1  finding 1st... new k{ran}:
 .. kall: FALSE, 

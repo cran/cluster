@@ -86,16 +86,17 @@ daisy(ru5, "manhattan")
 ## Dissimilarities :  11 118 143 107 132  89
 
 ## no problem anymore, since 2002-12-28:
-clara(ru5, k=3, met="manhattan", sampsize=3,trace=2)[clInS]
+## sampsize >= k+1 is now enforced:
+## clara(ru5, k=3, met="manhattan", sampsize=3,trace=2)[clInS]
 clara(ru5, k=3, met="manhattan", sampsize=4,trace=1)[clInS]
 
 daisy(ru4, "manhattan")
-## this one (k=3) gives problem, from ss = 6 on ___ still after 2002-12-28 ___ :
+## this one (k=3) gave problems, from ss = 6 on ___ still after 2002-12-28 ___ :
 for(ss in 4:nrow(ru4)){
     cat("---\n\nsample size = ",ss,"\n")
     print(clara(ru4,k=3,met="manhattan",sampsize=ss)[clInS])
 }
-for(ss in 4:nrow(ru3)){
+for(ss in 5:nrow(ru3)){
     cat("---\n\nsample size = ",ss,"\n")
     print(clara(ru3,k=4,met="manhattan",sampsize=ss)[clInS])
 }

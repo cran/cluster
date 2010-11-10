@@ -31,7 +31,11 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
     variable's mean value and dividing by the variable's mean absolute
     deviation.
   }
-  \item{samples}{integer, number of samples to be drawn from the dataset.}
+  \item{samples}{integer, number of samples to be drawn from the
+    dataset.  The default, \code{5}, is rather small for historical (and
+    now back compatibility) reasons and we recommend to set
+    \code{samples} an order of magnitude larger.
+  }
   \item{sampsize}{integer, number of observations in each
     sample. \code{sampsize} should be higher than the number of clusters
     (\code{k}) and at most the number of observations (n = \code{nrow(x)}).}
@@ -122,7 +126,7 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
 ## generate 500 objects, divided into 2 clusters.
 x <- rbind(cbind(rnorm(200,0,8), rnorm(200,0,8)),
            cbind(rnorm(300,50,8), rnorm(300,50,8)))
-clarax <- clara(x, 2)
+clarax <- clara(x, 2, samples=50)
 clarax
 clarax$clusinfo
 plot(clarax)
@@ -131,6 +135,10 @@ plot(clarax)
 ## objects each.
 data(xclara)
 (clx3 <- clara(xclara, 3))
+## "better" number of samples
+cl.3 <- clara(xclara, 3, samples=100)
+## but that did not change the result here:
+stopifnot(cl.3$clustering == clx3$clustering)
 ## Plot similar to Figure 5 in Struyf et al (1996)
 \dontrun{plot(clx3, ask = TRUE)}
 \dontshow{plot(clx3)}

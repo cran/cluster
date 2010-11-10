@@ -1,3 +1,21 @@
+2010-11-09  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/clara.q (clara): enforce  sampsize > k {as the help file always said};
+	allow to disable 'DUP=FALSE' via env variable.
+
+2010-11-08  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/clara.c (cl_clara): inserting rand_k into nsel[]: simplified
+	and avoiding (typically inconsequential) out_of_bound array access.
+
+2010-10-21  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.13.2  ;  Enhances: MASS
+
+	* src/cluster.h, src/daisy.f, src/mona.f:
+	* src/init.c (FortEntries): s/cl_/cl/ for now,
+	as some f77/g77 setups cannot deal with it correctly.
+
 2010-06-24  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.13.1

@@ -1,5 +1,5 @@
 
-      subroutine cl_daisy(nn,jpp,x,valmd,weights,
+      subroutine cldaisy(nn,jpp,x,valmd,weights,
      +     jtmd,jdat,vtype,ndyst,mdata,disv)
 c     c
 c     c  Calculating dissimilarities between objects or variables

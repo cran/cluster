@@ -47,7 +47,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
 		stop("at least one binary variable has values not in {0,1,NA}")
 	}
     }
-    ## transform variables and construct `type' vector
+    ## transform variables and construct 'type' vector
     if(is.data.frame(x)) {
 	type2 <- sapply(x, data.class)
 	x <- data.matrix(x)
@@ -74,8 +74,8 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     type2[type2 == "ordered"] <- "O"
     type2[type2 == "factor"] <- "N"
     if(any(ilog <- type2 == "logical")) {
-	warning("setting `logical' variable",if(sum(ilog)>1)"s " else " ",
-		pColl(which(ilog)), " to type `asymm'")
+	warning("setting 'logical' variable",if(sum(ilog)>1)"s " else " ",
+		pColl(which(ilog)), " to type 'asymm'")
 	type2[ilog] <- "A"
     }
     ## Note: We have 2 status codings:  ndyst = (0,1,2) and jdat = (1,2);

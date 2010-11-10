@@ -1,4 +1,4 @@
-### $Id: plotpart.q 5598 2010-06-24 10:20:48Z maechler $
+### $Id: plotpart.q 5642 2010-11-03 09:33:50Z maechler $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
          nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
@@ -16,7 +16,7 @@ function(x, ask = FALSE, which.plots = NULL,
                 2 ## no clusplot
             else 1:2
         }
-    if(ask && is.null(which.plots)) { ## Use `menu' ..
+    if(ask && is.null(which.plots)) { ## Use 'menu' ..
         tmenu <- paste("plot ", ## choices :
                        c("All", "Clusplot", "Silhouette Plot"))
         do.all <- FALSE
@@ -77,7 +77,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
 
     if(diss) {
 	if(any(is.na(x)))
-	    stop("NA-values are not allowed in dist-like `x'.")
+	    stop("NA-values are not allowed in dist-like 'x'.")
 	if(inherits(x, "dist")) {
 	    n <- attr(x, "Size")
 	    labels1 <- attr(x, "Labels")
@@ -324,7 +324,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
 
     if(verhouding == 0)
 	verhouding <- 1
-    ## num4 <- 37 ; num5 <- 3 --- but `41' is another constant
+    ## num4 <- 37 ; num5 <- 3 --- but '41' is another constant
     density <- 3 + (verhoud * 37)/verhouding
     density[density > 41] <- 41
     if (span) {
@@ -509,7 +509,7 @@ clusplot.partition <- function(x, main = NULL, dist = NULL, ...)
                 stop("no diss nor data found, nor the original argument of ",
                      deparse(x$call))
             ## else
-            ## warning("both `x$diss' and `dist' are empty; ",
+            ## warning("both 'x$diss' and 'dist' are empty; ",
             ##         "trying to find the first argument of ", deparse(x$call))
             clusplot.default(xD, x$clustering, diss = TRUE, main = main, ...)
         }

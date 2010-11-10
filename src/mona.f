@@ -1,4 +1,4 @@
-      subroutine cl_mona(nn,pp, x,jerr, nban,ner,kwan,lava, jlack)
+      subroutine clmona(nn,pp, x,jerr, nban,ner,kwan,lava, jlack)
 cc
 cc   MONothetic Analysis
 cc
