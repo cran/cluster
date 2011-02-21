@@ -111,4 +111,4 @@ ellipsoidPoints <- function(A, d2, loc, n.half = 201)
 }
 
 predict.ellipsoid <- function(object, n.out = 201, ...)
-    ellipsoidPoints(object$cov, d2 = object$d2, loc= object$loc, n = n.out)
+    ellipsoidPoints(object$cov, d2 = object$d2, loc= object$loc, n.half = n.out)

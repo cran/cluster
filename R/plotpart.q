@@ -1,4 +1,4 @@
-### $Id: plotpart.q 5642 2010-11-03 09:33:50Z maechler $
+### $Id: plotpart.q 5662 2010-12-12 21:21:50Z maechler $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
          nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
@@ -309,7 +309,7 @@ function(x, clus, diss = FALSE, cor = TRUE, stand = FALSE, lines = 2,
 	    oppervlak <- pi * d2[i] * sqrt(cov[1, 1] * cov[2, 2] - cov[1, 2]^2)
 	}
 
-	z[[i]] <- ellipsoidPoints(A[[i]], d2[i], loc[i, ], n= 201)
+	z[[i]] <- ellipsoidPoints(A[[i]], d2[i], loc[i, ], n.half= 201)
 	maxima[i, ] <- z[[i]][201, ]
 	rx <- range(z[[i]][, 1])
 	ry <- range(z[[i]][, 2])

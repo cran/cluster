@@ -1,3 +1,11 @@
+2011-02-21  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.13.3
+
+2010-12-12  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/ellipsoidhull.R, *: use "full argument names"
+
 2010-11-09  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* R/clara.q (clara): enforce  sampsize > k {as the help file always said};

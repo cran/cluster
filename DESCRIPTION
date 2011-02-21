@@ -1,6 +1,6 @@
 Package: cluster
-Version: 1.13.2
-Date: 2010-11-10
+Version: 1.13.3
+Date: 2011-02-21
 Priority: recommended
 Author: Martin Maechler, based on S original by Peter Rousseeuw
         <rousse@uia.ua.ac.be>, Anja.Struyf@uia.ua.ac.be and
@@ -15,6 +15,6 @@ Enhances: MASS
 LazyLoad: yes
 LazyData: yes
 License: GPL (>= 2)
-Packaged: 2010-11-10 07:57:26 UTC; maechler
+Packaged: 2011-02-21 11:18:26 UTC; maechler
 Repository: CRAN
-Date/Publication: 2010-11-10 12:28:02
+Date/Publication: 2011-02-21 14:13:24
