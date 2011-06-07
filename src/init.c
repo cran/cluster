@@ -8,9 +8,9 @@
 #define CDEF(name)  {#name, (DL_FUNC) &name, sizeof(name ## _t)/sizeof(name ## _t[0]), name ##_t}
 
 
-static R_NativePrimitiveArgType clara_t[32] = {
+static R_NativePrimitiveArgType clara_t[33] = {
     /*n:*/ INTSXP, INTSXP, INTSXP, REALSXP, INTSXP, INTSXP, REALSXP, INTSXP,
-    /*valmd:*/ REALSXP, INTSXP, INTSXP, /* rng_R: */ LGLSXP,
+    /*valmd:*/ REALSXP, INTSXP, INTSXP, /* rng_R: */ LGLSXP, /* pam_like:*/ LGLSXP,
     /*nrepr: */ INTSXP, INTSXP, INTSXP, INTSXP, INTSXP,
     /*radus:*/ REALSXP, REALSXP, REALSXP, REALSXP, REALSXP, REALSXP, INTSXP,
     /*obj: */ REALSXP, REALSXP, REALSXP, REALSXP,  INTSXP, INTSXP,
@@ -48,7 +48,7 @@ static R_NativePrimitiveArgType sweep_t[5] = {
 };
 
 static const R_CMethodDef CEntries[]  = {
-    {"cl_clara", (DL_FUNC) &cl_clara, 32, clara_t},
+    {"cl_clara", (DL_FUNC) &cl_clara, 33, clara_t},
     {"dysta3", (DL_FUNC) &dysta3, 8},/* ./fanny.c */
     {"cl_fanny", (DL_FUNC) &cl_fanny, 27, fanny_t},
     {"cl_pam", (DL_FUNC) &cl_pam, 23, pam_t},

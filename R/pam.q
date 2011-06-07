@@ -1,5 +1,5 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q 5642 2010-11-03 09:33:50Z maechler $
+#### --- $Id: pam.q 5779 2011-05-20 20:58:50Z maechler $
 pam <- function(x, k, diss = inherits(x, "dist"),
 		metric = "euclidean", medoids = NULL,
                 stand = FALSE, cluster.only = FALSE, do.swap = TRUE,
@@ -98,6 +98,10 @@ pam <- function(x, k, diss = inherits(x, "dist"),
     xLab <- if(diss) attr(x, "Labels") else dimnames(x)[[1]]
     if(length(xLab) > 0)
         names(res$clu) <- xLab
+
+    ## Error if have NA's in diss:
+    if(!diss && res$jdyss == -1)
+	stop("No clustering performed, NAs in the computed dissimilarity matrix.")
     if(cluster.only)
         return(res$clu)
 
@@ -115,9 +119,6 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	}
     }
     else {
-	## give warning if some dissimilarities are missing.
-	if(res$jdyss == -1)
-	    stop("No clustering performed, NAs in the computed dissimilarity matrix.")
         if(keep.diss) {
             ## adapt Fortran output to S:
             ## convert lower matrix, read by rows, to upper matrix, read by rows.

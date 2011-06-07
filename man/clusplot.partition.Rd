@@ -1,15 +1,20 @@
-\name{clusplot.partition}
+\name{clusplot}
+\alias{clusplot}
 \alias{clusplot.partition}
-\title{Bivariate Clusplot of a Partitioning Object}
+\title{Bivariate Cluster Plot (of a Partitioning Object)}
 \description{
-  Clusplot (Clustering Plot) method for an object of class \code{partition}.
+  Draws a 2-dimensional \dQuote{clusplot} (clustering plot) on the
+  current graphics device.
+  The generic function has a default and a \code{partition} method.
 }
 \usage{
+clusplot(x, \dots)
+
 \method{clusplot}{partition}(x, main = NULL, dist = NULL, \dots)
 }
 \arguments{
-  \item{x}{
-    an object of class \code{"partition"}, e.g. created by the functions
+  \item{x}{an \R object, here, specifically an object of class
+    \code{"partition"}, e.g. created by one of the functions
     \code{\link{pam}}, \code{\link{clara}}, or \code{\link{fanny}}.}
   \item{main}{title for the plot; when \code{NULL} (by default), a title
     is constructed, using \code{x$call}.}
@@ -17,32 +22,21 @@
     \code{data} component, e.g., for \code{\link{pam}(dist(*),
       keep.diss=FALSE)}, \code{dist} must specify the dissimilarity for the
     clusplot.}
-  \item{\dots}{all optional arguments available for the
-    \code{\link{clusplot.default}} function (except for the \code{diss}
-    one) may also be supplied to this function.  Graphical parameters
-    (see \code{\link{par}}) may also be supplied as arguments to this
-    function.}
+  \item{\dots}{optional arguments passed to methods, notably the
+    \code{\link{clusplot.default}} method (except for the \code{diss}
+    one) may also be supplied to this function.  Many graphical parameters
+    (see \code{\link{par}}) may also be supplied as arguments here.}
+}
+\section{Side Effects}{
+  a 2-dimensional clusplot is created on the current graphics device.
 }
 \value{
-  An invisible list with components
-  \item{Distances}{
-    When option lines is 1 or 2 we optain a k by k matrix (k is the number of
-    clusters). The element at row j and column s is the distance between
-    ellipse j and ellipse s.  If lines=0, then the value of this
-    component is NA.
-  }
-  \item{Shading}{
-    A vector of length k (where k is the number of clusters), containing
-    the amount of shading per cluster.  Let y be a vector where element
-    i is the ratio between the number of objects in cluster i and the
-    area of ellipse i.  When the cluster i is a line segment, y[i] and
-    the density of the cluster are set to NA.  Let z be the sum of all
-    the elements of y without the NAs.  Then we put shading = y/z *37 + 3.
-  }
+  For the \code{partition} (and \code{default}) method: An invisible
+  list with components \code{Distances} and \code{Shading}, as for
+  \code{\link{clusplot.default}}, see there.
 }
 \details{
-  This \code{clusplot.partition()} method relies on
-  \code{\link{clusplot.default}}.
+  The \code{clusplot.partition()} method relies on \code{\link{clusplot.default}}.
 
   If the clustering algorithms \code{pam}, \code{fanny} and \code{clara}
   are applied to a data matrix of observations-by-variables then a
@@ -61,7 +55,8 @@
   \code{\link{clara.object}}, \code{\link{fanny}},
   \code{\link{fanny.object}}, \code{\link{par}}.
 }
-\examples{
+\examples{ ## For more, see ?clusplot.default
+
 ## generate 25 objects, divided into 2 clusters.
 x <- rbind(cbind(rnorm(10,0,0.5), rnorm(10,0,0.5)),
            cbind(rnorm(15,5,0.5), rnorm(15,5,0.5)))

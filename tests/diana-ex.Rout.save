@@ -1,6 +1,8 @@
 
-R : Copyright 2004, The R Foundation for Statistical Computing
-Version 2.0.1  (2004-11-15), ISBN 3-900051-07-0
+R version 2.13.0 Patched (2011-04-16 r55459)
+Copyright (C) 2011 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -11,7 +13,7 @@ Type 'contributors()' for more information and
 'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
-'help.start()' for a HTML browser interface to help.
+'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
 > library(cluster)
@@ -431,7 +433,7 @@ List of 8
  - attr(*, "class")= chr [1:2] "diana" "twins"
 > 
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  0.26 0.05 0.36 0 0 
+Time elapsed:  0.03 0.03 0.057 0 0 
 > 
 > ## From system.file("scripts/ch11.R", package = "MASS")
 > data(swiss)
@@ -510,7 +512,7 @@ Time elapsed:  0.26 0.05 0.36 0 0
      |  `--[dendrogram w/ 2 branches and 2 members at h = 13]
      |     |--leaf "Gruyere" 
      |     `--leaf "Sarine" 
-     `--[dendrogram w/ 2 branches and 11 members at h = 30.0]
+     `--[dendrogram w/ 2 branches and 11 members at h = 30]
         |--[dendrogram w/ 2 branches and 5 members at h = 12.9]
         |  |--[dendrogram w/ 2 branches and 4 members at h = 11.9]
         |  |  |--[dendrogram w/ 2 branches and 3 members at h = 8.45]
@@ -520,7 +522,7 @@ Time elapsed:  0.26 0.05 0.36 0 0
         |  |  |     `--leaf "Veveyse" 
         |  |  `--leaf "Sion" 
         |  `--leaf "Monthey" 
-        `--[dendrogram w/ 2 branches and 6 members at h = 16.0]
+        `--[dendrogram w/ 2 branches and 6 members at h = 16]
            |--[dendrogram w/ 2 branches and 4 members at h = 7.42]
            |  |--[dendrogram w/ 2 branches and 3 members at h = 5.94]
            |  |  |--[dendrogram w/ 2 branches and 2 members at h = 2.05]

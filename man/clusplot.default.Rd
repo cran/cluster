@@ -12,8 +12,10 @@
           lines = 2, shade = FALSE, color = FALSE,
           labels= 0, plotchar = TRUE,
           col.p = "dark green", col.txt = col.p,
-          col.clus = if(color) c(2, 4, 6, 3) else 5,
-          span = TRUE, xlim = NULL, ylim = NULL,
+          col.clus = if(color) c(2, 4, 6, 3) else 5, cex = 1, cex.txt = cex,
+          span = TRUE,
+          add = FALSE,
+          xlim = NULL, ylim = NULL,
           main = paste("CLUSPLOT(", deparse(substitute(x)),")"),
           sub = paste("These two components explain",
              round(100 * var.dec, digits = 2), "\% of the point variability."),
@@ -122,11 +124,16 @@
     cluster fall on a straight line, \code{span=FALSE} draws a narrow
     ellipse around it and \code{span=TRUE} gives the exact line segment.
   }
+  \item{add}{logical indicating if ellipses (and labels if \code{labels}
+    is true) should be \emph{added} to an already existing plot.  If
+    false, neither a \code{\link{title}} or sub title, see \code{sub},
+    is written.}
   \item{col.p}{color code(s) used for the observation points.}
   \item{col.txt}{color code(s) used for the labels (if \code{labels >= 2}).}
   \item{col.clus}{color code for the ellipses (and their labels);
     only one if color is false (as per default).}
-
+  \item{cex, cex.txt}{character \bold{ex}pansion (size), for the point
+    symbols and point labels, respectively.}
   \item{xlim, ylim}{numeric vectors of length 2, giving the x- and y-
     ranges as in \code{\link{plot.default}}.}
   \item{main}{main title for the plot; by default, one is constructed.}
@@ -203,12 +210,26 @@
 ## partitioning into 2 clusters
 data(votes.repub)
 votes.diss <- daisy(votes.repub)
-votes.clus <- pam(votes.diss, 2, diss = TRUE)$clustering
+pamv <- pam(votes.diss, 2, diss = TRUE)
+clusplot(pamv, shade = TRUE)
+## is the same as
+votes.clus <- pamv$clustering
 clusplot(votes.diss, votes.clus, diss = TRUE, shade = TRUE)
+
+clusplot(pamv, col.p = votes.clus, labels = 4)# color points and label ellipses
+# "simple" cheap ellipses: larger than minimum volume:
+# here they are *added* to the previous plot:
+clusplot(pamv, span = FALSE, add = TRUE, col.clus = "midnightblue")
+
+## a work-around for setting a small label size:
+clusplot(votes.diss, votes.clus, diss = TRUE)
+op <- par(new=TRUE, cex = 0.6)
 clusplot(votes.diss, votes.clus, diss = TRUE,
-         col.p = votes.clus, labels = 4)# color points and label ellipses
-%% FIXME: should have a  clusellipses(..) for just adding ellipses
-clusplot(votes.diss, votes.clus, diss = TRUE, span = FALSE)# simple ellipses
+         axes=FALSE,ann=FALSE, sub="", col.p=NA, col.txt="dark green", labels=3)
+par(op)
+## MM: This should now be as simple as
+clusplot(votes.diss, votes.clus, diss = TRUE, labels = 3, cex.txt = 0.6)
+
 
 if(interactive()) { #  uses identify() *interactively* :
   clusplot(votes.diss, votes.clus, diss = TRUE, shade = TRUE, labels = 1)

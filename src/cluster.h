@@ -37,8 +37,10 @@ void cl_clara(int *n,  /* = number of objects */
 	      double *valmd,/*[j]= missing value code (instead of NA) for x[,j]*/
 	      int *jtmd,	/* [j]= {-1,1};	 -1: x[,j] has NA; 1: no NAs in x[,j] */
 	      int *diss_kind,/* = {1,2};  1 : euclidean;  2 : manhattan*/
-	      int *rng_R,	/*  = {0,1};  0 : use clara's internal weak RNG;
-				 *	      1 : use R's RNG (and seed) */
+	      int/*logical*/ *rng_R,/*= {0,1};  0 : use clara's internal weak RNG;
+				     *	        1 : use R's RNG (and seed) */
+	      int/*logical*/ *pam_like,/* if (1), we do "swap()" as in pam();*/
+	      // otherwise use the code as it was in clara() "forever" upto 2011-04
 	      int *nrepr,
 	      int *nsel,
 	      int *nbest,/* x[nbest[j]] will be the j-th obs in the final sample */
@@ -56,12 +58,16 @@ void dysta2(int nsam, int jpp, int *nsel,
 	    double *x, int n, double *dys, int diss_kind,
 	    int *jtmd, double *valmd, Rboolean has_NA, Rboolean *toomany_NA);
 
-void bswap2(int kk, int nsam, int *nrepr,
-	    double *dys, double *sky, double s,
+
+void bswap2(int kk, int nsam, double s, const double dys[],
+	    Rboolean pam_like, int trace_lev,
+	    // result:
+	    double *sky, int *nrepr,
 	    double *dysma, double *dysmb, double *beter);
 
 void selec(int kk, int n, int jpp, int diss_kind,
 	   double *zb, int nsam, Rboolean has_NA, int *jtmd, double *valmd,
+	   int trace_lev,
 	   int *nrepr, int *nsel, double *dys, double *x, int *nr,
 	   Rboolean *nafs, double *ttd, double *radus, double *ratt,
 	   int *nrnew, int *nsnew, int *npnew, int *ns, int *np, int *new,

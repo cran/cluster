@@ -1,6 +1,6 @@
 
-R version 2.12.0 Patched (2010-11-07 r53537)
-Copyright (C) 2010 The R Foundation for Statistical Computing
+R version 2.13.0 Patched (2011-04-16 r55459)
+Copyright (C) 2011 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-unknown-linux-gnu (64-bit)
 
@@ -370,7 +370,7 @@ $clusinfo
 [2,]  800 29.66384  9.964205 0.5673860
 
 $objective
-[1] 10.06130
+[1] 10.0613
 
 $i.med
 [1] 199 134
@@ -434,7 +434,7 @@ $clusinfo
 [2,]  700 34.30301 10.167473 0.6663777
 
 $objective
-[1] 10.05920
+[1] 10.0592
 
 $i.med
 [1] 1279 1349
@@ -466,7 +466,7 @@ $clusinfo
 [2,]  700 33.12704 10.191999 0.6324587
 
 $objective
-[1] 10.05920
+[1] 10.0592
 
 $i.med
 [1] 337 675
@@ -963,7 +963,7 @@ Medoids:
 [1,]  5.553391 13.306260
 [2,] 43.198760 60.360720
 [3,] 74.591890 -6.969018
-Objective function:	 13.22500
+Objective function:	 13.225
 Clustering vector: 	 int [1:3000] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ...
 Cluster sizes:	    	 900 1148 952 
 Best sample:
@@ -1485,7 +1485,7 @@ $sample
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  3.443 0.028 3.49 0 0 
+Time elapsed:  2.83 0 2.82 0 0 
 > ## Lynne (P IV, 1.6 GHz): 18.81; then (no NA; R 1.9.0-alpha): 15.07
 > ## nb-mm (P III,700 MHz): 27.97
 > 

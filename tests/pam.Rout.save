@@ -1,7 +1,8 @@
 
-R version 2.6.1 Patched (2007-12-18 r43730)
-Copyright (C) 2007 The R Foundation for Statistical Computing
+R version 2.13.0 Patched (2011-06-06 r56067)
+Copyright (C) 2011 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
+Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -360,7 +361,7 @@ Available components:
 > spdx <- silhouette(pdx)
 > summary(spdx)
 Silhouette of 250 units in 2 clusters from pam(x = dist(x), k = 2) :
-Cluster sizes and average silhouette widths:
+ Cluster sizes and average silhouette widths:
       120       130 
 0.7196104 0.7148520 
 Individual silhouette widths:
@@ -964,6 +965,7 @@ Available components:
  [1] "medoids"    "id.med"     "clustering" "objective"  "isolation" 
  [6] "clusinfo"   "silinfo"    "diss"       "call"       "data"      
 > (pv6 <- pam(votes.repub, 6, trace = 3))
+C pam(): computing 1226 dissimilarities: [Ok]
 pam()'s bswap(*, s=281.951): build 6 medoids:
     new repr. 2
     new repr. 1
@@ -1039,10 +1041,11 @@ Available components:
  [6] "clusinfo"   "silinfo"    "diss"       "call"       "data"      
 > 
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  2.067 0.031 2.115 0 0 
+Time elapsed:  1.253 0.036 1.303 0 0 
 > 
 > ## re-starting with medoids from pv6  shouldn't change:
 > pv6. <- pam(votes.repub, 6, medoids = pv6$id.med, trace = 3)
+C pam(): computing 1226 dissimilarities: [Ok]
 pam()'s bswap(*, s=281.951): medoids given
   after build: medoids are  2 10 15 31 40 46
   and min.dist dysma[1:n] are
@@ -1101,8 +1104,8 @@ Medoids:
 Clustering vector:
  [1] 1 2 2 3 4 5 2 2 3 5 2 2 2 3 1 2 2 2 1 1 1 4 5
 Objective function:
-   build     swap 
-1.298890 0.862732 
+    build      swap 
+1.2988899 0.8627319 
 
 Available components:
 [1] "medoids"    "id.med"     "clustering" "objective"  "isolation" 
@@ -1114,6 +1117,6 @@ null device
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  2.079 0.032 2.135 0 0 
+Time elapsed:  1.264 0.037 1.316 0 0 
 > 
 > 

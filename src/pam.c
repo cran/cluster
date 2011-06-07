@@ -34,14 +34,18 @@ void cl_pam(int *nn, int *p, int *kk, double *x, double *dys,
     double s, sky;
 
     /* Function Body */
+    nhalf = *nn * (*nn - 1) / 2 + 1; /* nhalf := #{distances}+1 = length(dys) */
+
     if (*jdyss != 1) {
 	jhalt = 0;
+	if(trace_lev)
+	    Rprintf("C pam(): computing %d dissimilarities: ", nhalf);
 	F77_CALL(dysta)(nn, p, x, dys, ndyst, jtmd, valmd, &jhalt);
+	if(trace_lev) Rprintf("[Ok]\n");
 	if (jhalt != 0) {
 	    *jdyss = -1; return;
 	}
     }
-    nhalf = *nn * (*nn - 1) / 2 + 1; /* nhalf := #{distances}+1 = length(dys) */
 
     /* s := max( dys[.] ), the largest distance */
     for (i = 1, s = 0.; i < nhalf; ++i) /* dys[0] == 0. not used here */
@@ -234,10 +238,10 @@ L60:
 		double dz = 0.;
 		/* dz := T_{ih} := sum_j C_{jih}  [p.104] : */
 		for (j = 1; j <= n; ++j) { /* if (!nrepr[j]) { */
-		    int hj = ind_2(h, j);
-		    ij = ind_2(i, j);
+		    int ij = ind_2(i, j),
+			hj = ind_2(h, j);
 		    if (dys[ij] == dysma[j]) {
-			double small = dysmb[j] > dys[hj]? dys[hj] : dysmb[j];
+			double small = dysmb[j] > dys[hj] ? dys[hj] : dysmb[j];
 			dz += (- dysma[j] + small);
 		    } else if (dys[hj] < dysma[j]) /* 1c. */
 			dz += (- dysma[j] + dys[hj]);

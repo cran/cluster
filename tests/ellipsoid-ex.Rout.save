@@ -1,7 +1,8 @@
 
-R version 2.9.0 Under development (unstable) (2009-01-06 r47489)
-Copyright (C) 2009 The R Foundation for Statistical Computing
+R version 2.13.0 Patched (2011-04-16 r55459)
+Copyright (C) 2011 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
+Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -194,12 +195,12 @@ x 19.655  94.364   48.739
 'ellipsoid' in 5 dimensions:
  center = (   -0.32451   98.54780   37.33619 1973.88383  -10.81891 ); squared ave.radius d^2 =  5 
  and shape matrix =
-         x                                       
-x   17.837    87.0277    8.3389   2607.9   49.117
-    87.028   446.9453   -2.0502  12745.4  239.470
-     8.339    -2.0502 1192.8439   2447.8   24.458
-  2607.926 12745.3826 2447.8006 384472.1 7179.239
-    49.117   239.4703   24.4582   7179.2  135.260
+          x                                       
+x   17.8372    87.0277    8.3389   2607.9   49.117
+    87.0277   446.9453   -2.0502  12745.4  239.470
+     8.3389    -2.0502 1192.8439   2447.8   24.458
+  2607.9264 12745.3826 2447.8006 384472.1 7179.239
+    49.1172   239.4703   24.4582   7179.2  135.260
   hence, volume  =  10218 
 > tail(sort(e5$sqdist)) ## 4 values 5.00039 ... 5.0099
 [1] 4.999915 5.000005 5.000010 5.000088 5.001444 5.009849

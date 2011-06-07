@@ -1,4 +1,4 @@
-#### $Id: agnes.q 5598 2010-06-24 10:20:48Z maechler $
+#### $Id: agnes.q 5763 2011-04-25 16:06:09Z maechler $
 agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		  stand = FALSE, method = "average", par.method,
                   keep.diss = n < 100, keep.data = !diss)
@@ -66,6 +66,7 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 	dv <- double(1 + (n * (n - 1))/2)
 	jdyss <- 0 # distances to be computed
     }
+    if(n <= 1) stop("need at least 2 objects to cluster")
     if(keep.diss) jdyss <- jdyss + 10
     ## call Fortran routine
     res <- .Fortran(twins,

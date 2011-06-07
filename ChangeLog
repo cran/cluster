@@ -1,6 +1,32 @@
+2011-06-07  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.14.0, released to CRAN
+
+	* R/plotpart.q (clusplot.default): use message() and warning()
+	appropriately instead of just cat().  Further, add a 'add = FALSE'
+	argument which allows *adding* ellipses to an existing plot.
+
+2011-06-06  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/plotpart.q (clusplot.default): new 'cex' and 'cex.txt', the
+	latter for the "point" labels.
+
+2011-05-20  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/pam.c (cl_pam): trace_lev: also trace the computation of
+	dissimilarities (a very expensive part, for large n).
+
+	* R/pam.q (pam): cluster.only=TRUE: if the *computed*
+	dissimilarities have NA's the necessary error was not signalled.
+
+2011-03-07  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/*.Rout.save: update after R-devel's  "scientific()" patch.
+	* DESCRIPTION (Version): 1.13.4
+
 2011-02-21  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-	* DESCRIPTION (Version): 1.13.3
+	* DESCRIPTION (Version): 1.13.3, released to CRAN
 
 2010-12-12  Martin Maechler  <maechler@stat.math.ethz.ch>
 

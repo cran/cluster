@@ -33,8 +33,10 @@ void cl_clara(int *n,  /* = number of objects */
 	      int *jtmd,	/* [j]= {-1,1};	 -1: x[,j] has NA; 1: no NAs in x[,j] */
 	      int *diss_kind,/*= {1,2};  1 : euclidean;  2 : manhattan*/
 	      int/*logical*/ *rng_R,/*= {0,1};  0 : use clara's internal weak RNG;
-				     *	     1 : use R's RNG (and seed) */
-	      int *nrepr,
+				     *	        1 : use R's RNG (and seed) */
+	      int/*logical*/ *pam_like,/* if (1), we do "swap()" as in pam();*/
+	      // otherwise use the code as it was in clara() "forever" upto 2011-04
+ 	      int *nrepr, /* logical (0/1): 1 = "is representative object"  */
 	      int *nsel,
 	      int *nbest,/* x[nbest[j],] : the j-th obs in the final sample */
 	      int *nr, int *nrx,/* prov. and final "medoids" aka representatives */
@@ -92,7 +94,7 @@ void cl_clara(int *n,  /* = number of objects */
 	rand_k= 1+ (int)(rnn* ((*rng_R)? unif_rand(): randm(&nrun)));	\
 	if (rand_k > *n) {/* should never happen */			\
 	    REprintf("** C clara(): random k=%d > n **\n", rand_k);	\
-	    rand_k = *n;							\
+	    rand_k = *n;						\
 	}								\
 	if(*trace_lev >= 4) {						\
 	    Rprintf("... {" #_nr_ "}");					\
@@ -236,14 +238,16 @@ void cl_clara(int *n,  /* = number of objects */
 	if(*trace_lev >= 2)
 	    Rprintf(". clara(): s:= max dys[1..%d] = %g;", l-1,s);
 
-	bswap2(*kk, *nsam, nrepr, dys, &sky, s,
+	bswap2(*kk, *nsam, s, dys, *pam_like, *trace_lev,
+	       /* --> */ &sky, nrepr,
 	       /* dysma */tmp1, /*dysmb*/tmp2,
 	       /* beter[], only used here */&tmp[nsamb]);
 
-	if(*trace_lev >= 2) Rprintf(" bs2");
+	if(*trace_lev >= 2)
+	    Rprintf("end{bswap}: sky = %g\n", sky);
 
 	selec(*kk, *n, *jpp, *diss_kind, &zb, *nsam, has_NA, jtmd, valmd,
-	      nrepr, nsel, dys, x, nr, &nafs, ttd, radus, ratt,
+	      *trace_lev, nrepr, nsel, dys, x, nr, &nafs, ttd, radus, ratt,
 	      ntmp1, ntmp2, ntmp3, ntmp4, ntmp5, ntmp6, tmp1, tmp2);
 
 	if (nafs) { /* couldn't assign some observation (to a cluster)
@@ -381,12 +385,15 @@ double randm(int *nrun)
 } /* randm() */
 
 /* bswap2() : called once [per random sample] from clara() : */
-void bswap2(int kk, int nsam, int *nrepr,
-	    double *dys, double *sky, double s,
+void bswap2(int kk, int n, /* == nsam == 'sampsize', here in clara */
+	    double s, const double dys[],
+	    Rboolean pam_like, int trace_lev,
+	    // result:
+	    double *sky, int *nrepr,
 	    double *dysma, double *dysmb, double *beter)
 {
-    int j, i, k, ij, kj, kbest = -1, nbest = -1;/* init for -Wall */
-    double small, asky, dzsky, dz;
+    int i, j, ij, k,h, hbest = -1, nbest = -1;/* init for -Wall */
+    double dzsky;
 
     /* Parameter adjustments */
     --nrepr;
@@ -394,24 +401,30 @@ void bswap2(int kk, int nsam, int *nrepr,
 
     --dysma;	--dysmb;
 
+    if(trace_lev >= 2) {
+	if(trace_lev == 2)
+	    Rprintf("\n bswap2():");
+	else
+	    Rprintf("\nclara()'s bswap2(*, s=%g): ", s);
+    }
+
     s = s * 1.1 + 1.;/* value larger than all dissimilarities */
 
 /* ====== first algorithm: BUILD. ====== */
 
-    for (i = 1; i <= nsam; ++i) {
+    for (i = 1; i <= n; ++i) {
 	nrepr[i] = 0;
 	dysma[i] = s;
     }
 
     for(k = 0; k < kk; k++) {
 	int nmax = -1; /* -Wall */
-	double ammax, cmd;
-	ammax = 0.;
-	for (i = 1; i <= nsam; ++i) {
+	double ammax = 0.;
+	for (i = 1; i <= n; ++i) {
 	    if (nrepr[i] == 0) {
 		beter[i] = 0.;
-		for (j = 1; j <= nsam; ++j) {
-		    cmd = dysma[j] - dys[ ind_2(i, j)];
+		for (j = 1; j <= n; ++j) {
+		    double cmd = dysma[j] - dys[ ind_2(i, j)];
 		    if (cmd > 0.)
 			beter[i] += cmd;
 		}
@@ -424,36 +437,58 @@ void bswap2(int kk, int nsam, int *nrepr,
 	}
 
 	nrepr[nmax] = 1;/* = .true. : found new representative */
+	if(trace_lev >= 2) {
+	    if(trace_lev == 2)
+		Rprintf(" %d", nmax);
+	    else
+		Rprintf("    new repr. %d\n", nmax);
+	}
 
 	/* update dysma[] : dysma[j] = D(j, nearest_representative) */
-	for (j = 1; j <= nsam; ++j) {
+	for (j = 1; j <= n; ++j) {
 	    ij = ind_2(nmax, j);
 	    if (dysma[j] > dys[ij])
 		dysma[j] = dys[ij];
 	}
     }
+    // output of the above loop:  nrepr[], dysma[], ...
 
     *sky = 0.;
-    for (j = 1; j <= nsam; ++j)
+    for (j = 1; j <= n; ++j)
 	*sky += dysma[j];
+
+    if(trace_lev >= 2) /* >= 2 (?) */ {
+	Rprintf("  after build: medoids are");
+	for (i = 1; i <= n; ++i)
+	    if(nrepr[i] == 1) Rprintf(" %2d", i);
+	if(trace_lev >= 3) {
+	    Rprintf("\n  and min.dist dysma[1:n] are\n");
+	    for (i = 1; i <= n; ++i) {
+		Rprintf(" %6.3g", dysma[i]);
+		if(i % 10 == 0) Rprintf("\n");
+	    }
+	    if(n % 10 != 0) Rprintf("\n");
+	} else Rprintf("\n");
+	Rprintf(" --> sky = sum_j D_j= %g\n", *sky);
+    }
 
     if (kk == 1)
 	return;
 
-    asky = *sky / ((double) nsam);
+// asky = *sky / ((double) n);
 
 /* ====== second algorithm: SWAP. ====== */
 
 /* Big LOOP : */
 L60:
 
-    for (j = 1; j <= nsam; ++j) {
+    for (j = 1; j <= n; ++j) {
 	/*  dysma[j] := D_j  d(j, <closest medi>)  [KR p.102, 104]
 	 *  dysmb[j] := E_j  d(j, <2-nd cl.medi>)  [p.103] */
 	dysma[j] = s;
 	dysmb[j] = s;
-	for (i = 1; i <= nsam; ++i) {
-	    if (nrepr[i] != 0) {
+	for (i = 1; i <= n; ++i) {
+	    if (nrepr[i]) {
 		ij = ind_2(i, j);
 		if (dysma[j] > dys[ij]) {
 		    dysmb[j] = dysma[j];
@@ -465,28 +500,29 @@ L60:
 	}
     }
 
-    dzsky = 1.;
-    for (k = 1; k <= nsam; ++k) if (nrepr[k] == 0) {
-	for (i = 1; i <= nsam; ++i) if (nrepr[i] != 0) {
-	    dz = 0.;
+    dzsky = 1.; /* 1 is arbitrary > 0; only dzsky < 0 matters in the end */
+    for (h = 1; h <= n; ++h) if (!nrepr[h]) {
+        for (i = 1; i <= n; ++i) if (nrepr[i]) {
+	    double dz = 0.;
 	    /* dz := T_{ih} := sum_j C_{jih}  [p.104] : */
-	    for (j = 1; j <= nsam; ++j) {
-		ij = ind_2(i, j);
-		kj = ind_2(k, j);
+	    for (j = 1; j <= n; ++j) {
+		int ij = ind_2(i, j),
+		    hj = ind_2(h, j);
 		if (dys[ij] == dysma[j]) {
-/* FIXME: The following correction *does* change results ....
- *should we do it? -- not yet*/
-		    /* correction below {from pam()}: was .. > dys[ij] ? ..*/
-		    /* small = dysmb[j] > dys[kj] ? dys[kj] : dysmb[j]; */
-		    small = dysmb[j] > dys[ij] ? dys[kj] : dysmb[j];
+		    double small;
+		    if(pam_like)
+			small = dysmb[j] > dys[hj] ? dys[hj] : dysmb[j];
+		    else // old clara code which differs from pam()'s
+			// and seems a bit illogical:
+			small = dysmb[j] > dys[ij] ? dys[hj] : dysmb[j];
 		    dz += (- dysma[j] + small);
 		}
-		else if (dys[kj] < dysma[j])
-		    dz += (- dysma[j] + dys[kj]);
+		else if (dys[hj] < dysma[j])
+		    dz += (- dysma[j] + dys[hj]);
 	    }
 	    if (dzsky > dz) {
-		dzsky = dz;
-		kbest = k;
+		dzsky = dz; // dzsky := min_{i,h} T_{i,h}
+		hbest = h;
 		nbest = i;
 	    }
 	}
@@ -496,17 +532,24 @@ L60:
     R_CheckUserInterrupt();
 
     if (dzsky < 0.) { /* found an improving swap */
-	nrepr[kbest] = 1;
+	if(trace_lev >= 3)
+	    Rprintf( "   swp new %d <-> %d old; decreasing diss. by %g\n",
+		     hbest, nbest, dzsky);
+	nrepr[hbest] = 1;
 	nrepr[nbest] = 0;
 	*sky += dzsky;
 	goto L60;
     }
+    if(trace_lev >= 2 && hbest != -1) // in my examples  hbest == -1 and it does not print:
+	Rprintf( "  Last swap: new %d <-> %d old; decreasing diss. by %g\n",
+		 hbest, nbest, dzsky);
 
 } /* End of bswap2() -------------------------------------------------- */
 
 /* selec() : called once [per random sample] from clara() */
 void selec(int kk, int n, int jpp, int diss_kind,
 	   double *zb, int nsam, Rboolean has_NA, int *jtmd, double *valmd,
+	   int trace_lev,
 	   int *nrepr, int *nsel, double *dys, double *x, int *nr,
 	   Rboolean *nafs, /* := TRUE if a distance cannot be calculated */
 	   double *ttd, double *radus, double *ratt,

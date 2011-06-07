@@ -4,7 +4,8 @@
 
 clara <- function(x, k, metric = "euclidean", stand = FALSE,
 		  samples = 5, sampsize = min(n, 40 + 2 * k), trace = 0,
-                  medoids.x = TRUE, keep.data = medoids.x, rngR = FALSE)
+                  medoids.x = TRUE, keep.data = medoids.x, rngR = FALSE,
+                  pamLike = FALSE)
 {
     ## check type of input matrix and values of input numbers
     if(inherits(x, "dist"))# catch user error
@@ -58,7 +59,8 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	      valmd = if(mdata) rep(valmisdat, jp) else -1.,
 	      jtmd  = if(mdata) jtmd else integer(1),
 	      ndyst = as.integer(if(metric == "manhattan") 2 else 1),
-              as.logical(rngR),
+              as.logical(rngR[1]),
+              as.logical(pamLike[1]),
 	      integer(sampsize),# = nrepr
 	      integer(sampsize),# = nsel
 	      sample= integer(sampsize),# = nbest

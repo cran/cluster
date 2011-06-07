@@ -8,7 +8,7 @@
 \usage{
 clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
       sampsize = min(n, 40 + 2 * k), trace = 0, medoids.x = TRUE,
-      keep.data = medoids.x, rngR = FALSE)
+      keep.data = medoids.x, rngR = FALSE, pamLike = FALSE)
 }
 \arguments{
   \item{x}{
@@ -58,6 +58,14 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
     be used instead of the primitive clara()-builtin one.  If true, this
     also means that each call to \code{clara()} returns a different result
     -- though only slightly different in good situations.}
+  \item{pamLike}{logical indicating if the \dQuote{swap} phase (see
+    \code{\link{pam}}, in C code) should use the same algorithm as
+    \code{\link{pam}()}.  Note that from Kaufman and Rousseeuw's
+    description this \emph{should} have been true always, but as the
+    original Fortran code and the subsequent port to C has always
+    contained a small one-letter change (a typo according to Martin Maechler)
+    with respect to PAM, the default, \code{pamLike = FALSE} has been chosen to
+    remain back compatible rather than \dQuote{PAM compatible}.}
 }
 \value{
   an object of class \code{"clara"} representing the clustering.  See
@@ -129,6 +137,9 @@ x <- rbind(cbind(rnorm(200,0,8), rnorm(200,0,8)),
 clarax <- clara(x, 2, samples=50)
 clarax
 clarax$clusinfo
+## using pamLike=TRUE  gives the same (apart from the 'call'):
+all.equal(clarax[-8],
+          clara(x, 2, samples=50, pamLike = TRUE)[-8])
 plot(clarax)
 
 ## `xclara' is an artificial data set with 3 clusters of 1000 bivariate
