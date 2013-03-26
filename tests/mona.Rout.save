@@ -1,6 +1,6 @@
 
-R version 2.15.1 Patched (2012-10-12 r60924) -- "Roasted Marshmallows"
-Copyright (C) 2012 The R Foundation for Statistical Computing
+R version 3.0.0 beta (2013-03-25 r62402) -- "Masked Marvel"
+Copyright (C) 2013 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-unknown-linux-gnu (64-bit)
 
@@ -111,8 +111,8 @@ $step
 
 Warning message:
 In RNGkind("Marsaglia-Multicarry", "Buggy Kinderman-Ramage") :
-  Buggy version of Kinderman-Ramage generator used
+  buggy version of Kinderman-Ramage generator used
 > 
 > proc.time()
    user  system elapsed 
-  0.248   0.020   0.262 
+  0.350   0.054   0.504 

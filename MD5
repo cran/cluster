@@ -1,5 +1,5 @@
 c7a50a95c6cd9c6ebf814ce6ac7b4523 *ChangeLog
-2502e39767c72fddffac5d82046ec213 *DESCRIPTION
+24a9cf41592c395d9a384ba49a5775d8 *DESCRIPTION
 824c6b9820b7fc963b52b185b8284481 *INDEX
 df97ca34d4dc7b97ae3e200ec4978769 *NAMESPACE
 8de82c7d42bd4a27c27c25462ae2a307 *PORTING
@@ -88,7 +88,7 @@ b1c1625935a5c22d81aa2e73d3b80457 *man/print.pam.Rd
 0510d0816550f6d3c258652912053a1d *man/votes.repub.Rd
 438589447329748ecc79553dc159e458 *man/xclara.Rd
 b89c5d900c3319e8d7275e606788d93f *po/R-cluster.pot
-a38f0d1a3387b1d7d6cae7f7280b2202 *po/R-de.po
+c0ca73459893e2c1ce3dd62022f96a38 *po/R-de.po
 e9b5293e63746638be1f3570dbeb4fe3 *po/R-en@quot.po
 eb6c6c1f7adb22cd3009cd5013c3ce72 *po/R-pl.po
 2510e0b50d86d1fea5be2409781564b8 *po/update-me.sh
@@ -122,7 +122,7 @@ d59a754abe85489fc3b09d6093f72777 *tests/ellipsoid-ex.R
 26727e98f08ac84c139af4422b75f0f2 *tests/ellipsoid-ex.Rout.save
 52b341bc06eb5692a73dec2be2cd7e5a *tests/fanny-ex.R
 7ea9c35599c857c5393421da3570ea0a *tests/mona.R
-7c41050372fbae95d206f5e63c6766d3 *tests/mona.Rout.save
+794166e31834ecfb147e62843ad7931a *tests/mona.Rout.save
 a393cf1d3d4fa219774a48050f6f0fe5 *tests/pam.R
 dfa9ed8323a746f229a3fb852c0bf334 *tests/pam.Rout.save
 477cd7fd12117a6cbcdfc9d5944fbd39 *tests/silhouette-default.R
