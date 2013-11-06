@@ -104,7 +104,7 @@ fanny(x, k, diss = inherits(x, "dist"), memb.exp = 2,
   \eqn{d(i,j)} is the dissimilarity between observations \eqn{i} and \eqn{j}.
   \cr Note that \eqn{r \to 1}{r -> 1} gives increasingly crisper
   clusterings whereas \eqn{r \to \infty}{r -> Inf} leads to complete
-  fuzzyness.  K\&R(1990), p.191 note that values too close to 1 can lead
+  fuzzyness.  K&R(1990), p.191 note that values too close to 1 can lead
   to slow convergence.  Further note that even the default, \eqn{r = 2}
   can lead to complete fuzzyness, i.e., memberships \eqn{u_{iv} \equiv
     1/k}{u(i,v) == 1/k}.  In that case a warning is signalled and the

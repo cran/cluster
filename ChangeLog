@@ -1,5 +1,21 @@
+2013-11-06  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.15.0;  also using  Authors@R
+
+	* R/agnes.q (agnes): method "gaverage" contributed by Pierre Roudier.
+
+2013-03-26  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.14.5, never released
+
+2013-03-26  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.14.4, released to CRAN, 2013-03-26
+	* po/R-de.po: trivial update from Detlef,
+
 2012-02-06  Martin Maechler  <maechler@stat.math.ethz.ch>
 
+	* DESCRIPTION (Version): 1.14.2, released to CRAN today
 	* R/clusGap.R (maxSE): with 5 methods to compute "maximal gap",
 	used also in print() method.
 
@@ -49,7 +65,7 @@
 
 2011-06-07  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-	* DESCRIPTION (Version): 1.14.0, released to CRAN
+	* DESCRIPTION (Version): 1.14.0, released to CRAN, 2011-06-07
 
 	* R/plotpart.q (clusplot.default): use message() and warning()
 	appropriately instead of just cat().  Further, add a 'add = FALSE'
@@ -71,11 +87,11 @@
 2011-03-07  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* tests/*.Rout.save: update after R-devel's  "scientific()" patch.
-	* DESCRIPTION (Version): 1.13.4
+	* DESCRIPTION (Version): 1.13.4, *not* released
 
 2011-02-21  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-	* DESCRIPTION (Version): 1.13.3, released to CRAN
+	* DESCRIPTION (Version): 1.13.3, released to CRAN today
 
 2010-12-12  Martin Maechler  <maechler@stat.math.ethz.ch>
 
@@ -93,7 +109,7 @@
 
 2010-10-21  Martin Maechler  <maechler@stat.math.ethz.ch>
 
-	* DESCRIPTION (Version): 1.13.2  ;  Enhances: MASS
+	* DESCRIPTION (Version): 1.13.2 ; Enhances: MASS; released to CRAN, 2010-11-10
 
 	* src/cluster.h, src/daisy.f, src/mona.f:
 	* src/init.c (FortEntries): s/cl_/cl/ for now,

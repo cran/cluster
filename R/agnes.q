@@ -1,26 +1,40 @@
-#### $Id: agnes.q 6015 2012-01-18 11:03:38Z maechler $
+#### $Id: agnes.q 6592 2013-11-06 11:10:27Z maechler $
 agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		  stand = FALSE, method = "average", par.method,
                   keep.diss = n < 100, keep.data = !diss)
 {
-    METHODS <- c("average", "single","complete", "ward","weighted", "flexible")
-    ## hclust has more;  1    2         3           4       5         6
+    METHODS <- c("average", "single","complete", "ward","weighted", "flexible", "gaverage")
+    ## hclust has more;  1    2         3           4       5         6         7
     meth <- pmatch(method, METHODS)
     if(is.na(meth)) stop("invalid clustering method")
     if(meth == -1) stop("ambiguous clustering method")
     method <- METHODS[meth]
     if(method == "flexible") {
-        ## Lance-Williams formula (but *constant* coefficients):
-        par.method <- as.numeric(par.method) # or barf
-        stopifnot((np <- length(par.method)) >= 1)
-        if(np == 1)## default (a1= a, a2= a, b= 1-2a, c = 0)
-            par.method <- c(par.method, par.method, 1-2*par.method, 0)
-        else if(np == 3)
-            par.method <- c(par.method, 0)
-        else if(np != 4)
-            stop("'par.method' must be of length 1, 3, or 4")
-        attr(method,"par") <- par.method
-    } else par.method <- double(1)
+	## Lance-Williams formula (but *constant* coefficients):
+	stopifnot((np <- length(a <- as.numeric(par.method))) >= 1)
+	attr(method,"par") <- par.method <- 
+	    if(np == 1)## default (a1= a, a2= a, b= 1-2a, c = 0)
+		c(a, a, 1-2*a, 0)
+	    else if(np == 3)
+		c(a, 0)
+	    else if(np != 4)
+		stop("'par.method' must be of length 1, 3, or 4")
+    } else if (method == "gaverage") {
+	attr(method,"par") <- par.method <- if (missing(par.method)) {
+	    ## Default par.method: Using beta = -0.1 as advised in Belbin et al. (1992)
+	    beta <- -0.1
+	    c(1-beta, 1-beta, beta, 0)
+	} else {
+	    stopifnot((np <- length(b <- as.numeric(par.method))) >= 1)
+	    if(np == 1)## default (a1= 1-b, a2= 1-b, b= b, c= 0)
+		c(1-b, 1-b, b, 0)
+	    else if(np == 3)
+		c(b, 0)
+	    else if(np != 4)
+		stop("'par.method' must be of length 1, 3, or 4")
+	}
+    } else ## dummy (passed to C)
+	par.method <- double()
 
     if((diss <- as.logical(diss))) {
 	## check type of input vector

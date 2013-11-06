@@ -35,7 +35,7 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
   \item{metric}{
     character string specifying the metric to be used for calculating
     dissimilarities between observations.
-    The currently available options are "euclidean" and "manhattan".
+    The currently available options are \code{"euclidean"} and \code{"manhattan"}.
     Euclidean distances are root sum-of-squares of differences, and
     manhattan distances are the sum of absolute differences.
     If \code{x} is already a dissimilarity matrix, then this argument will
@@ -51,15 +51,22 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
   }
   \item{method}{
     character string defining the clustering method.  The six methods
-    implemented are "average" ([unweighted pair-]group average method, UPGMA),
-    "single" (single linkage), "complete" (complete linkage),
-    "ward" (Ward's method), "weighted" (weighted average linkage) and
-    its generalization \code{"flexible"} which uses (a constant version of)
-    the Lance-Williams formula and the \code{par.method} argument.  Default
-    is "average".
+    implemented are
+    \code{"average"} ([unweighted pair-]group [arithMetic] average method, aka \sQuote{UPGMA}),
+    \code{"single"} (single linkage), \code{"complete"} (complete linkage),
+    \code{"ward"} (Ward's method),
+    \code{"weighted"} (weighted average linkage, aka \sQuote{WPGMA}), its generalization
+    \code{"flexible"} which uses (a constant version of)
+    the Lance-Williams formula and the \code{par.method} argument, and
+    \code{"gaverage"} a generalized \code{"average"} aka \dQuote{flexible
+    UPGMA} method also using the Lance-Williams formula and \code{par.method}.
+    
+    The default is \code{"average"}.
   }
-  \item{par.method}{if \code{method == "flexible"}, numeric vector of
-    length 1, 3, or 4, see in the details section.
+  \item{par.method}{
+    If \code{method} is \code{"flexible"} or \code{"gaverage"}, a numeric
+    vector of length 1, 3, or 4, (with a default for \code{"gaverage"}), see in
+    the details section.
   }
   \item{keep.diss, keep.data}{logicals indicating if the dissimilarities
     and/or input data \code{x} should be kept in the result.  Setting
@@ -70,6 +77,10 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
   an object of class \code{"agnes"} (which extends \code{"twins"})
   representing the clustering.  See \code{\link{agnes.object}} for
   details, and methods applicable.
+}
+\author{
+  Method \code{"gaverage"} has been contributed by Pierre Roudier, Landcare
+  Research, New Zealand.
 }
 \details{
   \code{agnes} is fully described in chapter 5 of Kaufman and Rousseeuw (1990).
@@ -100,7 +111,7 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
 
   The \code{method = "flexible"} allows (and requires) more details:
   The Lance-Williams formula specifies how dissimilarities are
-  computed when clusters are agglomerated (equation (32) in K.\&R.,
+  computed when clusters are agglomerated (equation (32) in K&R(1990),
   p.237).  If clusters \eqn{C_1} and \eqn{C_2} are agglomerated into a
   new cluster, the dissimilarity between their union and another
   cluster \eqn{Q} is given by
@@ -109,20 +120,47 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
                          \beta * D(C_1,C_2) + \gamma * |D(C_1, Q) - D(C_2, Q)|,
   }
   where the four coefficients \eqn{(\alpha_1, \alpha_2, \beta, \gamma)}
-  are specified by the vector \code{par.method}:
-
-  If \code{par.method} is of length 1,
+  are specified by the vector \code{par.method}, either directly as vector of
+  length 4, or (more conveniently) if \code{par.method} is of length 1,
   say \eqn{= \alpha}, \code{par.method} is extended to
-  give the \dQuote{Flexible Strategy} (K. \& R., p.236 f) with
+  give the \dQuote{Flexible Strategy} (K&R(1990), p.236 f) with
   Lance-Williams coefficients \eqn{(\alpha_1 = \alpha_2 = \alpha, \beta =
     1 - 2\alpha, \gamma=0)}.\cr
-  If of length 3, \eqn{\gamma = 0} is used.
+  Also, if \code{length(par.method) == 3}, \eqn{\gamma = 0} is set.
 
-  \bold{Care} and expertise is probably needed when using \code{method
-    = "flexible"} particularly for the case when \code{par.method} is
-  specified of longer length than one.
+  \bold{Care} and expertise is probably needed when using \code{method = "flexible"}
+  particularly for the case when \code{par.method} is specified of
+  longer length than one.
   The \emph{weighted average} (\code{method="weighted"}) is the same as
   \code{method="flexible", par.method = 0.5}.
+    
+  The \code{method = "gaverage"} is a generalization of \code{"average"}, aka
+  \dQuote{flexible UPGMA} method, and is (a generalization of the approach)
+  detailed in Belbin et al. (1992).  As \code{"flexible"}, it uses the
+  Lance-Williams formula above for dissimilarity updating, but with
+  \eqn{\alpha_1} and \eqn{\alpha_1} not constant, but \emph{proportional} to
+  the \emph{sizes} \eqn{n_1} and \eqn{n_2} of the clusters \eqn{C_1} and
+  \eqn{C_2} respectively, i.e,
+  \deqn{\alpha_j = \alpha'_j \frac{n_1}{n_1+n_2},}{%
+        \alpha_j = \alpha'_j * n_1/(n_1 + n_2),}
+  where \eqn{\alpha'_1}, \eqn{\alpha'_2} are determined from \code{par.method},
+  either directly as \eqn{(\alpha_1, \alpha_2, \beta, \gamma)} or
+  \eqn{(\alpha_1, \alpha_2, \beta)} with \eqn{\gamma = 0}, or (less flexibly,
+  but more conveniently) as follows:
+
+  Belbin et al proposed \dQuote{flexible beta}, i.e. the user would only
+  specify \eqn{\beta} (as \code{par.method}), sensibly in
+  \deqn{-1 \leq \beta < 1,}{-1 \le \beta < 1,}
+  and \eqn{\beta} determines \eqn{\alpha'_1} and \eqn{\alpha'_2} as
+  \deqn{\alpha'_j = 1 - \beta,} and \eqn{\gamma = 0}.
+  
+  This \eqn{\beta} may be specified by \code{par.method} (as length 1 vector),
+  and if \code{par.method} is not specified, a default value of -0.1 is used,
+  as Belbin et al recommend taking a \eqn{\beta} value around -0.1 as a general
+  agglomerative hierarchical clustering strategy.
+
+  Note that \code{method = "gaverage", par.method = 0} (or \code{par.method =
+  c(1,1,0,0)}) is equivalent to the \code{agnes()} default method \code{"average"}.
 }
 \section{BACKGROUND}{
   Cluster analysis divides a dataset into groups (clusters) of
@@ -138,11 +176,11 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
     }
 }
 \references{
-  Kaufman, L. and Rousseeuw, P.J. (1990).
+  Kaufman, L. and Rousseeuw, P.J. (1990). (=: \dQuote{K&R(1990)})
   \emph{Finding Groups in Data: An Introduction to Cluster Analysis}.
   Wiley, New York.
 
-  Anja Struyf, Mia Hubert & Peter J. Rousseeuw (1996)
+  Anja Struyf, Mia Hubert and Peter J. Rousseeuw (1996)
   Clustering in an Object-Oriented Environment.
   \emph{Journal of Statistical Software} \bold{1}.
   \url{http://www.jstatsoft.org/v01/i04}
@@ -155,6 +193,10 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
   A General Theory of Classifactory Sorting Strategies, I. Hierarchical
   Systems.
   \emph{Computer J.} \bold{9}, 373--380.
+  
+  Belbin, L., Faith, D.P. and Milligan, G.W. (1992). A Comparison of 
+  Two Approaches to Beta-Flexible Clustering. 
+  \emph{Multivariate Behavioral Research}, \bold{27}, 417--433.
 
 }
 \seealso{
@@ -190,5 +232,19 @@ data(agriculture)
 ## Plot similar to Figure 7 in ref
 \dontrun{plot(agnes(agriculture), ask = TRUE)}
 \dontshow{plot(agnes(agriculture))}
+
+data(animals)
+aa.a  <- agnes(animals) # default method = "average"
+aa.ga <- agnes(animals, method = "gaverage")
+op <- par(mfcol=1:2, mgp=c(1.5, 0.6, 0), mar=c(.1+ c(4,3,2,1)),
+          cex.main=0.8)
+plot(aa.a,  which.plot = 2)
+plot(aa.ga, which.plot = 2)
+par(op)
+
+## Show how "gaverage" is a "generalized average":
+aa.ga.0 <- agnes(animals, method = "gaverage", par.method = 0)
+ii <- c(1:4,8)
+stopifnot(all.equal(aa.ga.0[ii], aa.a[ii]))
 }
 \keyword{cluster}

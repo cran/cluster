@@ -10,8 +10,10 @@
 #include "ind_2.h"
 
 // the auxiliary routines
-static void averl_(int nn, int *kwan, int *ner, double *ban, double *dys, int method, double *alpha, int *merge);
-static void splyt_(int nn, int *kwan, int *ner, double *ban, double *dys, int *merge);
+static void agnes(int nn, int *kwan, int *ner, double *ban, double dys[],
+		  int method, double *alpha, int *merge);
+static void splyt(int nn, int *kwan, int *ner, double *ban, double dys[],
+		  int *merge);
 static double min_dis(double dys[], int ka, int kb, int ner[]);
 
 /*     This program performs agglomerative nesting (AGNES) using the */
@@ -28,10 +30,14 @@ void twins(int *nn, // = maximal number of objects
 	   double *dys,
 	   double *dys2,// dys2(.) can have length 1, if(!keep.diss)
 	   int *jdyss, /* jdyss (in/out): initially, jdyss mod 10 = 1 : <==> diss = TRUE
-			* jdyss < 10 : don't save dissimilarities */
+			* jdyss < 10 : don't save dissimilarities (C.keep.diss = FALSE) */
 	   double *valmd,
-	   int *jtmd, int *ndyst, int *jalg, int *method,
-	   int *kwan, int *ner, double *ban, double *coef,
+	   int *jtmd, int *ndyst, int *jalg,
+	   int *method,  // for agnes()  only
+	   int *kwan,
+	   int *ner,     // = order []   (in R)
+	   double *ban,  // = height[]
+	   double *coef,
 	   double *alpha, int *merge)
 {
     if (*jdyss % 10 == 1) {
@@ -47,10 +53,10 @@ void twins(int *nn, // = maximal number of objects
     }
     if (*jalg != 2) {
 	// AGNES
-	averl_(*nn, kwan, ner, ban, dys, *method, alpha, merge);
+	agnes(*nn, kwan, ner, ban, dys, *method, alpha, merge);
     } else {
 	// DIANA
-	splyt_(*nn, kwan, ner, ban, dys,                 merge);
+	splyt(*nn, kwan, ner, ban, dys,                 merge);
     }
     // Compute agglomerative/divisive coefficient from banner:
     *coef = bncoef(*nn, ban);
@@ -60,16 +66,17 @@ void twins(int *nn, // = maximal number of objects
 /*     ----------------------------------------------------------- */
 /*     AGNES agglomeration */
 static void
-averl_(int nn, int *kwan, int *ner,
-       double *ban, double *dys, int method, double *alpha, int *merge)
+agnes(int nn, int *kwan, int *ner, double *ban,
+      double dys[], int method, double *alpha, int *merge)
 {
 
 /* VARs */
-    double akb, smald;
-    int j, k, l1, l2, lq, nab, lka, nlj,
+    double akb, d_min;
+    int j, k, l1, l2, lq,
 	nclu, lnum, lput, lenda, lendb, lnext, n_1 = nn - 1,
 	la = -1, lb = -1, llast = -1, lfyrs = -1, // <- against (unnecessary) warnings [-Wall]
 	nmerge;
+    Rboolean has_a4 = FALSE;// is alpha[4] == 0 -- for Lance-Williams
 
     /* System generated locals */
     int merge_dim1 = n_1;
@@ -82,32 +89,37 @@ averl_(int nn, int *kwan, int *ner,
     --kwan;
     --alpha;
 
-/*     initialization: */
-/*       Starting with nn clusters, kwan(j) = #{obj} in cluster j */
+    if(method == 6 || method == 7) {
+	// 6: "flexible": "Flexible Strategy" (K+R p.236 f) extended to 'Lance-Williams'
+	// 7: "gaverage" aka Flexible UPGMA (Belbin et al., 1992)
+	has_a4 = (alpha[4] != 0.);
+    }
+
+//  Starting with nn clusters, kwan[j] := #{obj} in cluster j
     for (j = 1; j <= nn; ++j) {
 	kwan[j] = 1;
 	ner[j] = j;
     }
 
+// ----------------------------------------------------------------------------
 /*     find closest clusters */
     nmerge = 1;
     for (nclu = n_1; nclu >= 1; --nclu) {
-	j = 1;
-L80:
-	++j;
-	if (kwan[j] == 0) goto L80;
+	// j := min_j { kwan[j] > 0} = first non-empty cluster
+	j = 1; do { j++; } while(kwan[j] == 0);
 
-	smald = dys[ind_2(1, j)] * 1.1f + 1.;
+	d_min = dys[ind_2(1, j)] * 1.1f + 1.;
 	for (k = 1; k <= n_1; ++k) if (kwan[k] > 0) {
 		for (j = k + 1; j <= nn; ++j) if (kwan[j] > 0) {
-			nlj = ind_2(k, j);
-			if (smald >= dys[nlj]) { // Note: also when "==" !
-			    smald =  dys[nlj];
+			int k_j = ind_2(k, j);
+			if (d_min >= dys[k_j]) { // Note: also when "==" !
+			    d_min =  dys[k_j];
 			    la = k;
 			    lb = j;
 			}
 		    }
 	    }
+	// --> closest clusters  {la < lb}  are at distance  d_min
 
 /*     merge-structure for plotting tree in S */
 
@@ -127,17 +139,16 @@ L80:
 	    if (ner[k] == la) lfyrs = k;
 	    if (ner[k] == lb) llast = k;
 	}
-	ban[llast] = smald;
+	ban[llast] = d_min;
 
 /*     if the two clusters are next to each other, ner must not be changed */
 
 	lnext = lfyrs + kwan[la];
-	if (lnext != llast) {
-	    /*     updating ner and ban */
+	if (lnext != llast) { /*     updating ner and ban */
 	    lput = lfyrs + kwan[la];
 	    lnum = llast - lput;
 	    for (k = 1; k <= lnum; ++k) {
-		lka = ner[lput];
+		int lka = ner[lput];
 		akb = ban[lput];
 		lenda = llast + kwan[lb] - 2;
 		lendb = lenda + 1;
@@ -147,7 +158,6 @@ L80:
 		}
 		ner[lendb] = lka;
 		ban[lendb] = akb;
-/* L220: */
 	    }
 	}
 
@@ -156,15 +166,15 @@ L80:
 	// Calculate new dissimilarities d(q, A_{new})
 	for (lq = 1; lq <= nn; ++lq) { //  for each other cluster 'q'
 
-	    double dnew, ta, tb, tq, fa, fb, fc;
 	    if (lq == la || lq == lb || kwan[lq] == 0)
 		continue;
 
+	    double ta, tb, tq, fa, fb, fc;
 	    int naq = ind_2(la, lq);
 	    int nbq = ind_2(lb, lq);
 
 	    switch(method) {
-	    case 1: /*     1: group average method */
+	    case 1: /*     1: unweighted pair-]group average method, UPGMA */
 		ta = (double) kwan[la];
 		tb = (double) kwan[lb];
 		fa = ta / (ta + tb);
@@ -172,16 +182,10 @@ L80:
 		dys[naq] = fa * dys[naq] + fb * dys[nbq];
 		break;
 	    case 2: /*     2: single linkage */
-		dnew = dys[naq];
-		if (dys[nbq] < dnew)
-		    dnew = dys[nbq];
-		dys[naq] = dnew;
+		dys[naq] = fmin2(dys[naq], dys[nbq]);
 		break;
 	    case 3: /*     3: complete linkage */
-		dnew = dys[naq];
-		if (dnew < dys[nbq])
-		    dnew = dys[nbq];
-		dys[naq] = dnew;
+		dys[naq] = fmax2(dys[naq], dys[nbq]);
 		break;
             case 4: /*     4: ward's method */
 		ta = (double) kwan[la];
@@ -190,7 +194,7 @@ L80:
 		fa = (ta + tq) / (ta + tb + tq);
 		fb = (tb + tq) / (ta + tb + tq);
 		fc = -tq / (ta + tb + tq);
-		nab = ind_2(la, lb);
+		int nab = ind_2(la, lb);
 		dys[naq] = sqrt(fa * dys[naq] * dys[naq] +
 				fb * dys[nbq] * dys[nbq] +
 				fc * dys[nab] * dys[nab]);
@@ -199,13 +203,23 @@ L80:
 	    case 5: /*     5: weighted average linkage */
 		dys[naq] = (dys[naq] + dys[nbq]) / 2.;
 		break;
-	    case 6: /*     6: "Flexible Strategy" (K+R p.236 f) extended to 'Lance-Williams' */
+	    case 6: //     6: "Flexible Strategy" (K+R p.236 f) extended to 'Lance-Williams'
 		dys[naq] = alpha[1] * dys[naq] + alpha[2] * dys[nbq] +
-		    alpha[3] * dys[ind_2(la, lb)] +
-		    alpha[4] * fabs(dys[naq] - dys[nbq]);
+		    alpha[3] * dys[ind_2(la, lb)];
+		if(has_a4) dys[naq] += alpha[4] * fabs(dys[naq] - dys[nbq]);
 		/* Lance-Williams would allow alpha(1:2) to *depend* on |cluster|
 		 * could also include the extensions of Jambu(1978) --
 		 * See Gordon A.D. (1999) "Classification" (2nd ed.) p.78 ff */
+		break;
+	    case 7: /*     7: generalized "average" = Flexible UPGMA (Belbin et al., 1992)
+		     * Applies the flexible Lance-Williams formula to the UPGMA, aka
+		     * "average" case 1 above, i.e., alpha_{1,2} depend on cluster sizes: */
+		ta = (double) kwan[la];
+		tb = (double) kwan[lb];
+		fa = alpha[1] * ta / (ta + tb);
+		fb = alpha[2] * tb / (ta + tb);
+		dys[naq] = fa * dys[naq] + fb * dys[nbq] + alpha[3] * dys[ind_2(la, lb)];
+		if(has_a4) dys[naq] += alpha[4] * fabs(dys[naq] - dys[nbq]);
 		break;
 	    default:
 		error(_("invalid method (code %d"), method);
@@ -213,9 +227,10 @@ L80:
 	}
 	kwan[la] += kwan[lb];
 	kwan[lb] = 0;
-    }
+
+    }// for(nclu ..)
     return;
-} /* averl_ */
+} /* agnes */
 
 /*     ----------------------------------------------------------- */
 
@@ -226,36 +241,31 @@ void R_bncoef(int *nn, double *ban, double *cf) {
     *cf = bncoef(*nn, ban);
 }
 
-double bncoef(int nn, double *ban)
+double bncoef(int n, double *ban)
 {
-/* VARs */
-    int k, kafte, kearl;
-    double sup, syze, cf;
+    int k, n_1 = n-1;
 
-    /* Parameter adjustments */
-    --ban;
-
-    // sup := max_k ban[k]
-    for(sup = 0., k = 2; k <= nn; ++k) {
+    double sup = 0.;// sup := max_k ban[k]
+    for(k = 1; k < n; ++k)
 	if (sup < ban[k])
 	    sup = ban[k];
-    }
-    cf = 0.;
-    for (k = 1; k <= nn; ++k) {
-	kearl = (k > 1 ) ? k : 2;
-	kafte = (k < nn) ? (k + 1) : nn;
-	syze = fmin2(ban[kearl], ban[kafte]);
+
+    double cf = 0.;
+    for (k = 0; k < n; ) {
+	int kearl = (k > 0) ? k : 1,
+	    kafte = (++k < n) ? k : n_1;
+	double syze = fmin2(ban[kearl], ban[kafte]);
 	cf += (1. - syze / sup);
     }
-    return cf / nn;
+    return cf / n;
 } /* bncoef */
 
 /*     ----------------------------------------------------------- */
 /*     DIANA "splitting" */
 
 static void
-splyt_(int nn, int *kwan, int *ner,
-       double *ban, double *dys, int *merge)
+splyt(int nn, int *kwan, int *ner, double *ban,
+      double dys[], int *merge)
 {
     /* Local variables */
     int j, ja, jb, k, l;
@@ -396,7 +406,7 @@ L30:
 	} while (jma != ja);
 
 
-// 200:     switch the two parts when necessary 
+// 200:     switch the two parts when necessary
 
 	if (ner[ja] >= ner[jmb]) {
 	    int lxxa = ja;
@@ -470,7 +480,7 @@ L30:
 	merge[nmerge + (merge_dim1 << 1)] = l2;
     }
     return;
-} /* splyt_ */
+} /* splyt */
 
 /*     ----------------------------------------------------------- */
 /*     used in splyt() above */

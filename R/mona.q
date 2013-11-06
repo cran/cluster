@@ -4,10 +4,10 @@ mona <- function(x)
     ## check type of input matrix
     if(!is.matrix(x) && !is.data.frame(x))
         stop("x must be a matrix or data frame.")
-    if(!all(sapply(lapply(as.data.frame(x),
-                          function(y) levels(as.factor(y))),
-                   length) == 2))
-        stop("All variables must be binary (factor with 2 levels).")
+    if(!all(vapply(lapply(as.data.frame(x),
+			  function(y) levels(as.factor(y))),
+		   length, 1) == 2))
+        stop("All variables must be binary (e.g., factor with 2 levels).")
     n <- nrow(x)
     jp <- ncol(x)
     ## change levels of input matrix
@@ -35,16 +35,16 @@ mona <- function(x)
 
     ## stop with a message when two many missing values:
     if(res$error != 0) {
-        ch <- gettext("No clustering performed, ")
+        ## NB: Need "full simple strings below, to keep it translatable":
         switch(res$error,
                ## 1 :
-               stop(ch,"an object was found with all values missing."),
+               stop("No clustering performed, an object was found with all values missing."),
                ## 2 :
-               stop(ch,"a variable was found with at least 50% missing values."),
-               ## 3 :
-               stop(ch,"a variable was found with all non missing values identical."),
+               stop("No clustering performed, found variable with more than half values missing."),
+               ## 3 : never triggers because of binary check above
+               stop("No clustering performed, a variable was found with all non missing values identical."),
                ## 4 :
-               stop(ch,"all variables have at least one missing value.")
+               stop("No clustering performed, all variables have at least one missing value.")
                )
     }
     ##O res$x2 <- matrix(as.numeric(substring(res$x2,

@@ -147,7 +147,7 @@ daisy(x, metric = c("euclidean", "manhattan", "gower"),
       i.e., they are replaced by their integer codes \code{1:K}.  Note
       that this is not the same as using their ranks (since there
       typically are ties).
-      % contrary to what Kaufman & Rousseeuw  write in their book, and
+      % contrary to what Kaufman and Rousseeuw write in their book, and
       % the original help page.
 
       As the individual contributions \eqn{d_{ij}^{(k)}}{d(ij,k)} are in

@@ -2,8 +2,8 @@
 \alias{pam}
 \title{Partitioning Around Medoids}
 \description{
-  Partitioning (clustering) of the data into \code{k} clusters ``around
-  medoids'', a more robust version of K-means.
+  Partitioning (clustering) of the data into \code{k} clusters \dQuote{around
+  medoids}, a more robust version of K-means.
 }
 \usage{
 pam(x, k, diss = inherits(x, "dist"), metric = "euclidean",
@@ -80,8 +80,8 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean",
   \code{?\link{pam.object}} for details.
 }
 \details{
-  \code{pam} is fully described in chapter 2 of Kaufman and Rousseeuw
-  (1990).  Compared to the k-means approach in \code{kmeans}, the
+  The basic \code{pam} algorithm is fully described in chapter 2 of
+  Kaufman and Rousseeuw(1990).  Compared to the k-means approach in \code{kmeans}, the
   function \code{pam} has the following features: (a) it also accepts a
   dissimilarity matrix; (b) it is more robust because it minimizes a sum
   of dissimilarities instead of a sum of squared euclidean distances;
@@ -170,8 +170,8 @@ p3m <- pam(x, 3, trace = 2)
 
 \dontshow{
  ii <- pmatch(c("obj","call"), names(pamx))
- stopifnot(all.equal(pamx [-ii],  p2m [-ii],  tol=1e-14),
-           all.equal(pamx$objective[2], p2m$objective[2], tol=1e-14))
+ stopifnot(all.equal(pamx [-ii],  p2m [-ii],  tolerance=1e-14),
+           all.equal(pamx$objective[2], p2m$objective[2], tolerance=1e-14))
 }
 pam(daisy(x, metric = "manhattan"), 2, diss = TRUE)
 

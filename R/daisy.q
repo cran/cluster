@@ -172,10 +172,7 @@ print.dissimilarity <-
 	     digits = getOption("digits"), justify = "none", right = TRUE, ...)
 {
     cat("Dissimilarities :\n")
-    ##orig {Rousseeuw..}: print(as.vector(x), ...)
-    stats:::print.dist(x, diag=diag, upper=upper, digits=digits,
-                       justify=justify, right=right, ...)
-    ##
+    NextMethod("print")##-> stats:::print.dist(..)
     cat("\n")
     if(!is.null(attr(x, "na.message")))
 	cat("Warning : ", attr(x, "NA.message"), "\n")

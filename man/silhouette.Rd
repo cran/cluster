@@ -136,7 +136,7 @@ sortSilhouette(object, \dots)
   Silhouettes: A graphical aid to the interpretation and validation of
   cluster analysis. \emph{J. Comput. Appl. Math.}, \bold{20}, 53--65.
 
-  chapter 2 of Kaufman, L. and Rousseeuw, P.J. (1990), see
+  chapter 2 of Kaufman and Rousseeuw (1990), see
   the references in \code{\link{plot.agnes}}.
 }
 \seealso{\code{\link{partition.object}}, \code{\link{plot.partition}}.
@@ -177,7 +177,7 @@ plot(silhouette(cl3))# only of the "best" subset of 46
 sf <- silhouette(cl3, full = TRUE) ## this is the same as
 s.full <- silhouette(cl3$clustering, daisy(xc1k))
 if(paste(R.version$major, R.version$minor, sep=".") >= "2.3.0")
-   stopifnot(all.equal(sf, s.full, check.attributes = FALSE, tol = 0))
+   stopifnot(all.equal(sf, s.full, check.attributes = FALSE, tolerance = 0))
 ## color dependent on original "3 groups of each 1000":
 plot(sf, col = 2+ as.integer(names(cl3$clustering) ) \%/\% 1000,
      main ="plot(silhouette(clara(.), full = TRUE))")

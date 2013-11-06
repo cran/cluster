@@ -10,7 +10,11 @@
 }
 \section{METHODS}{
   The \code{"agnes"} class has methods for the following generic functions:
-  \code{print}, \code{summary}, \code{plot}, and \code{\link{as.dendrogram}}.
+  \code{print}, \code{summary}, \code{plot}, and
+  \code{\link{as.dendrogram}}.
+
+  In addition, \code{\link{cutree}(x, *)} can be used to \dQuote{cut}
+  the dendrogram in order to produce cluster assignments.
 }
 \section{INHERITANCE}{
   The class \code{"agnes"} inherits from \code{"twins"}.
@@ -69,5 +73,18 @@
   \code{\link{agnes}}, \code{\link{diana}},
   \code{\link{as.hclust}}, \code{\link{hclust}},
   \code{\link{plot.agnes}}, \code{\link{twins.object}}.
+
+  \code{\link{cutree}}.
+}
+\examples{
+data(agriculture)
+ag.ag <- agnes(agriculture)
+class(ag.ag)
+pltree(ag.ag) # the dendrogram
+
+## cut the dendrogram -> get cluster assignments:
+(ck3 <- cutree(ag.ag, k = 3))
+(ch6 <- cutree(as.hclust(ag.ag), h = 6))
+stopifnot(identical(unname(ch6), ck3))
 }
 \keyword{cluster}
