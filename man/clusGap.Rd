@@ -62,7 +62,7 @@ maxSE(f, SE.f,
       \item{\code{"firstmax"}:}{gives the location of the first \emph{local}
 	maximum.}
       \item{\code{"Tibs2001SEmax"}:}{uses the criterion, Tibshirani et
-	al(2001) proposed: \dQuote{the smallest \eqn{k} such that \eqn{f(k)
+	al (2001) proposed: \dQuote{the smallest \eqn{k} such that \eqn{f(k)
 	    \ge f(k+1) - s_{k+1}}}.  Note that this chooses \eqn{k = 1}
 	when all standard deviations are larger than the differences
 	\eqn{f(k+1) - f(k)}.}

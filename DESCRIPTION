@@ -1,6 +1,6 @@
 Package: cluster
-Version: 1.15.0
-Date: 2013-11-06
+Version: 1.15.1
+Date: 2014-03-12
 Priority: recommended
 Title: Cluster Analysis Extended Rousseeuw et al.
 Description: Cluster Analysis Methods.  Much extended the original from
@@ -17,7 +17,7 @@ Authors@R: c(person("Martin","Maechler", role=c("aut","cre"), email="maechler@st
  ,person("Matthias", "Studer", role="ctb")
  ,person("Pierre", "Roudier", role="ctb")
  )
-Depends: R (>= 2.10.0), stats, utils
+Depends: R (>= 2.12.0), stats, utils
 Imports: graphics, grDevices
 Suggests: MASS
 SuggestsNote: two small examples using MASS' cov.rob() and mvrnorm()
@@ -26,7 +26,7 @@ LazyData: yes
 ByteCompile: yes
 BuildResaveData: no
 License: GPL (>= 2)
-Packaged: 2014-03-10 22:00:44 UTC; maechler
+Packaged: 2014-03-12 10:32:30 UTC; maechler
 Author: Martin Maechler [aut, cre],
   Peter Rousseeuw [aut] (Fortran original),
   Anja Struyf [aut] (S original),
@@ -36,4 +36,4 @@ Author: Martin Maechler [aut, cre],
   Pierre Roudier [ctb]
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2014-03-11 06:20:46
+Date/Publication: 2014-03-13 01:52:46

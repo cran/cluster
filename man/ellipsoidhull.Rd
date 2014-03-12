@@ -29,7 +29,7 @@ ellipsoidhull(x, tol=0.01, maxit=5000,
 }
 \details{
   The \dQuote{spanning ellipsoid} algorithm is said to stem from
-  Titterington(1976), in Pison et al(1999) who use it for
+  Titterington(1976), in Pison et al (1999) who use it for
   \code{\link{clusplot.default}}.\cr
   The problem can be seen as a special case of the \dQuote{Min.Vol.}
   ellipsoid of which a more more flexible and general implementation is
