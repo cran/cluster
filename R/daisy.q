@@ -11,19 +11,20 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     pColl <- function(n) paste(n, collapse = ", ")
     if(length(type)) {
 	if(!is.list(type) || is.null(ntyp <- names(type)) || any(ntyp == ""))
-	    stop("invalid ", sQuote("type"),"; must be named list")
+	    stop(gettextf("invalid %s; must be named list", sQuote("type")))
 	## check each component to be valid column names or numbers:
 	for(nt in ntyp) {
 	    cvec <- type[[nt]]
+	    ct <- paste0("type$", nt)
 	    if(is.character(cvec)) {
 		if(!is.null(varnms) && !all(cvec %in% varnms))
-		    stop("type$", nt, " has invalid column names")
+		    stop(gettextf("%s has invalid column names", ct))
 	    }
 	    else if(is.numeric(cvec)) {
 		if(!all(1 <= cvec & cvec <= p))
-		    stop("type$", nt, " must be in 1:ncol(x)")
+		    stop(gettextf("%s must be in 1:ncol(x)", ct))
 	    }
-	    else stop("type$", nt, " must contain column names or numbers")
+	    else stop(gettextf("%s must contain column names or numbers", ct))
 	}
 	tA <- type$asymm
 	tS <- type$symm
@@ -68,8 +69,8 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     if(n > 9 && any(tI) &&
        any(iBin <- apply(x[, tI, drop = FALSE], 2,
 			 function(v) length(table(v)) == 2)))
-	warning("binary variable(s) ", pColl(which(tI)[iBin]),
-		" treated as interval scaled")
+	warning(gettextf("binary variable(s) %s treated as interval scaled",
+			 pColl(which(tI)[iBin])))
 
     type2[type2 == "ordered"] <- "O"
     type2[type2 == "factor"] <- "N"
@@ -90,8 +91,9 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
 	    x <- scale(x, center = TRUE, scale = FALSE) #-> 0-means
 	    sx <- colMeans(abs(x), na.rm = TRUE)# can still have NA's
 	    if(0 %in% sx) {
-		warning(sQuote("x"), " has constant columns ",
-			pColl(which(sx == 0)), "; these are standardized to 0")
+		warning(gettextf(
+		    "%s has constant columns %s; these are standardized to 0",
+		    sQuote("x"), pColl(which(sx == 0))))
 		sx[sx == 0] <- 1
 	    }
 	    x <- scale(x, center = FALSE, scale = sx)
@@ -124,8 +126,8 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     ##              1   2   3   4   5   6  --> passed to Fortran below
     type3 <- match(type2, typeCodes)# integer
     if(any(ina <- is.na(type3)))
-	stop("invalid type ", type2[ina],
-	     " for column numbers ", pColl(which(is.na)))
+	stop(gettextf("invalid type %s for column numbers %s",
+		      type2[ina], pColl(which(is.na))))
     if((mdata <- any(inax <- is.na(x)))) { # TRUE if x[] has any NAs
 	jtmd <- as.integer(ifelse(apply(inax, 2, any), -1, 1))
 	## VALue for MISsing DATa

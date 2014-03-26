@@ -457,7 +457,7 @@ void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
 			radus[k] = djm;
 		}
 	    }
-	    if(ntt == 0) REprintf("bug in C cstat(): ntt=0 !!!\n");
+	    if(ntt == 0) error(_("pam(): Bug in C level cstat(), k=%d: ntt=0"), k);
 	    avsyl[k] = ttt / ntt;
 	    med[k] = m;
 	}

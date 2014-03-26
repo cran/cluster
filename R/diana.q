@@ -1,4 +1,4 @@
-### $Id: diana.q 6015 2012-01-18 11:03:38Z maechler $
+### $Id: diana.q 6708 2014-03-26 18:51:40Z maechler $
 
 diana <- function(x, diss = inherits(x, "dist"),
 		  metric = "euclidean", stand = FALSE,
@@ -7,14 +7,14 @@ diana <- function(x, diss = inherits(x, "dist"),
 {
     if((diss <- as.logical(diss))) {
 	## check type of input vector
-	if(any(is.na(x))) stop(..msg$error["NAdiss"])
+	if(any(is.na(x))) stop("NA values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") { # try to convert to
 	    if(!is.null(dim(x))) {
 		x <- as.dist(x) # or give an error
 	    } else {
 		## possibly convert input *vector*
 		if(!is.numeric(x) || is.na(n <- sizeDiss(x)))
-		    stop(..msg$error["non.diss"])
+		    stop("'x' is not and cannot be converted to class \"dissimilarity\"")
 		attr(x, "Size") <- n
 	    }
 	    class(x) <- dissiCl

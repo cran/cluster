@@ -88,22 +88,21 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	    i <- which(aNA)
 	    nNA <- length(i)
 	    pasteC <- function(...) paste(..., collapse= ",")
-	    stop(ngettext(nNA,
-			  sprintf("Observation %d has *only* NAs --> omit it for clustering",
-				  i[1]),
-			  ## nNA > 1 :
-			  paste(if(nNA < 13) sprintf("Observations %s", pasteC(i))
-			  else sprintf("%d observations (%s ...)", nNA, pasteC(i[1:12])),
-				"\thave *only* NAs --> na.omit() them for clustering!",
-				sep = "\n")), domain = NA)
+	    if(nNA < 13)
+		stop(sprintf(ngettext(nNA,
+			      "Observation %s has *only* NAs --> omit it for clustering",
+			      "Observations %s have *only* NAs --> omit them for clustering!"),
+			     pasteC(i)), domain = NA)
+	    else
+		stop(sprintf(ngettext(nNA,
+			      "%d observation (%s) has *only* NAs --> omit them for clustering!",
+			      "%d observations (%s ...) have *only* NAs --> omit them for clustering!"),
+			     nNA, pasteC(i[1:12])), domain = NA)
 	} ## else
 	if(res$jstop == 1)
-	    stop("Each of the random samples contains objects between which\n",
-		 " no distance can be computed.")
+	    stop("Each of the random samples contains objects between which no distance can be computed.")
 	if(res$jstop == 2)
-	    stop("For each of the ", samples,
-		 " samples, at least one object was found which\n could not",
-		 " be assigned to a cluster (because of missing values).")
+	    stop(gettextf("For each of the %d samples, at least one object was found which could not be assigned to a cluster (because of missing values).", samples))
 	## else {cannot happen}
 	stop("invalid 'jstop' from .C(cl_clara,.): ", res$jstop)
     }

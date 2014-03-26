@@ -1,4 +1,4 @@
-#### $Id: fanny.q 5977 2011-12-21 09:42:55Z maechler $
+#### $Id: fanny.q 6708 2014-03-26 18:51:40Z maechler $
 fanny <- function(x, k, diss = inherits(x, "dist"), memb.exp = 2,
                   metric = c("euclidean", "manhattan", "SqEuclidean"),
                   stand = FALSE, iniMem.p = NULL, cluster.only = FALSE,
@@ -8,14 +8,14 @@ fanny <- function(x, k, diss = inherits(x, "dist"), memb.exp = 2,
 {
     if((diss <- as.logical(diss))) {
 	## check type of input vector
-	if(any(is.na(x))) stop(..msg$error["NAdiss"])
+	if(any(is.na(x))) stop("NA values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") { # try to convert to
 	    if(!is.null(dim(x))) {
 		x <- as.dist(x)         # or give an error
 	    } else {
 		## possibly convert input *vector*
 		if(!is.numeric(x) || is.na(n <- sizeDiss(x)))
-		    stop(..msg$error["non.diss"])
+		    stop("'x' is not and cannot be converted to class \"dissimilarity\"")
 		attr(x, "Size") <- n
 	    }
 	    class(x) <- dissiCl
@@ -103,7 +103,7 @@ fanny <- function(x, k, diss = inherits(x, "dist"), memb.exp = 2,
               maxit = maxit)
 
     if(!(converged <- res$maxit > 0)) {
-        warning(sprintf(
+        warning(gettextf(
             "FANNY algorithm has not converged in 'maxit' = %d iterations",
                         maxit))
     }

@@ -1,4 +1,4 @@
-#### $Id: agnes.q 6592 2013-11-06 11:10:27Z maechler $
+#### $Id: agnes.q 6708 2014-03-26 18:51:40Z maechler $
 agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		  stand = FALSE, method = "average", par.method,
                   keep.diss = n < 100, keep.data = !diss)
@@ -38,14 +38,14 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 
     if((diss <- as.logical(diss))) {
 	## check type of input vector
-	if(any(is.na(x))) stop(..msg$error["NAdiss"])
+	if(any(is.na(x))) stop("NA-values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") { # try to convert to
 	    if(!is.null(dim(x))) {
 		x <- as.dist(x) # or give an error
 	    } else {
 		## possibly convert input *vector*
 		if(!is.numeric(x) || is.na(n <- sizeDiss(x)))
-		    stop(..msg$error["non.diss"])
+		    stop("'x' is not and cannot be converted to class \"dissimilarity\"")
 		attr(x, "Size") <- n
 	    }
 	    class(x) <- dissiCl

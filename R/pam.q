@@ -1,5 +1,5 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q 6057 2012-02-01 08:42:19Z maechler $
+#### --- $Id: pam.q 6708 2014-03-26 18:51:40Z maechler $
 pam <- function(x, k, diss = inherits(x, "dist"),
 		metric = "euclidean", medoids = NULL,
                 stand = FALSE, cluster.only = FALSE, do.swap = TRUE,
@@ -9,14 +9,14 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 {
     if((diss <- as.logical(diss))) {
 	## check type of input vector
-	if(any(is.na(x))) stop(..msg$error["NAdiss"])
+	if(any(is.na(x))) stop("NA values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") { # try to convert to
 	    if(!is.null(dim(x))) {
 		x <- as.dist(x) # or give an error
 	    } else {
 		## possibly convert input *vector*
 		if(!is.numeric(x) || is.na(n <- sizeDiss(x)))
-		    stop(..msg$error["non.diss"])
+		    stop("'x' is not and cannot be converted to class \"dissimilarity\"")
 		attr(x, "Size") <- n
 	    }
 	    class(x) <- dissiCl
@@ -60,8 +60,9 @@ pam <- function(x, k, diss = inherits(x, "dist"),
         ## "0L+..." ensure a "DUPLICATE(.)" (a real copy on the C level; as.integer(.) is not enough!
 	if(length(medID <- if(is.integer(medoids))0L+medoids else as.integer(medoids)) != k ||
 	   any(medID < 1) || any(medID > n) || any(duplicated(medID)))
-	    stop("'medoids' must be NULL or vector of ",
-		 k, " distinct indices in {1,2, .., n}, n=", n)
+	    stop(gettextf(
+		"'medoids' must be NULL or vector of %d distinct indices in {1,2, .., n}, n=%d",
+		k, n))
         ## use observation numbers  'medID' as starting medoids for 'swap' only
     }
     nisol <- integer(if(cluster.only) 1 else k)

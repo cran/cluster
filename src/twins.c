@@ -222,7 +222,7 @@ agnes(int nn, int *kwan, int *ner, double *ban,
 		if(has_a4) dys[naq] += alpha[4] * fabs(dys[naq] - dys[nbq]);
 		break;
 	    default:
-		error(_("invalid method (code %d"), method);
+		error(_("invalid method (code %d)"), method);
 	    }
 	}
 	kwan[la] += kwan[lb];

@@ -18,8 +18,7 @@ silhouette.clara <- function(x, full = FALSE, ...)
 
     ## else : full = TRUE
     if(is.null(x$data))
-	stop("full silhouette is only available for results of",
-	     " 'clara(*, keep.data = TRUE)'")
+	stop("full silhouette is only available for results of 'clara(*, keep.data = TRUE)'")
     ## Compute "full" silhouette -- from clustering + full distances:
     r <- silhouette(x$clustering,
 		    daisy(x$data, metric = attr(x, "Metric")))

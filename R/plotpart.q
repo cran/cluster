@@ -1,4 +1,4 @@
-### $Id: plotpart.q 5974 2011-12-20 17:47:08Z maechler $
+### $Id: plotpart.q 6708 2014-03-26 18:51:40Z maechler $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
 	 nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
@@ -301,8 +301,7 @@ function(x, clus, diss = FALSE, s.x.2d = mkCheckX(x, diss),
 			  ierr = integer(1))
 		if(res$ierr != 0)
 		    ## MM : exactmve not available here !
-		    warning("Error in Fortran routine for the spanning ellipsoid,",
-			    "\n rank problem??")
+		    warning("Error in Fortran routine for the spanning ellipsoid,\n rank problem??")
 
 		cov <- cov.wt(x, res$prob)
 		loc[i, ] <- cov$center
@@ -509,8 +508,8 @@ clusplot.partition <- function(x, main = NULL, dist = NULL, ...)
 	if(!is.null(x$call)) {
 	    xD <- try(eval(x$call[[2]], envir = parent.frame()))
 	    if(inherits(xD, "try-error") || !inherits(xD, "dist"))
-		stop("no diss nor data found, nor the original argument of ",
-		     deparse(x$call))
+		stop(gettextf("no diss nor data found, nor the original argument of %s",
+			      deparse(x$call)))
 	    ## else
 	    ## warning("both 'x$diss' and 'dist' are empty; ",
 	    ##	       "trying to find the first argument of ", deparse(x$call))

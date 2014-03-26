@@ -1,7 +1,6 @@
 
-R version 2.15.1 Patched (2012-10-12 r60924) -- "Roasted Marshmallows"
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
+R version 3.1.0 alpha (2014-03-26 r65294)
+Copyright (C) 2014 The R Foundation for Statistical Computing
 Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -378,8 +377,8 @@ Error in clara(x, 2, samples = 20, trace = 3) :
   Observation 33 has *only* NAs --> omit it for clustering
 > ## To see error message for > 1 missing:
 > try(clara(rbind(NA,x), 2))
-Error in clara(rbind(NA, x), 2) : Observations 1,34
-	have *only* NAs --> na.omit() them for clustering!
+Error in clara(rbind(NA, x), 2) : 
+  Observations 1,34 have *only* NAs --> omit them for clustering!
 > 
 > x <- x[-33,]
 > ## still had the ** dysta2() .. OUT" problem {no longer!}
@@ -627,9 +626,8 @@ Available components:
 > xclara[sample(nrow(xclara), 50),] <- NA
 > try( clara(xclara, k = 3) ) #-> "nice" error message depicting first 12 missing obs
 Error in clara(xclara, k = 3) : 
-  50 observations (74,126,137,308,411,423,438,451,642,686,689,735 ...)
-	have *only* NAs --> na.omit() them for clustering!
+  50 observations (74,126,137,308,411,423,438,451,642,686,689,735 ...) have *only* NAs --> omit them for clustering!
 > 
 > proc.time()
    user  system elapsed 
-  0.228   0.024   0.240 
+  0.238   0.029   0.250 

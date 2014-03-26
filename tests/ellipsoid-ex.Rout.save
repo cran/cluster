@@ -1,7 +1,6 @@
 
-R version 2.13.0 Patched (2011-04-16 r55459)
-Copyright (C) 2011 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
+R version 3.1.0 alpha (2014-03-26 r65294)
+Copyright (C) 2014 The R Foundation for Statistical Computing
 Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -23,7 +22,7 @@ Error in Fortran routine computing the spanning ellipsoid,
  probably collinear data
 Warning message:
 In ellipsoidhull(cbind(x = 1:4, y = 1:4)) :
-  possibly not converged in 5000 iterations
+  algorithm possibly not converged in 5000 iterations
 > eh
 'ellipsoid' in 2 dimensions:
  center = ( 2.5 2.5 ); squared ave.radius d^2 =  0 
@@ -205,3 +204,6 @@ x   17.8372    87.0277    8.3389   2607.9   49.117
 > tail(sort(e5$sqdist)) ## 4 values 5.00039 ... 5.0099
 [1] 4.999915 5.000005 5.000010 5.000088 5.001444 5.009849
 > 
+> proc.time()
+   user  system elapsed 
+  0.218   0.023   0.223 

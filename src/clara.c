@@ -93,7 +93,7 @@ void cl_clara(int *n,  /* = number of objects */
 #define NEW_rand_k_trace_print(_nr_)					\
 	rand_k= 1+ (int)(rnn* ((*rng_R)? unif_rand(): randm(&nrun)));	\
 	if (rand_k > *n) {/* should never happen */			\
-	    REprintf("** C clara(): random k=%d > n **\n", rand_k);	\
+	    warning(_("C level clara(): random k=%d > n **\n"), rand_k); \
 	    rand_k = *n;						\
 	}								\
 	if(*trace_lev >= 4) {						\
@@ -303,8 +303,9 @@ void cl_clara(int *n,  /* = number of objects */
     dysta2(*nsam, *jpp, nbest, x, *n, dys, *diss_kind, jtmd, valmd,
 	   has_NA, &dyst_toomany_NA);
     if(dyst_toomany_NA) {
-	REprintf(" *** SHOULD NOT HAPPEN: clara() -> dysta2(nbest) gave toomany_NA\n");
-	return;
+	error(_(
+	  "clara()'s C level dysta2(nsam=%d, p=%d, nbest=%d, n=%d) gave 'toomany_NA'"),
+	      *nsam, *jpp, nbest, *n );
     }
     resul(*kk, *n, *jpp, *diss_kind, has_NA, jtmd, valmd, x, nrx, mtt);
 
@@ -337,11 +338,13 @@ void dysta2(int nsam, int jpp, int *nsel,
     for (int l = 1; l < nsam; ++l) {
 	int lsel = nsel[l];
 	if(lsel <= 0 || lsel > n)
-	    REprintf(" ** dysta2(): nsel[l= %d] = %d is OUT\n", l, lsel);
+	    error(_("C level dysta2(): nsel[%s= %d] = %d is outside 0..n, n=%d"), 
+		  "l", l, lsel, n);
 	for (int k = 0; k < l; ++k) { /* compute d(nsel[l], nsel[k]) {if possible}*/
 	    int ksel = nsel[k];
 	    if(ksel <= 0 || ksel > n)
-		REprintf(" ** dysta2(): nsel[k= %d] = %d is OUT\n", k, ksel);
+		error(_("C level dysta2(): nsel[%s= %d] = %d is outside 0..n, n=%d"), 
+		      "k", k, ksel, n);
 	    ++nlk;
 	    int npres = 0, j, lj, kj;
 	    double clk = 0.;

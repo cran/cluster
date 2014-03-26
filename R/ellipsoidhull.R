@@ -37,10 +37,10 @@ ellipsoidhull <-
         cat("Error in Fortran routine computing the spanning ellipsoid,",
             "\n probably collinear data\n", sep="")
     if(any(res$prob < 0) || all(res$prob == 0))
-        stop("computed some negative or all 0 'prob'abilities")
+        stop("computed some negative or all 0 probabilities")
     conv <- res$maxit  < maxit
     if(!conv)
-        warning("possibly not converged in ", maxit, " iterations")
+        warning(gettextf("algorithm possibly not converged in %d iterations", maxit))
     conv <- conv && res$ierr == 0
 
     cov <- cov.wt(x, res$prob)

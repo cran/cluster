@@ -1,3 +1,8 @@
+2014-03-26  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.15.2
+	* R/*.q updates to make messages translatable; proposed by Lukasz Daniel
+
 2014-03-12  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.15.1
