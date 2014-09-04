@@ -5,15 +5,19 @@
  */
 
 #include <math.h>
+
 #include <Rmath.h>
+#include <R_ext/Print.h>/* for diagnostics */
+#include <R_ext/Utils.h>/* for interrupting */
+
 #include "cluster.h"
 #include "ind_2.h"
 
 // the auxiliary routines
 static void agnes(int nn, int *kwan, int *ner, double *ban, double dys[],
-		  int method, double *alpha, int *merge);
+		  int method, double *alpha, int *merge, int trace_lev);
 static void splyt(int nn, int *kwan, int *ner, double *ban, double dys[],
-		  int *merge);
+		  int *merge, int trace_lev);
 static double min_dis(double dys[], int ka, int kb, int ner[]);
 
 /*     This program performs agglomerative nesting (AGNES) using the */
@@ -38,7 +42,7 @@ void twins(int *nn, // = maximal number of objects
 	   int *ner,     // = order []   (in R)
 	   double *ban,  // = height[]
 	   double *coef,
-	   double *alpha, int *merge)
+	   double *alpha, int *merge, int *trace_lev)
 {
     if (*jdyss % 10 == 1) {
 	*jpp = 1;
@@ -53,10 +57,10 @@ void twins(int *nn, // = maximal number of objects
     }
     if (*jalg != 2) {
 	// AGNES
-	agnes(*nn, kwan, ner, ban, dys, *method, alpha, merge);
+	agnes(*nn, kwan, ner, ban, dys, *method, alpha, merge, trace_lev[0]);
     } else {
 	// DIANA
-	splyt(*nn, kwan, ner, ban, dys,                 merge);
+	splyt(*nn, kwan, ner, ban, dys,                 merge, trace_lev[0]);
     }
     // Compute agglomerative/divisive coefficient from banner:
     *coef = bncoef(*nn, ban);
@@ -67,7 +71,7 @@ void twins(int *nn, // = maximal number of objects
 /*     AGNES agglomeration */
 static void
 agnes(int nn, int *kwan, int *ner, double *ban,
-      double dys[], int method, double *alpha, int *merge)
+      double dys[], int method, double *alpha, int *merge, int trace_lev)
 {
 
 /* VARs */
@@ -75,8 +79,8 @@ agnes(int nn, int *kwan, int *ner, double *ban,
     int j, k, l1, l2, lq,
 	nclu, lnum, lput, lenda, lendb, lnext, n_1 = nn - 1,
 	la = -1, lb = -1, llast = -1, lfyrs = -1, // <- against (unnecessary) warnings [-Wall]
-	nmerge;
-    Rboolean has_a4 = FALSE;// is alpha[4] == 0 -- for Lance-Williams
+	_d, nmerge;
+    Rboolean has_a3 = FALSE, has_a4 = FALSE;// is alpha[3] or [4] == 0 -- for Lance-Williams
 
     /* System generated locals */
     int merge_dim1 = n_1;
@@ -89,10 +93,24 @@ agnes(int nn, int *kwan, int *ner, double *ban,
     --kwan;
     --alpha;
 
+    if(trace_lev) {
+	_d = (nn >= 100) ? 3 : (nn >= 10) ? 2 : 1;
+	Rprintf("C agnes(n=%*d, method = %d, ..): ", _d,nn, method);
+    } else _d = -1;// -Wall
+
     if(method == 6 || method == 7) {
 	// 6: "flexible": "Flexible Strategy" (K+R p.236 f) extended to 'Lance-Williams'
 	// 7: "gaverage" aka Flexible UPGMA (Belbin et al., 1992)
+	has_a3 = (alpha[3] != 0.);
 	has_a4 = (alpha[4] != 0.);
+	if(trace_lev) {
+	    if(has_a4)
+		Rprintf("|par| = 4, alpha[1:4] = (%g,%g,%g,%g); ",
+			alpha[1],alpha[2],alpha[3],alpha[4]);
+	    else if(has_a3)
+		Rprintf("|par| = 3, alpha[1:3] = (%g,%g,%g); ",
+			alpha[1],alpha[2],alpha[3]);
+	}
     }
 
 //  Starting with nn clusters, kwan[j] := #{obj} in cluster j
@@ -104,9 +122,11 @@ agnes(int nn, int *kwan, int *ner, double *ban,
 // ----------------------------------------------------------------------------
 /*     find closest clusters */
     nmerge = 1;
+    if(trace_lev) Rprintf("%d merging steps\n", n_1);
     for (nclu = n_1; nclu >= 1; --nclu) {
 	// j := min_j { kwan[j] > 0} = first non-empty cluster
 	j = 1; do { j++; } while(kwan[j] == 0);
+	if(trace_lev >= 2) Rprintf(" nclu=%*d, j=%*d, ", _d,nclu, _d,j);
 
 	d_min = dys[ind_2(1, j)] * 1.1f + 1.;
 	for (k = 1; k <= n_1; ++k) if (kwan[k] > 0) {
@@ -120,6 +140,7 @@ agnes(int nn, int *kwan, int *ner, double *ban,
 		    }
 	    }
 	// --> closest clusters  {la < lb}  are at distance  d_min
+	if(trace_lev >= 2) Rprintf("d_min = D(%*d,%*d) = %#g; ", _d,la, _d,lb, d_min);
 
 /*     merge-structure for plotting tree in S */
 
@@ -141,10 +162,13 @@ agnes(int nn, int *kwan, int *ner, double *ban,
 	}
 	ban[llast] = d_min;
 
+	if(trace_lev >= 2) Rprintf("nmerge = %*d, last=%*d;", _d,nmerge, _d,llast);
+
 /*     if the two clusters are next to each other, ner must not be changed */
 
 	lnext = lfyrs + kwan[la];
 	if (lnext != llast) { /*     updating ner and ban */
+	    if(trace_lev >= 2) Rprintf(" upd(n,b);");
 	    lput = lfyrs + kwan[la];
 	    lnum = llast - lput;
 	    for (k = 1; k <= lnum; ++k) {
@@ -160,6 +184,7 @@ agnes(int nn, int *kwan, int *ner, double *ban,
 		ban[lendb] = akb;
 	    }
 	}
+	if(trace_lev >= 3) Rprintf("\n");
 
 /*     We will merge A & B into  A_{new} */
 
@@ -169,64 +194,79 @@ agnes(int nn, int *kwan, int *ner, double *ban,
 	    if (lq == la || lq == lb || kwan[lq] == 0)
 		continue;
 
-	    double ta, tb, tq, fa, fb, fc;
 	    int naq = ind_2(la, lq);
 	    int nbq = ind_2(lb, lq);
+	    if(trace_lev >= 3)
+		Rprintf(" old D(A, j), D(B, j), j=%*d  = (%g,%g); ",
+			_d,lq, dys[naq], dys[nbq]);
 
 	    switch(method) {
-	    case 1: /*     1: unweighted pair-]group average method, UPGMA */
-		ta = (double) kwan[la];
-		tb = (double) kwan[lb];
-		fa = ta / (ta + tb);
-		fb = tb / (ta + tb);
+	    case 1: { //   1: unweighted pair-]group average method, UPGMA
+		double
+		    ta = (double) kwan[la],
+		    tb = (double) kwan[lb],
+		    fa = ta / (ta + tb),
+		    fb = tb / (ta + tb);
 		dys[naq] = fa * dys[naq] + fb * dys[nbq];
 		break;
+	    }
 	    case 2: /*     2: single linkage */
 		dys[naq] = fmin2(dys[naq], dys[nbq]);
 		break;
 	    case 3: /*     3: complete linkage */
 		dys[naq] = fmax2(dys[naq], dys[nbq]);
 		break;
-            case 4: /*     4: ward's method */
-		ta = (double) kwan[la];
-		tb = (double) kwan[lb];
-		tq = (double) kwan[lq];
-		fa = (ta + tq) / (ta + tb + tq);
-		fb = (tb + tq) / (ta + tb + tq);
-		fc = -tq / (ta + tb + tq);
+            case 4: { //   4: ward's method
+		double
+		    ta = (double) kwan[la],
+		    tb = (double) kwan[lb],
+		    tq = (double) kwan[lq],
+		    fa = (ta + tq) / (ta + tb + tq),
+		    fb = (tb + tq) / (ta + tb + tq),
+		    fc = -tq / (ta + tb + tq);
 		int nab = ind_2(la, lb);
 		dys[naq] = sqrt(fa * dys[naq] * dys[naq] +
 				fb * dys[nbq] * dys[nbq] +
 				fc * dys[nab] * dys[nab]);
 		break;
-
+	    }
 	    case 5: /*     5: weighted average linkage */
 		dys[naq] = (dys[naq] + dys[nbq]) / 2.;
 		break;
-	    case 6: //     6: "Flexible Strategy" (K+R p.236 f) extended to 'Lance-Williams'
-		dys[naq] = alpha[1] * dys[naq] + alpha[2] * dys[nbq] +
-		    alpha[3] * dys[ind_2(la, lb)];
-		if(has_a4) dys[naq] += alpha[4] * fabs(dys[naq] - dys[nbq]);
+	    case 6: { //   6: "Flexible Strategy" (K+R p.236 f) extended to 'Lance-Williams'
+		double dNew = alpha[1] * dys[naq] + alpha[2] * dys[nbq];
+		if(has_a3) dNew += alpha[3] * dys[ind_2(la, lb)];
+		if(has_a4) dNew += alpha[4] * fabs(dys[naq] - dys[nbq]);
+		dys[naq] = dNew;
 		/* Lance-Williams would allow alpha(1:2) to *depend* on |cluster|
 		 * could also include the extensions of Jambu(1978) --
 		 * See Gordon A.D. (1999) "Classification" (2nd ed.) p.78 ff */
 		break;
-	    case 7: /*     7: generalized "average" = Flexible UPGMA (Belbin et al., 1992)
-		     * Applies the flexible Lance-Williams formula to the UPGMA, aka
-		     * "average" case 1 above, i.e., alpha_{1,2} depend on cluster sizes: */
-		ta = (double) kwan[la];
-		tb = (double) kwan[lb];
-		fa = alpha[1] * ta / (ta + tb);
-		fb = alpha[2] * tb / (ta + tb);
-		dys[naq] = fa * dys[naq] + fb * dys[nbq] + alpha[3] * dys[ind_2(la, lb)];
-		if(has_a4) dys[naq] += alpha[4] * fabs(dys[naq] - dys[nbq]);
+	    }
+	    case 7: {/*    7: generalized "average" = Flexible UPGMA (Belbin et al., 1992)
+		      * Applies the flexible Lance-Williams formula to the UPGMA, aka
+		      * "average" case 1 above, i.e., alpha_{1,2} depend on cluster sizes: */
+		double
+		    ta = (double) kwan[la],
+		    tb = (double) kwan[lb],
+		    fa = alpha[1] * ta / (ta + tb),
+		    fb = alpha[2] * tb / (ta + tb),
+		    dNew = fa * dys[naq] + fb * dys[nbq];
+		if(has_a3) dNew += alpha[3] * dys[ind_2(la, lb)];
+		if(has_a4) dNew += alpha[4] * fabs(dys[naq] - dys[nbq]);
+		dys[naq] = dNew;
 		break;
+	    }
 	    default:
 		error(_("invalid method (code %d)"), method);
 	    }
-	}
+	    if(trace_lev >= 3)
+		Rprintf(" new D(A', %*d) = %g\n", _d,lq, dys[naq]);
+	} // for (lq ..)
 	kwan[la] += kwan[lb];
 	kwan[lb] = 0;
+	if(trace_lev >= 2)
+	    Rprintf("%s new size = %d\n", (trace_lev >= 3)? " --> " : "", kwan[la]);
 
     }// for(nclu ..)
     return;
@@ -265,7 +305,7 @@ double bncoef(int n, double *ban)
 
 static void
 splyt(int nn, int *kwan, int *ner, double *ban,
-      double dys[], int *merge)
+      double dys[], int *merge, int trace_lev)
 {
     /* Local variables */
     int j, ja, jb, k, l;
@@ -301,15 +341,15 @@ splyt(int nn, int *kwan, int *ner, double *ban,
 
 /*     cs :=  diameter of data set */
 
-    cs = 0.f;
+    cs = 0.;
     k = 0;
-L20:
-    if (cs < dys[k])
-	cs = dys[k];
-    ++k;
-    if (k < nhalf) {
-	goto L20;
-    }
+    do {
+	if (cs < dys[k])
+	    cs = dys[k];
+	++k;
+    } while (k < nhalf);
+    if(trace_lev)
+	Rprintf("C diana(): ndist= %d, diameter = %g\n", nhalf, cs);
 
 /*     prepare for splitting */
 

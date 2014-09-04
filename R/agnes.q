@@ -1,24 +1,26 @@
-#### $Id: agnes.q 6708 2014-03-26 18:51:40Z maechler $
+#### $Id: agnes.q 6801 2014-09-04 15:47:41Z maechler $
+
 agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		  stand = FALSE, method = "average", par.method,
-                  keep.diss = n < 100, keep.data = !diss)
+                  keep.diss = n < 100, keep.data = !diss, trace.lev = 0)
 {
     METHODS <- c("average", "single","complete", "ward","weighted", "flexible", "gaverage")
     ## hclust has more;  1    2         3           4       5         6         7
     meth <- pmatch(method, METHODS)
     if(is.na(meth)) stop("invalid clustering method")
     if(meth == -1) stop("ambiguous clustering method")
+    cl. <- match.call()
     method <- METHODS[meth]
     if(method == "flexible") {
 	## Lance-Williams formula (but *constant* coefficients):
 	stopifnot((np <- length(a <- as.numeric(par.method))) >= 1)
-	attr(method,"par") <- par.method <- 
+	attr(method,"par") <- par.method <-
 	    if(np == 1)## default (a1= a, a2= a, b= 1-2a, c = 0)
 		c(a, a, 1-2*a, 0)
 	    else if(np == 3)
 		c(a, 0)
-	    else if(np != 4)
-		stop("'par.method' must be of length 1, 3, or 4")
+	    else if(np == 4) a
+	    else stop("'par.method' must be of length 1, 3, or 4")
     } else if (method == "gaverage") {
 	attr(method,"par") <- par.method <- if (missing(par.method)) {
 	    ## Default par.method: Using beta = -0.1 as advised in Belbin et al. (1992)
@@ -30,8 +32,8 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		c(1-b, 1-b, b, 0)
 	    else if(np == 3)
 		c(b, 0)
-	    else if(np != 4)
-		stop("'par.method' must be of length 1, 3, or 4")
+	    else if(np == 4) b
+	    else stop("'par.method' must be of length 1, 3, or 4")
 	}
     } else ## dummy (passed to C)
 	par.method <- double()
@@ -79,6 +81,7 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 	dv <- double(1 + (n * (n - 1))/2)
     }
     if(n <= 1) stop("need at least 2 objects to cluster")
+    stopifnot(length(trace.lev <- as.integer(trace.lev)) == 1)
     C.keep.diss <- keep.diss && !diss
     res <- .C(twins,
 		    as.integer(n),
@@ -95,9 +98,10 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		    integer(n),
 		    ner = integer(n),
 		    ban = double(n),
-		    ac = as.double(0), ## as.double(trace.lev),# in / out
+		    ac = double(1),
                     par.method,
 		    merge = matrix(0L, n - 1, 2), # integer
+                    trace = trace.lev,
                     DUP = FALSE)
     if(!diss) {
 	##give warning if some dissimilarities are missing.
@@ -126,7 +130,7 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
     }
     clustering <- list(order = res$ner, height = res$ban[-1], ac = res$ac,
 		       merge = res$merge, diss = if(keep.diss)disv,
-                       call = match.call(), method = METHODS[meth])
+		       call = cl., method = METHODS[meth])
     if(exists("order.lab"))
 	clustering$order.lab <- order.lab
     if(keep.data && !diss) {

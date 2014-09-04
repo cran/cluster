@@ -1,4 +1,4 @@
-### $Id: diana.q 6708 2014-03-26 18:51:40Z maechler $
+### $Id: diana.q 6801 2014-09-04 15:47:41Z maechler $
 
 diana <- function(x, diss = inherits(x, "dist"),
 		  metric = "euclidean", stand = FALSE,
@@ -65,9 +65,10 @@ diana <- function(x, diss = inherits(x, "dist"),
 		    integer(n),
 		    ner = integer(n),
 		    ban = double(n),
-		    dc = as.double(trace.lev),# in / out
-		    double(1),
+		    dc = double(1),
+		    double(1), # { unused for diana() }
 		    merge = matrix(0L, n - 1, 2), # integer
+                    trace = trace.lev,
 		    DUP = FALSE)
     if(!diss) {
 	## give warning if some dissimilarities are missing.

@@ -47,12 +47,12 @@ static R_NativePrimitiveArgType sildist_t[] = {
     /* si: */ REALSXP, INTSXP, LGLSXP
 };
 
-static R_NativePrimitiveArgType twins_t[17] = {
+static R_NativePrimitiveArgType twins_t[18] = {
     INTSXP, INTSXP, REALSXP, REALSXP, REALSXP,
     /* jdiss: */ INTSXP, REALSXP,
     INTSXP, INTSXP, INTSXP, INTSXP,
     /* kwan: */ INTSXP, INTSXP, REALSXP, REALSXP,
-    REALSXP, INTSXP
+    REALSXP, INTSXP, INTSXP
 };
 
 /* is only .C()-called from ../tests/sweep-ex.R : */

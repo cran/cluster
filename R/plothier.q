@@ -1,4 +1,4 @@
-### $Id: plothier.q 5642 2010-11-03 09:33:50Z maechler $
+### $Id: plothier.q 6800 2014-09-04 08:29:53Z maechler $
 
 pltree <- function(x, ...) UseMethod("pltree")
 
@@ -92,8 +92,9 @@ function(x, ask = FALSE, which.plots = NULL, main = NULL,
          adj = 0, nmax.lab = 35, max.strlen = 5, xax.pretty = TRUE, ...)
 {
     if(is.null(main)) {
+	cl <- paste(strwrap(deparse(x$call, 150)[1], width = 60, exdent = 7),
+		    collapse="\n")
 	## Different default for banner & pltree:
-	cl <- deparse(x$call)
 	main1 <- paste("Banner of ", cl)
 	main2 <- paste("Dendrogram of ", cl)
     }
@@ -147,8 +148,9 @@ function(x, ask = FALSE, which.plots = NULL, main = NULL,
 	 adj = 0, nmax.lab = 35, max.strlen = 5, xax.pretty = TRUE, ...)
 {
     if(is.null(main)) {
+	cl <- paste(strwrap(deparse(x$call, 150)[1], width = 60, exdent = 7),
+		    collapse="\n")
 	## Different default for banner & pltree:
-	cl <- deparse(x$call)
 	main1 <- paste("Banner of ", cl)
 	main2 <- paste("Dendrogram of ", cl)
     }

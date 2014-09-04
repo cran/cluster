@@ -8,7 +8,7 @@
 \usage{
 agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
       stand = FALSE, method = "average", par.method,
-      keep.diss = n < 100, keep.data = !diss)
+      keep.diss = n < 100, keep.data = !diss, trace.lev = 0)
 }
 \arguments{
   \item{x}{
@@ -60,7 +60,7 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
     the Lance-Williams formula and the \code{par.method} argument, and
     \code{"gaverage"} a generalized \code{"average"} aka \dQuote{flexible
     UPGMA} method also using the Lance-Williams formula and \code{par.method}.
-    
+
     The default is \code{"average"}.
   }
   \item{par.method}{
@@ -72,6 +72,9 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
     and/or input data \code{x} should be kept in the result.  Setting
     these to \code{FALSE} can give much smaller results and hence even save
     memory allocation \emph{time}.}
+  \item{trace.lev}{integer specifying a trace level for printing
+    diagnostics during the algorithm.  Default \code{0} does not print
+    anything; higher values print increasingly more.}
 }
 \value{
   an object of class \code{"agnes"} (which extends \code{"twins"})
@@ -132,13 +135,15 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
   particularly for the case when \code{par.method} is specified of
   longer length than one.
   The \emph{weighted average} (\code{method="weighted"}) is the same as
-  \code{method="flexible", par.method = 0.5}.
-    
+  \code{method="flexible", par.method = 0.5}.  Further,
+  \code{method= "single"}  is equivalent to \code{method="flexible", par.method = c(.5,.5,0,-.5)}, and
+  \code{method="complete"} is equivalent to \code{method="flexible", par.method = c(.5,.5,0,+.5)}.
+
   The \code{method = "gaverage"} is a generalization of \code{"average"}, aka
   \dQuote{flexible UPGMA} method, and is (a generalization of the approach)
   detailed in Belbin et al. (1992).  As \code{"flexible"}, it uses the
   Lance-Williams formula above for dissimilarity updating, but with
-  \eqn{\alpha_1} and \eqn{\alpha_1} not constant, but \emph{proportional} to
+  \eqn{\alpha_1} and \eqn{\alpha_2} not constant, but \emph{proportional} to
   the \emph{sizes} \eqn{n_1} and \eqn{n_2} of the clusters \eqn{C_1} and
   \eqn{C_2} respectively, i.e,
   \deqn{\alpha_j = \alpha'_j \frac{n_1}{n_1+n_2},}{%
@@ -153,7 +158,7 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
   \deqn{-1 \leq \beta < 1,}{-1 \le \beta < 1,}
   and \eqn{\beta} determines \eqn{\alpha'_1} and \eqn{\alpha'_2} as
   \deqn{\alpha'_j = 1 - \beta,} and \eqn{\gamma = 0}.
-  
+
   This \eqn{\beta} may be specified by \code{par.method} (as length 1 vector),
   and if \code{par.method} is not specified, a default value of -0.1 is used,
   as Belbin et al recommend taking a \eqn{\beta} value around -0.1 as a general
@@ -193,9 +198,9 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
   A General Theory of Classifactory Sorting Strategies, I. Hierarchical
   Systems.
   \emph{Computer J.} \bold{9}, 373--380.
-  
-  Belbin, L., Faith, D.P. and Milligan, G.W. (1992). A Comparison of 
-  Two Approaches to Beta-Flexible Clustering. 
+
+  Belbin, L., Faith, D.P. and Milligan, G.W. (1992). A Comparison of
+  Two Approaches to Beta-Flexible Clustering.
   \emph{Multivariate Behavioral Research}, \bold{27}, 417--433.
 
 }
@@ -213,9 +218,21 @@ plot(agn1)
 op <- par(mfrow=c(2,2))
 agn2 <- agnes(daisy(votes.repub), diss = TRUE, method = "complete")
 plot(agn2)
-agnS <- agnes(votes.repub, method = "flexible", par.meth = 0.6)
+## alpha = 0.625 ==> beta = -1/4  is "recommended" by some
+agnS <- agnes(votes.repub, method = "flexible", par.meth = 0.625)
 plot(agnS)
 par(op)
+
+## "show" equivalence of three "flexible" special cases
+d.vr <- daisy(votes.repub)
+a.wgt  <- agnes(d.vr, method = "weighted")
+a.sing <- agnes(d.vr, method = "single")
+a.comp <- agnes(d.vr, method = "complete")
+iC <- -(6:7) # not using 'call' and 'method' for comparisons
+stopifnot(
+  all.equal(a.wgt [iC], agnes(d.vr, method="flexible", par.method = 0.5)[iC])   ,
+  all.equal(a.sing[iC], agnes(d.vr, method="flex", par.method= c(.5,.5,0, -.5))[iC]),
+  all.equal(a.comp[iC], agnes(d.vr, method="flex", par.method= c(.5,.5,0, +.5))[iC]))
 
 ## Exploring the dendrogram structure
 (d2 <- as.dendrogram(agn2)) # two main branches
@@ -241,10 +258,15 @@ op <- par(mfcol=1:2, mgp=c(1.5, 0.6, 0), mar=c(.1+ c(4,3,2,1)),
 plot(aa.a,  which.plot = 2)
 plot(aa.ga, which.plot = 2)
 par(op)
+\dontshow{## equivalence
+stopifnot( ## below show  ave == gave(0); here  ave == gave(c(1,1,0,0)):
+  all.equal(aa.a [iC], agnes(animals, method="gave", par.meth= c(1,1,0,0))[iC]),
+  all.equal(aa.ga[iC], agnes(animals, method="gave", par.meth= -0.1)[iC]),
+  all.equal(aa.ga[iC], agnes(animals, method="gav", par.m= c(1.1,1.1,-0.1,0))[iC]))
+}
 
 ## Show how "gaverage" is a "generalized average":
 aa.ga.0 <- agnes(animals, method = "gaverage", par.method = 0)
-ii <- c(1:4,8)
-stopifnot(all.equal(aa.ga.0[ii], aa.a[ii]))
+stopifnot(all.equal(aa.ga.0[iC], aa.a[iC]))
 }
 \keyword{cluster}

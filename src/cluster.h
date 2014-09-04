@@ -165,6 +165,6 @@ void twins(int *nn, int *jpp, double *x,
 	   double *dys, double *dys2, int *jdyss, double *valmd,
 	   int *jtmd, int *ndyst, int *jalg, int *method,
 	   int *kwan, int *ner, double *ban, double *coef,
-	   double *alpha, int *merge);
+	   double *alpha, int *merge, int *trace_lev);
 
 
