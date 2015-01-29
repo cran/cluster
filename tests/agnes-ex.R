@@ -81,3 +81,15 @@ stopifnot(chk(agr5), chk(agr5, "complete", trace = 2), chk(agr5, "weighted"),
           chk(ruspini), chk(ruspini, "complete"), chk(ruspini, "weighted"))
 
 showProc.time()
+
+## an invalid "flexible" case - now must give error early:
+x <- rbind(c( -6, -9), c(  0, 13),
+           c(-15,  6), c(-14,  0), c(12,-10))
+(dx <- daisy(x, "manhattan"))
+a.x <- tryCatch(agnes(dx, method="flexible", par = -.2),
+                error = function(e)e)
+##  agnes(method=6, par.method=*) lead to invalid merge; step 4, D(.,.)=-26.1216
+if(!inherits(a.x, "error")) stop("invalid 'par' in \"flexible\" did not give error")
+if(!all(vapply(c("par[.]method", "merge"), grepl, NA, x=a.x$message)))
+   stop("error message did not contain expected words")
+

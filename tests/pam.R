@@ -67,15 +67,21 @@ identical(pv6[nm3], pv6.[nm3])
 
 ## This example seg.faulted at some point:
 d.st <- data.frame(V1= c(9, 12, 12, 15, 9, 9, 13, 11, 15, 10, 13, 13,
-                   13, 15, 8, 13, 13, 10, 7, 9, 6, 11, 3),
-                   V2= c(5, 9, 3, 5, 1, 1, 2, NA, 10, 1, 4, 7,
-                   4, NA, NA, 5, 2, 4, 3, 3, 6, 1, 1),
-                   V3 = c(63, 41, 59, 50, 290, 226, 60, 36, 32, 121, 70, 51,
-                   79, 32, 42, 39, 76, 60, 56, 88, 57, 309, 254),
-                   V4 = c(146, 43, 78, 88, 314, 149, 78, NA, 238, 153, 159, 222,
-                   203, NA, NA, 74, 100, 111, 9, 180, 50, 256, 107))
+		       13, 15,  8, 13, 13, 10, 7, 9, 6, 11, 3),
+		   V2= c(5, 9, 3, 5, 1, 1, 2, NA, 10, 1, 4, 7,
+		       4, NA, NA, 5, 2, 4, 3, 3, 6, 1, 1),
+		   V3 = c(63, 41, 59, 50, 290, 226, 60, 36, 32, 121, 70, 51,
+		       79, 32, 42, 39, 76, 60, 56, 88, 57, 309, 254),
+		   V4 = c(146, 43, 78, 88, 314, 149, 78, NA, 238, 153, 159, 222,
+		       203, NA, NA, 74, 100, 111, 9, 180, 50, 256, 107))
 dd <- daisy(d.st, stand = TRUE)
 (r0 <- pam(dd, 5))# cluster 5 = { 23 } -- on single observation
+## pam doing the "daisy" computation internally:
+r0s <- pam(d.st, 5, stand=TRUE, keep.diss=FALSE, keep.data=FALSE)
+(ii <- which(names(r0) %in% c("call","medoids")))
+stopifnot(all.equal(r0[-ii], r0s[-ii], tol=1e-14),
+          identical(r0s$medoids, data.matrix(d.st)[r0$medoids, ]))
+
 ## This gave only 3 different medoids -> and seg.fault:
 (r5 <- pam(dd, 5, medoids = c(1,3,20,2,5), trace = 2)) # now "fine"
 

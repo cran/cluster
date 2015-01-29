@@ -12,7 +12,7 @@ c
       integer nn, p, ndyst, jtmd(p), jhalt
       double precision x(nn,p), dys(1+nn*(nn-1)/2), valmd(p)
 c ndyst = 1 : euclidean
-c "else"    : manhattan
+c "else"(2) : manhattan
 
 c VARs
       integer nlk,j,l,k, lsubt, npres
@@ -29,7 +29,7 @@ c     ---------- is used potentially for  d[i,i] == dys[1] == 0
             nlk=nlk+1
             npres=0
             do 30 j=1,p
-               if(jtmd(j).lt.0) then
+               if(jtmd(j).lt.0) then ! some  x(*,j) are missing (NA)
                   if(x(l,j).eq.valmd(j))goto 30
                   if(x(k,j).eq.valmd(j))goto 30
                endif

@@ -1,7 +1,6 @@
 
-R version 2.13.0 Patched (2011-04-16 r55459)
-Copyright (C) 2011 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
+R Under development (unstable) (2015-01-20 r67564) -- "Unsuffered Consequences"
+Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -1027,7 +1026,6 @@ Number of objects : 4
 > ## sampsize >= k+1 is now enforced:
 > ## clara(ru5, k=3, met="manhattan", sampsize=3,trace=2)[clInS]
 > clara(ru5, k=3, met="manhattan", sampsize=4,trace=1)[clInS]
-calling .C(cl_clara, ..., DUP = FALSE):
 C clara(): (nsam,nran,n) = (4,5,4); 'full_sample',
 C clara(): sample 1 C clara(): best sample _found_  --> dysta2(nbest), resul(), end
 $objective
@@ -1485,7 +1483,10 @@ $sample
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  2.83 0 2.82 0 0 
+Time elapsed:  2.121 0.013 2.146 0 0 
 > ## Lynne (P IV, 1.6 GHz): 18.81; then (no NA; R 1.9.0-alpha): 15.07
 > ## nb-mm (P III,700 MHz): 27.97
 > 
+> proc.time()
+   user  system elapsed 
+  2.248   0.037   2.343 

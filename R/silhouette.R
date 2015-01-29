@@ -109,8 +109,7 @@ silhouette.default <- function(x, dist, dmatrix, ...) {
               counts = integer(k),
               si = numeric(n),
               neighbor = integer(n),
-              ismat = has.dmatrix,
-              DUP = FALSE)[c("si", "neighbor")]
+	      ismat = has.dmatrix)[c("si", "neighbor")]
 
     if(doRecode) {
         code.x <- as.integer(levels(fx))

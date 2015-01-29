@@ -1,6 +1,6 @@
 
-R version 3.1.0 alpha (2014-03-26 r65294)
-Copyright (C) 2014 The R Foundation for Statistical Computing
+R Under development (unstable) (2015-01-21 r67569) -- "Unsuffered Consequences"
+Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-unknown-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -63,7 +63,6 @@ Type 'q()' to quit R.
    2.00   27.25  147.50  114.60  188.50  270.00      16 
 > ## First call with "trace" (seg.fault typically later ...):
 > try( clara(x, k=2, metric="manhattan", sampsize=10, trace = 3) )
-calling .C(cl_clara, ..., DUP = FALSE):
 C clara(): (nsam,nran,n) = (10,5,17); 'large_sample',
 C clara(): sample 1  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -85,7 +84,7 @@ clara()'s bswap2(*, s=270):     new repr. 7
  --> sky = sum_j D_j= 175
    swp new 8 <-> 7 old; decreasing diss. by -18
   Last swap: new 8 <-> 7 old; decreasing diss. by 1
-end{bswap}: sky = 157
+end{bswap2}: sky = 157
  selec() -> 'NAfs' obj= 5.47059
 C clara(): sample 3  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -101,7 +100,7 @@ clara()'s bswap2(*, s=270):     new repr. 5
  --> sky = sum_j D_j= 180
    swp new 1 <-> 5 old; decreasing diss. by -18
   Last swap: new 1 <-> 5 old; decreasing diss. by 1
-end{bswap}: sky = 162
+end{bswap2}: sky = 162
  selec() -> 'NAfs' obj= 5.47059
 C clara(): sample 4  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -116,7 +115,7 @@ clara()'s bswap2(*, s=264):     new repr. 1
       0     13     44     44     40      8     23     19      4      0
  --> sky = sum_j D_j= 195
   Last swap: new 9 <-> 10 old; decreasing diss. by 0
-end{bswap}: sky = 195
+end{bswap2}: sky = 195
  selec() -> 'NAfs' obj= 5.47059
 C clara(): sample 5  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -151,7 +150,6 @@ Error in clara(x, k = 2, metric = "manhattan", sampsize = 10, trace = 3) :
 > str(x) # 88 x 2
  num [1:88, 1:2] 0 3 -4 62 1 3 -7 45 36 46 ...
 > try(clara(x, 2, samples = 20, trace = 3))# 2nd sample did show dysta2() problem
-calling .C(cl_clara, ..., DUP = FALSE):
 C clara(): (nsam,nran,n) = (44,20,88);
 C clara(): sample 1  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -170,7 +168,7 @@ clara()'s bswap2(*, s=78.6448):     new repr. 19
    1.41     17   9.22   12.7
  --> sky = sum_j D_j= 385.677
   Last swap: new 6 <-> 9 old; decreasing diss. by 0.939294
-end{bswap}: sky = 385.677
+end{bswap2}: sky = 385.677
  selec() -> 'NAfs' obj= 1.64279
 C clara(): sample 2  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -189,7 +187,7 @@ clara()'s bswap2(*, s=81.7435):     new repr. 16
    1.41     17      0     17
  --> sky = sum_j D_j= 331.98
   Last swap: new 17 <-> 43 old; decreasing diss. by 0.492109
-end{bswap}: sky = 331.98
+end{bswap2}: sky = 331.98
  selec() -> 'NAfs' obj= 1.59799
 C clara(): sample 3  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -207,7 +205,7 @@ clara()'s bswap2(*, s=77.8781):     new repr. 19
    31.1   5.66   5.66   5.66      0   4.24   4.24   22.6   7.07      0
     5.1     17   8.25   7.07
  --> sky = sum_j D_j= 338.587
-end{bswap}: sky = 338.587
+end{bswap2}: sky = 338.587
  selec() -> 'NAfs' obj= 1.57294
 C clara(): sample 4  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -225,7 +223,7 @@ clara()'s bswap2(*, s=77.8781):     new repr. 21
    31.1      0   4.24   4.24   4.24   8.49   11.3   2.83   9.06      0
    7.07     17   1.41   12.7
  --> sky = sum_j D_j= 325.933
-end{bswap}: sky = 325.933
+end{bswap2}: sky = 325.933
  selec() -> 'NAfs' obj= 1.57294
 C clara(): sample 5  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -261,7 +259,7 @@ clara()'s bswap2(*, s=85.5102):     new repr. 17
    4.24   4.24   1.41   8.49   11.3      0   22.6   11.3   1.41   7.07
      17   21.2   7.07   12.7
  --> sky = sum_j D_j= 384.698
-end{bswap}: sky = 384.698
+end{bswap2}: sky = 384.698
  selec() -> 'NAfs' obj= 1.54909
 C clara(): sample 9  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -299,7 +297,7 @@ clara()'s bswap2(*, s=78.3135):     new repr. 5
  --> sky = sum_j D_j= 623.732
    swp new 43 <-> 5 old; decreasing diss. by -205.358
   Last swap: new 43 <-> 5 old; decreasing diss. by 1
-end{bswap}: sky = 418.375
+end{bswap2}: sky = 418.375
  selec() -> 'NAfs' obj= 3.10025
 C clara(): sample 13  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -317,7 +315,7 @@ clara()'s bswap2(*, s=84.1487):     new repr. 19
    5.66   15.6   5.66      0   4.24   1.41      0   22.6   2.83    5.1
      17      2   1.41   12.7
  --> sky = sum_j D_j= 340.1
-end{bswap}: sky = 340.1
+end{bswap2}: sky = 340.1
  selec() -> 'NAfs' obj= 1.57294
 C clara(): sample 14  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -347,7 +345,7 @@ clara()'s bswap2(*, s=75.1665):     new repr. 15
       2     10    9.9   22.6   25.5   8.49   11.3   5.83    5.1   2.83
       0   7.07   15.6   21.2
  --> sky = sum_j D_j= 479.721
-end{bswap}: sky = 479.721
+end{bswap2}: sky = 479.721
  selec() -> 'NAfs' obj= 2.17131
 C clara(): sample 17  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -383,7 +381,6 @@ Error in clara(rbind(NA, x), 2) :
 > x <- x[-33,]
 > ## still had the ** dysta2() .. OUT" problem {no longer!}
 > clara(x, 2, samples = 12, trace = 3)
-calling .C(cl_clara, ..., DUP = FALSE):
 C clara(): (nsam,nran,n) = (44,12,87); 'large_sample',
 C clara(): sample 1  finding 1st... new k{ran}:
 .. kall: FALSE, 
@@ -401,7 +398,7 @@ clara()'s bswap2(*, s=76.5376):     new repr. 17
    31.1   5.66   15.6      2   4.24   4.24   8.49      0   5.83      0
      17   21.2   1.41   7.07
  --> sky = sum_j D_j= 384.62
-end{bswap}: sky = 384.62
+end{bswap2}: sky = 384.62
  1st proper or new best: obj= 4.93331
 C clara(): sample 2  finding 1st... new k{ran}:
 .. kall: T, 
@@ -419,7 +416,7 @@ clara()'s bswap2(*, s=82.7103):     new repr. 21
    15.6      2   4.24   4.24   8.49      0   22.6    5.1   8.94      0
    21.2   1.41   7.07   12.7
  --> sky = sum_j D_j= 321.274
-end{bswap}: sky = 321.274
+end{bswap2}: sky = 321.274
  obj= 4.93331
 C clara(): sample 3  finding 1st... new k{ran}:
 .. kall: T, 
@@ -438,7 +435,7 @@ clara()'s bswap2(*, s=85.5102):     new repr. 18
      17   21.2   1.41   12.7
  --> sky = sum_j D_j= 350.699
   Last swap: new 40 <-> 32 old; decreasing diss. by 0.7867
-end{bswap}: sky = 350.699
+end{bswap2}: sky = 350.699
  1st proper or new best: obj= 4.80308
 C clara(): sample 4  finding 1st... new k{ran}:
 .. kall: T, 
@@ -456,7 +453,7 @@ clara()'s bswap2(*, s=78.3135):     new repr. 18
    5.66   5.66   15.6   5.66      2      0   22.6   2.83   5.83    5.1
    1.41   8.94      0   7.07
  --> sky = sum_j D_j= 297.276
-end{bswap}: sky = 297.276
+end{bswap2}: sky = 297.276
  obj= 4.93331
 C clara(): sample 5  finding 1st... new k{ran}:
 .. kall: T, 
@@ -474,7 +471,7 @@ clara()'s bswap2(*, s=76.5376):     new repr. 20
    31.1   15.6      2   4.24   1.41   4.24   8.49      0   22.6   2.83
    5.83    5.1   1.41      0
  --> sky = sum_j D_j= 350.799
-end{bswap}: sky = 350.799
+end{bswap2}: sky = 350.799
  obj= 4.93331
 C clara(): sample 6  finding 1st... new k{ran}:
 .. kall: T, 
@@ -492,7 +489,7 @@ clara()'s bswap2(*, s=82.0244):     new repr. 18
    5.66   3.16   4.24   8.49      0   2.83   6.32   8.25      0   8.49
    2.83     17    5.1   4.24
  --> sky = sum_j D_j= 339.187
-end{bswap}: sky = 339.187
+end{bswap2}: sky = 339.187
  1st proper or new best: obj= 4.79624
 C clara(): sample 7  finding 1st... new k{ran}:
 .. kall: T, 
@@ -510,7 +507,7 @@ clara()'s bswap2(*, s=82.7103):     new repr. 15
    11.3      0   22.6   6.32   8.25      0   1.41     17    5.1   4.24
      17   21.2   1.41   7.07
  --> sky = sum_j D_j= 331.596
-end{bswap}: sky = 331.596
+end{bswap2}: sky = 331.596
  obj= 4.79624
 C clara(): sample 8  finding 1st... new k{ran}:
 .. kall: T, 
@@ -528,7 +525,7 @@ clara()'s bswap2(*, s=84.1487):     new repr. 20
    31.1   1.41   5.66   15.6   5.66      0   4.24   2.83   9.06   7.07
     5.1     17   8.25   1.41
  --> sky = sum_j D_j= 312.667
-end{bswap}: sky = 312.667
+end{bswap2}: sky = 312.667
  obj= 4.80308
 C clara(): sample 9  finding 1st... new k{ran}:
 .. kall: T, 
@@ -546,7 +543,7 @@ clara()'s bswap2(*, s=82.7103):     new repr. 15
    8.49   11.3      0   22.6   2.83   6.32   8.25      0   2.83    5.1
    4.24   21.2   1.41   7.07
  --> sky = sum_j D_j= 355.134
-end{bswap}: sky = 355.134
+end{bswap2}: sky = 355.134
  obj= 4.79624
 C clara(): sample 10  finding 1st... new k{ran}:
 .. kall: T, 
@@ -564,7 +561,7 @@ clara()'s bswap2(*, s=85.5102):     new repr. 15
    15.6   5.66      0   4.24   1.41   11.3      0   22.6   9.06   7.07
    1.41      2   21.2   12.7
  --> sky = sum_j D_j= 365.357
-end{bswap}: sky = 365.357
+end{bswap2}: sky = 365.357
  obj= 4.80308
 C clara(): sample 11  finding 1st... new k{ran}:
 .. kall: T, 
@@ -582,7 +579,7 @@ clara()'s bswap2(*, s=80.9938):     new repr. 19
    5.66   5.66   5.66   5.66   1.41   4.24   8.49   8.25      0   2.83
      17    5.1   21.2   1.41
  --> sky = sum_j D_j= 368.774
-end{bswap}: sky = 368.774
+end{bswap2}: sky = 368.774
  obj= 4.79624
 C clara(): sample 12  finding 1st... new k{ran}:
 .. kall: T, 
@@ -600,7 +597,7 @@ clara()'s bswap2(*, s=80.9938):     new repr. 19
    4.24   8.49   11.3   22.6    5.1      0   3.16   5.83   1.41     10
    21.2   1.41   7.07   12.7
  --> sky = sum_j D_j= 351.374
-end{bswap}: sky = 351.374
+end{bswap2}: sky = 351.374
  obj= 5.11334
 C clara(): best sample _found_ ; nbest[1:44] =
  c(1,5,7,9,11,13,14,15,17,18,22,26,27,28,34,35,36,37,38,43,46,47,48,50,51,54,55,56,57,61,63,64,66,69,71,73,74,75,76,77,78,80,81,82)
@@ -630,4 +627,4 @@ Error in clara(xclara, k = 3) :
 > 
 > proc.time()
    user  system elapsed 
-  0.238   0.029   0.250 
+  0.156   0.037   0.248 

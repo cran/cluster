@@ -1,6 +1,7 @@
 /* Declare everything, Fortran & C -- so we can register them */
 
 #include <R.h>
+#include <Rinternals.h>
 /* -> Rconfig.h, but also Boolean.h RS.h */
 
 #ifdef ENABLE_NLS
@@ -88,20 +89,33 @@ void cl_pam(int *nn, int *jpp, int *kk, double *x, double *dys,
 	    double *ttsyl, double *obj, int *med, int *ncluv,
 	    double *clusinf, double *sylinf, int *nisol, int* optim);
 
+SEXP cl_Pam(SEXP k_, SEXP n_,
+	    SEXP do_diss_, /* == !diss;  if true, compute distances from x (= x_or_diss);
+			      otherwise distances provided by x_or_diss */
+	    SEXP x_or_diss,// this "is"  if(do_diss) "x[]" (n x p) else "dys[]"
+	    SEXP all_stats_, // all_stats == !cluster.only
+	    SEXP medoids, // NULL or integer(k) subset {1:n}
+	    SEXP do_swap_, SEXP trace_lev_,
+	    SEXP keep_diss_, SEXP pam_once_,
+
+	    // the next 3 are only needed  if(do_diss)
+	    SEXP val_md, SEXP j_md, // "md" := [m]issing [d]ata
+	    SEXP dist_kind); // = 1 ("euclidean")  or 2 ("manhattan")
+
 void bswap(int kk, int nsam, int *nrepr,
 	   /* nrepr[]: here is boolean (0/1): 1 = "is representative object"  */
 	   Rboolean med_given, Rboolean do_swap, int trace_lev,
 	   double *dysma, double *dysmb, double *beter,
-	   double *dys, double s, double *obj, int *pamonce);
+	   const double dys[], double s, double *obj, int pamonce);
 
-void cstat(int *kk, int *nn, int *nsend, int *nrepr, Rboolean all_stats,
+void cstat(int kk, int nn, int *nsend, int *nrepr, Rboolean all_stats,
 	   double *radus, double *damer, double *ttd, double *separ, double *s,
 	   double *dys, int *ncluv, int *nelem, int *med, int *nisol);
 
-void dark(int kk, int nn, int *ncluv,
+void dark(int kk, int nn, const int ncluv[], const double dys[], double s,
 	  int *nsend, int *nelem, int *negbr,
 	  double *syl, double *srank, double *avsyl, double *ttsyl,
-	  double *dys, double *s, double *sylinf);
+	  double *sylinf);
 
 
 /* --------- ./spannel.c ------------------*/

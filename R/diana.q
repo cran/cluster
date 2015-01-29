@@ -1,4 +1,4 @@
-### $Id: diana.q 6801 2014-09-04 15:47:41Z maechler $
+### $Id: diana.q 6869 2015-01-26 13:30:42Z maechler $
 
 diana <- function(x, diss = inherits(x, "dist"),
 		  metric = "euclidean", stand = FALSE,
@@ -38,11 +38,11 @@ diana <- function(x, diss = inherits(x, "dist"),
 	n <- nrow(x2)
 	jp <- ncol(x2)
 	if((mdata <- any(inax <- is.na(x2)))) { # TRUE if x[] has any NAs
-	    jtmd <- as.integer(ifelse(apply(inax, 2, any), -1, 1))
+	    jtmd <- integer(jp)
+	    jtmd[apply(inax, 2L, any)] <- -1L
 	    ## VALue for MISsing DATa
 	    valmisdat <- 1.1* max(abs(range(x2, na.rm=TRUE)))
 	    x2[inax] <- valmisdat
-	    valmd <- rep(valmisdat, jp)
 	}
 	dv <- double(1 + (n * (n - 1))/2)
     }
@@ -57,7 +57,7 @@ diana <- function(x, diss = inherits(x, "dist"),
 		    dv,
 		    dis = double(if(C.keep.diss) length(dv) else 1),
 		    jdyss = if(C.keep.diss) diss + 10L else as.integer(diss),
-		    if(mdata)valmd else double(1),
+		    if(mdata) rep(valmisdat, jp) else double(1),
 		    if(mdata) jtmd else integer(jp),
 		    as.integer(ndyst),
 		    2L,# jalg = 2 <==> DIANA
@@ -68,8 +68,7 @@ diana <- function(x, diss = inherits(x, "dist"),
 		    dc = double(1),
 		    double(1), # { unused for diana() }
 		    merge = matrix(0L, n - 1, 2), # integer
-                    trace = trace.lev,
-		    DUP = FALSE)
+		    trace = trace.lev)
     if(!diss) {
 	## give warning if some dissimilarities are missing.
 	if(res$jdyss == -1)

@@ -52,7 +52,8 @@ S3method(plot, partition)
 S3method(plot, silhouette)
 S3method(plot, clusGap)
 
-#exported: S3method(predict, ellipsoid)
+#exported:
+S3method(predict, ellipsoid)
 
 S3method(print, agnes)
 S3method(print, clara)

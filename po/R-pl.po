@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cluster 1.15.1\n"
 "Report-Msgid-Bugs-To: bugs.r-project.org\n"
-"POT-Creation-Date: 2014-03-26 21:02\n"
+"POT-Creation-Date: 2015-01-26 14:31\n"
 "PO-Revision-Date: 2014-03-27 17:34+0100\n"
 "Last-Translator: Łukasz Daniel <lukasz.daniel@gmail.com>\n"
 "Language-Team: Łukasz Daniel <lukasz.daniel@gmail.com>\n"
@@ -346,6 +346,9 @@ msgid "No clustering performed, all variables have at least one missing value."
 msgstr ""
 "Nie wykonano grupowania, wszystkie zmienne mają co najmniej jedną brakującą "
 "wartość."
+
+msgid "Cannot keep data when 'x' is a dissimilarity!"
+msgstr ""
 
 # cluster/R/pam.R: 56
 # stop("Number of clusters 'k' must be in {1,2, .., n-1}; hence n >= 2")

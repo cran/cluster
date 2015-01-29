@@ -133,7 +133,9 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
 
   \bold{Care} and expertise is probably needed when using \code{method = "flexible"}
   particularly for the case when \code{par.method} is specified of
-  longer length than one.
+  longer length than one.  Since \pkg{cluster} version 2.0, choices
+  leading to invalid \code{merge} structures now signal an error (from
+  the C code already).
   The \emph{weighted average} (\code{method="weighted"}) is the same as
   \code{method="flexible", par.method = 0.5}.  Further,
   \code{method= "single"}  is equivalent to \code{method="flexible", par.method = c(.5,.5,0,-.5)}, and

@@ -244,7 +244,7 @@ void cl_clara(int *n,  /* = number of objects */
 	       /* beter[], only used here */&tmp[nsamb]);
 
 	if(*trace_lev >= 2)
-	    Rprintf("end{bswap}: sky = %g\n", sky);
+	    Rprintf("end{bswap2}: sky = %g\n", sky);
 
 	selec(*kk, *n, *jpp, *diss_kind, &zb, *nsam, has_NA, jtmd, valmd,
 	      *trace_lev, nrepr, nsel, dys, x, nr, &nafs, ttd, radus, ratt,
@@ -338,12 +338,12 @@ void dysta2(int nsam, int jpp, int *nsel,
     for (int l = 1; l < nsam; ++l) {
 	int lsel = nsel[l];
 	if(lsel <= 0 || lsel > n)
-	    error(_("C level dysta2(): nsel[%s= %d] = %d is outside 0..n, n=%d"), 
+	    error(_("C level dysta2(): nsel[%s= %d] = %d is outside 0..n, n=%d"),
 		  "l", l, lsel, n);
 	for (int k = 0; k < l; ++k) { /* compute d(nsel[l], nsel[k]) {if possible}*/
 	    int ksel = nsel[k];
 	    if(ksel <= 0 || ksel > n)
-		error(_("C level dysta2(): nsel[%s= %d] = %d is outside 0..n, n=%d"), 
+		error(_("C level dysta2(): nsel[%s= %d] = %d is outside 0..n, n=%d"),
 		      "k", k, ksel, n);
 	    ++nlk;
 	    int npres = 0, j, lj, kj;

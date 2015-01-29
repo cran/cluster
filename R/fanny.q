@@ -1,4 +1,4 @@
-#### $Id: fanny.q 6708 2014-03-26 18:51:40Z maechler $
+#### $Id: fanny.q 6869 2015-01-26 13:30:42Z maechler $
 fanny <- function(x, k, diss = inherits(x, "dist"), memb.exp = 2,
                   metric = c("euclidean", "manhattan", "SqEuclidean"),
                   stand = FALSE, iniMem.p = NULL, cluster.only = FALSE,
@@ -45,7 +45,6 @@ fanny <- function(x, k, diss = inherits(x, "dist"), memb.exp = 2,
 	    ## VALue for MISsing DATa
 	    valmisdat <- 1.1* max(abs(range(x2, na.rm=TRUE)))
 	    x2[inax] <- valmisdat
-	    valmd <- rep(valmisdat, jp)
 	}
 	dv <- double(1 + (n * (n - 1))/2)
 	jdyss <- 0
@@ -80,7 +79,7 @@ fanny <- function(x, k, diss = inherits(x, "dist"), memb.exp = 2,
               x2,
               dis = dv,
               ok = as.integer(jdyss),
-              if(mdata)valmd else double(1),
+	      if(mdata) rep(valmisdat, jp) else double(1),
               if(mdata) jtmd else integer(jp),
               ndyst,
               integer(n), # nsend

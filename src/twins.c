@@ -67,6 +67,9 @@ void twins(int *nn, // = maximal number of objects
     return;
 } /* twins */
 
+// merge[i,j]  i=0..n_1, j = 1,2.   --- for agnes() and splyt() [= diana] ---
+#define Merge(i,j) merge[(j==1) ? (i) : (i+n_1)]
+
 /*     ----------------------------------------------------------- */
 /*     AGNES agglomeration */
 static void
@@ -75,19 +78,13 @@ agnes(int nn, int *kwan, int *ner, double *ban,
 {
 
 /* VARs */
-    double akb, d_min;
-    int j, k, l1, l2, lq,
-	nclu, lnum, lput, lenda, lendb, lnext, n_1 = nn - 1,
-	la = -1, lb = -1, llast = -1, lfyrs = -1, // <- against (unnecessary) warnings [-Wall]
-	_d, nmerge;
-    Rboolean has_a3 = FALSE, has_a4 = FALSE;// is alpha[3] or [4] == 0 -- for Lance-Williams
-
-    /* System generated locals */
-    int merge_dim1 = n_1;
-    int merge_offset = 1 + merge_dim1;
+    int n_1 = nn - 1, _d, j, k, la = -1, lb = -1; // -Wall]
+    Rboolean has_a3 = FALSE, has_a4 = FALSE,// is alpha[3] or [4] != 0 -- for Lance-Williams
+	flex_meth = (method == 6 || method == 7);
+    // 6: "flexible": "Flexible Strategy" (K+R p.236 f) extended to 'Lance-Williams'
+    // 7: "gaverage" aka Flexible UPGMA (Belbin et al., 1992)
 
     /* Parameter adjustments */
-    merge -= merge_offset;
     --ban;
     --ner;
     --kwan;
@@ -98,9 +95,7 @@ agnes(int nn, int *kwan, int *ner, double *ban,
 	Rprintf("C agnes(n=%*d, method = %d, ..): ", _d,nn, method);
     } else _d = -1;// -Wall
 
-    if(method == 6 || method == 7) {
-	// 6: "flexible": "Flexible Strategy" (K+R p.236 f) extended to 'Lance-Williams'
-	// 7: "gaverage" aka Flexible UPGMA (Belbin et al., 1992)
+    if(flex_meth) {
 	has_a3 = (alpha[3] != 0.);
 	has_a4 = (alpha[4] != 0.);
 	if(trace_lev) {
@@ -121,14 +116,13 @@ agnes(int nn, int *kwan, int *ner, double *ban,
 
 // ----------------------------------------------------------------------------
 /*     find closest clusters */
-    nmerge = 1;
     if(trace_lev) Rprintf("%d merging steps\n", n_1);
-    for (nclu = n_1; nclu >= 1; --nclu) {
-	// j := min_j { kwan[j] > 0} = first non-empty cluster
+    for (int nmerge = 0; nmerge < n_1; ++nmerge) {
+	// j := min_j { kwan[j] > 0} = first non-empty cluster (j >= 2)
 	j = 1; do { j++; } while(kwan[j] == 0);
-	if(trace_lev >= 2) Rprintf(" nclu=%*d, j=%*d, ", _d,nclu, _d,j);
+	if(trace_lev >= 2) Rprintf(" nmerge=%*d, j=%*d, ", _d,nmerge, _d,j);
 
-	d_min = dys[ind_2(1, j)] * 1.1f + 1.;
+	double d_min = dys[ind_2(1, j)] * 1.1f + 1.;
 	for (k = 1; k <= n_1; ++k) if (kwan[k] > 0) {
 		for (j = k + 1; j <= nn; ++j) if (kwan[j] > 0) {
 			int k_j = ind_2(k, j);
@@ -144,44 +138,49 @@ agnes(int nn, int *kwan, int *ner, double *ban,
 
 /*     merge-structure for plotting tree in S */
 
-	l1 = -la;
-	l2 = -lb;
-	for (j = 1; j <= (nmerge - 1); ++j) {
-	    if (merge[j + merge_dim1] == l1 || merge[j + (merge_dim1 << 1)] == l1)  l1 = j;
-	    if (merge[j + merge_dim1] == l2 || merge[j + (merge_dim1 << 1)] == l2)  l2 = j;
+	int l1 = -la,
+	    l2 = -lb;
+	for (j = 0; j < nmerge; ++j) {
+	    if (Merge(j, 1) == l1 || Merge(j, 2) == l1)  l1 = j+1;
+	    if (Merge(j, 1) == l2 || Merge(j, 2) == l2)  l2 = j+1;
 	}
-	merge[nmerge + merge_dim1] = l1;
-	merge[nmerge + (merge_dim1 << 1)] = l2;
-	++nmerge;
+	Merge(nmerge, 1) = l1;
+	Merge(nmerge, 2) = l2;
+	if(trace_lev >= 3) Rprintf(" -> (%*d,%*d); ", _d,l1, _d,l2);
+
+	if(flex_meth && l1 == l2) {
+	    // can happen with non-sensical (alpha_1,alpha_2,beta, ...)
+	    error(_("agnes(method=%d, par.method=*) lead to invalid merge; step %d, D(.,.)=%g"),
+		  method, nmerge+1, d_min);
+	}
 
 /*     determine lfyrs and llast */
 
+	int llast = -1, lfyrs = -1; // -Wall
 	for (k = 1; k <= nn; ++k) {
 	    if (ner[k] == la) lfyrs = k;
 	    if (ner[k] == lb) llast = k;
 	}
 	ban[llast] = d_min;
 
-	if(trace_lev >= 2) Rprintf("nmerge = %*d, last=%*d;", _d,nmerge, _d,llast);
+	if(trace_lev >= 2) Rprintf("last=%*d;", _d,llast);
 
 /*     if the two clusters are next to each other, ner must not be changed */
 
-	lnext = lfyrs + kwan[la];
+	int lnext = lfyrs + kwan[la];
 	if (lnext != llast) { /*     updating ner and ban */
 	    if(trace_lev >= 2) Rprintf(" upd(n,b);");
-	    lput = lfyrs + kwan[la];
-	    lnum = llast - lput;
-	    for (k = 1; k <= lnum; ++k) {
-		int lka = ner[lput];
-		akb = ban[lput];
+	    int lput = lfyrs + kwan[la],
 		lenda = llast + kwan[lb] - 2;
-		lendb = lenda + 1;
+	    for (k = 1; k <= llast - lput; ++k) {
+		int lka = ner[lput];
+		double akb = ban[lput];
 		for (j = lput; j <= lenda; ++j) {
 		    ner[j] = ner[j + 1];
 		    ban[j] = ban[j + 1];
 		}
-		ner[lendb] = lka;
-		ban[lendb] = akb;
+		ner[lenda+1] = lka;
+		ban[lenda+1] = akb;
 	    }
 	}
 	if(trace_lev >= 3) Rprintf("\n");
@@ -189,7 +188,7 @@ agnes(int nn, int *kwan, int *ner, double *ban,
 /*     We will merge A & B into  A_{new} */
 
 	// Calculate new dissimilarities d(q, A_{new})
-	for (lq = 1; lq <= nn; ++lq) { //  for each other cluster 'q'
+	for (int lq = 1; lq <= nn; ++lq) { //  for each other cluster 'q'
 
 	    if (lq == la || lq == lb || kwan[lq] == 0)
 		continue;
@@ -263,12 +262,13 @@ agnes(int nn, int *kwan, int *ner, double *ban,
 	    if(trace_lev >= 3)
 		Rprintf(" new D(A', %*d) = %g\n", _d,lq, dys[naq]);
 	} // for (lq ..)
+
 	kwan[la] += kwan[lb];
 	kwan[lb] = 0;
 	if(trace_lev >= 2)
-	    Rprintf("%s new size = %d\n", (trace_lev >= 3)? " --> " : "", kwan[la]);
+	    Rprintf("%s size(A_new)= %d\n", (trace_lev >= 3)? " --> " : "", kwan[la]);
 
-    }// for(nclu ..)
+    }// for(nmerge ..)
     return;
 } /* agnes */
 
@@ -311,18 +311,9 @@ splyt(int nn, int *kwan, int *ner, double *ban,
     int j, ja, jb, k, l;
     int jma, jmb, lmm, llq, lmz,
 	lxx, lxy, lmma, lmmb, lner, nclu;
-    int lchan, nhalf, nmerge, n_1 = nn - 1, splyn;
-    /* against (unnecessary) warnings [-Wall]: */
-    int jaway = -1, lndsd = -1;
-
-    double da, db, cs, sd, dyff;
-
-    /* System generated locals */
-    int merge_dim1 = n_1;
-    int merge_offset = 1 + merge_dim1;
+    int lchan, nhalf, n_1 = nn - 1, splyn;
 
     /* Parameter adjustments */
-    merge -= merge_offset;
     --ban;
     --ner;
     --kwan;
@@ -341,13 +332,11 @@ splyt(int nn, int *kwan, int *ner, double *ban,
 
 /*     cs :=  diameter of data set */
 
-    cs = 0.;
-    k = 0;
-    do {
+    double cs = 0.;
+    for(k = 0; k < nhalf; ++k) {
 	if (cs < dys[k])
 	    cs = dys[k];
-	++k;
-    } while (k < nhalf);
+    }
     if(trace_lev)
 	Rprintf("C diana(): ndist= %d, diameter = %g\n", nhalf, cs);
 
@@ -358,9 +347,7 @@ L30:
     jb = ja + kwan[ja] - 1;
     jma = jb;
 
-/*     special case of a pair of objects */
-
-    if (kwan[ja] == 2) {
+    if (kwan[ja] == 2) { // special case of a pair of objects
 	kwan[ja] = 1;
 	kwan[jb] = 1;
 	ban [jb] = dys[ind_2(ner[ja], ner[jb])];
@@ -368,9 +355,10 @@ L30:
     else {
 	/*     finding first object to be shifted */
 	double bygsd = -1.;
+	int  lndsd = -1;
 	for (l = ja; l <= jb; ++l) {
 	    lner = ner[l];
-	    sd = 0.;
+	    double sd = 0.;
 	    for (j = ja; j <= jb; ++j)
 		sd += dys[ind_2(lner, ner[j])];
 	    if (bygsd < sd) {
@@ -398,19 +386,18 @@ L30:
 
 	do {
 	    splyn++;
-	    int rest = (jma - ja);
+	    int rest = (jma - ja), jaway = -1;
 	    double bdyff = -1.;
 	    for (l = ja; l <= jma; ++l) {
 		lner = ner[l];
-		da = 0.;
+		double da = 0., db = 0.;
 		for (j = ja; j <= jma; ++j)
 		    da += dys[ind_2(lner, ner[j])];
 		da /= rest;
-		db = 0.;
 		for (j = jma + 1; j <= jb; ++j)
 		    db += dys[ind_2(lner, ner[j])];
 		db /= splyn;
-		dyff = da - db;
+		double dyff = da - db;
 		if (bdyff < dyff) {
 		    bdyff = dyff;
 		    jaway = l;
@@ -500,7 +487,7 @@ L30:
 
 /* 500 :  merge-structure for plotting tree in S */
 
-    for (nmerge = 1; nmerge <= n_1; ++nmerge) {
+    for (int nmerge = 0; nmerge < n_1; ++nmerge) {
 	int nj = -1, l1, l2;
 	double dmin = cs;
 	for (j = 2; j <= nn; ++j) {
@@ -512,12 +499,12 @@ L30:
 	kwan[nj] = -1;
 	l1 = -ner[nj - 1];
 	l2 = -ner[nj];
-	for (j = 1; j <= (nmerge - 1); ++j) {
-	    if (merge[j + merge_dim1] == l1 || merge[j + (merge_dim1 << 1)] == l1)  l1 = j;
-	    if (merge[j + merge_dim1] == l2 || merge[j + (merge_dim1 << 1)] == l2)  l2 = j;
+	for (j = 0; j < nmerge; ++j) {
+	    if (Merge(j, 1) == l1 || Merge(j, 2) == l1)  l1 = j+1;
+	    if (Merge(j, 1) == l2 || Merge(j, 2) == l2)  l2 = j+1;
 	}
-	merge[nmerge + merge_dim1] = l1;
-	merge[nmerge + (merge_dim1 << 1)] = l2;
+	Merge(nmerge, 1) = l1;
+	Merge(nmerge, 2) = l2;
     }
     return;
 } /* splyt */

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: cluster 1.15.2\n"
-"POT-Creation-Date: 2014-03-26 21:02\n"
+"Project-Id-Version: cluster 2.0.0\n"
+"POT-Creation-Date: 2015-01-26 14:31\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -173,6 +173,9 @@ msgid "No clustering performed, a variable was found with all non missing values
 msgstr ""
 
 msgid "No clustering performed, all variables have at least one missing value."
+msgstr ""
+
+msgid "Cannot keep data when 'x' is a dissimilarity!"
 msgstr ""
 
 msgid "Number of clusters 'k' must be in {1,2, .., n-1}; hence n >= 2"

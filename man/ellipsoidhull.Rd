@@ -64,8 +64,9 @@ ellipsoidhull(x, tol=0.01, maxit=5000,
   Pison, G., Struyf, A. and Rousseeuw, P.J. (1999)
   Displaying a Clustering with CLUSPLOT,
   \emph{Computational Statistics and Data Analysis}, \bold{30}, 381--392.\cr
-  A version of this is available as technical report from
-  \url{http://www.agoras.ua.ac.be/abstract/Disclu99.htm}
+%% Jan.2015 : no longer there:
+  %% A version of this is available as technical report from
+  %% \url{http://www.agoras.ua.ac.be/abstract/Disclu99.htm}
 
   D.M. Titterington (1976)
   Algorithms for computing D-optimal design on finite design spaces.  In

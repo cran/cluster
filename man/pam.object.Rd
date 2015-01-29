@@ -17,13 +17,13 @@
   be used on a \code{pam} object.
 }
 \value{
-  A legitimate \code{pam} object is a list with the following components:
+  A legitimate \code{pam} object is a \code{\link{list}} with the following components:
   \item{medoids}{
     the medoids or representative objects of the
-    clusters. If a dissimilarity matrix was given as input to
+    clusters.  If a dissimilarity matrix was given as input to
     \code{pam}, then a vector of numbers or labels of observations is
-    given, else \code{medoids} is a matrix with in each row the
-    coordinates of one medoid.}
+    given, else \code{medoids} is a \code{\link{matrix}} with in each
+    row the coordinates of one medoid.}
   \item{id.med}{integer vector of \emph{indices} giving the medoid
     observation numbers.}
   \item{clustering}{the clustering vector, see \code{\link{partition.object}}.}

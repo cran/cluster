@@ -17,10 +17,6 @@ upper.to.lower.tri.inds(n)
   integer vector containing a permutation of \code{1:N} where
   \eqn{N = n(n-1)/2}.
 }
-\note{
-  these functions are mainly for internal use in the cluster package,
-  and may not remain available (unless we see a good reason).
-}
 \seealso{\code{\link{upper.tri}}, \code{\link{lower.tri}} with a related
   purpose.}
 \examples{

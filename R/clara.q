@@ -38,50 +38,47 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
     ## put info about metric, size and NAs in arguments for the .C call
 
     if((mdata <- any(inax <- is.na(x)))) { # TRUE if x[] has any NAs
-	jtmd <- as.integer(ifelse(apply(inax, 2, any), -1, 1))
+	jtmd <- integer(jp)
+	jtmd[apply(inax, 2L, any)] <- -1L
 	## VALue for MISsing DATa
 	valmisdat <- 1.1* max(abs(range(x, na.rm=TRUE)))
 	x[inax] <- valmisdat
     } else rm(inax) # save space
 
-    doDUP <- nzchar(dup <- Sys.getenv("R_cluster_clara_dup")) && isTRUE(as.logical(dup))
-    if((trace <- as.integer(trace)))
-	cat(sprintf("calling .C(cl_clara, ..., DUP = %s):\n", doDUP))
     res <- .C(cl_clara,
 	      n,
 	      jp,
-	      k,
+	      k, 						## 3
 	      clu = as.double(x),
 	      nran  = samples,
-	      nsam  = sampsize,
+	      nsam  = sampsize, 				## 6
 	      dis   = double(1 + (sampsize * (sampsize - 1))/2),
 	      mdata = as.integer(mdata),
-	      valmd = if(mdata) rep(valmisdat, jp) else -1.,
+	      valmd = if(mdata) rep(valmisdat, jp) else -1.,	## 9
 	      jtmd  = if(mdata) jtmd else integer(1),
 	      ndyst = as.integer(if(metric == "manhattan") 2 else 1),
-              as.logical(rngR[1]),
-              as.logical(pamLike[1]),
+	      as.logical(rngR[1]), 				## 12
+	      as.logical(pamLike[1]),
 	      integer(sampsize),# = nrepr
-	      integer(sampsize),# = nsel
+	      integer(sampsize),# = nsel 			## 15
 	      sample= integer(sampsize),# = nbest
 	      integer(k),		# = nr
-	      imed = integer(k),	# = nrx
+	      imed = integer(k),	# = nrx 		## 18
 	      double(k),		# = radus
 	      double(k),		# = ttd
-	      double(k),		# = ratt
+	      double(k),		# = ratt 		## 21
 	      avdis  = double(k),	# = ttbes
 	      maxdis = double(k),	# = rdbes
-	      ratdis = double(k),	# = rabes
+	      ratdis = double(k),	# = rabes 		## 24
 	      size  = integer(k),	# = mtt
 	      obj   = double(1),
-	      avsil = double(k),
+	      avsil = double(k), 				## 27
 	      ttsil = double(1),
 	      silinf = matrix(0, sampsize, 4),
-	      jstop = integer(1),
-	      trace = trace,
+	      jstop = integer(1), 				## 30
+	      trace = as.integer(trace),
 	      tmp  = double (3 * sampsize),
-	      itmp = integer(6 * sampsize),
-	      DUP = doDUP)
+	      itmp = integer(6 * sampsize))			## 33
     ## give a warning when errors occured
     if(res$jstop) {
 	if(mdata && any(aNA <- apply(inax,1, all))) {
