@@ -121,7 +121,8 @@ SEXP cl_Pam(SEXP k_, SEXP n_,
 	, do_diss = asLogical(do_diss_)
 	, do_swap = asLogical(do_swap_)
 	, keep_diss = asLogical(keep_diss_) // only  if(keep_diss)  return dys[] ..
-	;
+	, do_syl = all_stats && (1 < kk && kk < n);
+
 
 #ifdef once_we_get_n_from_args
     int n, p = NA_INTEGER;
@@ -145,7 +146,7 @@ SEXP cl_Pam(SEXP k_, SEXP n_,
     double
 	*radus = (double*) R_alloc( n, sizeof(double)),
 	*damer = (double*) R_alloc( n, sizeof(double)),
-        *separ = (double*) R_alloc( n, sizeof(double));
+        *separ = (double*) R_alloc(kk, sizeof(double));
     int clusinf_dim1 = kk;
 
     if(med_given) {
@@ -179,6 +180,7 @@ SEXP cl_Pam(SEXP k_, SEXP n_,
     SET_VECTOR_ELT(ans, 0,         clu_ = allocVector(INTSXP, n));
     SET_STRING_ELT(nms, 1, mkChar("med")); SET_VECTOR_ELT(ans, 1, medoids);
     SET_STRING_ELT(nms, 2, mkChar("silinf"));
+    if(do_syl)
     SET_VECTOR_ELT(ans, 2,         sylinf_ = all_stats ? allocMatrix(REALSXP, n, 4)
 		   : allocVector(REALSXP, 1));
     SET_STRING_ELT(nms, 3, mkChar("obj"));
@@ -191,6 +193,7 @@ SEXP cl_Pam(SEXP k_, SEXP n_,
     SET_STRING_ELT(nms, 6, mkChar("avsil"));
     SET_VECTOR_ELT(ans, 6,         avsyl_ = allocVector(REALSXP, n));
     SET_STRING_ELT(nms, 7, mkChar("ttsil"));
+    if(do_syl)
     SET_VECTOR_ELT(ans, 7,         ttsyl_ = allocVector(REALSXP, 1));
     if(keep_diss) {
 	SET_STRING_ELT(nms, 8, mkChar("dys"));	SET_VECTOR_ELT(ans, 8, dys_);
@@ -200,11 +203,9 @@ SEXP cl_Pam(SEXP k_, SEXP n_,
 	*nisol = INTEGER(nisol_);
     double
 	*dys    = REAL(dys_),
-	*ttsyl  = REAL(ttsyl_),
 	*avsyl  = REAL(avsyl_),
 	*obj    = REAL(obj_),
-	*clusinf= REAL(clusinf_),
-	*sylinf = REAL(sylinf_);
+	*clusinf= REAL(clusinf_);
 
     if (do_diss) { // <-- was 'jdyss != 1' i.e.  jdyss == 0
 	double *x = REAL(x_or_diss);
@@ -261,8 +262,11 @@ SEXP cl_Pam(SEXP k_, SEXP n_,
 	    clusinf[k + clusinf_dim1 * 3]    = damer[k];
 	    clusinf[k + (clusinf_dim1 << 2)] = separ[k];
 	}
-	if (1 < kk && kk < n) {
-	    /* Compute Silhouette info : */
+	if (do_syl) { // Compute Silhouette info :
+	    double
+		*ttsyl  = REAL(ttsyl_),
+		*sylinf = REAL(sylinf_);
+
 	    dark(kk, n, ncluv, dys, s,
 		 // -->
 		 nsend, nelem, nrepr, radus, damer, avsyl, ttsyl, sylinf);
@@ -647,6 +651,7 @@ void cstat(int kk, int nn, int *nsend, int *nrepr, Rboolean all_stats,
 	if (kk == 1) {
 	    damer[1] = *s;
 	    nrepr[1] = nn;
+	    separ[1] = 0.;
 	    return;
 	}
 	/*  ELSE	  kk > 1 : */

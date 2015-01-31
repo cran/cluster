@@ -10,13 +10,20 @@ stopifnot(identical(x,x0))# DUP=FALSE ..
 pd <-  pam(dist(x,"manhattan"), 2)
 px2 <- pam(x,2, metric="manhattan", keep.diss=FALSE, keep.data=FALSE)
 pdC <- pam(x,2, metric="manhattan", cluster.only = TRUE)
+p1  <- pam(x,1, metric="manhattan")
 
 stopifnot(identical(px[nms], pd[nms]),
-          identical(px[nms], px2[nms]),
-          identical(pdC, px2$clustering),
+	  identical(px[nms], px2[nms]),
+	  identical(pdC, px2$clustering),
 	  ## and for default dist "euclidean":
 	  identical(pam(x,	2)[nms],
-		    pam(dist(x),2)[nms])
+		    pam(dist(x),2)[nms]),
+	  identical(p1[c("id.med", "objective", "clusinfo")],
+		    list(id.med = 6L, objective = c(build=9.25, swap=9.25),
+			 clusinfo = array(c(8, 18, 9.25, 45, 0), dim = c(1, 5),
+			 dimnames=list(NULL, c("size", "max_diss", "av_diss",
+			 "diameter", "separation"))))),
+	  p1$clustering == 1, is.null(p1$silinfo)
 	  )
 
 set.seed(253)

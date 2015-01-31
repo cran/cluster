@@ -1,11 +1,11 @@
 Package: cluster
-Version: 2.0.0
-Date: 2015-01-29
+Version: 2.0.1
+Date: 2015-01-31
 Priority: recommended
 Title: Cluster Analysis Extended Rousseeuw et al.
-Description: Cluster Analysis Methods.  Much extended the original from
+Description: Cluster analysis methods.  Much extended the original from
 	Peter Rousseeuw, Anja Struyf and Mia Hubert,
-	based on Kaufman and Rousseeuw (1990)
+	based on Kaufman and Rousseeuw (1990).
 Maintainer: Martin Maechler <maechler@stat.math.ethz.ch>
 Authors@R: c(person("Martin","Maechler", role=c("aut","cre"), email="maechler@stat.math.ethz.ch")
  ,person("Peter", "Rousseeuw", role="aut", email="rousse@uia.ua.ac.be",
@@ -26,7 +26,7 @@ LazyData: yes
 ByteCompile: yes
 BuildResaveData: no
 License: GPL (>= 2)
-Packaged: 2015-01-29 11:19:00 UTC; maechler
+Packaged: 2015-01-31 19:19:48 UTC; maechler
 Author: Martin Maechler [aut, cre],
   Peter Rousseeuw [aut] (Fortran original),
   Anja Struyf [aut] (S original),
@@ -36,4 +36,4 @@ Author: Martin Maechler [aut, cre],
   Pierre Roudier [ctb]
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2015-01-29 15:23:24
+Date/Publication: 2015-01-31 23:11:21

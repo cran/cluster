@@ -1,5 +1,5 @@
 91978e357f06808773770fb3c575f5fe *ChangeLog
-8fa4007af8bab73c68aa38694885948f *DESCRIPTION
+487b9c1a0745b158960383fe6215911a *DESCRIPTION
 824c6b9820b7fc963b52b185b8284481 *INDEX
 0350140de330179b69e11eed461f55b4 *NAMESPACE
 8de82c7d42bd4a27c27c25462ae2a307 *PORTING
@@ -88,13 +88,13 @@ b1c1625935a5c22d81aa2e73d3b80457 *man/print.pam.Rd
 69c2598048e0488ca72d0809d1d3214a *man/volume.ellipsoid.Rd
 0510d0816550f6d3c258652912053a1d *man/votes.repub.Rd
 438589447329748ecc79553dc159e458 *man/xclara.Rd
-a35fc759fe4b0e5dec3cc8ddedc3b2e3 *po/R-cluster.pot
+733d2c5c3ab443da06bbafecb9119f10 *po/R-cluster.pot
 8f6309d7199c005abade0521429e825b *po/R-de.po
 e9b5293e63746638be1f3570dbeb4fe3 *po/R-en@quot.po
 dfecc6446b2f9de1c738f749c9ff113b *po/R-fr.po
 ff29770ccb2b1ff78e2a28ecd720326d *po/R-pl.po
-c6eab3d48ef29cd93cd90101814ca436 *po/cluster.pot
-8d99425922d18259b696fe895dc316b6 *po/update-me.sh
+580e8b63215d764bf4074bba7fc146fd *po/cluster.pot
+f0f20fda6e5fa966b7b7f19a3e8947b1 *po/update-me.sh
 5a3bd5a9d609cfaa98be4724c65b0490 *src/clara.c
 4a676732af8a929c21183d6a949b2536 *src/cluster.h
 4ae4b8fc0d4ba8a1a44bd9fc43e08626 *src/daisy.f
@@ -103,7 +103,7 @@ adb9138bb0f62e4b9cd6e962e9905185 *src/fanny.c
 23cea00d2feab57a92e8c2393c7f4b8a *src/ind_2.h
 7b58c3904ee2bc3e60b328059e36a125 *src/init.c
 77001343e1648a21ebe395a6d8561648 *src/mona.f
-134b95424be3e3547344ffd23b257e84 *src/pam.c
+7a1d5e13fd738a7137f0c4ea391ed102 *src/pam.c
 6f11dc74b1636e3ac848563d570f0030 *src/sildist.c
 f42f05132aaf001ddd333e3e109692e0 *src/spannel.c
 2320f73cecf7f13c4de20cdca85fb894 *src/twins.c
@@ -126,8 +126,8 @@ d59a754abe85489fc3b09d6093f72777 *tests/ellipsoid-ex.R
 52b341bc06eb5692a73dec2be2cd7e5a *tests/fanny-ex.R
 7ea9c35599c857c5393421da3570ea0a *tests/mona.R
 794166e31834ecfb147e62843ad7931a *tests/mona.Rout.save
-3b00c2f14e8e4b70b14d9ee7236a4952 *tests/pam.R
-7ef0d0dce33f01ca863a22d13bf043fd *tests/pam.Rout.save
+d43133f1b110cd360fda4cb86b693d99 *tests/pam.R
+44aeafcb0336f7a98b6500d9b7260ee9 *tests/pam.Rout.save
 477cd7fd12117a6cbcdfc9d5944fbd39 *tests/silhouette-default.R
 88f4c305ccf9133ec34c2fda0935942e *tests/silhouette-default.Rout.save
 d9cdce1776e344a6f4f2574cee6ef487 *tests/sweep-ex.R
