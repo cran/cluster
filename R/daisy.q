@@ -127,7 +127,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     type3 <- match(type2, typeCodes)# integer
     if(any(ina <- is.na(type3)))
 	stop(gettextf("invalid type %s for column numbers %s",
-		      type2[ina], pColl(which(is.na))))
+		      type2[ina], pColl(which(ina))))
     if((mdata <- any(inax <- is.na(x)))) { # TRUE if x[] has any NAs
 	jtmd <- integer(p)
 	jtmd[apply(inax, 2L, any)] <- -1L
@@ -158,7 +158,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     full[!lower.tri(full, diag = TRUE)] <- disv
     disv <- t(full)[lower.tri(full)]
     ## give warning if some dissimilarities are missimg
-    if(any(is.na(disv))) attr(disv, "NA.message") <-
+    if(anyNA(disv)) attr(disv, "NA.message") <-
 	"NA-values in the dissimilarity matrix !"
     ## construct S object -- "dist" methods are *there* !
     class(disv) <- dissiCl # see ./0aaa.R

@@ -1,4 +1,4 @@
-#### $Id: agnes.q 6869 2015-01-26 13:30:42Z maechler $
+#### $Id: agnes.q 6953 2015-06-18 09:30:24Z maechler $
 
 agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		  stand = FALSE, method = "average", par.method,
@@ -44,7 +44,7 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 
     if((diss <- as.logical(diss))) {
 	## check type of input vector
-	if(any(is.na(x))) stop("NA-values in the dissimilarity matrix not allowed.")
+	if(anyNA(x)) stop("NA-values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") { # try to convert to
 	    if(!is.null(dim(x))) {
 		x <- as.dist(x) # or give an error

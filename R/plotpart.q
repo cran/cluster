@@ -1,4 +1,4 @@
-### $Id: plotpart.q 6708 2014-03-26 18:51:40Z maechler $
+### $Id: plotpart.q 6952 2015-06-18 09:29:59Z maechler $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
 	 nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
@@ -60,13 +60,16 @@ clusplot <- function(x, ...) UseMethod("clusplot")
 
 ##' @title Make/Check the (n x 2) matrix needed for clusplot.default():
 ##' @param x  numeric matrix or dissimilarity matrix (-> clusplot.default())
-##' @param diss	 logical indicating if 'x' is dissimilarity matrix
-##' @return x1 : (n x 2) numeric matrix;
-##'	var.dec: the "variance explained"
+##' @param diss	 logical indicating if 'x' is dissimilarity matrix. In that case,
+##'   'cmdscale()' is used, otherwise (typically) 'princomp()'.
+##' @return a list with components
+##'     x1     : (n x 2) numeric matrix;
+##'	var.dec: a number (in [0,1]), the "variance explained"
+##'	labs   : the point labels (possibly 1:n)
 ##' @author Martin Maechler
 mkCheckX <- function(x, diss) {
     if(diss) {
-	if(any(is.na(x)))
+	if(anyNA(x))
 	    stop("NA-values are not allowed in dist-like 'x'.")
 	if(inherits(x, "dist")) {
 	    n <- attr(x, "Size")
@@ -93,28 +96,24 @@ mkCheckX <- function(x, diss) {
 			## numeric, not-dist, non-vector, not symmetric matrix ?
 			warning(">>>>> funny case in clusplot.default() -- please report!\n")
 			## if(n != sizeDiss(x)) ...
-			if(is.null(labs))
-			    labs <- 1:sizeDiss(x)
-			attr(x, "Size") <- sizeDiss(x)
+			attr(x, "Size") <- siz <- sizeDiss(x)
+			if(is.null(labs)) labs <- 1:siz
 		    }
 		}
 		else {
 		    attr(x, "Size") <- n <- siz
-		    labs <- 1:n
 		}
 	    }
 	}
-	if(is.null(labs)) labs <- 1:n
-
-	x1 <- cmdscale(x, k = 2, eig = TRUE, add = TRUE)
-	if(x1$ac < 0)
-	    x1 <- cmdscale(x, k = 2, eig = TRUE)
-	var.dec <- x1$GOF[2]		# always in [0,1]
+	x1 <- cmdscale(x, k = 2, add = TRUE)
+	if(x1$ac < 0) ## Rarely ! (FIXME: need and test example!)
+	    x1 <- cmdscale(x, k = 2, eig = TRUE)# FIXME: don't need 'eig' but $GOF
+	var.dec <- x1$GOF[2] # always in [0,1]
 	x1 <- x1$points
     }
     else { ## Not (diss)
 	if(!is.matrix(x)) stop("x is not a data matrix")
-	if(any(is.na(x))) {
+	if(anyNA(x)) {
 	    y <- is.na(x)
 	    if(any(apply(y, 1, all)))
 		stop("one or more objects contain only missing values")
@@ -127,7 +126,6 @@ mkCheckX <- function(x, diss) {
 
 	n <- nrow(x)
 	labs <- dimnames(x)[[1]]
-	if(is.null(labs)) labs <- 1:n
 
 	x1 <- if(ncol(x) == 1) {
 	    hulp <- rep(0, length(x))
@@ -140,9 +138,10 @@ mkCheckX <- function(x, diss) {
 	    prim.pr$scores[, 1:2]
 	}
     }
-    list(x = x1, var.dec = var.dec, labs = labs)
-}
+    list(x = x1, var.dec = var.dec, labs = if(is.null(labs)) 1:n else labs)
+} ## mkCheckX()
 
+## TODO: allow components (2,3) or (1,3) instead of always (1,2)  => drop 'var.dec', 'sub'
 clusplot.default <-
 function(x, clus, diss = FALSE, s.x.2d = mkCheckX(x, diss),
          stand = FALSE, lines = 2,
@@ -163,6 +162,8 @@ function(x, clus, diss = FALSE, s.x.2d = mkCheckX(x, diss),
 	x <- data.matrix(x)
     if(!is.numeric(x))
 	stop("x is not numeric")
+## FIXME: - if labels == 0 or == 4, do not need "labs"
+##        - if !missing(sub), do not need "var.dec"
     stopifnot(is.list(s.x.2d),
 	      c("x","labs","var.dec") %in% names(s.x.2d),
               (n <- nrow(x1 <- s.x.2d[["x"]])) > 0)
@@ -174,7 +175,7 @@ function(x, clus, diss = FALSE, s.x.2d = mkCheckX(x, diss),
     if(length(clus) != n)
 	stop("The clustering vector is of incorrect length")
     clus <- as.factor(clus)
-    if(any(is.na(clus)))
+    if(anyNA(clus))
 	stop("NA-values are not allowed in clustering vector")
     if(stand)
 	x1 <- scale(x1)
@@ -498,7 +499,7 @@ clusplot.partition <- function(x, main = NULL, dist = NULL, ...)
     if(is.null(main) && !is.null(x$call))
 	main <- paste("clusplot(",format(x$call),")", sep="")
     if(length(x$data) != 0 &&
-       (!any(is.na(x$data)) || data.class(x) == "clara"))
+       (!anyNA(x$data) || data.class(x) == "clara"))
 	clusplot.default(x$data, x$clustering, diss = FALSE, main = main, ...)
     else if(!is.null(dist))
 	clusplot.default(dist, x$clustering, diss = TRUE, main = main, ...)

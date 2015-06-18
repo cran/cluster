@@ -50,17 +50,18 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	      jp,
 	      k, 						## 3
 	      clu = as.double(x),
-	      nran  = samples,
-	      nsam  = sampsize, 				## 6
+	      samples,			# = nran
+	      sampsize, 		# = nsam		## 6
 	      dis   = double(1 + (sampsize * (sampsize - 1))/2),
-	      mdata = as.integer(mdata),
+	      as.integer(mdata),	# = mdata
 	      valmd = if(mdata) rep(valmisdat, jp) else -1.,	## 9
 	      jtmd  = if(mdata) jtmd else integer(1),
-	      ndyst = as.integer(if(metric == "manhattan") 2 else 1),
-	      as.logical(rngR[1]), 				## 12
-	      as.logical(pamLike[1]),
-	      integer(sampsize),# = nrepr
-	      integer(sampsize),# = nsel 			## 15
+	      as.integer(if(metric == "manhattan") 2 else 1),
+              				# = diss_kind
+	      as.logical(rngR[1]), 	# = rng_R		## 12
+	      as.logical(pamLike[1]),	# = pam_like
+	      integer(sampsize),	# = nrepr
+	      integer(sampsize),	# = nsel 		## 15
 	      sample= integer(sampsize),# = nbest
 	      integer(k),		# = nr
 	      imed = integer(k),	# = nrx 		## 18
@@ -76,10 +77,13 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
 	      ttsil = double(1),
 	      silinf = matrix(0, sampsize, 4),
 	      jstop = integer(1), 				## 30
-	      trace = as.integer(trace),
-	      tmp  = double (3 * sampsize),
-	      itmp = integer(6 * sampsize))			## 33
+	      as.integer(trace),	# = trace_lev
+	      double (3 * sampsize),	# = tmp
+	      integer(6 * sampsize))	# = itmp		## 33
     ## give a warning when errors occured
+    ## res[] components really used below:
+    ## jstop, clu, silinf, dis, sample, med, imed, obj, size, maxis, avdis, ratdis,
+    ## avsil, ttsil
     if(res$jstop) {
 	if(mdata && any(aNA <- apply(inax,1, all))) {
 	    i <- which(aNA)

@@ -52,9 +52,9 @@
     logical indicating if \code{x} will be considered as a dissimilarity
     matrix or a matrix of observations by variables (see \code{x}
     arugment above).}
-  \item{s.x.2d}{a \code{\link{list}} with components \code{x} (a \eqn{n
-    \times 2} matrix; typically something like principal components of
-    original data), \code{labs} and \code{var.dec}.}
+  \item{s.x.2d}{a \code{\link{list}} with components named \code{x} (a \eqn{n
+      \times 2} matrix; typically something like principal components of
+    original data), \code{labs} and \code{var.dec}.}% FIXME: 'labs' and 'var.dec' are not always needed
   \item{stand}{
     logical flag: if true, then the representations of the n observations in the
     2-dimensional plot are standardized.
@@ -219,6 +219,12 @@ clusplot(pamv, shade = TRUE)
 ## is the same as
 votes.clus <- pamv$clustering
 clusplot(votes.diss, votes.clus, diss = TRUE, shade = TRUE)
+## Now look at components 3 and 2 instead of 1 and 2:
+str(cMDS <- cmdscale(votes.diss, k=3, add=TRUE))
+clusplot(pamv, s.x.2d = list(x=cMDS$points[, c(3,2)],
+                             labs=rownames(votes.repub), var.dec=NA),
+         shade = TRUE, col.p = votes.clus,
+         sub="", xlab = "Component 3", ylab = "Component 2")
 
 clusplot(pamv, col.p = votes.clus, labels = 4)# color points and label ellipses
 # "simple" cheap ellipses: larger than minimum volume:

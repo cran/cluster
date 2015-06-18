@@ -1,4 +1,4 @@
-#### $Id: fanny.q 6869 2015-01-26 13:30:42Z maechler $
+#### $Id: fanny.q 6953 2015-06-18 09:30:24Z maechler $
 fanny <- function(x, k, diss = inherits(x, "dist"), memb.exp = 2,
                   metric = c("euclidean", "manhattan", "SqEuclidean"),
                   stand = FALSE, iniMem.p = NULL, cluster.only = FALSE,
@@ -8,7 +8,7 @@ fanny <- function(x, k, diss = inherits(x, "dist"), memb.exp = 2,
 {
     if((diss <- as.logical(diss))) {
 	## check type of input vector
-	if(any(is.na(x))) stop("NA values in the dissimilarity matrix not allowed.")
+	if(anyNA(x)) stop("NA values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") { # try to convert to
 	    if(!is.null(dim(x))) {
 		x <- as.dist(x)         # or give an error

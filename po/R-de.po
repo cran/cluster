@@ -1,10 +1,10 @@
 # Translation of src/library/Recommended/cluster/po/R-cluster.pot to German
-# Copyright (C) 2013 The R Foundation
+# Copyright (C) 2013-2015 The R Foundation
 # This file is distributed under the same license as the R package.
-# Detlef Steuer <detlef.steuer@hsu-hh.de>, 2013.
+# Detlef Steuer <detlef.steuer@hsu-hh.de>, 2013-2015.
 msgid ""
 msgstr ""
-"Project-Id-Version: R 3.1.0\n"
+"Project-Id-Version: R 3.2.1\n"
 "Report-Msgid-Bugs-To: bugs.r-project.org\n"
 "POT-Creation-Date: 2015-01-26 14:31\n"
 "PO-Revision-Date: 2014-03-28 10:16+0100\n"
@@ -46,7 +46,7 @@ msgid "'x' is a \"dist\" object, but should be a data matrix or frame"
 msgstr "'x' ist ein \"dist\"-Objekt, sollte aber Datenmatrix oder -frame sein"
 
 msgid "The number of cluster should be at least 1 and at most n-1."
-msgstr "Die Anzhal der Cluster sollte mindestens 1, hächstens n-1 sein."
+msgstr "Die Anzahl der Cluster sollte mindestens 1, höchstens n-1 sein."
 
 msgid "'sampsize' should be at least %d = max(2, 1+ number of clusters)"
 msgstr "'sampsize' sollte mindestens %d = max(2, 1+ Anzahl Cluster sein)"
@@ -64,21 +64,21 @@ msgid ""
 "Each of the random samples contains objects between which no distance can be "
 "computed."
 msgstr ""
-"Jede der Zufallsstichproben enthält Objekte, zwischen denen kein\n"
+"Jede der Zufallsstichproben enthält Objekte, zwischen denen kein "
 "Abstand berechnet werden kann"
 
 msgid ""
 "For each of the %d samples, at least one object was found which could not be "
 "assigned to a cluster (because of missing values)."
 msgstr ""
-"Für jede der %d Stichproben wurde mindestens ein Objekt gefunden, das\n"
+"Für jede der %d Stichproben wurde mindestens ein Objekt gefunden, das "
 "nicht einem Cluster zugeordnet werden konnte (wegen fehlender Werte)"
 
 msgid "invalid 'jstop' from .C(cl_clara,.):"
 msgstr "unzulässiger 'jstop' aus .C(cl_clara,.):"
 
 msgid "'B' has to be a positive integer"
-msgstr "'B' muss eine positive Ganzzahl sein"
+msgstr "'B' muss eine positive ganze Zahl sein"
 
 msgid "invalid 'twins' object"
 msgstr "unzulässiges 'twins'-Objekt"
@@ -141,7 +141,7 @@ msgid "computed some negative or all 0 probabilities"
 msgstr "einige negative Wahrscheinlichkeiten oder alle zu 0 berechnet"
 
 msgid "algorithm possibly not converged in %d iterations"
-msgstr "Algorithmus ist nicht in %d Iterationen konvergiert"
+msgstr "Algorithmus hat nicht in %d Iterationen konvergiert"
 
 msgid "'A' must be p x p  cov-matrix defining an ellipsoid"
 msgstr ""
@@ -172,14 +172,14 @@ msgstr ""
 
 msgid "'m', a membership matrix, must be nonnegative with rowSums == 1"
 msgstr ""
-"'m' ist eine Mitgleidswertmatrix, muss nichtnegative sein mit Zeilensummen "
+"'m' ist eine Mitgliedswertmatrix, muss nicht-negativ sein mit Zeilensummen "
 "== 1"
 
 msgid "'n' must be >= 2"
 msgstr "'n' muss >= 2 sein"
 
 msgid "x must be a matrix or data frame."
-msgstr "x muss eine Matrix oder Datafram sein"
+msgstr "x muss eine Matrix oder Dataframe sein"
 
 msgid "All variables must be binary (e.g., factor with 2 levels)."
 msgstr "Alle Variablen müssen binär sein (z.B. Faktor mit 2 Stufen)."
@@ -208,7 +208,7 @@ msgstr ""
 "fehlenden Wert."
 
 msgid "Cannot keep data when 'x' is a dissimilarity!"
-msgstr ""
+msgstr "Kann Datenmatrix 'data' nicht beibehalten wenn 'x' eine 'dissimilarity' ist!"
 
 msgid "Number of clusters 'k' must be in {1,2, .., n-1}; hence n >= 2"
 msgstr "Anzahl der Cluster 'k' muss auch {1, 2, ..., n-1} sein; deshalb n >= 2"
@@ -216,12 +216,12 @@ msgstr "Anzahl der Cluster 'k' muss auch {1, 2, ..., n-1} sein; deshalb n >= 2"
 msgid ""
 "'medoids' must be NULL or vector of %d distinct indices in {1,2, .., n}, n=%d"
 msgstr ""
-"'medoids' muss NULL oder ein Vektor von %d verschiedenen Indizes aus\n"
+"'medoids' muss NULL oder ein Vektor von %d verschiedenen Indizes aus "
 "{1, 2,..., n}, n=%d sein"
 
 msgid "No clustering performed, NAs in the computed dissimilarity matrix."
 msgstr ""
-"Keine Clusterung durchgeführt, NAs in der berechnenten Unähnlichkeitsmatrix."
+"Keine Clusterung durchgeführt, NAs in der berechneten Unähnlichkeitsmatrix."
 
 msgid "error from .C(cl_pam, *): invalid medID's"
 msgstr "Fehler aus .C(cl_pam, *): unzulässige medID's"
@@ -238,13 +238,13 @@ msgstr "Die quadratische Matrix ist nicht symmetrisch."
 
 msgid ">>>>> funny case in clusplot.default() -- please report!"
 msgstr ""
-">>>>> lustige Sache in clusplot.default() -- bitte an den Entwickler senden!"
+">>>>> komische Sache in clusplot.default() -- bitte an den Entwickler senden!"
 
 msgid "x is not a data matrix"
 msgstr "x ist keine Datenmatrix"
 
 msgid "one or more objects contain only missing values"
-msgstr "eins oder mehrere Objekte enthalten nur fehlende Werte"
+msgstr "eines oder mehrere Objekte enthalten nur fehlende Werte"
 
 msgid "one or more variables contain only missing values"
 msgstr "eine oder mehrere Variablen enthalten nur fehlende Werte"
@@ -274,7 +274,7 @@ msgstr "'col.clus' sollte Länge 4 haben, wenn color auf TRUE gesetzt ist"
 
 msgid "no diss nor data found, nor the original argument of %s"
 msgstr ""
-"weder diss noch data gefunden, ebensowenig das ursprüngliche Argument\n"
+"weder diss noch data gefunden, ebensowenig das ursprüngliche Argument "
 "von %s"
 
 msgid "no diss nor data found for clusplot()'"
@@ -290,7 +290,7 @@ msgstr ""
 "data=TRUE)'"
 
 msgid "'x' must only have integer codes"
-msgstr "'x' darf nur ganzahlige Kodes enthalten"
+msgstr "'x' darf nur ganzzahlige Kodes enthalten"
 
 msgid "Need either a dissimilarity 'dist' or diss.matrix 'dmatrix'"
 msgstr ""

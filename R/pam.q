@@ -1,5 +1,5 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q 6872 2015-01-26 18:21:15Z maechler $
+#### --- $Id: pam.q 6953 2015-06-18 09:30:24Z maechler $
 pam <- function(x, k, diss = inherits(x, "dist"),
 		metric = "euclidean", medoids = NULL,
                 stand = FALSE, cluster.only = FALSE, do.swap = TRUE,
@@ -14,7 +14,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 
     if((diss <- as.logical(diss))) {
 	## check type of input vector
-	if(any(is.na(x))) stop("NA values in the dissimilarity matrix not allowed.")
+	if(anyNA(x)) stop("NA values in the dissimilarity matrix not allowed.")
 	if(data.class(x) != "dissimilarity") { # try to convert to
 	    if(!is.null(dim(x))) {
 		x <- as.dist(x) # or give an error

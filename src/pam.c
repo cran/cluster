@@ -651,6 +651,7 @@ void cstat(int kk, int nn, int *nsend, int *nrepr, Rboolean all_stats,
 	if (kk == 1) {
 	    damer[1] = *s;
 	    nrepr[1] = nn;
+	    nisol[1] = 0;
 	    separ[1] = 0.;
 	    return;
 	}

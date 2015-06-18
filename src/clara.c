@@ -391,7 +391,7 @@ double randm(int *nrun)
 void bswap2(int kk, int n, /* == nsam == 'sampsize', here in clara */
 	    double s, const double dys[],
 	    Rboolean pam_like, int trace_lev,
-	    // result:
+	    // result (though *only* nrepr[] is really used in caller:)
 	    double *sky, int *nrepr,
 	    double *dysma, double *dysmb, double *beter)
 {
@@ -556,6 +556,7 @@ void selec(int kk, int n, int jpp, int diss_kind,
 	   int *nrepr, int *nsel, double *dys, double *x, int *nr,
 	   Rboolean *nafs, /* := TRUE if a distance cannot be calculated */
 	   double *ttd, double *radus, double *ratt,
+	   // [i]tmp* for clara(), i.e. not used later!
 	   int *nrnew, int *nsnew, int *npnew, int *ns, int *np, int *new,
 	   double *ttnew, double *rdnew)
 {
@@ -709,7 +710,7 @@ void selec(int kk, int n, int jpp, int diss_kind,
 
     if (kk > 1) {
 
-	/* computation of minimal distance of medoid ka to any
+	/* computation of ratt[ka] := minimal distance of medoid ka to any
 	   other medoid for comparison with the radius of cluster ka. */
 
 	for (ka = 1; ka <= kk; ++ka) {
@@ -823,11 +824,12 @@ void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
 } /* end resul() -----------------------------------------------------------*/
 
 
+// called 'dark()' in  ./pam.c
 void black(int kk, int jpp, int nsam, int *nbest,
 	   double *dys, double s, double *x,
 	   /* --> Output : */
 	   double *avsyl, double *ttsyl, double *sylinf,
-	   /* but the following output vectors are never by clara() : */
+	   /* but the following output vectors are never used by clara() : */
 	   int *ncluv, int *nsend, int *nelem, int *negbr,
 	   double *syl, double *srank)
 {

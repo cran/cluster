@@ -12,7 +12,7 @@ ellipsoidhull <-
 {
     if(!is.matrix(x) || !is.numeric(x))
         stop("'x' must be numeric  n x p matrix")
-    if(any(is.na(x))) {
+    if(anyNA(x)) {
         warning("omitting NAs")
         x <- na.omit(x)
     }

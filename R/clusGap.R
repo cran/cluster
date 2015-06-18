@@ -15,7 +15,7 @@
 clusGap <- function (x, FUNcluster, K.max, B = 100, verbose = interactive(), ...)
 {
     stopifnot(is.function(FUNcluster), length(dim(x)) == 2, K.max >= 2,
-              (n <- nrow(x)) >= 1, (p <- ncol(x)) >= 1)
+	      (n <- nrow(x)) >= 1, ncol(x) >= 1)
     if(B != (B. <- as.integer(B)) || (B <- B.) <= 0)
         stop("'B' has to be a positive integer")
 
@@ -92,7 +92,7 @@ maxSE <- function(f, SE.f,
     fSE <- SE.factor * SE.f
     switch(method,
 	   "firstmax" = { ## the first local maximum  (== firstSEmax with SE.factor == 0)
-	       decr <- (dg <- diff(f)) <= 0 # length K-1
+	       decr <- diff(f) <= 0 # length K-1
 	       if(any(decr)) which.max(decr) else K # the first TRUE, or K
 	   },
 	   "globalmax" = {
@@ -105,7 +105,7 @@ maxSE <- function(f, SE.f,
 	   },
 	   "firstSEmax" = { ## M.Maechler(2012): rather ..
 	       ## look at the first *local* maximum and then to the left ..:
-	       decr <- (dg <- diff(f)) <= 0 # length K-1
+	       decr <- diff(f) <= 0 # length K-1
 	       nc <- if(any(decr)) which.max(decr) else K # the first TRUE, or K
 	       if(any(mp <- f[seq_len(nc - 1)] >= f[nc] - fSE[nc]))
 		   which(mp)[1]
