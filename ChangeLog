@@ -1525,6 +1525,11 @@
 
 	* DESCRIPTION (Version): New version is 1.2-5.
 
+2000-12-24  Kurt Hornik	 <Kurt.Hornik@ci.tuwien.ac.at>
+
+	* DESCRIPTION (Version): New version is 1.2-4.
+	(Maintainer): New entry.
+
 2000-12-14  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* src/daisy.f: indented do loops; one if / else.
@@ -1569,11 +1574,6 @@
 	* man/daisy.Rd: cleanup, use \value{.}
 	* man/agnes.Rd: cleanup.
 	* man/*.object.Rd: cleanup, use \value{.}
-
-2000-12-24  Kurt Hornik	 <Kurt.Hornik@ci.tuwien.ac.at>
-
-	* DESCRIPTION (Version): New version is 1.2-4.
-	(Maintainer): New entry.
 
 Thu Feb 17 22:56:58 2000  Kurt Hornik  <Kurt.Hornik@ci.tuwien.ac.at>
 
