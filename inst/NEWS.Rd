@@ -6,6 +6,39 @@
 \newcommand{\CRANpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 %% NB: The date (yyyy-mm-dd) is the "Packaged:" date in ../DESCRIPTION
 
+%% \section{Changes in a future version ...}{
+%%   \subsection{New Features}{
+%%     \itemize{
+%%       \item __TODO__ \code{clusGap()} further gets new options
+%%       as alternative to the PCA rotation
+%%       and another one for specifying alternative distributions than the
+%%       uniform on the hyper rectangle of the (rotated) data.
+%%     }
+%%   }
+%% }
+
+\section{Changes in version 2.0.4 (2016-04-15, svn r....)}{
+  \subsection{New Features}{
+    \itemize{
+      \item \code{clusGap()} gets a new option \code{d.power = 1}
+      allowing to choose the basic weight statistic as it was originally
+      proposed, namely \emph{squared} distances by setting \code{d.power = 2}.
+      %% ~/R/MM/Pkg-ex/cluster/Gonzalez-on-clusGap.R <--
+    }
+  }
+  \subsection{Bug Fixes}{
+    \itemize{
+      \item fix small glitch in silhouette's help page.
+
+      \item Finally fixed a bug (in the original Fortran code from
+      Rousseeuw!) in clara's distance computation when there are
+      \code{NA}s in the data.  As the fix is not backward compatible,
+      a warning is produced (for the time being) if there \emph{are}
+      \code{NA}s and the user does not explicitly use \code{clara(*, correct.d = TRUE)}.
+    }
+  }
+}
+
 \section{Changes in version 2.0.3 (2015-07-20, svn r6985)}{
   \subsection{New Features}{
     \itemize{
@@ -32,7 +65,8 @@
   \subsection{Bug Fixes}{
     \itemize{
       \item valgrind detected missing allocation (\code{nisol["1"]} for k=1).
-      \item typo R/daisy.q (R bug \PR{16430}).
+      \item typo R/daisy.q (R bug %once we require R >= 3.2.0: \PR{16430}
+      \Sexpr[results=rd]{tools:::Rd_expr_PR(16430)}).
     }
   }
 }

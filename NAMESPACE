@@ -29,7 +29,6 @@ importFrom("graphics", ## probably needs more:
 
 importFrom("grDevices", dev.interactive)
 
-## still always *depend* on 'utils', for many examples etc:
 importFrom("utils", menu, str)
 
 ###---- Methods ---- all documented but not exported

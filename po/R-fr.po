@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: cluster 1.14.5\n"
-"POT-Creation-Date: 2015-01-26 14:31\n"
+"POT-Creation-Date: 2016-04-15 11:27\n"
 "PO-Revision-Date: 2014-03-30 09:03+0100\n"
 "Last-Translator: Philippe Grosjean <phgrosjean@sciviews.org>\n"
 "Language-Team: none\n"
@@ -65,6 +65,17 @@ msgstr "'samples' doit valoir au moins 1"
 
 msgid "when 'medoids.x' is FALSE, 'keep.data' must be too"
 msgstr "lorsque 'medoids.x' est FALSE, 'keep.data' doit l'être aussi"
+
+msgid ""
+"distance computations with NAs: using correct instead of pre-2016 wrong "
+"formula.\n"
+"  Use  'correct.d=FALSE'  to get previous results or  'correct.d=TRUE'  to "
+"suppress this warning."
+msgstr ""
+
+#, fuzzy
+msgid "invalid 'correct.d'"
+msgstr "objet 'twins' incorrect"
 
 msgid ""
 "Each of the random samples contains objects between which no distance can be "

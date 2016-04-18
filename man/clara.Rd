@@ -8,7 +8,7 @@
 \usage{
 clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
       sampsize = min(n, 40 + 2 * k), trace = 0, medoids.x = TRUE,
-      keep.data = medoids.x, rngR = FALSE, pamLike = FALSE)
+      keep.data = medoids.x, rngR = FALSE, pamLike = FALSE, correct.d = TRUE)
 }
 \arguments{
   \item{x}{
@@ -66,6 +66,14 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
     contained a small one-letter change (a typo according to Martin Maechler)
     with respect to PAM, the default, \code{pamLike = FALSE} has been chosen to
     remain back compatible rather than \dQuote{PAM compatible}.}
+  \item{correct.d}{logical or integer indicating that---only in the case
+    of \code{NA}s present in \code{x}---the correct distance computation
+    should be used instead of the wrong formula which has been present
+    in the original Fortran code and been in use up to early 2016.
+
+    Because the new correct formula is not back compatible, for the time
+    being, a warning is signalled in this case, unless the user explicitly
+    specifies \code{correct.d}.}
 }
 \value{
   an object of class \code{"clara"} representing the clustering.  See

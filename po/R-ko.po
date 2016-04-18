@@ -1,19 +1,19 @@
 # Korean translations for cluster package.
 # Recommended/cluster/po/R-ko.po
 # Maintainer: Martin Maechler <maechler@stat.math.ethz.ch>
-#
+# 
 # This file is distributed under the same license as the R cluster package.
 # Chel Hee Lee <chl948@mail.usask.ca>, 2013-2015.
-#
+# 
 # Reviewing process is completed (15-JAN-2015).
 # The original source code is reviewed (26-JAN-2015).
 # QC: PASS
 # Freezing on 06-FEB-2015 for R-3.1.3
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: cluster 1.15.2\n"
-"POT-Creation-Date: 2015-01-30 12:14\n"
+"POT-Creation-Date: 2016-04-15 11:27\n"
 "PO-Revision-Date: 2015-02-06 21:56-0600\n"
 "Last-Translator:Chel Hee Lee  <chl948@mail.usask.ca>\n"
 "Language-Team: Chel Hee Lee  <chl948@mail.usask.ca>\n"
@@ -36,7 +36,9 @@ msgid "NA-values in the dissimilarity matrix not allowed."
 msgstr "NA의 값은 비유사성 행렬(dissimilarity matrix)에 사용될 수 없습니다."
 
 msgid "'x' is not and cannot be converted to class \"dissimilarity\""
-msgstr "'x'는 \"dissimilarity\"이라는 클래스가 아니거나 클래스 \"dissimilarity\"로 전환할 수 없습니다."
+msgstr ""
+"'x'는 \"dissimilarity\"이라는 클래스가 아니거나 클래스 \"dissimilarity\"로 전"
+"환할 수 없습니다."
 
 msgid "x is not a numeric dataframe or matrix."
 msgstr "x는 수치형 데이터 프레임 또는 행렬이 아닙니다."
@@ -45,13 +47,18 @@ msgid "need at least 2 objects to cluster"
 msgstr "군집(cluster)는 적어도 2개의 객체를 필요로 합니다."
 
 msgid "No clustering performed, NA-values in the dissimilarity matrix."
-msgstr "비유사성 행렬(dissimilarity matrix)에서 NA 값이 발견되었기 때문에 군집화 과정이 실행되지 않았습니다."
+msgstr ""
+"비유사성 행렬(dissimilarity matrix)에서 NA 값이 발견되었기 때문에 군집화 과정"
+"이 실행되지 않았습니다."
 
 msgid "'x' is a \"dist\" object, but should be a data matrix or frame"
-msgstr "'x'는 클래스 \"dist\"를 가지는 객체이지만, 데이터 행렬 또는 프레임이어야 합니다."
+msgstr ""
+"'x'는 클래스 \"dist\"를 가지는 객체이지만, 데이터 행렬 또는 프레임이어야 합니"
+"다."
 
 msgid "The number of cluster should be at least 1 and at most n-1."
-msgstr "군집(cluster)의 개수는 적어도 1 이상이며 최대 n-1 이내에 있어야 합니다."
+msgstr ""
+"군집(cluster)의 개수는 적어도 1 이상이며 최대 n-1 이내에 있어야 합니다."
 
 msgid "'sampsize' should be at least %d = max(2, 1+ number of clusters)"
 msgstr "'sampsize'는 최소 %d = max(2, 1 + 군집의 개수)가 되어야 합니다."
@@ -65,14 +72,34 @@ msgstr "'samples'는 적어도 1 이상 이어야 합니다."
 msgid "when 'medoids.x' is FALSE, 'keep.data' must be too"
 msgstr "'medoids.x'가 FALSE인 경우에는 'keep.data' 역시 FALSE이어야 합니다."
 
-msgid "Each of the random samples contains objects between which no distance can be computed."
-msgstr "각각의 무작위 표본은 서로간의 거리를 계산할 수 없는 객체들을 포함하고 있습니다."
+msgid ""
+"distance computations with NAs: using correct instead of pre-2016 wrong "
+"formula.\n"
+"  Use  'correct.d=FALSE'  to get previous results or  'correct.d=TRUE'  to "
+"suppress this warning."
+msgstr ""
 
-msgid "For each of the %d samples, at least one object was found which could not be assigned to a cluster (because of missing values)."
-msgstr "%d개의 표본 각각에 대해서 결측값으로 인하여 어느 군집에도 배정할 수 없는 객체를 적어도 하나 이상 발견하였습니다."
+#, fuzzy
+msgid "invalid 'correct.d'"
+msgstr "올바른 'twins' 객체가 아닙니다."
+
+msgid ""
+"Each of the random samples contains objects between which no distance can be "
+"computed."
+msgstr ""
+"각각의 무작위 표본은 서로간의 거리를 계산할 수 없는 객체들을 포함하고 있습니"
+"다."
+
+msgid ""
+"For each of the %d samples, at least one object was found which could not be "
+"assigned to a cluster (because of missing values)."
+msgstr ""
+"%d개의 표본 각각에 대해서 결측값으로 인하여 어느 군집에도 배정할 수 없는 객체"
+"를 적어도 하나 이상 발견하였습니다."
 
 msgid "invalid 'jstop' from .C(cl_clara,.):"
-msgstr ".C(cl_clara,.)으로부터 얻어진 'jstop'는 다음과 같은 이유로 이상합니다: "
+msgstr ""
+".C(cl_clara,.)으로부터 얻어진 'jstop'는 다음과 같은 이유로 이상합니다: "
 
 msgid "'B' has to be a positive integer"
 msgstr "'B'는 반드시 양의 정수이어야 합니다."
@@ -84,7 +111,9 @@ msgid "x is not a dataframe or a numeric matrix."
 msgstr "x는 데이터 프레임이 아니거나 수치형 행렬이 아닙니다."
 
 msgid "invalid %s; must be named list"
-msgstr "사용할 수 있는 %s가 아닙니다.  반드시 구성요소에 이름이 부여된 리스트(named list)이여야 합니다."
+msgstr ""
+"사용할 수 있는 %s가 아닙니다.  반드시 구성요소에 이름이 부여된 리스트(named "
+"list)이여야 합니다."
 
 msgid "%s has invalid column names"
 msgstr "%s는 올바른 열이름을 가지고 있지 않습니다."
@@ -96,22 +125,33 @@ msgid "%s must contain column names or numbers"
 msgstr "%s는 반드시 열 이름 또는 번호를 포함해야 합니다."
 
 msgid "at least one binary variable has more than 2 levels."
-msgstr "적어도 하나 이상의 이항변수(binary variable)가 두 가지 이상의 수준(levels)을 가지고 있습니다."
+msgstr ""
+"적어도 하나 이상의 이항변수(binary variable)가 두 가지 이상의 수준(levels)을 "
+"가지고 있습니다."
 
 msgid "at least one binary variable has not 2 different levels."
-msgstr "적어도 하나 이상의 이항변수(binary variable)이 서로 다른 두 가지 수준을 가지고 있지 않습니다."
+msgstr ""
+"적어도 하나 이상의 이항변수(binary variable)이 서로 다른 두 가지 수준을 가지"
+"고 있지 않습니다."
 
 msgid "at least one binary variable has values not in {0,1,NA}"
-msgstr "적어도 하나 이상의 이항변수(binary variable)이 {0,1,NA} 외의 값을 가지고 있습니다."
+msgstr ""
+"적어도 하나 이상의 이항변수(binary variable)이 {0,1,NA} 외의 값을 가지고 있습"
+"니다."
 
 msgid "binary variable(s) %s treated as interval scaled"
-msgstr "이항변수(binary variable) %s는 구간척도(interval scale)로서 다루어집니다. "
+msgstr ""
+"이항변수(binary variable) %s는 구간척도(interval scale)로서 다루어집니다. "
 
 msgid "%s has constant columns %s; these are standardized to 0"
-msgstr "%1$s는 상수(constant)값을 가지는 열 %2$s를 가집니다.  이들은 0으로 표준화(standardized)됩니다."
+msgstr ""
+"%1$s는 상수(constant)값을 가지는 열 %2$s를 가집니다.  이들은 0으로 표준화"
+"(standardized)됩니다."
 
 msgid "with mixed variables, metric \"gower\" is used automatically"
-msgstr "혼합형 변수(mixed variables)를 이용할 때는 metric은 자동으로 \"gower\"가 사용됩니다."
+msgstr ""
+"혼합형 변수(mixed variables)를 이용할 때는 metric은 자동으로 \"gower\"가 사용"
+"됩니다."
 
 msgid "'weights' must be of length p (or 1)"
 msgstr "'weights'의 길이는 반드시 p (또는 1)이어야 합니다."
@@ -123,7 +163,9 @@ msgid "NA values in the dissimilarity matrix not allowed."
 msgstr "비유사성 행렬(dissimilarity matrix)는 NA 값을 가질 수 없습니다."
 
 msgid "No clustering performed, NA's in dissimilarity matrix."
-msgstr "비유사성 행렬(dissimilarity matrix)에 NA가 있기 때문에, 군집화 과정이 실행되지 않았습니다."
+msgstr ""
+"비유사성 행렬(dissimilarity matrix)에 NA가 있기 때문에, 군집화 과정이 실행되"
+"지 않았습니다."
 
 msgid "'x' must be numeric  n x p matrix"
 msgstr "'x'는 반드시 크기가 n x p인 수치형 행렬이어야 합니다."
@@ -141,7 +183,9 @@ msgid "algorithm possibly not converged in %d iterations"
 msgstr "알고리즘의 %d번의 반복수행에도 수렴하지 않을 수 있습니다."
 
 msgid "'A' must be p x p  cov-matrix defining an ellipsoid"
-msgstr "'A'는 반드시 타원(ellipsoid)를 정의하는 크기가 p x p인 공분산행렬(cov-matrix)이어야 합니다."
+msgstr ""
+"'A'는 반드시 타원(ellipsoid)를 정의하는 크기가 p x p인 공분산행렬(cov-matrix)"
+"이어야 합니다."
 
 msgid "ellipsoidPoints() not yet implemented for p >= 3 dim."
 msgstr "ellipsoidPoints()는 p >= 3 인경우에는 아직 구현되지 않았습니다."
@@ -156,16 +200,22 @@ msgid "'maxit' must be non-negative integer"
 msgstr "'maxit'은 반드시 음이 아닌 정수이어야 합니다."
 
 msgid "'iniMem.p' must be a nonnegative n * k matrix with rowSums == 1"
-msgstr "'iniMem.p'는 반드시 크기가 n * k 인 비음수 행렬(nonnegative matrix)이어야 하며, 이 행렬의 rowSums == 1 이어야 합니다."
+msgstr ""
+"'iniMem.p'는 반드시 크기가 n * k 인 비음수 행렬(nonnegative matrix)이어야 하"
+"며, 이 행렬의 rowSums == 1 이어야 합니다."
 
 msgid "FANNY algorithm has not converged in 'maxit' = %d iterations"
 msgstr "FANNY 알고리즘은 'maxit' = %d번의 반복수행에도 수렴하지 않았습니다."
 
 msgid "the memberships are all very close to 1/k. Maybe decrease 'memb.exp' ?"
-msgstr "멤버쉽(membership) 전부가 1/k에 매우 가깝습니다.  아마도 'memb.exp'를 줄여보는 것은 어떨까요?"
+msgstr ""
+"멤버쉽(membership) 전부가 1/k에 매우 가깝습니다.  아마도 'memb.exp'를 줄여보"
+"는 것은 어떨까요?"
 
 msgid "'m', a membership matrix, must be nonnegative with rowSums == 1"
-msgstr "멤버쉽 행렬(membership matrix) 'm'은 반드시 음수를 가지지 않으며 rowSums == 1이어야 합니다."
+msgstr ""
+"멤버쉽 행렬(membership matrix) 'm'은 반드시 음수를 가지지 않으며 rowSums == 1"
+"이어야 합니다."
 
 msgid "'n' must be >= 2"
 msgstr "'n'는 반드시 2보다 크거나 같아야 합니다."
@@ -174,31 +224,48 @@ msgid "x must be a matrix or data frame."
 msgstr "x는 반드시 행렬 또는 데이터 프레임이어야 합니다."
 
 msgid "All variables must be binary (e.g., factor with 2 levels)."
-msgstr "모든 변수들은 반드시 2개의 수준(levels)으로 이루어진 요인(factor)이어야 합니다."
+msgstr ""
+"모든 변수들은 반드시 2개의 수준(levels)으로 이루어진 요인(factor)이어야 합니"
+"다."
 
 msgid "No clustering performed, an object was found with all values missing."
 msgstr "모든 값이 결측된 객체가 발견되어 군집화 과정이 수행되지 않았습니다."
 
-msgid "No clustering performed, found variable with more than half values missing."
-msgstr "절반 이상의 값들이 결측된 변수가 발견되어 군집화 과정이 수행되지 않았습니다."
+msgid ""
+"No clustering performed, found variable with more than half values missing."
+msgstr ""
+"절반 이상의 값들이 결측된 변수가 발견되어 군집화 과정이 수행되지 않았습니다."
 
-msgid "No clustering performed, a variable was found with all non missing values identical."
-msgstr "결측되지 않은 모든 값들이 동일한 변수가 발견되어 군집화 과정이 수행되지 않았습니다."
+msgid ""
+"No clustering performed, a variable was found with all non missing values "
+"identical."
+msgstr ""
+"결측되지 않은 모든 값들이 동일한 변수가 발견되어 군집화 과정이 수행되지 않았"
+"습니다."
 
 msgid "No clustering performed, all variables have at least one missing value."
-msgstr "모든 변수들이 적어도 하나 이상의 결측값을 가지기 때문에 군집화 과정이 수행되지 않았습니다."
+msgstr ""
+"모든 변수들이 적어도 하나 이상의 결측값을 가지기 때문에 군집화 과정이 수행되"
+"지 않았습니다."
 
 msgid "Cannot keep data when 'x' is a dissimilarity!"
 msgstr ""
 
 msgid "Number of clusters 'k' must be in {1,2, .., n-1}; hence n >= 2"
-msgstr "군집(clusters)의 개수 'k'는 반드시 {1,2, .., n-1}내에 존재해야 하므로 n >= 2 입니다."
+msgstr ""
+"군집(clusters)의 개수 'k'는 반드시 {1,2, .., n-1}내에 존재해야 하므로 n >= 2 "
+"입니다."
 
-msgid "'medoids' must be NULL or vector of %d distinct indices in {1,2, .., n}, n=%d"
-msgstr "'medoids'는 반드시 NULL 또는 {1,2, .., n}으로부터 %1$d개의 구분되는 인덱스를 가진 벡터입니다 (n=%2$d). "
+msgid ""
+"'medoids' must be NULL or vector of %d distinct indices in {1,2, .., n}, n=%d"
+msgstr ""
+"'medoids'는 반드시 NULL 또는 {1,2, .., n}으로부터 %1$d개의 구분되는 인덱스를 "
+"가진 벡터입니다 (n=%2$d). "
 
 msgid "No clustering performed, NAs in the computed dissimilarity matrix."
-msgstr "계산된 비유사성 행렬(dissimilarity matrix) 내에 NA가 존재하여 군집화 과정이 수행되지 않았습니다."
+msgstr ""
+"계산된 비유사성 행렬(dissimilarity matrix) 내에 NA가 존재하여 군집화 과정이 "
+"수행되지 않았습니다."
 
 msgid "error from .C(cl_pam, *): invalid medID's"
 msgstr ".C(cl_pam, *)으로부터 에러가 발생했습니다:  medID가 올바르지 않습니다."
@@ -207,13 +274,17 @@ msgid "NA-values are not allowed in dist-like 'x'."
 msgstr "'x'는 NA를 가질 수 없습니다."
 
 msgid "Distances must be result of dist or a square matrix."
-msgstr "거리(distances)는 반드시 dist 또는 정방행렬(square matrix)의 결과이어야 합니다."
+msgstr ""
+"거리(distances)는 반드시 dist 또는 정방행렬(square matrix)의 결과이어야 합니"
+"다."
 
 msgid "the square matrix is not symmetric."
 msgstr "대칭(symmetric)적인 정방행렬이 아닙니다."
 
 msgid ">>>>> funny case in clusplot.default() -- please report!"
-msgstr ">>>>> clusplot.default()에서 예상치 못한 경우가 발생했습니다 -- 보고해 주시길 부탁드립니다!"
+msgstr ""
+">>>>> clusplot.default()에서 예상치 못한 경우가 발생했습니다 -- 보고해 주시"
+"길 부탁드립니다!"
 
 msgid "x is not a data matrix"
 msgstr "x는 데이터 행렬(data matrix)이 아닙니다."
@@ -224,7 +295,8 @@ msgstr "하나 또는 그 이상의 객체들이 오로지 결측값만을 포�
 msgid "one or more variables contain only missing values"
 msgstr "하나 또는 그 이상의 변수들이 오로지 결측값만을 포함하고 있습니다."
 
-msgid "Missing values were displaced by the median of the corresponding variable(s)"
+msgid ""
+"Missing values were displaced by the median of the corresponding variable(s)"
 msgstr "결측값들은 대응변수(들)의 중앙값으로 대체되었습니다."
 
 msgid "x is not numeric"
@@ -240,14 +312,17 @@ msgid ""
 "Error in Fortran routine for the spanning ellipsoid,\n"
 " rank problem??"
 msgstr ""
-"스패닝 타원(spanning ellipsoid)를 생성하는 포트란 루틴(Fortran routine)에서 에러가 발생했습니다. \n"
+"스패닝 타원(spanning ellipsoid)를 생성하는 포트란 루틴(Fortran routine)에서 "
+"에러가 발생했습니다. \n"
 " 위수(rank) 문제인가요??"
 
 msgid "'col.clus' should have length 4 when color is TRUE"
 msgstr "color가 TRUE일 때, 'col.clus'의 길이는 반드시 4이어야 합니다."
 
 msgid "no diss nor data found, nor the original argument of %s"
-msgstr "diss와 data 모두 찾을 수 없을 뿐만 아니라 원래의 인자 %s 또한 찾을 수 없습니다."
+msgstr ""
+"diss와 data 모두 찾을 수 없을 뿐만 아니라 원래의 인자 %s 또한 찾을 수 없습니"
+"다."
 
 msgid "no diss nor data found for clusplot()'"
 msgstr "clusplot()에 사용될 diss와 data 모두 찾을 수 없습니다."
@@ -255,17 +330,23 @@ msgstr "clusplot()에 사용될 diss와 data 모두 찾을 수 없습니다."
 msgid "invalid partition object"
 msgstr "partition 객체가 유효하지 않습니다."
 
-msgid "full silhouette is only available for results of 'clara(*, keep.data = TRUE)'"
-msgstr "full silhouette는 'clara(*, keep.data = TRUE)'의 결과만에 오로지 사용할 수 있습니다."
+msgid ""
+"full silhouette is only available for results of 'clara(*, keep.data = TRUE)'"
+msgstr ""
+"full silhouette는 'clara(*, keep.data = TRUE)'의 결과만에 오로지 사용할 수 있"
+"습니다."
 
 msgid "'x' must only have integer codes"
 msgstr "'x'는 오로지 정수형 코드(codes)만을 가질 수 있습니다."
 
 msgid "Need either a dissimilarity 'dist' or diss.matrix 'dmatrix'"
-msgstr "dissimilarity 'dist' 또는 diss.matrix 'dmatrix' 둘 중에 하나가 필요합니다."
+msgstr ""
+"dissimilarity 'dist' 또는 diss.matrix 'dmatrix' 둘 중에 하나가 필요합니다."
 
 msgid "'dmatrix' is not a dissimilarity matrix compatible to 'x'"
-msgstr "'dmatrix'는 'x'에 부합하는 (또는 사용할 수 있는) 비유사성 행렬(dissimilarity matrix)이 아닙니다."
+msgstr ""
+"'dmatrix'는 'x'에 부합하는 (또는 사용할 수 있는) 비유사성 행렬(dissimilarity "
+"matrix)이 아닙니다."
 
 msgid "clustering 'x' and dissimilarity 'dist' are incompatible"
 msgstr "'x'와 'dist'가 서로 부합하지 않습니다."
@@ -281,11 +362,15 @@ msgstr "유효한 silhouette 정보가 없습니다 (#{clusters} =? 1)"
 
 msgid "Observation %s has *only* NAs --> omit it for clustering"
 msgid_plural "Observations %s have *only* NAs --> omit them for clustering!"
-msgstr[0] "관측값 %s는 *오로지* NA만을 가집니다 --> 군집화를 위하여 이것들을 제거합니다!"
+msgstr[0] ""
+"관측값 %s는 *오로지* NA만을 가집니다 --> 군집화를 위하여 이것들을 제거합니다!"
 
 msgid "%d observation (%s) has *only* NAs --> omit them for clustering!"
-msgid_plural "%d observations (%s ...) have *only* NAs --> omit them for clustering!"
-msgstr[0] "%d개의 관측값들이 (%s) *오로지* NA만을 가집니다 --> 군집화를 위하여 이들을 제거합니다!"
+msgid_plural ""
+"%d observations (%s ...) have *only* NAs --> omit them for clustering!"
+msgstr[0] ""
+"%d개의 관측값들이 (%s) *오로지* NA만을 가집니다 --> 군집화를 위하여 이들을 제"
+"거합니다!"
 
 msgid "setting 'logical' variable %s to type 'asymm'"
 msgid_plural "setting 'logical' variables %s to type 'asymm'"

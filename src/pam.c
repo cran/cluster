@@ -218,6 +218,7 @@ SEXP cl_Pam(SEXP k_, SEXP n_,
 	F77_CALL(dysta)((int*)&n, &p, x, dys, ndyst, jtmd, valmd, &jhalt);
 	if (jhalt != 0) {
 	    if(trace_lev) Rprintf(" dysta()-error: jhalt=%d\n", jhalt);
+	    UNPROTECT(nprot);
 	    return ScalarInteger(jhalt); // i.e., integer error code instead of a named list
 	}
 	// else

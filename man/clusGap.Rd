@@ -7,9 +7,11 @@
 \description{
   \code{clusGap()} calculates a goodness of clustering measure, the
   \dQuote{gap} statistic.  For each number of clusters \eqn{k}, it
-  compares \eqn{\log(W(k))} with \eqn{E^*[\log(W(k))]} where the latter
-  is defined via bootstrapping, i.e. simulating from a reference
-  distribution.
+  compares \eqn{\log(W(k))}{log(W(k))} with
+  \eqn{E^*[\log(W(k))]}{E*[log(W(k))]} where the latter is defined via
+  bootstrapping, i.e., simulating from a reference distribution (a
+  uniform distribution on the hypercube determined by the ranges of the first centered,
+  and then \code{\link{svd}}-rotated \code{x}).
 
   \code{maxSE(f, SE.f)} determines the location of the \bold{maximum}
   of \code{f}, taking a \dQuote{1-SE rule} into account for the
@@ -21,7 +23,7 @@
   gap statistics and their standard deviations.
 }
 \usage{
-clusGap(x, FUNcluster, K.max, B = 100, verbose = interactive(), \dots)
+clusGap(x, FUNcluster, K.max, B = 100, d.power = 1, verbose = interactive(), \dots)
 
 maxSE(f, SE.f,
       method = c("firstSEmax", "Tibs2001SEmax", "globalSEmax",
@@ -41,6 +43,12 @@ maxSE(f, SE.f,
   \item{K.max}{the maximum number of clusters to consider, must be at
     least two.}
   \item{B}{integer, number of Monte Carlo (\dQuote{bootstrap}) samples.}
+  \item{d.power}{a positive integer specifying the power \eqn{p} which
+    is applied to the euclidean distances (\code{\link{dist}}) before
+    they are summed up to give \eqn{W(k)}.  The default, \code{d.power = 1},
+    corresponds to the \dQuote{historical} \R implementation, whereas
+    \code{d.power = 2} corresponds to what Tibshirani et al had
+    proposed.  This was found by Juan Gonzalez, in 2016-02.}%Feb.\sspace{}2016.}
   \item{verbose}{integer or logical, determining if \dQuote{progress}
     output should be printed.  The default prints one bit per bootstrap
     sample.}
@@ -69,7 +77,13 @@ maxSE(f, SE.f,
       \item{\code{"firstSEmax"}:}{location of the first \eqn{f()} value
 	which is not larger than the first \emph{local} maximum minus
 	\code{SE.factor * SE.f[]}, i.e, within an \dQuote{f S.E.} range
-	of that maximum (see also \code{SE.factor}).}
+	of that maximum (see also \code{SE.factor}).
+
+	This, the default, has been proposed by Martin Maechler in 2012,
+	when adding \code{clusGap()} to the \pkg{cluster} package, after
+	having seen the \code{"globalSEmax"} proposal (in code) and read
+	the \code{"Tibs2001SEmax"} proposal.}
+
       \item{\code{"globalSEmax"}:}{(used in Dudoit and Fridlyand (2002),
 	supposedly following Tibshirani's proposition):
 	location of the first \eqn{f()} value which is not larger than

@@ -87,7 +87,7 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean",
   of dissimilarities instead of a sum of squared euclidean distances;
   (c) it provides a novel graphical display, the silhouette plot (see
   \code{plot.partition}) (d) it allows to select the number of clusters
-  using \code{mean(\link{silhouette}(pr))} on the result
+  using \code{mean(\link{silhouette}(pr)[, "sil_width"])} on the result
   \code{pr <- pam(..)}, or directly its component
   \code{pr$silinfo$avg.width}, see also \code{\link{pam.object}}.
 
@@ -158,11 +158,14 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean",
 x <- rbind(cbind(rnorm(10,0,0.5), rnorm(10,0,0.5)),
            cbind(rnorm(15,5,0.5), rnorm(15,5,0.5)))
 pamx <- pam(x, 2)
-pamx
+pamx # Medoids: '7' and '25' ...
 summary(pamx)
 plot(pamx)
 ## use obs. 1 & 16 as starting medoids -- same result (typically)
 (p2m <- pam(x, 2, medoids = c(1,16)))
+## no _build_ *and* no _swap_ phase: just cluster all obs. around (1, 16):
+p2.s <- pam(x, 2, medoids = c(1,16), do.swap = FALSE)
+p2.s
 
 p3m <- pam(x, 3, trace = 2)
 ## rather stupid initial medoids:

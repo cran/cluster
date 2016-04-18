@@ -31,12 +31,16 @@ void cl_clara(int *n,  /* = number of objects */
 	      int *diss_kind,/* = {1,2};  1 : euclidean;  2 : manhattan*/
 	      int/*logical*/ *rng_R,/*= {0,1};  0 : use clara's internal weak RNG;
 				     *	        1 : use R's RNG (and seed) */
-	      int/*logical*/ *pam_like,/* if (1), we do "swap()" as in pam();*/
-	      // otherwise use the code as it was in clara() "forever" upto 2011-04
-	      int *nrepr,
+	      int/*logical*/ *pam_like,/* if (1), we do "swap()" as in pam(), otherwise
+					  use the code as it was in clara() "forever"
+					  upto 2011-04 */
+	      int *correct_d,/* option for dist.computation: if (0), use the "fishy"
+			     formula to update distances in the NA-case,
+			     if (1), use a dysta2()-compatible formula */
+	      int *nrepr, /* logical (0/1): 1 = "is representative object"  */
 	      int *nsel,
-	      int *nbest,/* x[nbest[j]] will be the j-th obs in the final sample */
-	      int *nr, int *nrx,
+	      int *nbest,/* x[nbest[j],] : the j-th obs in the final sample */
+	      int *nr, int *nrx,/* prov. and final "medoids" aka representatives */
 	      double *radus, double *ttd, double *ratt,
 	      double *ttbes, double *rdbes, double *rabes,
 	      int *mtt, double *obj,
@@ -66,7 +70,7 @@ void selec(int kk, int n, int jpp, int diss_kind,
 	   double *ttnew, double *rdnew);
 
 void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
-	   int *jtmd, double *valmd, double *x, int *nrx, int *mtt);
+	   int *jtmd, double *valmd, double *x, int *nrx, int *mtt, int flag);
 
 void black(int kk, int jpp, int nsam, int *nbest,
 	   double *dys, double s, double *x,

@@ -12,7 +12,7 @@
 ##    - it uses  boot() nicely  [2012-01: ORPHANED because  Justin Harrington is amiss]
 ## MM: renamed arguments, and changed almost everything
 
-clusGap <- function (x, FUNcluster, K.max, B = 100, verbose = interactive(), ...)
+clusGap <- function (x, FUNcluster, K.max, B = 100, d.power = 1, verbose = interactive(), ...)
 {
     stopifnot(is.function(FUNcluster), length(dim(x)) == 2, K.max >= 2,
 	      (n <- nrow(x)) >= 1, ncol(x) >= 1)
@@ -27,7 +27,7 @@ clusGap <- function (x, FUNcluster, K.max, B = 100, verbose = interactive(), ...
         ##                 ---------- =  =       -------- kmeans() has 'cluster'; pam() 'clustering'
 	0.5* sum(vapply(split(ii, clus),
 			function(I) { xs <- X[I,, drop=FALSE]
-				      sum(dist(xs)/nrow(xs)) }, 0.))
+				      sum(dist(xs)^d.power/nrow(xs)) }, 0.))
     }
     logW <- E.logW <- SE.sim <- numeric(K.max)
     if(verbose) cat("Clustering k = 1,2,..., K.max (= ",K.max,"): .. ", sep='')
@@ -36,9 +36,10 @@ clusGap <- function (x, FUNcluster, K.max, B = 100, verbose = interactive(), ...
     if(verbose) cat("done\n")
 
     ## Scale 'x' into "hypercube" -- we later fill with H0-generated data
+    ## The next 4 lines do what stats:::prcomp.default() does :
     xs <- scale(x, center=TRUE, scale=FALSE)
     m.x <- rep(attr(xs,"scaled:center"), each = n)# for back transforming
-    V.sx <- svd(xs)$v
+    V.sx <- svd(xs, nu=0)$v
     rng.x1 <- apply(xs %*% V.sx, # = transformed(x)
                     2, range)
 

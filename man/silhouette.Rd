@@ -109,25 +109,25 @@ sortSilhouette(object, \dots)
 
   \code{summary(sil)} returns an object of class
   \code{summary.silhouette}, a list with components
-%%Rd bug: fails inside \value{}!:\describe{
-    \item{si.summary}{numerical \code{\link{summary}} of the individual
-      silhouette widths \eqn{s(i)}.}
-    \item{clus.avg.widths}{numeric (rank 1) array of clusterwise
+  \describe{
+    \item{\code{si.summary}:}{numerical \code{\link{summary}} of the
+      individual silhouette widths \eqn{s(i)}.}
+    \item{\code{sclus.avg.widths}:}{numeric (rank 1) array of clusterwise
       \emph{means} of silhouette widths where \code{mean = FUN} is used.}
-    \item{avg.width}{the total mean \code{FUN(s)} where \code{s} are the
-      individual silhouette widths.}
-    \item{clus.sizes}{\code{\link{table}} of the \eqn{k} cluster sizes.}
-    \item{call}{if available, the call creating \code{sil}.}
-    \item{Ordered}{logical identical to \code{attr(sil, "Ordered")}, see
-      below.}
-%%Rd bug:   }
+    \item{\code{savg.width}:}{the total mean \code{FUN(s)} where
+      \code{s} are the individual silhouette widths.}
+    \item{\code{sclus.sizes}:}{\code{\link{table}} of the \eqn{k} cluster sizes.}
+    \item{\code{scall}:}{if available, the call creating \code{sil}.}
+    \item{\code{sOrdered}:}{logical identical to \code{attr(sil, "Ordered")},
+      see below.}
+  }
 
   \code{sortSilhouette(sil)} orders the rows of \code{sil} as in the
   silhouette plot, by cluster (increasingly) and decreasing silhouette
   width \eqn{s(i)}.
   \cr
   \code{attr(sil, "Ordered")} is a logical indicating if \code{sil} \emph{is}
-  ordered as by \code{sortSilhouette()}. In that case,
+  ordered as by \code{sortSilhouette()}.  In that case,
   \code{rownames(sil)} will contain case labels or numbers, and \cr
   \code{attr(sil, "iOrd")} the ordering index vector.
 }

@@ -1,7 +1,7 @@
 
-R Under development (unstable) (2015-01-21 r67569) -- "Unsuffered Consequences"
-Copyright (C) 2015 The R Foundation for Statistical Computing
-Platform: x86_64-unknown-linux-gnu (64-bit)
+R version 3.3.0 beta (2016-04-13 r70476) -- "Supposedly Educational"
+Copyright (C) 2016 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -125,6 +125,11 @@ C clara(): sample 5  finding 1st... new k{ran}:
   dysta2() gave dyst_toomany_NA --> new sample
 Error in clara(x, k = 2, metric = "manhattan", sampsize = 10, trace = 3) : 
   Observation 6 has *only* NAs --> omit it for clustering
+In addition: Warning message:
+In clara(x, k = 2, metric = "manhattan", sampsize = 10, trace = 3) :
+  Distance computations with NAs: using correct instead of pre-2016 wrong formula.
+Use  'correct.d=FALSE'  to get previous results or set 'correct.d=TRUE' explicitly
+to suppress this warning.
 > ## Originally:already shows the problem:  nbest[] = c(0,0,...,0) must be WRONG!!
 > ## Now: gives the proper error message.
 > 
@@ -373,10 +378,20 @@ C clara(): sample 20  finding 1st... new k{ran}:
   dysta2() gave dyst_toomany_NA --> new sample
 Error in clara(x, 2, samples = 20, trace = 3) : 
   Observation 33 has *only* NAs --> omit it for clustering
+In addition: Warning message:
+In clara(x, 2, samples = 20, trace = 3) :
+  Distance computations with NAs: using correct instead of pre-2016 wrong formula.
+Use  'correct.d=FALSE'  to get previous results or set 'correct.d=TRUE' explicitly
+to suppress this warning.
 > ## To see error message for > 1 missing:
 > try(clara(rbind(NA,x), 2))
 Error in clara(rbind(NA, x), 2) : 
   Observations 1,34 have *only* NAs --> omit them for clustering!
+In addition: Warning message:
+In clara(rbind(NA, x), 2) :
+  Distance computations with NAs: using correct instead of pre-2016 wrong formula.
+Use  'correct.d=FALSE'  to get previous results or set 'correct.d=TRUE' explicitly
+to suppress this warning.
 > 
 > x <- x[-33,]
 > ## still had the ** dysta2() .. OUT" problem {no longer!}
@@ -608,8 +623,8 @@ Medoids:
 [1,]   NA    1
 [2,]   47   15
 Objective function:	 4.79624
-Clustering vector: 	 int [1:87] 1 1 1 1 1 1 1 1 1 2 1 1 1 2 1 1 1 1 ...
-Cluster sizes:	    	 74 13 
+Clustering vector: 	 int [1:87] 1 1 1 1 1 1 1 2 1 2 1 2 1 2 2 1 1 1 ...
+Cluster sizes:	    	 57 30 
 Best sample:
  [1]  1  5  7  9 11 13 14 15 17 18 22 26 27 28 34 35 36 37 38 43 46 47 48 50 51
 [26] 54 55 56 57 61 63 64 66 69 71 73 74 75 76 77 78 80 81 82
@@ -617,6 +632,11 @@ Best sample:
 Available components:
  [1] "sample"     "medoids"    "i.med"      "clustering" "objective" 
  [6] "clusinfo"   "diss"       "call"       "silinfo"    "data"      
+Warning message:
+In clara(x, 2, samples = 12, trace = 3) :
+  Distance computations with NAs: using correct instead of pre-2016 wrong formula.
+Use  'correct.d=FALSE'  to get previous results or set 'correct.d=TRUE' explicitly
+to suppress this warning.
 > 
 > data(xclara)
 > set.seed(123)
@@ -624,7 +644,12 @@ Available components:
 > try( clara(xclara, k = 3) ) #-> "nice" error message depicting first 12 missing obs
 Error in clara(xclara, k = 3) : 
   50 observations (74,126,137,308,411,423,438,451,642,686,689,735 ...) have *only* NAs --> omit them for clustering!
+In addition: Warning message:
+In clara(xclara, k = 3) :
+  Distance computations with NAs: using correct instead of pre-2016 wrong formula.
+Use  'correct.d=FALSE'  to get previous results or set 'correct.d=TRUE' explicitly
+to suppress this warning.
 > 
 > proc.time()
    user  system elapsed 
-  0.156   0.037   0.248 
+  0.139   0.029   0.216 

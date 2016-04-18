@@ -1,3 +1,4 @@
+
 /*   Clustering LARge Applications
      ~		~~~   ~
      Clustering program based upon the k-medoid approach,
@@ -34,8 +35,12 @@ void cl_clara(int *n,  /* = number of objects */
 	      int *diss_kind,/*= {1,2};  1 : euclidean;  2 : manhattan*/
 	      int/*logical*/ *rng_R,/*= {0,1};  0 : use clara's internal weak RNG;
 				     *	        1 : use R's RNG (and seed) */
-	      int/*logical*/ *pam_like,/* if (1), we do "swap()" as in pam();*/
-	      // otherwise use the code as it was in clara() "forever" upto 2011-04
+	      int/*logical*/ *pam_like,/* if (1), we do "swap()" as in pam(), otherwise
+					  use the code as it was in clara() "forever"
+					  upto 2011-04 */
+	      int *correct_d,/* option for dist.computation: if (0), use the "fishy"
+			     formula to update distances in the NA-case,
+			     if (1), use a dysta2()-compatible formula */
  	      int *nrepr, /* logical (0/1): 1 = "is representative object"  */
 	      int *nsel,
 	      int *nbest,/* x[nbest[j],] : the j-th obs in the final sample */
@@ -307,7 +312,7 @@ void cl_clara(int *n,  /* = number of objects */
 	  "clara()'s C level dysta2(nsam=%d, p=%d, nbest=%d, n=%d) gave 'toomany_NA'"),
 	      *nsam, *jpp, nbest, *n );
     }
-    resul(*kk, *n, *jpp, *diss_kind, has_NA, jtmd, valmd, x, nrx, mtt);
+    resul(*kk, *n, *jpp, *diss_kind, has_NA, jtmd, valmd, x, nrx, mtt, *correct_d);
 
     if (*kk > 1)
 	black(*kk, *jpp, *nsam, nbest, dys, sx, x,
@@ -739,8 +744,12 @@ void selec(int kk, int n, int jpp, int diss_kind,
 } /* End selec() -----------------------------------------------------------*/
 
 void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
-	   int *jtmd, double *valmd, double *x, int *nrx, int *mtt)
+	   int *jtmd, double *valmd, double *x, int *nrx, int *mtt, int correct_d)
 {
+    /* correct_d : option for dist.computation:
+              if (0), use the "fishy" formula to update distances in the NA-case,
+ 	      if (1), use a dysta2()-compatible formula */
+
     /* Local variables */
     int j, jk, jj, ka, na, nb, njnb, nrjk, nobs, jksky = -1/* Wall */;
     double pp = (double) (jpp), dsum, tra, dnull = -9./* Wall */;
@@ -793,8 +802,10 @@ void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
 		}
 		if (diss_kind == 1)
 		    dsum = sqrt(dsum);
-		dsum *= (nobs / pp);
-		/* MM:   ^^^^^^^^  fishy; rather * (pp/nobs) as in dysta2 */
+		if(correct_d) // correct -- only since 2016-04
+		    dsum *= (pp / nobs);
+		else
+		    dsum *= (nobs / pp); // MM: "fishy" (had note since r4321, 2007-05-01 !)
 
 		if (jk == 0 || dnull > dsum) {
 		    dnull = dsum;

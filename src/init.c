@@ -13,9 +13,10 @@ static R_NativePrimitiveArgType R_bncoef_t[3] = {
     INTSXP, REALSXP, REALSXP
 };
 
-static R_NativePrimitiveArgType cl_clara_t[33] = {
+static R_NativePrimitiveArgType cl_clara_t[34] = {
     /*n:*/ INTSXP, INTSXP, INTSXP, REALSXP, INTSXP, INTSXP, REALSXP, INTSXP,
     /*valmd:*/ REALSXP, INTSXP, INTSXP, /* rng_R: */ LGLSXP, /* pam_like:*/ LGLSXP,
+    /*d_flag:*/ INTSXP,
     /*nrepr: */ INTSXP, INTSXP, INTSXP, INTSXP, INTSXP,
     /*radus:*/ REALSXP, REALSXP, REALSXP, REALSXP, REALSXP, REALSXP, INTSXP,
     /*obj: */ REALSXP, REALSXP, REALSXP, REALSXP,  INTSXP, INTSXP,
