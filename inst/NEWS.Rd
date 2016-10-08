@@ -6,18 +6,41 @@
 \newcommand{\CRANpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 %% NB: The date (yyyy-mm-dd) is the "Packaged:" date in ../DESCRIPTION
 
-%% \section{Changes in a future version ...}{
-%%   \subsection{New Features}{
-%%     \itemize{
-%%       \item __TODO__ \code{clusGap()} further gets new options
-%%       as alternative to the PCA rotation
-%%       and another one for specifying alternative distributions than the
-%%       uniform on the hyper rectangle of the (rotated) data.
-%%     }
-%%   }
-%% }
+\section{Changes in version 2.0.5 (2016-09-24, svn r....)}{
+  \subsection{New Features}{
+    \itemize{
+      \item \code{clusGap()} gets a new option \code{scaleH0}, and
+      \code{scaleH0 = "original"} is an alternative to the default PCA
+      rotation.%% still see ../TODO-MM !
 
-\section{Changes in version 2.0.4 (2016-04-15, svn r....)}{
+      \item \code{clusGap()} now also stores its \code{call} and uses
+      that for \code{print()}ing and (by default in the \code{main} title)
+      for \code{plot()}ing \code{"clusGap"} objects.
+
+      \item
+      __ MOSTLY NOT IMPLEMENTED yet __
+
+      \code{diana()} gets new optional argument \code{stop.at.k}.
+      When a positive integer, the DIANA algorithm will stop early, as
+      much desirable for large \eqn{n}.
+
+    }
+  }
+  \subsection{Bug Fixes}{
+    \itemize{
+      \item \code{daisy()} gets 3+1 new options \code{warn*} which allow
+      to suppress three different kind of warnings, as these are
+      undesirable in some cases.  With thanks to Kirill Müller for the
+      convincing context.
+
+      \item \code{pam()} now signals an error when there are more than
+      65536 observational units (whereas it could segfault previously),
+      thanks to a patch from Mikko Korpela, Helsinki.
+    }
+  }
+}
+
+\section{Changes in version 2.0.4 (2016-04-16, svn r7186)}{
   \subsection{New Features}{
     \itemize{
       \item \code{clusGap()} gets a new option \code{d.power = 1}

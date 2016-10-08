@@ -17,7 +17,7 @@
 static void agnes(int nn, int *kwan, int *ner, double *ban, double dys[],
 		  int method, double *alpha, int *merge, int trace_lev);
 static void splyt(int nn, int *kwan, int *ner, double *ban, double dys[],
-		  int *merge, int trace_lev);
+		  int stop_at_k,             int *merge, int trace_lev);
 static double min_dis(double dys[], int ka, int kb, int ner[]);
 
 /*     This program performs agglomerative nesting (AGNES) using the */
@@ -37,7 +37,7 @@ void twins(int *nn, // = maximal number of objects
 			* jdyss < 10 : don't save dissimilarities (C.keep.diss = FALSE) */
 	   double *valmd,
 	   int *jtmd, int *ndyst, int *jalg,
-	   int *method,  // for agnes()  only
+	   int *method,  // for agnes() only currently, to be 'stop_at_k' for diana()
 	   int *kwan,
 	   int *ner,     // = order []   (in R)
 	   double *ban,  // = height[]
@@ -60,7 +60,7 @@ void twins(int *nn, // = maximal number of objects
 	agnes(*nn, kwan, ner, ban, dys, *method, alpha, merge, trace_lev[0]);
     } else {
 	// DIANA
-	splyt(*nn, kwan, ner, ban, dys,                 merge, trace_lev[0]);
+	splyt(*nn, kwan, ner, ban, dys, *method,        merge, trace_lev[0]);
     }
     // Compute agglomerative/divisive coefficient from banner:
     *coef = bncoef(*nn, ban);
@@ -305,12 +305,12 @@ double bncoef(int n, double *ban)
 
 static void
 splyt(int nn, int *kwan, int *ner, double *ban,
-      double dys[], int *merge, int trace_lev)
+      double dys[], int stop_at_k, int *merge, int trace_lev)
 {
     /* Local variables */
     int j, ja, jb, k, l;
     int jma, jmb, lmm, llq, lmz,
-	lxx, lxy, lmma, lmmb, lner, nclu;
+	lxx, lmma, lmmb, lner, nclu;
     int lchan, nhalf, n_1 = nn - 1, splyn;
 
     /* Parameter adjustments */
@@ -418,10 +418,10 @@ L30:
 		ner[jma] = lchan;
 	    }
 	    for (lxx = jmb; lxx <= jb; ++lxx) {
-		lxy = lxx - 1;
-		if (ner[lxy] < ner[lxx])
+		int l_1 = lxx - 1;
+		if (ner[l_1] < ner[lxx])
 		    break;
-		lchan = ner[lxy]; ner[lxy] = ner[lxx]; ner[lxx] = lchan;
+		lchan = ner[l_1]; ner[l_1] = ner[lxx]; ner[lxx] = lchan;
 	    }
 
 	    --kwan[ja];
@@ -441,8 +441,8 @@ L30:
 		++lxxa;
 		lchan = ner[lgrb];
 		int lxg = -1;
-		for (lxy = lxxa; lxy <= lgrb; ++lxy) {
-		    int lxf = lgrb - lxy + lxxa;
+		for (int ll = lxxa; ll <= lgrb; ++ll) {
+		    int lxf = lgrb - ll + lxxa;
 		    lxg = lxf - 1;
 		    ner[lxf] = ner[lxg];
 		}

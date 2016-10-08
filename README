@@ -20,7 +20,7 @@ we keep R/README-Splus which has no relevance to the R package.
 
 ---------------------
 
-TODO {see ./DONE-MM for things done}
+TODO {see ./TODO-MM for MM's private 'todo' list;  ./DONE-MM for things done}
 
  3) daisy() for the case of mixed variables should allow
     a weight vector (of length p = #vars) for up- or downweighing variables.

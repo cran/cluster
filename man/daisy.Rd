@@ -13,7 +13,9 @@
 }
 \usage{
 daisy(x, metric = c("euclidean", "manhattan", "gower"),
-      stand = FALSE, type = list(), weights = rep.int(1, p))
+      stand = FALSE, type = list(), weights = rep.int(1, p),
+      warnBin = warnType, warnAsym = warnType, warnConst = warnType,
+      warnType = TRUE)
 }
 \arguments{
   \item{x}{
@@ -68,6 +70,10 @@ daisy(x, metric = c("euclidean", "manhattan", "gower"),
     be used in \dQuote{case 2} (mixed variables, or \code{metric = "gower"}),
     specifying a weight for each variable (\code{x[,k]}) instead of
     \eqn{1} in Gower's original formula.}
+  \item{warnBin, warnAsym, warnConst}{logicals indicating if the
+    corresponding type checking warnings should be signalled (when found).}
+  \item{warnType}{logical indicating if \emph{all} the type checking
+    warnings should be active or not.}
 }% end{arg..}
 
 \value{
@@ -101,9 +107,10 @@ daisy(x, metric = c("euclidean", "manhattan", "gower"),
   non-ordered factors) only when no missing values are present, and more
   efficiently.
 
-  Note that \code{daisy} now gives a warning when 2-valued numerical
+  Note that \code{daisy} signals a warning when 2-valued numerical
   variables do not have an explicit \code{type} specified, because the
-  reference authors recommend to consider using \code{"asymm"}.
+  reference authors recommend to consider using \code{"asymm"}; the
+  warning may be silenced by \code{warnBin = FALSE}.
 
   In the \code{daisy} algorithm, missing values in a row of x are not
   included in the dissimilarities involving that row.  There are two

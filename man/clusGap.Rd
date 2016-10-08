@@ -9,9 +9,11 @@
   \dQuote{gap} statistic.  For each number of clusters \eqn{k}, it
   compares \eqn{\log(W(k))}{log(W(k))} with
   \eqn{E^*[\log(W(k))]}{E*[log(W(k))]} where the latter is defined via
-  bootstrapping, i.e., simulating from a reference distribution (a
-  uniform distribution on the hypercube determined by the ranges of the first centered,
-  and then \code{\link{svd}}-rotated \code{x}).
+  bootstrapping, i.e., simulating from a reference (\eqn{H_0})
+  distribution, a uniform distribution on the hypercube determined by
+  the ranges of \code{x}, after first centering, and then
+  \code{\link{svd}} (aka \sQuote{PCA})-rotating them when (as by
+  default) \code{spaceH0 = "scaledPCA"}.
 
   \code{maxSE(f, SE.f)} determines the location of the \bold{maximum}
   of \code{f}, taking a \dQuote{1-SE rule} into account for the
@@ -23,13 +25,20 @@
   gap statistics and their standard deviations.
 }
 \usage{
-clusGap(x, FUNcluster, K.max, B = 100, d.power = 1, verbose = interactive(), \dots)
+clusGap(x, FUNcluster, K.max, B = 100, d.power = 1,
+        spaceH0 = c("scaledPCA", "original"),
+        verbose = interactive(), \dots)
 
 maxSE(f, SE.f,
       method = c("firstSEmax", "Tibs2001SEmax", "globalSEmax",
                  "firstmax", "globalmax"),
       SE.factor = 1)
+
 \S3method{print}{clusGap}(x, method = "firstSEmax", SE.factor = 1, \dots)
+
+\S3method{plot}{clusGap}(x, type = "b", xlab = "k", ylab = expression(Gap[k]),
+     main = NULL, do.arrows = TRUE,
+     arrowArgs = list(col="red3", length=1/16, angle=90, code=3), \dots)
 }
 \arguments{
   \item{x}{numeric matrix or \code{\link{data.frame}}.}
@@ -49,13 +58,19 @@ maxSE(f, SE.f,
     corresponds to the \dQuote{historical} \R implementation, whereas
     \code{d.power = 2} corresponds to what Tibshirani et al had
     proposed.  This was found by Juan Gonzalez, in 2016-02.}%Feb.\sspace{}2016.}
+  \item{spaceH0}{a \code{\link{character}} string specifying the
+    space of the \eqn{H_0} distribution (of \emph{no} cluster).  Both
+     \code{"scaledPCA"} and \code{"original"} use a uniform distribution
+     in a hyper cube and had been mentioned in the reference;
+     \code{"original"} been added after a proposal (including code) by
+     Juan Gonzalez.}
   \item{verbose}{integer or logical, determining if \dQuote{progress}
     output should be printed.  The default prints one bit per bootstrap
     sample.}
-  \item{\dots}{optionally further arguments for \code{FUNcluster()}, see
-    \code{kmeans} example below.}
+  \item{\dots}{(for \code{clusGap()}:) optionally further arguments for
+    \code{FUNcluster()}, see \code{kmeans} example below.}
   \item{f}{numeric vector of \sQuote{function values}, of length
-      \eqn{K}, whose (\dQuote{1 SE respected}) maximum we want.}
+    \eqn{K}, whose (\dQuote{1 SE respected}) maximum we want.}
   \item{SE.f}{numeric vector of length \eqn{K} of standard errors of \code{f}.}
   \item{method}{character string indicating how the \dQuote{optimal}
     number of clusters, \eqn{\hat k}{k^}, is computed from the gap
@@ -97,6 +112,14 @@ maxSE(f, SE.f,
     the optimal number of clusters, Tibshirani et al. proposed the
     \dQuote{1 S.E.}-rule.  Using an \code{SE.factor} \eqn{f}, the
     \dQuote{f S.E.}-rule is used, more generally.}
+  %% plot():
+  \item{type, xlab, ylab, main}{arguments with the same meaning as in
+    \code{\link{plot.default}()}, with different default.}
+  \item{do.arrows}{logical indicating if (1 SE -)\dQuote{error bars}
+    should be drawn, via \code{\link{arrows}()}.}
+  \item{arrowArgs}{a list of arguments passed to \code{\link{arrows}()};
+    the default, notably \code{angle} and \code{code}, provide a style
+    matching usual error bars.}
 }
 \details{
   The main result \code{<res>$Tab[,"gap"]} of course is from
@@ -108,8 +131,8 @@ maxSE(f, SE.f,
   after an another run.
 }
 \value{
-  an object of S3 class \code{"clusGap"}, basically a list with
-  components
+  \code{clusGap(..)} returns an object of S3 class \code{"clusGap"},
+  basically a list with components
   \item{Tab}{a matrix with \code{K.max} rows and 4 columns, named
     "logW", "E.logW", "gap", and "SE.sim",
     where \code{gap = E.logW - logW}, and \code{SE.sim} corresponds to
@@ -118,6 +141,8 @@ maxSE(f, SE.f,
     sd^*(gap[])}, and \eqn{sd^*()} is the standard deviation of the
     simulated (\dQuote{bootstrapped}) gap values.
   }
+  \item{call}{the \code{clusGap(..)} \code{\link{call}}.}
+  \item{spaceH0}{the \code{spaceH0} argument (\code{\link{match.arg}()}ed).}
   \item{n}{number of observations, i.e., \code{nrow(x)}.}
   \item{B}{input \code{B}}
   \item{FUNcluster}{input function \code{FUNcluster}}
@@ -143,6 +168,9 @@ maxSE(f, SE.f,
   Justin Harrington.
 
   The current implementation is by Martin Maechler.
+
+  The implementation of \code{spaceH0 = "original"} is based on code
+  proposed by Juan Gonzalez.
 }
 \seealso{
   \code{\link{silhouette}} for a much simpler less sophisticated
@@ -174,28 +202,39 @@ x <- rbind(matrix(rnorm(150,           sd = 0.1), ncol = 3),
 ## Slightly faster way to use pam (see below)
 pam1 <- function(x,k) list(cluster = pam(x,k, cluster.only=TRUE))
 
-doExtras <- cluster:::doExtras()
-## or set it explicitly to TRUE for the following
-if(doExtras) {
-## Note we use  B = 60 in the following examples to keep them "speedy".
-## ---- rather keep the default B = 500 for your analysis!
+## We do not recommend using hier.clustering here, but if you want,
+## there is  factoextra::hcut () or a cheap version of it
+hclusCut <- function(x, k, d.meth = "euclidean", ...)
+   list(cluster = cutree(hclust(dist(x, method=d.meth), ...), k=k))
 
-## note we can  pass 'nstart = 20' to kmeans() :
-gskmn <- clusGap(x, FUN = kmeans, nstart = 20, K.max = 8, B = 60)
-gskmn #-> its print() method
-plot(gskmn, main = "clusGap(., FUN = kmeans, n.start=20, B= 60)")
-set.seed(12); system.time(
-  gsPam0 <- clusGap(x, FUN = pam, K.max = 8, B = 60)
-)
-set.seed(12); system.time(
-  gsPam1 <- clusGap(x, FUN = pam1, K.max = 8, B = 60)
-)
-## and show that it gives the same:
-stopifnot(identical(gsPam1[-4], gsPam0[-4]))
-gsPam1
-print(gsPam1, method="globalSEmax")
-print(gsPam1, method="globalmax")
-}% end {doExtras}
+## You could set it    doExtras <- TRUE   # or  FALSE
+doExtras <- if(!(exists("doExtras") && is.logical(doExtras)))
+    cluster:::doExtras()
+
+if(doExtras) {
+  ## Note we use  B = 60 in the following examples to keep them "speedy".
+  ## ---- rather keep the default B = 500 for your analysis!
+
+  ## note we can  pass 'nstart = 20' to kmeans() :
+  gskmn <- clusGap(x, FUN = kmeans, nstart = 20, K.max = 8, B = 60)
+  gskmn #-> its print() method
+  plot(gskmn, main = "clusGap(., FUN = kmeans, n.start=20, B= 60)")
+  set.seed(12); system.time(
+    gsPam0 <- clusGap(x, FUN = pam, K.max = 8, B = 60)
+  )
+  set.seed(12); system.time(
+    gsPam1 <- clusGap(x, FUN = pam1, K.max = 8, B = 60)
+  )
+  ## and show that it gives the "same":
+  not.eq <- c("call", "FUNcluster"); n <- names(gsPam0)
+  eq <- n[!(n \%in\% not.eq)]
+  stopifnot(identical(gsPam1[eq], gsPam0[eq]))
+  print(gsPam1, method="globalSEmax")
+  print(gsPam1, method="globalmax")
+
+  print(gsHc <- clusGap(x, FUN = hclusCut, K.max = 8, B = 60))
+
+}# end {doExtras}
 
 gs.pam.RU <- clusGap(ruspini, FUN = pam1, K.max = 8, B = 60)
 gs.pam.RU
@@ -206,7 +245,7 @@ mtext("k = 4 is best .. and  k = 5  pretty close")
 ## No clustering ==> k = 1 ("one cluster") should be optimal:
 Z <- matrix(rnorm(256*3), 256,3)
 gsP.Z <- clusGap(Z, FUN = pam1, K.max = 8, B = 200)
-plot(gsP.Z)
+plot(gsP.Z, main = "clusGap(<iid_rnorm_p=3>)  ==> k = 1  cluster is optimal")
 gsP.Z
 }%end{dont..}
 }

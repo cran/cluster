@@ -135,8 +135,13 @@ SEXP cl_Pam(SEXP k_, SEXP n_,
     }
 #endif
 
-    int i, nhalf = n * (n - 1) / 2 + 1; // nhalf := #{distances}+1 = length(dys)
+    int i, nhalf; // nhalf := #{distances}+1 = length(dys)
     double s;
+    if (n % 2 == 0) { // avoid overflow of n * (n - 1)
+	nhalf = n / 2 * (n - 1) + 1;
+    } else {
+	nhalf = (n - 1) / 2 * n + 1;
+    }
 
     int   *nsend = (int*) R_alloc(n, sizeof(int))
 	, *nelem = (int*) R_alloc(all_stats ? n : 1, sizeof(int)) /* Rboolean */

@@ -130,6 +130,10 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean",
   For large datasets, \code{pam} may need too much memory or too much
   computation time since both are \eqn{O(n^2)}.  Then,
   \code{\link{clara}()} is preferable, see its documentation.
+
+  There is hard limit currently, \eqn{n \le 65536}{n <= 65536}, at
+  \eqn{2^{16}} because for larger \eqn{n}, \eqn{n(n-1)/2} is larger than
+  the maximal integer (\code{\link{.Machine}$integer.max} = \eqn{2^{31} - 1}).
 }
 \author{Kaufman and Rousseeuw's orginal Fortran code was translated to C
   and augmented in several ways, e.g. to allow \code{cluster.only=TRUE}

@@ -34,7 +34,7 @@ sortSilhouette(object, \dots)
   \item{dist}{a dissimilarity object inheriting from class
     \code{\link{dist}} or coercible to one.  If not specified,
     \code{dmatrix} must be.}
-  \item{dmatrix}{a symmetric dissimilarity matrix (\eqn{n \times n}{n * n}),
+  \item{dmatrix}{a symmetric dissimilarity matrix (\eqn{n \times n}{n x n}),
     specified instead of \code{dist}, which can be more efficient.}
   \item{full}{logical specifying if a \emph{full} silhouette should be
     computed for \code{\link{clara}} object.  Note that this requires
@@ -99,10 +99,10 @@ sortSilhouette(object, \dots)
 }
 \value{
   \code{silhouette()} returns an object, \code{sil}, of class
-  \code{silhouette} which is an [n x 3] matrix with attributes.  For
-  each observation i, \code{sil[i,]} contains the cluster to which i
-  belongs as well as the neighbor cluster of i (the cluster, not
-  containing i, for which the average dissimilarity between its
+  \code{silhouette} which is an \eqn{n \times 3}{n x 3} matrix with
+  attributes.  For each observation i, \code{sil[i,]} contains the
+  cluster to which i belongs as well as the neighbor cluster of i (the
+  cluster, not containing i, for which the average dissimilarity between its
   observations and i is minimal), and the silhouette width \eqn{s(i)} of
   the observation.  The \code{\link{colnames}} correspondingly are
   \code{c("cluster", "neighbor", "sil_width")}.

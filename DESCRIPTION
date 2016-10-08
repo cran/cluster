@@ -1,6 +1,6 @@
 Package: cluster
-Version: 2.0.4
-Date: 2016-04-16
+Version: 2.0.5
+Date: 2016-09-16
 Priority: recommended
 Title: "Finding Groups in Data": Cluster Analysis Extended Rousseeuw et
         al.
@@ -16,7 +16,8 @@ Authors@R: c(person("Martin","Maechler", role=c("aut","cre"), email="maechler@st
  ,person("Kurt", "Hornik", role=c("trl", "ctb"),
  	email="Kurt.Hornik@R-project.org", comment="port to R; maintenance(1999-2000)")
  ,person("Matthias", "Studer", role="ctb")
- ,person("Pierre", "Roudier", role="ctb")
+ ,person("Pierre",  "Roudier", role="ctb")
+ ,person("Juan",   "Gonzalez", role="ctb")
  )
 Depends: R (>= 3.0.1)
 Imports: graphics, grDevices, stats, utils
@@ -28,13 +29,14 @@ ByteCompile: yes
 BuildResaveData: no
 License: GPL (>= 2)
 NeedsCompilation: yes
-Packaged: 2016-04-16 20:54:33 UTC; maechler
+Packaged: 2016-10-07 09:47:50 UTC; maechler
 Author: Martin Maechler [aut, cre],
   Peter Rousseeuw [aut] (Fortran original),
   Anja Struyf [aut] (S original),
   Mia Hubert [aut] (S original),
   Kurt Hornik [trl, ctb] (port to R; maintenance(1999-2000)),
   Matthias Studer [ctb],
-  Pierre Roudier [ctb]
+  Pierre Roudier [ctb],
+  Juan Gonzalez [ctb]
 Repository: CRAN
-Date/Publication: 2016-04-18 08:11:05
+Date/Publication: 2016-10-08 08:19:31

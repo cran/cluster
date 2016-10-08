@@ -1,8 +1,8 @@
-### $Id: diana.q 6953 2015-06-18 09:30:24Z maechler $
+### $Id: diana.q 7237 2016-06-23 00:42:33Z maechler $
 
 diana <- function(x, diss = inherits(x, "dist"),
 		  metric = "euclidean", stand = FALSE,
-		  ##_not_yet stop.at.k = FALSE,
+		  stop.at.k = FALSE,
                   keep.diss = n < 100, keep.data = !diss, trace.lev = 0)
 {
     if((diss <- as.logical(diss))) {
@@ -47,8 +47,8 @@ diana <- function(x, diss = inherits(x, "dist"),
 	dv <- double(1 + (n * (n - 1))/2)
     }
     stopifnot(length(trace.lev <- as.integer(trace.lev)) == 1)
-##_not_yet     stopifnot(is.logical(stop.at.k) ||
-##_not_yet               (is.numeric(stop.at.k) && 1 <= stop.at.k && stop.at.k <= n))
+    stopifnot(is.logical(stop.at.k) ||
+	      (is.numeric(stop.at.k) && 1 <= stop.at.k && stop.at.k <= n))
     C.keep.diss <- keep.diss && !diss
     res <- .C(twins,
 		    n,
@@ -61,7 +61,7 @@ diana <- function(x, diss = inherits(x, "dist"),
 		    if(mdata) jtmd else integer(jp),
 		    as.integer(ndyst),
 		    2L,# jalg = 2 <==> DIANA
-                    0L, ##_not_yet as.integer(stop.at.k),# default: 0 do *not* stop early,
+                    as.integer(stop.at.k),# 'method'; default = 0L  :  do *not* stop early
 		    integer(n),
 		    ner = integer(n),
 		    ban = double(n),

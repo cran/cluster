@@ -30,7 +30,7 @@
 
     In case of a matrix (alike), each row corresponds to an observation,
     and each column corresponds to a variable.  All variables must be
-    numeric. Missing values (\code{\link{NA}}s) are allowed.  They are
+    numeric.  Missing values (\code{\link{NA}}s) are allowed.  They are
     replaced by the median of the corresponding variable.  When some
     variables or some observations contain only missing values, the
     function stops with a warning message.
@@ -53,7 +53,7 @@
     matrix or a matrix of observations by variables (see \code{x}
     arugment above).}
   \item{s.x.2d}{a \code{\link{list}} with components named \code{x} (a \eqn{n
-      \times 2} matrix; typically something like principal components of
+      \times 2}{n x 2} matrix; typically something like principal components of
     original data), \code{labs} and \code{var.dec}.}% FIXME: 'labs' and 'var.dec' are not always needed
   \item{stand}{
     logical flag: if true, then the representations of the n observations in the
@@ -169,9 +169,12 @@
   a visual display of the clustering is plotted on the current graphics device.
 }
 \details{
-  \code{clusplot} uses the functions \code{\link{princomp}} and
-  \code{\link{cmdscale}}.  These functions are
-  data reduction techniques. They will represent the data in a bivariate plot.
+  \code{clusplot} uses function calls
+  \code{\link{princomp}(*, cor = (ncol(x) > 2))} or
+  \code{\link{cmdscale}(*, add=TRUE)}, respectively, depending on
+  \code{diss} being false or true.  These functions are data reduction
+  techniques to represent the data in a bivariate plot.
+
   Ellipses are then drawn to indicate the clusters.  The further layout of the
   plot is determined by the optional arguments.
 }
@@ -231,17 +234,10 @@ clusplot(pamv, col.p = votes.clus, labels = 4)# color points and label ellipses
 # here they are *added* to the previous plot:
 clusplot(pamv, span = FALSE, add = TRUE, col.clus = "midnightblue")
 
-## a work-around for setting a small label size:
-clusplot(votes.diss, votes.clus, diss = TRUE)
-op <- par(new=TRUE, cex = 0.6)
-clusplot(votes.diss, votes.clus, diss = TRUE,
-         axes=FALSE,ann=FALSE, sub="", col.p=NA, col.txt="dark green", labels=3)
-par(op)
-## MM: This should now be as simple as
+## Setting a small *label* size:
 clusplot(votes.diss, votes.clus, diss = TRUE, labels = 3, cex.txt = 0.6)
 
-
-if(interactive()) { #  uses identify() *interactively* :
+if(dev.interactive()) { #  uses identify() *interactively* :
   clusplot(votes.diss, votes.clus, diss = TRUE, shade = TRUE, labels = 1)
   clusplot(votes.diss, votes.clus, diss = TRUE, labels = 5)# ident. only points
 }

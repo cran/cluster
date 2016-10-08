@@ -1,5 +1,5 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q 6953 2015-06-18 09:30:24Z maechler $
+#### --- $Id: pam.q 7274 2016-09-24 09:42:33Z maechler $
 pam <- function(x, k, diss = inherits(x, "dist"),
 		metric = "euclidean", medoids = NULL,
                 stand = FALSE, cluster.only = FALSE, do.swap = TRUE,
@@ -11,7 +11,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 {
     stopifnot(length(cluster.only) == 1, length(trace.lev) == 1)
     use.Call <- TRUE ## if using new .Call() instead of old .C()
-
+    nMax <- 65536 # 2^16 (as 1+ n(n-1)/2 must be < max_int = 2^31-1)
     if((diss <- as.logical(diss))) {
 	## check type of input vector
 	if(anyNA(x)) stop("NA values in the dissimilarity matrix not allowed.")
@@ -31,6 +31,9 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	## adapt S dissimilarities to Fortran:
 	## convert upper matrix, read by rows, to lower matrix, read by rows.
 	n <- attr(x, "Size")
+	if(n > nMax)
+	    stop(gettextf("have %d observations, but not more than %d are allowed",
+			  n, nMax))
 	dv <- x[lower.to.upper.tri.inds(n)]
 	## prepare arguments for the Fortran call
 	dv <- c(0, dv) ## <- internally needed {FIXME! memory hog!}
@@ -46,10 +49,13 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	x <- data.matrix(x)# dropping "automatic rownames" compatibly with daisy()
 	if(!is.numeric(x)) stop("x is not a numeric dataframe or matrix.")
 	x2 <- x ; dimnames(x2) <- NULL
+	n <- nrow(x2)
+	if(n > nMax)
+	    stop(gettextf("have %d observations, but not more than %d are allowed",
+			  n, nMax))
 	if(stand) x2 <- scale(x2, scale = apply(x2, 2, meanabsdev))
 	## put info about metric, size and NAs in arguments for the Fortran call
 	ndyst <- if(metric == "manhattan") 2 else 1
-	n <- nrow(x2)
 	jp <- ncol(x2)
 	if((mdata <- any(inax <- is.na(x2)))) { # TRUE if x[] has any NAs
 	    jtmd <- integer(jp)

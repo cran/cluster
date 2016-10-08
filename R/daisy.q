@@ -1,6 +1,8 @@
 
 daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
-		  stand = FALSE, type = list(), weights = rep.int(1, p))
+		  stand = FALSE, type = list(), weights = rep.int(1, p),
+		  warnBin = warnType, warnAsym = warnType, warnConst = warnType,
+		  warnType = TRUE)
 {
     ## check type of input matrix
     if(length(dx <- dim(x)) != 2 || !(is.data.frame(x) || is.numeric(x)))
@@ -66,7 +68,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
 	type2[tT] <- "T" # was "O" (till 2000-12-14) accidentally !
     }
     type2[tI <- type2 %in% c("numeric", "integer") ] <- "I"
-    if(n > 9 && any(tI) &&
+    if(warnBin && n > 9 && any(tI) &&
        any(iBin <- apply(x[, tI, drop = FALSE], 2,
 			 function(v) length(table(v)) == 2)))
 	warning(gettextf("binary variable(s) %s treated as interval scaled",
@@ -75,7 +77,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     type2[type2 == "ordered"] <- "O"
     type2[type2 == "factor"] <- "N"
     if(any(ilog <- type2 == "logical")) {
-	warning(sprintf(ngettext(sum(ilog),
+	if(warnAsym) warning(sprintf(ngettext(sum(ilog),
 				 "setting 'logical' variable %s to type 'asymm'",
 				 "setting 'logical' variables %s to type 'asymm'"),
 			pColl(which(ilog))), domain = NA)
@@ -91,7 +93,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
 	    x <- scale(x, center = TRUE, scale = FALSE) #-> 0-means
 	    sx <- colMeans(abs(x), na.rm = TRUE)# can still have NA's
 	    if(0 %in% sx) {
-		warning(gettextf(
+		if(warnConst) warning(gettextf(
 		    "%s has constant columns %s; these are standardized to 0",
 		    sQuote("x"), pColl(which(sx == 0))))
 		sx[sx == 0] <- 1

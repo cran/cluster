@@ -8,6 +8,7 @@
 }
 \usage{
 diana(x, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE,
+      stop.at.k = FALSE,
       keep.diss = n < 100, keep.data = !diss, trace.lev = 0)
 }
 \arguments{
@@ -46,6 +47,11 @@ diana(x, diss = inherits(x, "dist"), metric = "euclidean", stand = FALSE,
     variable's mean value and dividing by the variable's mean absolute
     deviation.  If \code{x} is already a dissimilarity matrix, then this
     argument will be ignored.}
+  \item{stop.at.k}{logical or integer, \code{FALSE} by default.
+    Otherwise must be integer, say \eqn{k}, in \eqn{\{1,2,..,n\}},
+    specifying that the \code{diana} algorithm should stop early.
+    %_TODO_ namely after k splits _OR_ with k final clusters
+    Non-default NOT YET IMPLEMENTED.}
   \item{keep.diss, keep.data}{logicals indicating if the dissimilarities
     and/or input data \code{x} should be kept in the result.  Setting
     these to \code{FALSE} can give much smaller results and hence even save

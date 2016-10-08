@@ -58,7 +58,7 @@ fanny(x, k, diss = inherits(x, "dist"), memb.exp = 2,
     variable's mean value and dividing by the variable's mean absolute
     deviation.  If \code{x} is already a dissimilarity matrix, then this
     argument will be ignored.}
-  \item{iniMem.p}{numeric \eqn{n \times k}{n * k} matrix or \code{NULL}
+  \item{iniMem.p}{numeric \eqn{n \times k}{n x k} matrix or \code{NULL}
     (by default); can be used to specify a starting \code{membership}
     matrix, i.e., a matrix of non-negative numbers, each row summing to
     one.

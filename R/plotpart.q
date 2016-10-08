@@ -1,4 +1,4 @@
-### $Id: plotpart.q 6952 2015-06-18 09:29:59Z maechler $
+### $Id: plotpart.q 7201 2016-04-28 14:19:06Z maechler $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
 	 nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
@@ -107,7 +107,7 @@ mkCheckX <- function(x, diss) {
 	}
 	x1 <- cmdscale(x, k = 2, add = TRUE)
 	if(x1$ac < 0) ## Rarely ! (FIXME: need and test example!)
-	    x1 <- cmdscale(x, k = 2, eig = TRUE)# FIXME: don't need 'eig' but $GOF
+	    x1 <- cmdscale(x, k = 2, eig = TRUE)# TODO: not 'eig', but list. = TRUE for R >= 3.2.2
 	var.dec <- x1$GOF[2] # always in [0,1]
 	x1 <- x1$points
     }
@@ -123,18 +123,17 @@ mkCheckX <- function(x, diss) {
 		   { x[is.na(x)] <- median(x, na.rm = TRUE); x } )
 	    message("Missing values were displaced by the median of the corresponding variable(s)")
 	}
-
 	n <- nrow(x)
 	labs <- dimnames(x)[[1]]
 
-	x1 <- if(ncol(x) == 1) {
-	    hulp <- rep(0, length(x))
+	x1 <- if(ncol(x) <= 1) {
 	    var.dec <- 1
-	    matrix(c(t(x), hulp), ncol = 2)
+	    matrix(c(t(x), rep(0, length(x))), ncol = 2)
 	}
 	else {
-	    prim.pr <- princomp(x, scores = TRUE, cor = ncol(x) != 2)
-	    var.dec <- cumsum(prim.pr$sdev^2/sum(prim.pr$ sdev^2))[2]
+	    prim.pr <- princomp(x, scores = TRUE, cor = ncol(x) > 2)
+	    sd2 <- prim.pr$sdev^2
+	    var.dec <- cumsum(sd2/sum(sd2))[2]
 	    prim.pr$scores[, 1:2]
 	}
     }
