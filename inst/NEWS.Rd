@@ -6,7 +6,24 @@
 \newcommand{\CRANpkg}{\href{http://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 %% NB: The date (yyyy-mm-dd) is the "Packaged:" date in ../DESCRIPTION
 
-\section{Changes in version 2.0.5 (2016-09-24, svn r....)}{
+\section{Changes in version 2.0.6 (2017-03-10, svn r7332)}{
+  \subsection{New Features}{
+    \itemize{
+      \item \code{mona()} now C- instead of Fortran-based (having used
+      f2c etc) and now has a \code{trace.lev} option which allows
+      progress reporting
+      \dQuote{remembers} if the original data had missing values.
+    }
+  }
+  \subsection{Bug Fixes}{
+    \itemize{
+      \item \code{mona(<1-column>)} no longer loops infinitely but signals
+      an error.
+    }
+  }
+}
+
+\section{Changes in version 2.0.5 (2016-10-07, svn r7278)}{
   \subsection{New Features}{
     \itemize{
       \item \code{clusGap()} gets a new option \code{scaleH0}, and
@@ -18,12 +35,11 @@
       for \code{plot()}ing \code{"clusGap"} objects.
 
       \item
-      __ MOSTLY NOT IMPLEMENTED yet __
+      __ MOSTLY NOT IMPLEMENTED yet __ %%% TODO !!!
 
       \code{diana()} gets new optional argument \code{stop.at.k}.
       When a positive integer, the DIANA algorithm will stop early, as
       much desirable for large \eqn{n}.
-
     }
   }
   \subsection{Bug Fixes}{
@@ -235,26 +251,83 @@
   }
 }
 
+\section{Changes in version 1.14.0 (2011-06-07, svn r....)}{
+}
+%% -> /sfs/w/ftp/CRAN/src/contrib/Archive/cluster/
 
-%%  253036  Mar 26  2013   cluster_1.14.4.tar.gz
-%%  259743  Oct 14  2012   cluster_1.14.3.tar.gz
-%%  250936  Feb  8  2012   cluster_1.14.2.tar.gz
-%%  246438  Oct 17  2011   cluster_1.14.1.tar.gz
-%%  226332  Jun  8  2011   cluster_1.14.0.tar.gz
 %%  214765  Feb 21  2011   cluster_1.13.3.tar.gz
 %%  213663  Nov 10  2010   cluster_1.13.2.tar.gz
 %%  214083  Jun 25  2010   cluster_1.13.1.tar.gz
 %%  214677  Apr  2  2010   cluster_1.12.3.tar.gz
 %%  214577  Oct  6  2009   cluster_1.12.1.tar.gz
 %%  215041  May 13  2009   cluster_1.12.0.tar.gz
+%%  211085  Mar 31  2009   cluster_1.11.13.tar.gz
+%%  321990  Jan  7  2009   cluster_1.11.12.tar.gz
+%%  245055  Jun 16  2008   cluster_1.11.11.tar.gz
+%%  243446  Feb 29  2008   cluster_1.11.10.tar.gz
+%%  216573  Oct  2  2007   cluster_1.11.9.tar.gz
+%%  215257  Sep  4  2007   cluster_1.11.8.tar.gz
+%%  216815  Jun  5  2007   cluster_1.11.7.tar.gz
+%%  216729  Apr 27  2007   cluster_1.11.6.tar.gz
+%%  211615  Mar 31  2007   cluster_1.11.5.tar.gz
+%%  211634  Dec 12  2006   cluster_1.11.4.tar.gz
+%%  203692  Dec  2  2006   cluster_1.11.3.tar.gz
+%%  210927  Sep  7  2006   cluster_1.11.2.tar.gz
+%%  210091  Aug 25  2006   cluster_1.11.1.tar.gz
+%%  210215  May 18  2006   cluster_1.11.0.tar.gz
+%%  195962  Mar 21  2006   cluster_1.10.5.tar.gz
+%%  197577  Jan 26  2006   cluster_1.10.4.tar.gz
+%%  197853  Jan 26  2006   cluster_1.10.3.tar.gz
+%%  190839  Aug 31  2005   cluster_1.10.2.tar.gz
+%%  190975  Jul  3  2005   cluster_1.10.1.tar.gz
+%%  189042  Jun 13  2005   cluster_1.10.0.tar.gz
+%%  179723  Apr  4  2005   cluster_1.9.8.tar.gz
+%%  176832  Jan 24  2005   cluster_1.9.7.tar.gz
+%%  174742  Aug 24  2004   cluster_1.9.6.tar.gz
+%%  174218  Aug  4  2004   cluster_1.9.5.tar.gz
+%%  175565  Jun 26  2004   cluster_1.9.4.tar.gz
+%%  173097  Jun 18  2004   cluster_1.9.3.tar.gz
+%%  173251  Jun 13  2004   cluster_1.9.2.tar.gz
+%%  169773  Apr 12  2004   cluster_1.9.1.tar.gz
+%%  170071  Mar 14  2004   cluster_1.8.1.tar.gz
+%%  165322  Jan 22  2004   cluster_1.8.0.tar.gz
+%%  161548  Sep 24  2003   cluster_1.7.6.tar.gz
+%%  161359  Sep  3  2003   cluster_1.7.5.tar.gz
+%%  161257  Jul 18  2003   cluster_1.7.4.tar.gz
+%%  160252  Jun 11  2003   cluster_1.7.3.tar.gz
+%%  158265  Jun  4  2003   cluster_1.7.2.tar.gz
+%%  157386  May  1  2003   cluster_1.7.1.tar.gz
+%%  155161  Mar 26  2003   cluster_1.7.0.tar.gz
+%%  154089  Dec 31  2002   cluster_1.6-4.tar.gz
+%%  154987  Dec  5  2002   cluster_1.6-3.tar.gz
+%%  154261  Oct 23  2002   cluster_1.6-2.tar.gz
+%%  147063  Sep 10  2002   cluster_1.6-1.tar.gz
+%%  131808  Jul 30  2002   cluster_1.5-2.tar.gz
+%%  116292  Jun 19  2002   cluster_1.5-1.tar.gz
+%%  113972  Mar 31  2002   cluster_1.4-2.tar.gz
+%%  113889  Mar  7  2002   cluster_1.4-1.tar.gz
+%%  116698  Jan 24  2002   cluster_1.4-0.tar.gz
+%%  105552  Dec 19  2001   cluster_1.3-6.tar.gz
+%%  105390  Nov  7  2001   cluster_1.3-5.tar.gz
+%%  105275  Aug 24  2001   cluster_1.3-4.tar.gz
+%%  103626  Jun  8  2001   cluster_1.3-3.tar.gz
+%%   99698  Jan  4  2001   cluster_1.3-2.tar.gz
+%%   91608  Feb 18  2000   cluster_1.2-3.tar.gz
+%%   91736  Dec 29  1999   cluster_1.2-2.tar.gz
+%%   93048  Dec  5  1999   cluster_1.2-1.tar.gz
 
 %% ============================== FIXME ===========================
 
 
 
-%% \section{Version 0.2-4}{
-%% \subsection{..., 0.3-1, 0.3-n (n=3,5,...,26): 22 more CRAN releases}{
-%%   \itemize{ \item ............................................. } }}
+\section{Version 1.2-1}{
+  \subsection{Versions 1.2-1, ...  1.13-3}{
+    \itemize{
+      \item 60 more CRAN releases of the package \pkg{cluster}
+      from Dec 1999 to Feb 2011.
+    }
+  }
+}
 
 % How can I add vertical space ?
 % \preformatted{} is not allowed, nor is \cr

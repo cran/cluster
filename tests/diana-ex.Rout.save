@@ -1,8 +1,7 @@
 
-R version 2.14.1 RC (2011-12-20 r57943)
-Copyright (C) 2011 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
-Platform: x86_64-unknown-linux-gnu (64-bit)
+R Under development (unstable) (2017-03-08 r72321) -- "Unsuffered Consequences"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -98,7 +97,7 @@ Divisive coefficient:
 
 1225 dissimilarities, summarized :
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  8.382  25.540  34.510  45.060  56.020 167.600 
+   8.38   25.54   34.51   45.06   56.02  167.60 
 Metric :  manhattan 
 Number of objects : 50
 
@@ -183,7 +182,7 @@ Available components:
 [1] "order"     "height"    "dc"        "merge"     "diss"      "call"     
 [7] "order.lab"
 > cat('Time elapsed: ', proc.time() - .p00,'\n')
-Time elapsed:  0.014 0.001 0.015 0 0 
+Time elapsed:  0.006 0.003 0.009 0 0 
 > 
 > data(agriculture)
 > data(ruspini)
@@ -193,7 +192,7 @@ Time elapsed:  0.014 0.001 0.015 0 0
 > drusp0  <- diana(ruspini, keep.diss=FALSE, keep.data=FALSE)
 > drusp1  <- diana(ruspini, metric = "manhattan")
 > cat('Time elapsed: ', proc.time() - .p0,'\n')
-Time elapsed:  0.006 0.001 0.006 0 0 
+Time elapsed:  0.003 0 0.003 0 0 
 > 
 > summary(dia.agr)
 Merge:
@@ -219,7 +218,7 @@ Divisive coefficient:
 
 66 dissimilarities, summarized :
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.649   4.357   7.987   9.594  13.250  24.040 
+   1.65    4.36    7.99    9.59   13.25   24.04 
 Metric :  euclidean 
 Number of objects : 12
 
@@ -416,7 +415,7 @@ Divisive coefficient:
 
 2775 dissimilarities, summarized :
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   2.00   52.50   97.00   90.95  128.00  187.00 
+    2.0    52.5    97.0    91.0   128.0   187.0 
 Metric :  manhattan 
 Number of objects : 75
 
@@ -447,7 +446,7 @@ List of 8
 > .p1 <- proc.time()
 > dCH <- diana(swiss.x)
 > cat('Time elapsed: ', proc.time() - .p1,'\n')
-Time elapsed:  0.001 0 0.001 0 0 
+Time elapsed:  0.001 0.001 0 0 0 
 > str(as.dendrogram(as.hclust(dCH)))# keep back-compatible
 --[dendrogram w/ 2 branches and 47 members at h = 127]
   |--[dendrogram w/ 2 branches and 31 members at h = 99.2]
@@ -543,3 +542,6 @@ Time elapsed:  0.001 0 0.001 0 0
               |--leaf "Martigwy" 
               `--leaf "St Maurice" 
 > 
+> proc.time()
+   user  system elapsed 
+  0.191   0.033   0.295 

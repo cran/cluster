@@ -7,34 +7,36 @@
   a dataset with binary variables only.
 }
 \usage{
-mona(x)
+mona(x, trace.lev = 0)% FIXME: allow early stopping
 }
 \arguments{
   \item{x}{
     data matrix or data frame in which each row corresponds to an
     observation, and each column corresponds to a variable.  All
-    variables must be binary.  A limited number of missing values (NAs)
-    is allowed. Every observation must have at least one value different
-    from NA.  No variable should have half of its values missing. There
-    must be at least one variable which has no missing values.  A
-    variable with all its non-missing values identical, is not allowed.
-  }
+    variables must be binary.  A limited number of missing values (\code{NA}s)
+    is allowed.  Every observation must have at least one value different
+    from \code{\link{NA}}.  No variable should have half of its values
+    missing.  There must be at least one variable which has no missing
+    values.  A variable with all its non-missing values identical is
+    not allowed.}
+  \item{trace.lev}{logical or integer indicating if (and how much) the
+    algorithm should produce progress output.}
 }
 \value{
   an object of class \code{"mona"} representing the clustering.
-  See \code{mona.object} for details.
+  See \code{\link{mona.object}} for details.
 }
 \details{
 \code{mona} is fully described in chapter 7 of Kaufman and Rousseeuw (1990).
-It is "monothetic" in the sense that each division is based on a
+It is \dQuote{monothetic} in the sense that each division is based on a
 single (well-chosen) variable, whereas most other hierarchical methods
-(including \code{agnes} and \code{diana}) are "polythetic", i.e. they use
+(including \code{agnes} and \code{diana}) are \dQuote{polythetic}, i.e. they use
 all variables together.
 
 The \code{mona}-algorithm constructs a hierarchy of clusterings,
-starting with one large
-cluster. Clusters are divided until all observations in the same cluster have
-identical values for all variables.\cr
+starting with one large cluster.  Clusters are divided until all
+observations in the same cluster have identical values for all variables.
+\cr
 At each stage, all clusters are divided according to the values of one
 variable. A cluster is divided into one cluster with all observations having
 value 1 for that variable, and another cluster with all observations having
@@ -50,16 +52,24 @@ both have value 0 (resp. value 1); b(f,g) (resp. c(f,g)) is the number of
 observations for which f has value 0 (resp. 1) and g has value 1 (resp. 0).]
 The total association of a variable f is the sum of its associations to all
 variables.
-
-This algorithm does not work with missing values, therefore the data are
-revised, e.g. all missing values are filled in. To do this, the same measure
-of association between variables is used as in the algorithm. When variable
-f has missing values, the variable g with the largest absolute association
-to f is looked up. When the association between f and g is positive,
-any missing value of f is replaced by the value of g for the same
-observation. If the association between f and g is negative, then any missing
-value of f is replaced by the value of 1-g for the same
-observation.
+}
+\section{Missing Values (\code{\link{NA}}s)}{
+  The mona-algorithm requires \dQuote{pure} 0-1 values.  However,
+  \code{mona(x)} allows \code{x} to contain (not too many)
+  \code{\link{NA}}s.  In a preliminary step, these are \dQuote{imputed},
+  i.e., all missing values are filled in.  To do this, the same measure
+  of association between variables is used as in the algorithm.  When variable
+  f has missing values, the variable g with the largest absolute association
+  to f is looked up. When the association between f and g is positive,
+  any missing value of f is replaced by the value of g for the same
+  observation. If the association between f and g is negative, then any missing
+  value of f is replaced by the value of 1-g for the same
+  observation.
+}
+\note{
+  In \pkg{cluster} versions before 2.0.6, the algorithm failed in the
+  boundary case of one variable, i.e., \code{ncol(x) == 1}, and could be
+  affected by integer overflow when the
 }
 \seealso{
   \code{\link{agnes}} for background and references;

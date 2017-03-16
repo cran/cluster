@@ -1,6 +1,6 @@
 
-R version 3.3.0 beta (2016-04-13 r70476) -- "Supposedly Educational"
-Copyright (C) 2016 The R Foundation for Statistical Computing
+R Under development (unstable) (2017-03-08 r72321) -- "Unsuffered Consequences"
+Copyright (C) 2017 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -60,7 +60,7 @@ Type 'q()' to quit R.
 17 171 184 246 215 196  NA 187 163 174 154  30   2  18   6  12  28
 > summary(d, na.rm = TRUE) # max = 270
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-   2.00   27.25  147.50  114.60  188.50  270.00      16 
+   2.00   27.25  147.50  114.55  188.50  270.00      16 
 > ## First call with "trace" (seg.fault typically later ...):
 > try( clara(x, k=2, metric="manhattan", sampsize=10, trace = 3) )
 C clara(): (nsam,nran,n) = (10,5,17); 'large_sample',
@@ -652,4 +652,4 @@ to suppress this warning.
 > 
 > proc.time()
    user  system elapsed 
-  0.139   0.029   0.216 
+  0.160   0.036   0.263 

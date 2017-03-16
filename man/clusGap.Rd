@@ -208,8 +208,8 @@ hclusCut <- function(x, k, d.meth = "euclidean", ...)
    list(cluster = cutree(hclust(dist(x, method=d.meth), ...), k=k))
 
 ## You could set it    doExtras <- TRUE   # or  FALSE
-doExtras <- if(!(exists("doExtras") && is.logical(doExtras)))
-    cluster:::doExtras()
+if(!(exists("doExtras") && is.logical(doExtras)))
+  doExtras <- cluster:::doExtras()
 
 if(doExtras) {
   ## Note we use  B = 60 in the following examples to keep them "speedy".

@@ -28,8 +28,8 @@ pam(x, k, diss = inherits(x, "dist"), metric = "euclidean",
     of \code{\link{daisy}} or \code{\link{dist}}.  Also a vector of
     length n*(n-1)/2 is allowed (where n is the number of observations),
     and will be interpreted in the same way as the output of the
-    above-mentioned functions. Missing values (NAs) are \emph{not}
-    allowed.
+    above-mentioned functions. Missing values (\code{\link{NA}}s) are
+    \emph{not} allowed.
   }
   \item{k}{positive integer specifying the number of clusters, less than
     the number of observations.}

@@ -84,6 +84,7 @@ int F77_NAME(dysta)(int *nn, int *jpp, double *x, double *dys, int *ndyst,
 		    int *jtmd, double *valmd, int *jhalt);
 /* --------- ./pam.c ------------------*/
 
+#ifdef _UNUSED_C_pam
 void cl_pam(int *nn, int *jpp, int *kk, double *x, double *dys,
 	    int *jdyss, /* jdyss = 0 : compute distances from x
 			 *	      = 1 : distances provided	in x */
@@ -92,6 +93,7 @@ void cl_pam(int *nn, int *jpp, int *kk, double *x, double *dys,
 	    double *radus, double *damer, double *ttd, double *separ,
 	    double *ttsyl, double *obj, int *med, int *ncluv,
 	    double *clusinf, double *sylinf, int *nisol, int* optim);
+#endif
 
 SEXP cl_Pam(SEXP k_, SEXP n_,
 	    SEXP do_diss_, /* == !diss;  if true, compute distances from x (= x_or_diss);

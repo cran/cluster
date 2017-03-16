@@ -31,6 +31,7 @@ static R_NativePrimitiveArgType cl_fanny_t[27] = {
     /*obj: */ REALSXP, INTSXP, REALSXP, REALSXP, REALSXP, INTSXP
 };
 
+#ifdef _UNUSED_C_pam
 static R_NativePrimitiveArgType cl_pam_t[24] = {
     INTSXP, INTSXP, INTSXP, REALSXP, REALSXP,
     /*jdyss: */ INTSXP, REALSXP, INTSXP,  INTSXP, INTSXP,
@@ -38,6 +39,7 @@ static R_NativePrimitiveArgType cl_pam_t[24] = {
     /*ttsyl: */ REALSXP, REALSXP, /*medoids*/ INTSXP, INTSXP,  REALSXP, REALSXP, INTSXP,
     /*optim: */ INTSXP
 };
+#endif
 
 static R_NativePrimitiveArgType spannel_t[12] = { // ./spannel.c :
     INTSXP, INTSXP, REALSXP, REALSXP, REALSXP, REALSXP,
@@ -67,7 +69,9 @@ static const R_CMethodDef CEntries[]  = {
     CDEF(cl_clara),
     {"dysta3", (DL_FUNC) &dysta3, 8},/* ./fanny.c */
     CDEF(cl_fanny),
+#ifdef _UNUSED_C_pam
     CDEF(cl_pam),
+#endif
     CDEF(spannel),
     CDEF(cl_sweep),
     CDEF(sildist),

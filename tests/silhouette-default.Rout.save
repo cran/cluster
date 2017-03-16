@@ -1,8 +1,7 @@
 
-R Under development (unstable) (2011-08-28 r56813)
-Copyright (C) 2011 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
-Platform: i686-pc-linux-gnu (32-bit)
+R Under development (unstable) (2017-03-08 r72321) -- "Unsuffered Consequences"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -73,7 +72,7 @@ Silhouette of 150 units in 3 clusters from silhouette.default(x = k.gr, dist = m
 0.9773277 0.6926798 0.7467236 
 Individual silhouette widths:
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-0.03353 0.76940 0.86120 0.80560 0.97560 0.98920 
+0.03353 0.76937 0.86121 0.80558 0.97564 0.98919 
 
  4 :
 ==
@@ -87,7 +86,7 @@ Silhouette of 150 units in 4 clusters from silhouette.default(x = k.gr, dist = m
 0.5653722 0.5226372 0.6926798 0.7467236 
 Individual silhouette widths:
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-0.03353 0.56620 0.75100 0.66400 0.84240 0.89390 
+0.03353 0.56621 0.75102 0.66399 0.84240 0.89390 
 
  5 :
 ==
@@ -611,6 +610,9 @@ pdf
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  3.453 0.03 3.503 0 0 
+Time elapsed:  1.814 0.017 1.843 0 0 
 > 
 > 
+> proc.time()
+   user  system elapsed 
+  1.955   0.044   2.108 

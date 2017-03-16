@@ -1,3 +1,9 @@
+2014-03-27  Martin Maechler
+
+	* NOTE: All newer changes are summarized in the NEWS file
+	(./inst/NEWS.Rd) and detailed & timestamped in the svn logs.
+
+
 2014-03-26  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 1.15.2

@@ -1,7 +1,7 @@
 
-R version 3.1.2 beta (2014-10-21 r66834) -- "Pumpkin Helmet"
-Copyright (C) 2014 The R Foundation for Statistical Computing
-Platform: x86_64-unknown-linux-gnu (64-bit)
+R Under development (unstable) (2017-03-08 r72321) -- "Unsuffered Consequences"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -107,7 +107,7 @@ Height:
 
 1225 dissimilarities, summarized :
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  8.382  25.540  34.510  45.060  56.020 167.600 
+   8.38   25.54   34.51   45.06   56.02  167.60 
 Metric :  manhattan 
 Number of objects : 50
 
@@ -193,7 +193,7 @@ Height:
 
 1225 dissimilarities, summarized :
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  17.20   48.34   64.68   82.23  105.50  282.00 
+   17.2    48.3    64.7    82.2   105.5   282.0 
 Metric :  euclidean 
 Number of objects : 50
 
@@ -254,7 +254,7 @@ Height:
 
 66 dissimilarities, summarized :
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  1.649   4.357   7.987   9.594  13.250  24.040 
+   1.65    4.36    7.99    9.59   13.25   24.04 
 Metric :  euclidean 
 Number of objects : 12
 
@@ -462,7 +462,7 @@ Height:
 
 2775 dissimilarities, summarized :
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   2.00   52.50   97.00   90.95  128.00  187.00 
+    2.0    52.5    97.0    91.0   128.0   187.0 
 Metric :  manhattan 
 Number of objects : 75
 
@@ -489,7 +489,7 @@ List of 9
  - attr(*, "class")= chr [1:2] "agnes" "twins"
 > 
 > showProc.time()
-Time elapsed:  0.049 0.001 0.05 
+Time elapsed:  0.048 0.002 0.05 
 > 
 > summary(ar2 <- agnes(ruspini, metric="manhattan", method = "weighted"))
 Object of class 'agnes' from call:
@@ -589,7 +589,7 @@ Height:
 
 2775 dissimilarities, summarized :
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   2.00   52.50   97.00   90.95  128.00  187.00 
+    2.0    52.5    97.0    91.0   128.0   187.0 
 Metric :  manhattan 
 Number of objects : 75
 
@@ -606,7 +606,7 @@ Order of objects:
 [51] 40 33 34 37 38 41 42 43 44 45 49 51 53 50 54 52 55 56 57 59 60 58 46 47 48
 Height (summary):
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   2.00    5.00    8.12   14.20   15.60  115.00 
+   2.00    5.00    8.12   14.22   15.58  114.98 
 
 Available components:
 [1] "order"     "height"    "ac"        "merge"     "diss"      "call"     
@@ -614,7 +614,7 @@ Available components:
 > stopifnot(all.equal(ar2[1:4], ar3[1:4], tol=1e-12))
 > 
 > showProc.time()
-Time elapsed:  0.006 0 0.006 
+Time elapsed:  0.004 0 0.005 
 > 
 > ## Small example, testing "flexible" vs "single"
 > i8 <- -c(1:2, 9:10)
@@ -689,7 +689,7 @@ Order of objects:
 [1] D   F   E   IRL GR 
 Height (summary):
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   3.40    3.55    7.45    7.88   11.80   13.20 
+   3.40    3.55    7.45    7.88   11.78   13.20 
 
 Available components:
 [1] "order"     "height"    "ac"        "merge"     "diss"      "call"     
@@ -702,7 +702,7 @@ Order of objects:
 [1] D   F   E   IRL GR 
 Height (summary):
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   3.40    3.55    7.45    7.87   11.80   13.20 
+   3.40    3.55    7.45    7.88   11.78   13.20 
 
 Available components:
 [1] "order"     "height"    "ac"        "merge"     "diss"      "call"     
@@ -759,7 +759,7 @@ C agnes(n=75, method = 5, ..): 74 merging steps
 C agnes(n=75, method = 6, ..): 74 merging steps
 > 
 > showProc.time()
-Time elapsed:  0.038 0.001 0.039 
+Time elapsed:  0.043 0.003 0.046 
 > 
 > ## an invalid "flexible" case - now must give error early:
 > x <- rbind(c( -6, -9), c(  0, 13),
@@ -784,4 +784,4 @@ Number of objects : 5
 > 
 > proc.time()
    user  system elapsed 
-  0.243   0.013   0.311 
+  0.243   0.035   0.346 

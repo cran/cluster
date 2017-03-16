@@ -1,16 +1,13 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q 7274 2016-09-24 09:42:33Z maechler $
+#### --- $Id: pam.q 7331 2017-03-10 08:04:00Z maechler $
 pam <- function(x, k, diss = inherits(x, "dist"),
 		metric = "euclidean", medoids = NULL,
                 stand = FALSE, cluster.only = FALSE, do.swap = TRUE,
                 keep.diss = !diss && !cluster.only && n < 100,
                 keep.data = !diss && !cluster.only,
-		## use.Call = TRUE, ## for testing, comparing .C() <-> .Call() will become TRUE
-		## ----------------
 		pamonce = FALSE, trace.lev = 0)
 {
     stopifnot(length(cluster.only) == 1, length(trace.lev) == 1)
-    use.Call <- TRUE ## if using new .Call() instead of old .C()
     nMax <- 65536 # 2^16 (as 1+ n(n-1)/2 must be < max_int = 2^31-1)
     if((diss <- as.logical(diss))) {
 	## check type of input vector
@@ -41,8 +38,6 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	jp <- 1
 	mdata <- FALSE
 	ndyst <- 0
-	if(!use.Call)
-	x2 <- double()# unused in this case
     }
     else {
 	## check input matrix and standardize, if necessary
@@ -65,15 +60,10 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	    x2[inax] <- valmisdat
 	}
         storage.mode(x2) <- "double"
-	if(!use.Call)
-	dv <- double(1 + (n * (n - 1))/2)
     }
     if((k <- as.integer(k)) < 1 || k >= n)
 	stop("Number of clusters 'k' must be in {1,2, .., n-1}; hence n >= 2")
-    if(is.null(medoids)) { # default: using "build & swap" to determine medoids"
-	if(!use.Call)
-	    medoids <- integer(k)# all 0 -> will be used as 'code' in C
-    } else {
+    if(!is.null(medoids)) { # non-default: check provided medoids
         ## 'fixme': consider  sort(medoids) {and rely on it in ../src/pam.c }
         if(!is.integer(medoids))
             medoids <- as.integer(medoids)
@@ -87,7 +77,6 @@ pam <- function(x, k, diss = inherits(x, "dist"),
     nisol <- integer(if(cluster.only) 1 else k)
     if(do.swap) nisol[1] <- 1L
 
-    if(use.Call)
     res <- .Call(cl_Pam, k, n,
                  !diss, # == do_diss: compute d[i,j] them from x2[] and allocate in C
                  if(diss) dv else x2,
@@ -98,39 +87,9 @@ pam <- function(x, k, diss = inherits(x, "dist"),
                  if(mdata) rep(valmisdat, jp) else double(1), # valmd
                  if(mdata) jtmd else integer(jp),	      # jtmd
                  as.integer(ndyst))	# dist_kind
-    else
-    res <- .C(cl_pam,
-	      as.integer(n),
-	      as.integer(jp),
-	      k,
-	      x = x2, # only accessed if(!diss)
-	      dys = dv,
-	      jdyss = as.integer(diss),
-              if(mdata) rep(valmisdat, jp) else double(1), # valmd
-	      if(mdata) jtmd else integer(jp),		   # jtmd
-	      as.integer(ndyst),	# ndyst
-	      integer(n),		# nsend[]
-	      logical(n),		# nrepr[]
-	      integer(if(cluster.only) 1 else n), # nelem[]
-	      double(n),		# radus[]
-	      double(n),		# damer[]
-	      avsil = double(n),	# avsyl  'ttd'
-	      double(n),		# separ[]
-	      ttsil = double(1),	# ttsyl
-	      obj = as.double(c(cluster.only, trace.lev)),# in & out!
-	      ##=
-	      med = medoids,		# med		    in & out{if (!cluster.only)}
-	      clu = integer(n),         # ncluv
-	      clusinf = if(cluster.only) 0. else matrix(0., k, 5),
-	      silinf  = if(cluster.only) 0. else matrix(0., n, 4),
-	      isol = nisol,		# nisol: integer(if(cluster.only) 1 else k)
-	      as.integer(pamonce)) # care!!
-    ## use from result: clu, dys, jdyss, med, silinf, obj, isol, clusinf, avsil, ttsil
-    ##                      'dys' : only used  if(keep.diss)
 
     ## Error if have NA's in diss:
-    if(!diss && ((use.Call && is.integer(res)) ||
-                 (!use.Call && res$jdyss == -1)))
+    if(!diss && is.integer(res))
 	stop("No clustering performed, NAs in the computed dissimilarity matrix.")
 
     xLab <- if(diss) attr(x, "Labels") else dimnames(x)[[1]]

@@ -18,6 +18,7 @@
 
 // carries out a clustering using the k-medoid approach
 
+#ifdef _UNUSED_C_pam
 // The .C()  version --- no longer used, since Jan.2015
 void cl_pam(int *nn, int *p, int *kk, double *x, double *dys,
 	    int *jdyss, /* jdyss = 0 : compute distances from x
@@ -98,6 +99,7 @@ void cl_pam(int *nn, int *p, int *kk, double *x, double *dys,
 	}
     }
 } /* cl_pam */
+#endif
 
 // The .Call() version
 SEXP cl_Pam(SEXP k_, SEXP n_,

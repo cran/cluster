@@ -1,7 +1,7 @@
 
-R Under development (unstable) (2015-01-20 r67564) -- "Unsuffered Consequences"
-Copyright (C) 2015 The R Foundation for Statistical Computing
-Platform: x86_64-unknown-linux-gnu (64-bit)
+R Under development (unstable) (2017-03-08 r72321) -- "Unsuffered Consequences"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -149,8 +149,8 @@ Silhouette plot information for best sample:
 89       2        1 0.4482549
 
 4005 dissimilarities, summarized :
-    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
- 0.18647 11.58500 20.05800 27.81500 45.57800 85.23200 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.1865 11.5850 20.0580 27.8150 45.5780 85.2320 
 Metric :  euclidean 
 Number of objects : 90
 
@@ -273,8 +273,8 @@ Silhouette plot information for best sample:
 1207       2        1 0.2694097
 
 946 dissimilarities, summarized :
-    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
- 0.48462 12.32300 26.49900 32.21300 52.39100 77.17500 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.4846 12.3230 26.4990 32.2130 52.3910 77.1750 
 Metric :  euclidean 
 Number of objects : 44
 
@@ -856,8 +856,8 @@ Silhouette plot information for best sample:
 980        5        1 0.4671695
 
 1225 dissimilarities, summarized :
-    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
- 0.69682 19.31600 34.09200 33.07000 46.25400 92.25300 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.6968 19.3160 34.0920 33.0700 46.2540 92.2530 
 Metric :  euclidean 
 Number of objects : 50
 
@@ -1483,10 +1483,10 @@ $sample
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  2.121 0.013 2.146 0 0 
+Time elapsed:  2.238 0.015 2.272 0 0 
 > ## Lynne (P IV, 1.6 GHz): 18.81; then (no NA; R 1.9.0-alpha): 15.07
 > ## nb-mm (P III,700 MHz): 27.97
 > 
 > proc.time()
    user  system elapsed 
-  2.248   0.037   2.343 
+  2.363   0.041   2.479 
