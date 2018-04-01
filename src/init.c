@@ -86,8 +86,8 @@ static R_CallMethodDef CallEntries[] = {
 
 static R_FortranMethodDef FortEntries[] = {
     {"cl_daisy", (DL_FUNC) &F77_SUB(cldaisy), 11},
-    {"cl_mona", (DL_FUNC) &F77_SUB(clmona), 9},
-    {"dysta", (DL_FUNC) &F77_SUB(dysta), 8},
+    {"cl_mona",  (DL_FUNC) &F77_SUB(clmona),   9},
+    {"dysta",    (DL_FUNC) &F77_SUB(dysta),    8},
     {NULL, NULL, 0}
 };
 

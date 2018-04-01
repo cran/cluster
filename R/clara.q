@@ -2,7 +2,9 @@
 ####
 #### Note that the algorithm is O(n), but O(ns^2) where ns == sampsize
 
-clara <- function(x, k, metric = "euclidean", stand = FALSE,
+clara <- function(x, k,
+		  metric = c("euclidean", "manhattan", "jaccard"),
+                  stand = FALSE,
 		  samples = 5, sampsize = min(n, 40 + 2 * k), trace = 0,
                   medoids.x = TRUE, keep.data = medoids.x, rngR = FALSE,
                   pamLike = FALSE, correct.d = TRUE)
@@ -31,6 +33,7 @@ clara <- function(x, k, metric = "euclidean", stand = FALSE,
         ox <- x
     else if(keep.data)
         stop("when 'medoids.x' is FALSE, 'keep.data' must be too")
+    metric <- match.arg(metric)
     if(stand)
         x <- scale(x, scale = apply(x, 2, meanabsdev))
     if(keep.data)
@@ -63,8 +66,8 @@ to suppress this warning.")
 	      as.integer(mdata),	# = mdata
 	      valmd = if(mdata) rep(valmisdat, jp) else -1.,	## 9
 	      jtmd  = if(mdata) jtmd else integer(1),
-	      as.integer(if(metric == "manhattan") 2 else 1),
-              				# = diss_kind
+	      c("euclidean" = 1L, "manhattan" = 2L, "jaccard" = 3L)[[metric]],
+					# =  diss_kind (DISS_KIND : ../src/cluster.h)
 	      as.logical(rngR[1]), 	# = rng_R		## 12
 	      as.logical(pamLike[1]),	# = pam_like
 	      as.integer(dFlag),	# = d_flag

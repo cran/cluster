@@ -113,7 +113,7 @@ SEXP cl_Pam(SEXP k_, SEXP n_,
 
 	    // the next 3 are only needed  if(do_diss)
 	    SEXP val_md, SEXP j_md, // "md" := [m]issing [d]ata
-	    SEXP dist_kind) // = 1 ("euclidean")  or 2 ("manhattan")
+	    SEXP diss_kind_) // = 1 ("euclidean")  or 2 ("manhattan")
 {
     const int kk = asInteger(k_), n = asInteger(n_),
 	pam_once = asInteger(pam_once_),
@@ -173,12 +173,12 @@ SEXP cl_Pam(SEXP k_, SEXP n_,
     SEXP dys_, avsyl_, obj_, clu_, clusinf_, sylinf_, nisol_,ttsyl_;
 
     // these are only used  if(do_diss) :
-    double *valmd; int *jtmd; int *ndyst;
+    double *valmd; int *jtmd; int *diss_kind;
     if (do_diss) { // <-- was 'jdyss != 1' i.e.  jdyss == 0
 	PROTECT(dys_ = allocVector(REALSXP, nhalf)); nprot++;
 	valmd = REAL(val_md);
 	jtmd = INTEGER(j_md);
-	ndyst= INTEGER(dist_kind); // = 1 ("euclidean")  or 2 ("manhattan")
+	diss_kind = INTEGER(diss_kind_); // = 1 ("euclidean")  or 2 ("manhattan")
     } else {
 	dys_ = x_or_diss; // a pointer to the same thing
     }
@@ -222,7 +222,7 @@ SEXP cl_Pam(SEXP k_, SEXP n_,
 	if(trace_lev)
 	    Rprintf("C pam(): computing %d dissimilarities from  %d x %d  matrix: ",
 		    nhalf, n, p);
-	F77_CALL(dysta)((int*)&n, &p, x, dys, ndyst, jtmd, valmd, &jhalt);
+	F77_CALL(dysta)((int*)&n, &p, x, dys, diss_kind, jtmd, valmd, &jhalt);
 	if (jhalt != 0) {
 	    if(trace_lev) Rprintf(" dysta()-error: jhalt=%d\n", jhalt);
 	    UNPROTECT(nprot);

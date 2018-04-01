@@ -6,7 +6,8 @@
   the data into \code{k} clusters.
 }
 \usage{
-clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
+clara(x, k, metric = c("euclidean", "manhattan", "jaccard"),
+      stand = FALSE, samples = 5,
       sampsize = min(n, 40 + 2 * k), trace = 0, medoids.x = TRUE,
       keep.data = medoids.x, rngR = FALSE, pamLike = FALSE, correct.d = TRUE)
 }
@@ -21,7 +22,9 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
   \item{metric}{
     character string specifying the metric to be used for calculating
     dissimilarities between observations.
-    The currently available options are "euclidean" and "manhattan".
+    The currently available options are "euclidean", "manhattan", and
+    "jaccard".
+
     Euclidean distances are root sum-of-squares of differences, and
     manhattan distances are the sum of absolute differences.
   }
@@ -31,14 +34,17 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
     variable's mean value and dividing by the variable's mean absolute
     deviation.
   }
-  \item{samples}{integer, number of samples to be drawn from the
-    dataset.  The default, \code{5}, is rather small for historical (and
-    now back compatibility) reasons and we recommend to set
-    \code{samples} an order of magnitude larger.
+  \item{samples}{integer, say \eqn{N}, the number of samples to be drawn from the
+    dataset.  The default, \code{N = 5}, is rather small for historical (and
+    now back compatibility) reasons and we \emph{recommend to set
+    \code{samples} an order of magnitude larger}.
   }
-  \item{sampsize}{integer, number of observations in each
-    sample. \code{sampsize} should be higher than the number of clusters
-    (\code{k}) and at most the number of observations (n = \code{nrow(x)}).}
+  \item{sampsize}{integer, say \eqn{j}, the number of observations in each
+    sample.  \code{sampsize} should be higher than the number of clusters
+    (\code{k}) and at most the number of observations (n =
+    \code{nrow(x)}).  While computational effort is proportional to \eqn{j^2},
+    see note below, it may still be advisable to set
+    \eqn{j = }\code{sampsize} to a \emph{larger} value than the (historical) default.}
   \item{trace}{integer indicating a \emph{trace level} for diagnostic
     output during the algorithm.}
   \item{medoids.x}{logical indicating if the medoids should be
@@ -130,6 +136,7 @@ clara(x, k, metric = "euclidean", stand = FALSE, samples = 5,
 }
 \author{
   Kaufman and Rousseeuw (see \code{\link{agnes}}), originally.
+  Metric \code{"jaccard"}: Kamil Kozlowski and Kamil Jadeszko (from \url{ownedoutcomes.com}).
   All arguments from \code{trace} on, and most \R documentation and all
   tests by Martin Maechler.
 }
@@ -177,6 +184,6 @@ if(length(iDoubt)) { # (not for all seeds)
   dimnames(tabD) <- list(cluster = paste(1:nCl), obs = format(iDoubt))
   t(tabD) # how many times in which clusters
 }
+}% end{examples}
 
-}
 \keyword{cluster}

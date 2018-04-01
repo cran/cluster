@@ -6,7 +6,8 @@
   medoids}, a more robust version of K-means.
 }
 \usage{
-pam(x, k, diss = inherits(x, "dist"), metric = "euclidean",
+pam(x, k, diss = inherits(x, "dist"),
+    metric = c("euclidean", "manhattan"), %% FIXME: add "jaccard"
     medoids = NULL, stand = FALSE, cluster.only = FALSE,
     do.swap = TRUE,
     keep.diss = !diss && !cluster.only && n < 100,

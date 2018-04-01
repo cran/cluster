@@ -67,9 +67,11 @@ variables.
   observation.
 }
 \note{
-  In \pkg{cluster} versions before 2.0.6, the algorithm failed in the
-  boundary case of one variable, i.e., \code{ncol(x) == 1}, and could be
-  affected by integer overflow when the
+  In \pkg{cluster} versions before 2.0.6, the algorithm entered an
+  infinite loop in the boundary case of one variable, i.e.,
+  \code{ncol(x) == 1}, which currently signals an error (because the
+  algorithm now in C, haes not correctly taken account of this special case).
+  %% FIXME ("patches are welcome")
 }
 \seealso{
   \code{\link{agnes}} for background and references;
@@ -95,4 +97,3 @@ try( mona(ani.non2) ) ## error: all must be binary
 try( mona(ani.idNA) ) ## error:  ditto
 }
 \keyword{cluster}
-

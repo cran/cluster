@@ -32,7 +32,7 @@ void cl_clara(int *n,  /* = number of objects */
 	      int *mdata,	/*= {0,1}; 1: min(x) is missing value (NA);  0: no NA */
 	      double *valmd,/*[j]= missing value code (instead of NA) for x[,j]*/
 	      int *jtmd,	/* [j]= {-1,1};	 -1: x[,j] has NA; 1: no NAs in x[,j] */
-	      int *diss_kind,/*= {1,2};  1 : euclidean;  2 : manhattan*/
+	      DISS_KIND *diss_kind, // = {EUCLIDEAN, MANHATTAN, JACCARD}
 	      int/*logical*/ *rng_R,/*= {0,1};  0 : use clara's internal weak RNG;
 				     *	        1 : use R's RNG (and seed) */
 	      int/*logical*/ *pam_like,/* if (1), we do "swap()" as in pam(), otherwise
@@ -253,7 +253,7 @@ void cl_clara(int *n,  /* = number of objects */
 
 	selec(*kk, *n, *jpp, *diss_kind, &zb, *nsam, has_NA, jtmd, valmd,
 	      *trace_lev, nrepr, nsel, dys, x, nr, &nafs, ttd, radus, ratt,
-	      ntmp1, ntmp2, ntmp3, ntmp4, ntmp5, ntmp6, tmp1, tmp2);
+	      ntmp1, ntmp2, ntmp3, ntmp4, ntmp5, ntmp6, tmp1, tmp2, *correct_d);
 
 	if (nafs) { /* couldn't assign some observation (to a cluster)
 		     * because of too many NA s */
@@ -332,12 +332,14 @@ void cl_clara(int *n,  /* = number of objects */
 #undef ntmp6
 
 
+
+/**
+ * Compute Dissimilarities for the selected sub-sample ---> dys[,]
+ */
 void dysta2(int nsam, int jpp, int *nsel,
-	    double *x, int n, double *dys, int diss_kind,
+	    double *x, int n, double *dys, DISS_KIND diss_kind,
 	    int *jtmd, double *valmd, Rboolean has_NA, Rboolean *toomany_NA)
 {
-/* Compute Dissimilarities for the selected sub-sample	---> dys[,] */
-
     int nlk = 0;
     dys[0] = 0.;/* very first index; *is* used because ind_2(i,i) |-> 0 ! */
     for (int l = 1; l < nsam; ++l) {
@@ -351,7 +353,7 @@ void dysta2(int nsam, int jpp, int *nsel,
 		error(_("C level dysta2(): nsel[%s= %d] = %d is outside 0..n, n=%d"),
 		      "k", k, ksel, n);
 	    ++nlk;
-	    int npres = 0, j, lj, kj;
+	    int npres = 0, j, lj, kj, N_ones = 0;
 	    double clk = 0.;
 	    for (j = 0, lj = lsel-1, kj = ksel-1; j < jpp;
 		 ++j, lj += n, kj += n) {
@@ -363,9 +365,15 @@ void dysta2(int nsam, int jpp, int *nsel,
 		    }
 		}
 		++npres;
-		if (diss_kind == 1)
+		if (diss_kind == EUCLIDEAN)
 		    clk += (x[lj] - x[kj]) * (x[lj] - x[kj]);
-		else
+		else if (diss_kind == JACCARD) {
+		    if( x[lj] > 0.9 && x[kj] > 0.9) { // both "are 1" - increment numerator
+			clk++ ; N_ones++ ;
+		    } else if( x[lj] > 0.9 || x[kj] > 0.9)// any is 1 - increment N_ones
+			N_ones++ ;
+		}
+		else // (diss_kind == MANHATTAN)
 		    clk += fabs(x[lj] - x[kj]);
 	    }
 	    if (npres == 0) {/* cannot compute d(.,.) because of too many NA */
@@ -373,7 +381,10 @@ void dysta2(int nsam, int jpp, int *nsel,
 		dys[nlk] = -1.;
 	    } else {
 		double d1 = clk * (jpp / (double) npres);
-		dys[nlk] = (diss_kind == 1) ? sqrt(d1) : d1 ;
+		dys[nlk] =
+		    (diss_kind == EUCLIDEAN) ? sqrt(d1)
+		    :(diss_kind ==  JACCARD) ? 1 - clk / (double) N_ones
+		    :/* diss_kind == MANHATTAN */ d1 ;
 	    }
 	} /* for( k ) */
     } /* for( l ) */
@@ -555,7 +566,7 @@ L60:
 } /* End of bswap2() -------------------------------------------------- */
 
 /* selec() : called once [per random sample] from clara() */
-void selec(int kk, int n, int jpp, int diss_kind,
+void selec(int kk, int n, int jpp, DISS_KIND diss_kind,
 	   double *zb, int nsam, Rboolean has_NA, int *jtmd, double *valmd,
 	   int trace_lev,
 	   int *nrepr, int *nsel, double *dys, double *x, int *nr,
@@ -563,14 +574,14 @@ void selec(int kk, int n, int jpp, int diss_kind,
 	   double *ttd, double *radus, double *ratt,
 	   // [i]tmp* for clara(), i.e. not used later!
 	   int *nrnew, int *nsnew, int *npnew, int *ns, int *np, int *new,
-	   double *ttnew, double *rdnew)
+	   double *ttnew, double *rdnew, int correct_d)
 {
 
     /* Local variables */
-    int j, jk, jj, jp, jnew, ka, kb, jkabc = -1/* -Wall */;
-    int newf, nrjk,  npab, nstrt, na, nb, npa, npb, njk, nobs;
+    int j, jk, i, jp, jnew, jkabc = -1/* -Wall */;
+    int newf, nr_k,  na, nb;
 
-    double pp = (double) (jpp), tra;
+    double pp = (double) (jpp);
 
 /* Parameter adjustments */
     --nsel;    --nrepr;
@@ -604,69 +615,100 @@ void selec(int kk, int n, int jpp, int diss_kind,
     *zb = 0.;
     newf = 0;
 
-    for(jj = 1; jj <= n; jj++) {
+    for(i = 1; i <= n; i++) {
 	double dsum, dnull = -9./* -Wall */;
 	if (!has_NA) {
 	    for (jk = 1; jk <= kk; ++jk) {
 		dsum = 0.;
-		nrjk = nr[jk];
-		if (nrjk != jj) {
+		nr_k = nr[jk];
+		if (nr_k != i) {
+		    int N_ones = 0;
+		    double tra = 0.; // init only for JACCARD
 		    for (jp = 0; jp < jpp; ++jp) {
-			na = (nrjk - 1) + jp * n;
-			nb = (jj   - 1) + jp * n;
-			tra = fabs(x[na] - x[nb]);
-			if (diss_kind == 1)
-			    tra *= tra;
-			dsum += tra;
+			na = (nr_k - 1) + jp * n;
+			nb = (i    - 1) + jp * n;
+			if (diss_kind == JACCARD) {
+			    if(x[na] > 0.9 && x[nb] > 0.9) {
+				// both "are 1" - increment numerator (and denom.)
+				tra += 1; N_ones ++;
+			    } else if( x[na] > 0.9 || x[nb] > 0.9) {
+				// any is 1 - increment denominator N_ones
+				N_ones ++;
+			    }
+			} else { // Euclidean or Manhattan
+			    tra = fabs(x[na] - x[nb]);
+			    if (diss_kind == EUCLIDEAN)
+				tra *= tra;
+			    dsum += tra;
+			}
 		    }
+		    if (diss_kind == JACCARD)
+			dsum = 1 - tra / (double)N_ones;
+
 		    if (jk != 1 && dsum >= dnull)
 			continue /* next jk */;
 		}
+		// new best: dsum < "previous" dnull
 		dnull = dsum;
 		jkabc = jk;
 	    }
 	}
-	else { /* _has_ missing data */
-	    Rboolean pres = FALSE;
+	else { // _has_ missing data
+	    Rboolean first = TRUE;
 	    for (jk = 1; jk <= kk; ++jk) {
 		dsum = 0.;
-		nrjk = nr[jk];
-		if (nrjk != jj) {
-		    nobs = 0;
+		nr_k = nr[jk];
+		if (nr_k != i) {
+		    int nobs = 0, N_ones = 0;
+		    double tra = 0.; // init only for JACCARD
 		    for (jp = 0; jp < jpp; ++jp) {
-			na = (nrjk - 1) + jp * n;
-			nb = (jj   - 1) + jp * n;
+			na = (nr_k - 1) + jp * n;
+			nb = (i    - 1) + jp * n;
 			if (jtmd[jp] < 0) {
 			    if (x[na] == valmd[jp] || x[nb] == valmd[jp])
 				continue /* next jp */;
 			}
 			nobs++;
-			tra = fabs(x[na] - x[nb]);
-			if (diss_kind == 1)
-			    tra *= tra;
-			dsum += tra;
+			if (diss_kind == JACCARD) {
+			    if(x[na] > 0.9 && x[nb] > 0.9) {
+				// both "are 1" - increment numerator (and denom.)
+				tra += 1; N_ones ++;
+			    } else if( x[na] > 0.9 || x[nb] > 0.9) {
+				// any is 1 - increment denominator N_ones
+				N_ones ++;
+			    }
+			} else { // Euclidean or Manhattan
+			    tra = fabs(x[na] - x[nb]);
+			    if (diss_kind == EUCLIDEAN)
+				tra *= tra;
+			    dsum += tra;
+			}
 		    }
 		    if (nobs == 0) /* all pairs partially missing */
 			continue /* next jk */;
-		    dsum *= (nobs / pp);
-		    /*  MM:  ^^^^^^^^^ fishy; rather * (pp/nobs) as in dysta2*/
+		    if (diss_kind == JACCARD)
+			dsum = 1 - tra / (double)N_ones;
+		    if(correct_d) // correct -- only since 2017-06
+			dsum *= (pp / nobs);
+		    else
+			dsum *= (nobs / pp);
 		}
-		if (!pres)
-		    pres = TRUE;
+		if (first)
+		    first = FALSE;
 		else if (dnull <= dsum)
 		    continue /* next jk */;
-		/* here : pres was FALSE {i.e. 1st time} or
+		/* here : first was TRUE {i.e. 1st time} or
 		 *	  dnull > dsum	 {i.e. new best} */
 		dnull = dsum;
 		jkabc = jk;
 	    }/* for(jk ..) */
 
-	    if (!pres) { /* found nothing */
+	    if (first) { /* found nothing */
 		*nafs = TRUE; return;
 	    }
 	} /* else: has_NA */
 
-	if (diss_kind == 1)
+	if (diss_kind == EUCLIDEAN)
 	    dnull = sqrt(dnull);
 
 	*zb += dnull;
@@ -679,7 +721,7 @@ void selec(int kk, int n, int jpp, int diss_kind,
 	    if (newf != 0) {
 		for (jnew = 1; jnew <= newf; ++jnew) {
 		    if (jkabc == new[jnew])
-			goto L90;/* next jj */
+			goto L90;/* next i */
 		}
 	    }
 	    ++newf;
@@ -687,14 +729,14 @@ void selec(int kk, int n, int jpp, int diss_kind,
 	}
     L90:
 	;
-    } /* for( jj = 1..n ) */
+    } /* for( i = 1..n ) */
 
 
 /*     a permutation is carried out on vectors nr,ns,np,ttd,radus
      using the information in vector new. */
 
     for (jk = 1; jk <= kk; ++jk) {
-	njk = new[jk];
+	int njk = new[jk];
 	nrnew[jk] = nr[njk];
 	nsnew[jk] = ns[njk];
 	npnew[jk] = np[njk];
@@ -709,8 +751,7 @@ void selec(int kk, int n, int jpp, int diss_kind,
 	radus[jk] = rdnew[jk];
     }
     for (j = 1; j <= kk; ++j) {
-	double rns = (double) ns[j];
-	ttd[j] /= rns;
+	ttd[j] /= (double) ns[j];
     }
 
     if (kk > 1) {
@@ -718,17 +759,17 @@ void selec(int kk, int n, int jpp, int diss_kind,
 	/* computation of ratt[ka] := minimal distance of medoid ka to any
 	   other medoid for comparison with the radius of cluster ka. */
 
-	for (ka = 1; ka <= kk; ++ka) {
-	    nstrt = 0;
-	    npa = np[ka];
-	    for (kb = 1; kb <= kk; ++kb) {
+	for (int ka = 1; ka <= kk; ++ka) {
+	    Rboolean first = TRUE;
+	    int npa = np[ka];
+	    for (int kb = 1; kb <= kk; ++kb) {
 		if (kb == ka)
 		    continue /* next kb */;
 
-		npb = np[kb];
-		npab = ind_2(npa, npb);
-		if (nstrt == 0)
-		    nstrt = 1;
+		int npb = np[kb],
+		    npab = ind_2(npa, npb);
+		if (first)
+		    first = FALSE;
 		else if (dys[npab] >= ratt[ka])
 		    continue /* next kb */;
 
@@ -743,40 +784,42 @@ void selec(int kk, int n, int jpp, int diss_kind,
     return;
 } /* End selec() -----------------------------------------------------------*/
 
-void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
+void resul(int kk, int n, int jpp, DISS_KIND diss_kind, Rboolean has_NA,
 	   int *jtmd, double *valmd, double *x, int *nrx, int *mtt, int correct_d)
 {
     /* correct_d : option for dist.computation:
               if (0), use the "fishy" formula to update distances in the NA-case,
  	      if (1), use a dysta2()-compatible formula */
 
+// __FIXME__  "Jaccard" not yet supported ! _______
+
     /* Local variables */
-    int j, jk, jj, ka, na, nb, njnb, nrjk, nobs, jksky = -1/* Wall */;
-    double pp = (double) (jpp), dsum, tra, dnull = -9./* Wall */;
+    int j, jk, i, ka, na, nb, njnb, nrjk, jksky = -1/* Wall */;
+    double pp = (double) (jpp), dsum, dnull = -9./* Wall */;
 
 /* clustering vector is incorporated into x, and ``printed''. */
 
-    for(jj = 0; jj < n; jj++) {
+    for(i = 0; i < n; i++) {
 
 	for (jk = 0; jk < kk; ++jk) {
-	    if (nrx[jk] == jj + 1)/* 1-indexing */
-		goto L220; /* continue next jj (i.e., outer loop) */
+	    if (nrx[jk] == i + 1)/* 1-indexing */
+		goto L220; /* continue next i (i.e., outer loop) */
 	}
-	njnb = jj;
+	njnb = i;
 
 	if (!has_NA) {
 	    for (jk = 0; jk < kk; ++jk) {
 		dsum = 0.;
 		nrjk = (nrx[jk] - 1);
 		for (j = 0; j < jpp; ++j) {
-		    tra = fabs(x[nrjk + j * n] - x[njnb + j * n]);
-		    if (diss_kind == 1)
+		    double tra = fabs(x[nrjk + j * n] - x[njnb + j * n]);
+		    if (diss_kind == EUCLIDEAN)
 			tra *= tra;
 		    dsum += tra;
 		}
-		if (diss_kind == 1)
+		if (diss_kind == EUCLIDEAN)
 		    dsum = sqrt(dsum);
-		if (jk == 0 || dnull > dsum) {
+		if (jk == 0 || dnull > dsum) { // have new best
 		    dnull = dsum;
 		    jksky = jk;
 		}
@@ -786,7 +829,7 @@ void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
 	    for (jk = 0; jk < kk; ++jk) {
 		dsum = 0.;
 		nrjk = (nrx[jk] - 1);
-		nobs = 0;
+		int nobs = 0;
 		for (j = 0; j < jpp; ++j) {
 		    na = nrjk + j * n;
 		    nb = njnb + j * n;
@@ -795,19 +838,19 @@ void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
 			    continue /* next j */;
 		    }
 		    nobs++;
-		    tra = fabs(x[na] - x[nb]);
-		    if (diss_kind == 1)
+		    double tra = fabs(x[na] - x[nb]);
+		    if (diss_kind == EUCLIDEAN)
 			tra *= tra;
 		    dsum += tra;
 		}
-		if (diss_kind == 1)
+		if (diss_kind == EUCLIDEAN)
 		    dsum = sqrt(dsum);
 		if(correct_d) // correct -- only since 2016-04
 		    dsum *= (pp / nobs);
 		else
 		    dsum *= (nobs / pp); // MM: "fishy" (had note since r4321, 2007-05-01 !)
 
-		if (jk == 0 || dnull > dsum) {
+		if (jk == 0 || dnull > dsum) { // have new best
 		    dnull = dsum;
 		    jksky = jk;
 		}
@@ -817,8 +860,7 @@ void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
 
     L220:
 	;
-    } /* for(jj = 0; jj < n ..)*/
-
+    } /* for(i = 0; i < n ..)*/
 
     for (jk = 0; jk < kk; ++jk)
 	x[nrx[jk] - 1] = (double) jk + 1;/* 1-indexing */
@@ -826,8 +868,8 @@ void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
     /* mtt[k] := size(k-th cluster) : */
     for (ka = 0; ka < kk; ++ka) {
 	mtt[ka] = 0;
-	for(j = 0; j < n; j++) {
-	    if (((int) x[j]) == ka + 1)/* 1-indexing */
+	for(i = 0; i < n; i++) {
+	    if (((int) x[i]) == ka + 1)/* 1-indexing */
 		++mtt[ka];
 	}
     }

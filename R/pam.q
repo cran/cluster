@@ -1,7 +1,8 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q 7331 2017-03-10 08:04:00Z maechler $
+#### --- $Id: pam.q 7509 2018-03-29 14:44:04Z maechler $
 pam <- function(x, k, diss = inherits(x, "dist"),
-		metric = "euclidean", medoids = NULL,
+		metric = c("euclidean", "manhattan"), ## FIXME: add "jaccard"
+                medoids = NULL,
                 stand = FALSE, cluster.only = FALSE, do.swap = TRUE,
                 keep.diss = !diss && !cluster.only && n < 100,
                 keep.data = !diss && !cluster.only,
@@ -50,7 +51,8 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 			  n, nMax))
 	if(stand) x2 <- scale(x2, scale = apply(x2, 2, meanabsdev))
 	## put info about metric, size and NAs in arguments for the Fortran call
-	ndyst <- if(metric == "manhattan") 2 else 1
+	metric <- match.arg(metric)
+	ndyst <- c("euclidean" = 1L, "manhattan" = 2L)[[metric]]
 	jp <- ncol(x2)
 	if((mdata <- any(inax <- is.na(x2)))) { # TRUE if x[] has any NAs
 	    jtmd <- integer(jp)
@@ -86,7 +88,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
                  ## only needed if(!diss) [ <=> if(do_diss) ] :
                  if(mdata) rep(valmisdat, jp) else double(1), # valmd
                  if(mdata) jtmd else integer(jp),	      # jtmd
-                 as.integer(ndyst))	# dist_kind
+                 ndyst)	                                      # dist_kind
 
     ## Error if have NA's in diss:
     if(!diss && is.integer(res))

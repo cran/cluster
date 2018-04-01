@@ -11,6 +11,13 @@
 #define _(String) (String)
 #endif
 
+// These codes must match those in ../R/clara.q  <==>  'diss_kind'
+typedef enum {
+    EUCLIDEAN = 1,
+    MANHATTAN = 2,
+    JACCARD = 3
+} DISS_KIND;
+
 /* --------- ./clara.c ------------------*/
 
 double randm(int *nrun);
@@ -28,7 +35,7 @@ void cl_clara(int *n,  /* = number of objects */
 	      int *mdata,	/*= {0,1}; 1: min(x) is missing value (NA);  0: no NA */
 	      double *valmd,/*[j]= missing value code (instead of NA) for x[,j]*/
 	      int *jtmd,	/* [j]= {-1,1};	 -1: x[,j] has NA; 1: no NAs in x[,j] */
-	      int *diss_kind,/* = {1,2};  1 : euclidean;  2 : manhattan*/
+	      DISS_KIND *diss_kind, // = {EUCLIDEAN, MANHATTAN, JACCARD}
 	      int/*logical*/ *rng_R,/*= {0,1};  0 : use clara's internal weak RNG;
 				     *	        1 : use R's RNG (and seed) */
 	      int/*logical*/ *pam_like,/* if (1), we do "swap()" as in pam(), otherwise
@@ -51,7 +58,7 @@ void cl_clara(int *n,  /* = number of objects */
     );
 
 void dysta2(int nsam, int jpp, int *nsel,
-	    double *x, int n, double *dys, int diss_kind,
+	    double *x, int n, double *dys, DISS_KIND diss_kind,
 	    int *jtmd, double *valmd, Rboolean has_NA, Rboolean *toomany_NA);
 
 
@@ -61,16 +68,16 @@ void bswap2(int kk, int nsam, double s, const double dys[],
 	    double *sky, int *nrepr,
 	    double *dysma, double *dysmb, double *beter);
 
-void selec(int kk, int n, int jpp, int diss_kind,
+void selec(int kk, int n, int jpp, DISS_KIND diss_kind,
 	   double *zb, int nsam, Rboolean has_NA, int *jtmd, double *valmd,
 	   int trace_lev,
 	   int *nrepr, int *nsel, double *dys, double *x, int *nr,
 	   Rboolean *nafs, double *ttd, double *radus, double *ratt,
 	   int *nrnew, int *nsnew, int *npnew, int *ns, int *np, int *new,
-	   double *ttnew, double *rdnew);
+	   double *ttnew, double *rdnew, int correct_d);
 
-void resul(int kk, int n, int jpp, int diss_kind, Rboolean has_NA,
-	   int *jtmd, double *valmd, double *x, int *nrx, int *mtt, int flag);
+void resul(int kk, int n, int jpp, DISS_KIND diss_kind, Rboolean has_NA,
+	   int *jtmd, double *valmd, double *x, int *nrx, int *mtt, int correct_d);
 
 void black(int kk, int jpp, int nsam, int *nbest,
 	   double *dys, double s, double *x,

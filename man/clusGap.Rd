@@ -207,7 +207,7 @@ pam1 <- function(x,k) list(cluster = pam(x,k, cluster.only=TRUE))
 hclusCut <- function(x, k, d.meth = "euclidean", ...)
    list(cluster = cutree(hclust(dist(x, method=d.meth), ...), k=k))
 
-## You could set it    doExtras <- TRUE   # or  FALSE
+## You can manually set it before running this :    doExtras <- TRUE  # or  FALSE
 if(!(exists("doExtras") && is.logical(doExtras)))
   doExtras <- cluster:::doExtras()
 

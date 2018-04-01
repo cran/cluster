@@ -101,7 +101,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
 	    x <- scale(x, center = FALSE, scale = sx)
 	}
 	jdat <- 2L
-	ndyst <- if(metric == "manhattan") 2L else 1L
+	ndyst <- if(metric == "manhattan") 2L else 1L # == diss_kind
     }
     else { ## mixed case or explicit "gower"
 	if(!missing(metric) && metric != "gower" && !all.I)
@@ -115,7 +115,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
 	    sx[sx == 0] <- 1
 	x <- scale(x, center = colmin, scale = sx)
 	jdat <- 1L
-	ndyst <- 0L
+	ndyst <- 0L ## diss_kind = "mixed | gower"
         ## weights only used in this "gower" case
         if(length(weights) == 1)
             weights <- rep.int(weights, p)
@@ -139,7 +139,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     }
     ## call Fortran routine
     storage.mode(x) <- "double"
-    disv <- .Fortran(cl_daisy,
+    disv <- .Fortran(cl_daisy, ## -> ../src/daisy.f
 		     n,
 		     p,
 		     x,

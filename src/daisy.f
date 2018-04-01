@@ -24,6 +24,11 @@ c              = 4 (O) for an Ordinal  variable
 c              = 5 (I) for an Interval variable (additive)
 c              = 6 (T) for a  raTio    variable (log transformed)
 
+c     ndyst is the "kind of dissimilarity/distance"  aka 'diss_type'
+c              = 0  "mixed" / gower == here treated _identically_ to "manhattan" (L1) !
+c              = 1  "euclidean" (= L2 )
+c              = 2  "manhattan" (= L1 )
+
 c       vector jtmd is only read if there are missing values : if(mdata)
 c       jtmd(j) =  0 if variable j is binary
 c               = -1 if variable j is not binary and has missing values

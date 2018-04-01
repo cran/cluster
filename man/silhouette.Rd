@@ -112,13 +112,13 @@ sortSilhouette(object, \dots)
   \describe{
     \item{\code{si.summary}:}{numerical \code{\link{summary}} of the
       individual silhouette widths \eqn{s(i)}.}
-    \item{\code{sclus.avg.widths}:}{numeric (rank 1) array of clusterwise
+    \item{\code{clus.avg.widths}:}{numeric (rank 1) array of clusterwise
       \emph{means} of silhouette widths where \code{mean = FUN} is used.}
-    \item{\code{savg.width}:}{the total mean \code{FUN(s)} where
+    \item{\code{avg.width}:}{the total mean \code{FUN(s)} where
       \code{s} are the individual silhouette widths.}
-    \item{\code{sclus.sizes}:}{\code{\link{table}} of the \eqn{k} cluster sizes.}
-    \item{\code{scall}:}{if available, the call creating \code{sil}.}
-    \item{\code{sOrdered}:}{logical identical to \code{attr(sil, "Ordered")},
+    \item{\code{clus.sizes}:}{\code{\link{table}} of the \eqn{k} cluster sizes.}
+    \item{\code{call}:}{if available, the \code{\link{call}} creating \code{sil}.}
+    \item{\code{Ordered}:}{logical identical to \code{attr(sil, "Ordered")},
       see below.}
   }
 
@@ -170,15 +170,14 @@ par(op)
 ## clara(): standard silhouette is just for the best random subset
 data(xclara)
 set.seed(7)
-str(xc1k <- xclara[sample(nrow(xclara), size = 1000) ,])
+str(xc1k <- xclara[ sample(nrow(xclara), size = 1000) ,]) # rownames == indices
 cl3 <- clara(xc1k, 3)
 plot(silhouette(cl3))# only of the "best" subset of 46
 ## The full silhouette: internally needs large (36 MB) dist object:
 sf <- silhouette(cl3, full = TRUE) ## this is the same as
 s.full <- silhouette(cl3$clustering, daisy(xc1k))
-if(paste(R.version$major, R.version$minor, sep=".") >= "2.3.0")
-   stopifnot(all.equal(sf, s.full, check.attributes = FALSE, tolerance = 0))
-## color dependent on original "3 groups of each 1000":
+stopifnot(all.equal(sf, s.full, check.attributes = FALSE, tolerance = 0))
+## color dependent on original "3 groups of each 1000": % __FIXME ??__
 plot(sf, col = 2+ as.integer(names(cl3$clustering) ) \%/\% 1000,
      main ="plot(silhouette(clara(.), full = TRUE))")
 
