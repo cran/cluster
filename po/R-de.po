@@ -4,10 +4,10 @@
 # Detlef Steuer <detlef.steuer@hsu-hh.de>, 2013.
 msgid ""
 msgstr ""
-"Project-Id-Version: R 3.2.1\n"
+"Project-Id-Version: R 3.5.0 cluster 2.0.6\n"
 "Report-Msgid-Bugs-To: bugs.r-project.org\n"
-"POT-Creation-Date: 2016-04-15 11:27\n"
-"PO-Revision-Date: 2014-03-28 10:16+0100\n"
+"POT-Creation-Date: 2018-04-06 23:26\n"
+"PO-Revision-Date: 2018-04-06 13:19+0200\n"
 "Last-Translator: Detlef Steuer <steuer@hsu-hh.de>\n"
 "Language-Team: R Core Team <r-core@r-project.org\n"
 "Language: de\n"
@@ -60,16 +60,21 @@ msgstr "'samples' sollte mindestens 1 sein"
 msgid "when 'medoids.x' is FALSE, 'keep.data' must be too"
 msgstr "wenn 'medoids.x' FALSE ist, dann muss es auch 'keep.data' sein"
 
-msgid ""
-"distance computations with NAs: using correct instead of pre-2016 wrong "
-"formula.\n"
-"  Use  'correct.d=FALSE'  to get previous results or  'correct.d=TRUE'  to "
-"suppress this warning."
-msgstr ""
-
 #, fuzzy
+msgid ""
+"Distance computations with NAs: using correct instead of pre-2016 wrong "
+"formula.\n"
+"Use  'correct.d=FALSE'  to get previous results or set 'correct.d=TRUE' "
+"explicitly\n"
+"to suppress this warning."
+msgstr ""
+"Abstandsberechnungen mit NAs: nutze korrekte anstelle der falschen Formel, "
+"wie vor 2016.\n"
+" Nutze 'correct.d=FALSE', um die alten, falschen Ergebnisse zu bekommen oder "
+"'correct.d=TRUE', um diese Warnung zu unterdrücken."
+
 msgid "invalid 'correct.d'"
-msgstr "unzulässiges 'twins'-Objekt"
+msgstr "unzulässiges 'correct.d'"
 
 msgid ""
 "Each of the random samples contains objects between which no distance can be "
@@ -90,6 +95,13 @@ msgstr "unzulässiger 'jstop' aus .C(cl_clara,.):"
 
 msgid "'B' has to be a positive integer"
 msgstr "'B' muss eine positive ganze Zahl sein"
+
+#, fuzzy
+msgid "invalid 'spaceH0':"
+msgstr "unzulässiger Typ"
+
+msgid "index has to be a function or a list of function"
+msgstr ""
 
 msgid "invalid 'twins' object"
 msgstr "unzulässiges 'twins'-Objekt"
@@ -192,8 +204,13 @@ msgstr "'n' muss >= 2 sein"
 msgid "x must be a matrix or data frame."
 msgstr "x muss eine Matrix oder Dataframe sein"
 
-msgid "All variables must be binary (e.g., factor with 2 levels)."
+#, fuzzy
+msgid ""
+"All variables must be binary (e.g., a factor with 2 levels, both present)."
 msgstr "Alle Variablen müssen binär sein (z.B. Faktor mit 2 Stufen)."
+
+msgid "mona() needs at least p >= 2 variables (in current implementation)"
+msgstr ""
 
 msgid "No clustering performed, an object was found with all values missing."
 msgstr ""
@@ -221,6 +238,9 @@ msgstr ""
 msgid "Cannot keep data when 'x' is a dissimilarity!"
 msgstr ""
 "Kann Datenmatrix 'data' nicht beibehalten wenn 'x' eine 'dissimilarity' ist!"
+
+msgid "have %d observations, but not more than %d are allowed"
+msgstr ""
 
 msgid "Number of clusters 'k' must be in {1,2, .., n-1}; hence n >= 2"
 msgstr "Anzahl der Cluster 'k' muss auch {1, 2, ..., n-1} sein; deshalb n >= 2"
@@ -376,9 +396,6 @@ msgstr[1] "setze 'logical' Variablen %s auf Typ 'asymm'"
 
 #~ msgid "has constant columns"
 #~ msgstr "hat konstante Spalten"
-
-#~ msgid "invalid type"
-#~ msgstr "unzulässiger Typ"
 
 #~ msgid "possibly not converged in"
 #~ msgstr "evtl nicht konvergiert in "

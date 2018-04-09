@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cluster 2.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-02 14:29+0100\n"
+"POT-Creation-Date: 2018-04-06 23:26+0200\n"
 "PO-Revision-Date: 2015-02-02 12:30+0100\n"
 "Last-Translator: Detlef Steuer <steuer@hsu-hh.de>\n"
 "Language-Team: R Core <r-core@r-project.org>\n"
@@ -16,28 +16,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
 
-#: clara.c:96
+#: clara.c:101
 #, c-format
 msgid "C level clara(): random k=%d > n **\n"
 msgstr "C Level clara(): random k=%d > n **\n"
 
-#: clara.c:307
+#: clara.c:312
 #, c-format
 msgid ""
 "clara()'s C level dysta2(nsam=%d, p=%d, nbest=%d, n=%d) gave 'toomany_NA'"
 msgstr ""
 "clara()'s C Level dysta2(nsam=%d, p=%d, nbest=%d, n=%d) ergab 'toomany_NA'"
 
-#: clara.c:341 clara.c:346
+#: clara.c:348 clara.c:353
 #, c-format
 msgid "C level dysta2(): nsel[%s= %d] = %d is outside 0..n, n=%d"
 msgstr "C Level dysta2(): nsel[%s= %d] = %d ist außerhalb von 0..n, n=%d"
 
-#: pam.c:154
+#: pam.c:161
 msgid "Invalid 'medoids'"
 msgstr "unzulässige 'medoids'"
 
-#: pam.c:646
+#: pam.c:654
 #, c-format
 msgid "pam(): Bug in C level cstat(), k=%d: ntt=0"
 msgstr "pam(): Bug in C Level cstat(), k=%d: ntt=0"

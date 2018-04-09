@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cluster 1.15.1\n"
 "Report-Msgid-Bugs-To: bugs.r-project.org\n"
-"POT-Creation-Date: 2015-01-26 14:31\n"
+"POT-Creation-Date: 2018-04-06 23:26\n"
 "PO-Revision-Date: 2014-03-27 17:34+0100\n"
 "Last-Translator: Łukasz Daniel <lukasz.daniel@gmail.com>\n"
 "Language-Team: Łukasz Daniel <lukasz.daniel@gmail.com>\n"
@@ -109,6 +109,20 @@ msgstr "'samples' powinno wynosić przynajmniej 1"
 msgid "when 'medoids.x' is FALSE, 'keep.data' must be too"
 msgstr "kiedy 'medoids.x' jest FALSE, 'keep.data' musi być również FALSE"
 
+msgid ""
+"Distance computations with NAs: using correct instead of pre-2016 wrong "
+"formula.\n"
+"Use  'correct.d=FALSE'  to get previous results or set 'correct.d=TRUE' "
+"explicitly\n"
+"to suppress this warning."
+msgstr ""
+
+# cluster/R/coef.R: 10
+# stop("invalid 'twins' object")
+#, fuzzy
+msgid "invalid 'correct.d'"
+msgstr "niepoprawny obiekt 'twins'"
+
 # cluster/R/clara.R: 96
 # stop("Each of the random samples contains objects between which no distance can be computed.")
 msgid ""
@@ -136,6 +150,13 @@ msgstr "niepoprawny 'jstop' z '.C(cl_clara,.)':"
 # stop("'B' has to be a positive integer")
 msgid "'B' has to be a positive integer"
 msgstr "'B' musi być dodatnią liczbą całkowitą"
+
+#, fuzzy
+msgid "invalid 'spaceH0':"
+msgstr "niepoprawny typ"
+
+msgid "index has to be a function or a list of function"
+msgstr ""
 
 # cluster/R/coef.R: 10
 # stop("invalid 'twins' object")
@@ -313,8 +334,13 @@ msgstr "argument 'x' musi być macierzą lub ramką danych."
 
 # cluster/R/mona.R: 10
 # stop("All variables must be binary (factor with 2 levels).")
-msgid "All variables must be binary (e.g., factor with 2 levels)."
+#, fuzzy
+msgid ""
+"All variables must be binary (e.g., a factor with 2 levels, both present)."
 msgstr "Wszystkie zmienne muszą być binarne (czynnik z dwoma poziomami)"
+
+msgid "mona() needs at least p >= 2 variables (in current implementation)"
+msgstr ""
 
 # cluster/R/mona.R: 40
 # stop("No clustering performed, an object was found with all values missing.")
@@ -348,6 +374,9 @@ msgstr ""
 "wartość."
 
 msgid "Cannot keep data when 'x' is a dissimilarity!"
+msgstr ""
+
+msgid "have %d observations, but not more than %d are allowed"
 msgstr ""
 
 # cluster/R/pam.R: 56
@@ -585,9 +614,6 @@ msgstr[2] "ustawianie zmiennych 'logical' %s na tym 'asymm'"
 
 #~ msgid "has constant columns"
 #~ msgstr "posiada stałe kolumny"
-
-#~ msgid "invalid type"
-#~ msgstr "niepoprawny typ"
 
 # cluster/R/ellipsoidhull.R: 42
 # warning(gettextf("algorithm possibly not converged in %d iterations", maxit))

@@ -1,6 +1,6 @@
 Package: cluster
-Version: 2.0.7
-Date: 2018-03-29
+Version: 2.0.7-1
+Date: 2018-04-06
 Priority: recommended
 Title: "Finding Groups in Data": Cluster Analysis Extended Rousseeuw et
         al.
@@ -31,7 +31,7 @@ ByteCompile: yes
 BuildResaveData: no
 License: GPL (>= 2)
 NeedsCompilation: yes
-Packaged: 2018-03-29 14:44:30 UTC; maechler
+Packaged: 2018-04-06 21:30:04 UTC; maechler
 Author: Martin Maechler [aut, cre],
   Peter Rousseeuw [aut] (Fortran original),
   Anja Struyf [aut] (S original),
@@ -42,4 +42,4 @@ Author: Martin Maechler [aut, cre],
   Juan Gonzalez [ctb],
   Kamil Kozlowski [ctb]
 Repository: CRAN
-Date/Publication: 2018-04-01 20:53:07 UTC
+Date/Publication: 2018-04-09 13:53:03 UTC
