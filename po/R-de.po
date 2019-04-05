@@ -1,13 +1,12 @@
 # Translation of src/library/Recommended/cluster/po/R-cluster.pot to German
-# Copyright (C) 2013-2015 The R Foundation
+# Copyright (C) 2013-2019 The R Foundation
 # This file is distributed under the same license as the R package.
-# Detlef Steuer <detlef.steuer@hsu-hh.de>, 2013.
 msgid ""
 msgstr ""
-"Project-Id-Version: R 3.5.0 cluster 2.0.6\n"
+"Project-Id-Version: R 3.6.0 cluster 2.0.8\n"
 "Report-Msgid-Bugs-To: bugs.r-project.org\n"
 "POT-Creation-Date: 2018-04-06 23:26\n"
-"PO-Revision-Date: 2018-04-06 13:19+0200\n"
+"PO-Revision-Date: 2019-04-02 13:23+0200\n"
 "Last-Translator: Detlef Steuer <steuer@hsu-hh.de>\n"
 "Language-Team: R Core Team <r-core@r-project.org\n"
 "Language: de\n"
@@ -60,7 +59,6 @@ msgstr "'samples' sollte mindestens 1 sein"
 msgid "when 'medoids.x' is FALSE, 'keep.data' must be too"
 msgstr "wenn 'medoids.x' FALSE ist, dann muss es auch 'keep.data' sein"
 
-#, fuzzy
 msgid ""
 "Distance computations with NAs: using correct instead of pre-2016 wrong "
 "formula.\n"
@@ -96,12 +94,11 @@ msgstr "unzulässiger 'jstop' aus .C(cl_clara,.):"
 msgid "'B' has to be a positive integer"
 msgstr "'B' muss eine positive ganze Zahl sein"
 
-#, fuzzy
 msgid "invalid 'spaceH0':"
-msgstr "unzulässiger Typ"
+msgstr "unzulässiger 'spaceH0':"
 
 msgid "index has to be a function or a list of function"
-msgstr ""
+msgstr "index muss eine Funktion oder eine Liste von Funktionen sein"
 
 msgid "invalid 'twins' object"
 msgstr "unzulässiges 'twins'-Objekt"
@@ -204,13 +201,12 @@ msgstr "'n' muss >= 2 sein"
 msgid "x must be a matrix or data frame."
 msgstr "x muss eine Matrix oder Dataframe sein"
 
-#, fuzzy
 msgid ""
 "All variables must be binary (e.g., a factor with 2 levels, both present)."
-msgstr "Alle Variablen müssen binär sein (z.B. Faktor mit 2 Stufen)."
+msgstr "Alle Variablen müssen binär sein (z.B. Faktor mit 2 vorhandenen Stufen)."
 
 msgid "mona() needs at least p >= 2 variables (in current implementation)"
-msgstr ""
+msgstr "mona() (in der aktuellen Implementierung) benötigt mindestens p >= 2 Variablen"
 
 msgid "No clustering performed, an object was found with all values missing."
 msgstr ""
@@ -240,7 +236,7 @@ msgstr ""
 "Kann Datenmatrix 'data' nicht beibehalten wenn 'x' eine 'dissimilarity' ist!"
 
 msgid "have %d observations, but not more than %d are allowed"
-msgstr ""
+msgstr "habe %d Beobachtungen, aber mehr als %d nicht erlaubt"
 
 msgid "Number of clusters 'k' must be in {1,2, .., n-1}; hence n >= 2"
 msgstr "Anzahl der Cluster 'k' muss auch {1, 2, ..., n-1} sein; deshalb n >= 2"

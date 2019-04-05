@@ -190,7 +190,7 @@ agnes(x, diss = inherits(x, "dist"), metric = "euclidean",
   Anja Struyf, Mia Hubert and Peter J. Rousseeuw (1996)
   Clustering in an Object-Oriented Environment.
   \emph{Journal of Statistical Software} \bold{1}.
-  \url{http://www.jstatsoft.org/v01/i04}
+  \doi{10.18637/jss.v001.i04}
 
   Struyf, A., Hubert, M. and Rousseeuw, P.J. (1997). Integrating
   Robust Clustering Techniques in S-PLUS,

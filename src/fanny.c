@@ -1,6 +1,6 @@
 /* FANNY : program for Fuzzy cluster ANalysis */
 
-/* was $Id: fanny.c 6869 2015-01-26 13:30:42Z maechler $
+/* was $Id: fanny.c 7627 2019-02-12 19:16:51Z maechler $
  * fanny.f -- translated by f2c (version 20020621).
  * and treated by  f2c-clean v 1.10, and manually by Martin Maechler
  */
@@ -9,7 +9,7 @@
 #include <R_ext/Print.h>/* for diagnostics */
 
 #include "cluster.h"
-/* dysta3() is in cluster.h ! */
+/* dysta3() declared in cluster.h */
 
 static void
 fuzzy(int nn, int k, double *p,

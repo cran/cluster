@@ -34,7 +34,7 @@
   Anja Struyf, Mia Hubert & Peter J. Rousseeuw (1996)
   Clustering in an Object-Oriented Environment.
   \emph{Journal of Statistical Software} \bold{1}.
-  \url{http://www.jstatsoft.org/v01/i04}
+  \doi{10.18637/jss.v001.i04}
 }
 \keyword{datasets}
 \examples{

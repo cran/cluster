@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cluster 1.15.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-06 23:26+0200\n"
+"POT-Creation-Date: 2019-04-02 17:09+0200\n"
 "PO-Revision-Date: 2015-02-06 21:56-0600\n"
 "Last-Translator:Chel Hee Lee  <chl948@mail.usask.ca>\n"
 "Language-Team: Chel Hee Lee  <chl948@mail.usask.ca>\n"
@@ -43,7 +43,7 @@ msgstr "C level dysta2(): nsel[%s= %d] = %d is outside 0..n, n=%d"
 msgid "Invalid 'medoids'"
 msgstr ""
 
-#: pam.c:654
+#: pam.c:887
 #, c-format
 msgid "pam(): Bug in C level cstat(), k=%d: ntt=0"
 msgstr "pam(): Bug in C level cstat(), k=%d: ntt=0"

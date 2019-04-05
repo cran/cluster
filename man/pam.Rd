@@ -69,8 +69,9 @@ pam(x, k, diss = inherits(x, "dist"),
     and/or input data \code{x} should be kept in the result.  Setting
     these to \code{FALSE} can give much smaller results and hence even save
     memory allocation \emph{time}.}
-  \item{pamonce}{logical or integer in \code{0:2} specifying algorithmic
-    short cuts as proposed by Reynolds et al. (2006), see below.}
+  \item{pamonce}{logical or integer in \code{0:5} specifying algorithmic
+    short cuts as proposed by Reynolds et al. (2006), and
+    Schubert and Rousseeuw (2019) see below.}
   \item{trace.lev}{integer specifying a trace level for printing
     diagnostics during the build and swap phase of the algorithm.
     Default \code{0} does not print anything; higher values print
@@ -119,13 +120,27 @@ pam(x, k, diss = inherits(x, "dist"),
 
   The \code{pamonce} option, new in cluster 1.14.2 (Jan. 2012), has been
   proposed by Matthias Studer, University of Geneva, based on the
-  findings by Reynolds et al. (2006).
+  findings by Reynolds et al. (2006) and was extended by Erich Schubert,
+  TU Dortmund, with the FastPAM optimizations.
 
   The default \code{FALSE} (or integer \code{0}) corresponds to the
   original \dQuote{swap} algorithm, whereas \code{pamonce = 1} (or
   \code{TRUE}), corresponds to the first proposal .... %% FIXME
   and \code{pamonce = 2} additionally implements the second proposal as
   well. % FIXME more details
+
+  The key ideas of FastPAM (Schubert and Rousseeuw, 2019) are implemented
+  except for the linear approximate build as follows:
+  \describe{
+    \item{\code{pamonce = 3}:}{
+      reduces the runtime by a factor of O(k) by exploiting
+      that points cannot be closest to all current medoids at the same time.}
+    \item{\code{pamonce = 4}:}{ additionally allows executing multiple swaps
+      per iteration, usually reducing the number of iterations.}
+    \item{\code{pamonce = 5}:}{ adds minor optimizations copied from the
+      \code{pamonce = 2} approach, and is expected to be the fastest
+      variant.}
+  }
 }
 \note{
   For large datasets, \code{pam} may need too much memory or too much
@@ -140,17 +155,22 @@ pam(x, k, diss = inherits(x, "dist"),
   and augmented in several ways, e.g. to allow \code{cluster.only=TRUE}
   or \code{do.swap=FALSE}, by Martin Maechler.
   \cr
-  Matthias Studer, Univ.Geneva provided the \code{pamonce}
+  Matthias Studer, Univ.Geneva provided the \code{pamonce} (\code{1} and \code{2})
   implementation.
 }
 \references{
-%% the pamonce options :
+%% the pamonce=1,2 options :
   Reynolds, A., Richards, G., de la Iglesia, B. and Rayward-Smith, V. (1992)
   Clustering rules: A comparison of partitioning and hierarchical
   clustering algorithms;
   \emph{Journal of Mathematical Modelling and Algorithms} \bold{5},
-  475--504 (\url{http://dx.doi.org/10.1007/s10852-005-9022-1}).
+  475--504. \doi{10.1007/s10852-005-9022-1}.
 
+%% the pamonce=3,4,5 (FastPAM) options:
+  Erich Schubert and Peter J. Rousseeuw (2019)
+  Faster k-Medoids Clustering:
+  Improving the PAM, CLARA, and CLARANS Algorithms;
+  Preprint, (\url{https://arxiv.org/abs/1810.05691}).
 }
 \seealso{
   \code{\link{agnes}} for background and references;

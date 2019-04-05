@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cluster 2.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-06 23:26+0200\n"
+"POT-Creation-Date: 2019-04-02 17:09+0200\n"
 "PO-Revision-Date: 2015-02-02 12:30+0100\n"
 "Last-Translator: Detlef Steuer <steuer@hsu-hh.de>\n"
 "Language-Team: R Core <r-core@r-project.org>\n"
@@ -37,7 +37,7 @@ msgstr "C Level dysta2(): nsel[%s= %d] = %d ist außerhalb von 0..n, n=%d"
 msgid "Invalid 'medoids'"
 msgstr "unzulässige 'medoids'"
 
-#: pam.c:654
+#: pam.c:887
 #, c-format
 msgid "pam(): Bug in C level cstat(), k=%d: ntt=0"
 msgstr "pam(): Bug in C Level cstat(), k=%d: ntt=0"
