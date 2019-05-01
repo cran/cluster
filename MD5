@@ -1,5 +1,5 @@
 5c39297262dda844d10fd3109a36e2de *ChangeLog
-ca647c68b10acd71e270c512f7fb28c7 *DESCRIPTION
+f3179ab6c10cdfe21763dba64b4b8056 *DESCRIPTION
 824c6b9820b7fc963b52b185b8284481 *INDEX
 ca2be9171db9bc45a268f08f5edf9539 *NAMESPACE
 8de82c7d42bd4a27c27c25462ae2a307 *PORTING
@@ -21,7 +21,7 @@ d9ebd0166a6b56588bbe0db694a3b781 *R/plotpart.q
 ac6ea20501b14230d4f2fcf97abda367 *R/silhouette.R
 f1d53c5f24897b5ab0e6014be9be7844 *R/zzz.R
 74315cfbf492da8e8b2c7687ecbdc750 *README
-64bde82168da2dd316d4937c852ca47b *build/partial.rdb
+7f3f4f98c4bce1782c57d3ef74aace1c *build/partial.rdb
 ac189f8e6e1314c01a700f6a31ee4506 *data/agriculture.tab
 1046f7a750dbbac2724fd910aff561e7 *data/animals.tab
 c8f60e65b0356698f6b08c23c07e2a94 *data/chorSub.rda
@@ -106,13 +106,13 @@ ecc678170701fb328651c672bf7cb9e6 *po/de.po
 3eb57b26cbc2e7babd9cf816f2b517d8 *po/ko.po
 86e308f92ccc269bcb494de5ac0b2481 *po/update-me.sh
 e93bebd2b125848e9f8dfcbf0f705956 *src/clara.c
-99672977e52d37d95ac194a3b9418c13 *src/cluster.h
+7ccd9d592eaac4485e8e6d1f0c7658e7 *src/cluster.h
 073a7eb5d16aa0f452d85e3de14a0f03 *src/daisy.f
 20241ba8aa6ae6296c5acec015f1f906 *src/dysta.f
 f974c4dae4c6b2398bf32648d6671f46 *src/fanny.c
 23cea00d2feab57a92e8c2393c7f4b8a *src/ind_2.h
 d1b66d40049abd7161731a0a02e1a381 *src/init.c
-068aa8f2dad76a3adafbdf2848986139 *src/mona.c
+93dff342c334fec621bda03dd76abc6f *src/mona.c
 d6f0c229f9914351e49fd84cbbb80b96 *src/pam.c
 6f11dc74b1636e3ac848563d570f0030 *src/sildist.c
 f42f05132aaf001ddd333e3e109692e0 *src/spannel.c
@@ -135,7 +135,7 @@ bfd6bb81ad19948dc6e91d46ab5ff30f *tests/ellipsoid-ex.R
 900720ee7f24e5b7e85f2b77a5d1f9fa *tests/ellipsoid-ex.Rout.save
 52b341bc06eb5692a73dec2be2cd7e5a *tests/fanny-ex.R
 290bc5b0aa385784ecd22974f9781ff3 *tests/mona.R
-e90d51f457774c4b876006f77e9582c1 *tests/mona.Rout.save
+de3bfe9b4a3e222eba5c9c9d8ed8c891 *tests/mona.Rout.save
 0ee9c09116ed658c860c0c869fb22f77 *tests/pam.R
 ec46d40c043dd4c393ed24d8bfb3a286 *tests/pam.Rout.save
 477cd7fd12117a6cbcdfc9d5944fbd39 *tests/silhouette-default.R

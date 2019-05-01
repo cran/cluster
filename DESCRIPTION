@@ -1,6 +1,6 @@
 Package: cluster
-Version: 2.0.8
-Date: 2019-04-02
+Version: 2.0.9
+Date: 2019-05-01
 Priority: recommended
 Title: "Finding Groups in Data": Cluster Analysis Extended Rousseeuw et
         al.
@@ -37,7 +37,7 @@ BuildResaveData: no
 License: GPL (>= 2)
 URL: https://svn.r-project.org/R-packages/trunk/cluster
 NeedsCompilation: yes
-Packaged: 2019-04-02 15:21:08 UTC; maechler
+Packaged: 2019-05-01 11:06:54 UTC; maechler
 Author: Martin Maechler [aut, cre] (<https://orcid.org/0000-0002-8685-9910>),
   Peter Rousseeuw [aut] (Fortran original,
     <https://orcid.org/0000-0002-3807-5353>),
@@ -52,4 +52,4 @@ Author: Martin Maechler [aut, cre] (<https://orcid.org/0000-0002-8685-9910>),
   Erich Schubert [ctb] (fastpam options for pam(),
     <https://orcid.org/0000-0001-9143-4880>)
 Repository: CRAN
-Date/Publication: 2019-04-05 09:00:03 UTC
+Date/Publication: 2019-05-01 20:30:15 UTC

@@ -39,8 +39,7 @@ void clmona_(int *nn, // = number of objects
 	     int *jlack)// [1:pp] : jlack[j] := #{NA's in x[,j]}
 {
     int verbose = jerr[0];
-    int a, b, c, d, j, j0, j1;
-    int jma, nel, lama, jnat, jtel, jtelz; //, jptwe
+    int j, j0, j1, jnat, jma = -1, jtel = -1, jtelz = -1, lama;
 
     /* Parameter adjustments */
     --lava;
@@ -51,6 +50,7 @@ void clmona_(int *nn, // = number of objects
     int x_dim1 = *nn,
 	x_offset = 1 + x_dim1;
     x -= x_offset;
+#define X(i,j) x[i + j * x_dim1]
 
     /* Function Body */
     if(*pp < 2) {
@@ -63,7 +63,7 @@ void clmona_(int *nn, // = number of objects
     for (int l = 1; l <= *nn; ++l) {
 	int n_miss = 0;
 	for (j = 1; j <= *pp; ++j) {
-	    if (x[l + j * x_dim1] > 1) ++n_miss;
+	    if (X(l,j) > 1) ++n_miss;
 	}
 	if (n_miss == *pp) { // all variables missing for this object
 	    *jerr = 1; return;
@@ -80,8 +80,8 @@ void clmona_(int *nn, // = number of objects
 	    j0 = 0;
 	    j1 = 0;
 	    for (int l = 1; l <= *nn; ++l) {
-		if      (x[l + j * x_dim1] == 0) ++j0;
-		else if (x[l + j * x_dim1] == 1) ++j1;
+		if      (X(l,j) == 0) ++j0;
+		else if (X(l,j) == 1) ++j1;
 	    }
 	    jlack[j] = *nn - j0 - j1;
 	    if (jlack[j] != 0) {
@@ -108,17 +108,17 @@ void clmona_(int *nn, // = number of objects
 		Rboolean syn = TRUE;
 		for (int ja = 1; ja <= *pp; ++ja)
 		    if (jlack[ja] == 0) { /* no missing in x[, ja] */
-			a = 0;
-			b = 0;
-			c = 0;
-			d = 0;
+			int a = 0,
+			    b = 0,
+			    c = 0,
+			    d = 0;
 			for (int k = 1; k <= *nn; ++k) {
-			    if (x[k + j * x_dim1] != 1) {
-				if      (x[k + ja * x_dim1] == 0) ++a;
-				else if (x[k + ja * x_dim1] == 1) ++b;
+			    if (X(k,j) != 1) {
+				if      (X(k,ja) == 0) ++a;
+				else if (X(k,ja) == 1) ++b;
 			    } else  { // x[...] == 1
-				if      (x[k + ja * x_dim1] == 0) ++c;
-				else if (x[k + ja * x_dim1] == 1) ++d;
+				if      (X(k,ja) == 0) ++c;
+				else if (X(k,ja) == 1) ++d;
 			    }
 			}
 			int kal = a * d - b * c,
@@ -132,14 +132,14 @@ void clmona_(int *nn, // = number of objects
 		    }
 
 		for (int k = 1; k <= *nn; ++k)
-		    if (x[k + j * x_dim1] > 1) { // missing
+		    if (X(k,j) > 1) { // missing
 			if (syn) {
-			    x[k + j * x_dim1] = x[k + jma * x_dim1];
+			    X(k,j) = X(k,jma);
 			} else {
-			    if (x[k + jma * x_dim1] == 1)
-				x[k +   j * x_dim1] = 0;
-			    if (x[k + jma * x_dim1] == 0)
-				x[k +   j * x_dim1] = 1;
+			    if (X(k,jma) == 1)
+				X(k,j) = 0;
+			    if (X(k,jma) == 0)
+				X(k,j) = 1;
 			}
 		    }
 	    }
@@ -176,14 +176,18 @@ L310:
 	j0 = 0;
 	j1 = 0;
 	for (int k = ka; k <= kb; ++k) {
-	    nel = ner[k];
-	    if      (x[nel + j * x_dim1] == 0) ++j0;
-	    else if (x[nel + j * x_dim1] == 1) ++j1;
+	    int n_k = ner[k];
+	    if      (X(n_k,j) == 0) ++j0;
+	    else if (X(n_k,j) == 1) ++j1;
 	}
 	if (j1 != 0 && j0 != 0) {
       L330:
 	    --jnat;
-	    int lams = 0;
+	    int a = 0,
+		b = 0,
+		c = 0,
+		d = 0,
+		lams = 0;
 	    for (int jb = 1; jb <= *pp; ++jb) {
 		if (jb != j) { // FIXME: if (p == 1)  have j == jb == 1 here
 		    // then this branch is never used ==> lama = -1 < lams = 0
@@ -194,13 +198,13 @@ L310:
 		    c = 0;
 		    d = 0;
 		    for (int k = ka; k <= kb; ++k) {
-			nel = ner[k];
-			if (x[nel + j * x_dim1] == 0) {
-			    if      (x[nel + jb * x_dim1] == 0) ++a;
-			    else if (x[nel + jb * x_dim1] == 1) ++b;
+			int n_k = ner[k];
+			if (X(n_k,j) == 0) {
+			    if      (X(n_k,jb) == 0) ++a;
+			    else if (X(n_k,jb) == 1) ++b;
 			} else {
-			    if      (x[nel + jb * x_dim1] == 0) ++c;
-			    else if (x[nel + jb * x_dim1] == 1) ++d;
+			    if      (X(n_k,jb) == 0) ++c;
+			    else if (X(n_k,jb) == 1) ++d;
 			}
 		    }
 		    lams += iabs(a * d - b * c);
@@ -220,11 +224,10 @@ L310:
     if (jnat < *pp) {
 
 	// ---- Splitting -------------------------------
-	int nzf, jtel2;
-
+	int nzf, jtel2,
 	// L375:
-	nel = ner[ka];
-	if (x[nel + jma * x_dim1] == 1) {
+	    nel = ner[ka];
+	if (X(nel,jma) == 1) {
 	    nzf = 0;
 	    jtel2 = jtel;
 	} else {
@@ -234,36 +237,37 @@ L310:
 	int jres = kb - ka + 1 - jtel2,
 	    km = ka + jtel2;
 	if(verbose)
-	    Rprintf(" --> splitting: (nel; jres, ka, km) = (%d; %d, %d, %d)\n",
-		    nel, jres, ka, km);
+	    Rprintf(" --> splitting: ka=%d, ner[ka]=%d => (nzf, jtel2, jres, km) = (%d, %d, %d, %d)\n",
+		    ka, nel,   nzf, jtel2, jres, km);
 
 	/*------- inner loop ------------------ */
 	if(verbose >= 2) Rprintf(" inner loop: for(k in ka:km) use ner[k]: ");
-	int k = ka;
+	int k   = ka,
+	    n_b = 0;
 	do { // L378: almost  for(k=ka; k < km; ++k)  (but see 'continue' below)
-	    nel = ner[k];
-	    if(verbose >= 2) Rprintf(" %d", nel);
+	    int n_k = ner[k];
+	    if(verbose >= 2) Rprintf(" %d", n_k);
 
-	    if (x[nel + jma * x_dim1] == nzf) {
-		int lcc, nelbb;
-		for (int lbb = k; lbb <= kb; ++lbb) {
-		    nelbb = ner[lbb];
-		    if (x[nelbb + jma * x_dim1] != nzf) {
-			lcc = lbb - 1;
+	    if (X(n_k,jma) == nzf) {
+		int c = 0;
+		for (int b = k; b <= kb; ++b) {
+		    n_b = ner[b];
+		    if (X(n_b,jma) != nzf) {
+			c = b - 1;
 			break; // goto L382;
 		    }
 		}
 		// L382:
-		for (int laa = k; laa <= lcc; ++laa) {
-		    int ldd = lcc + k - laa;
-		    ner[ldd + 1] = ner[ldd];
+		for (int a = k; a <= c; ++a) {
+		    int d = c + k - a;
+		    ner[d + 1] = ner[d];
 		}
-		ner[k] = nelbb;
+		ner[k] = n_b;
 		continue; // the inner loop _without_ increasing 'k' !
 	    }
 	    ++k;
 	} while (k < km);
-	if(verbose >= 2) Rprintf("\n");
+	if(verbose >= 2) Rprintf(" -> 'nelbb' = n_b = %d\n", n_b);
 	/*------- end{inner loop} -- */
 
 	/* L390: */

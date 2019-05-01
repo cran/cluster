@@ -87,7 +87,7 @@ void black(int kk, int jpp, int nsam, int *nbest,
 	   double *syl, double *srank);
 
 /* -------- ./dysta.f --- (was in pam.f) -------------------- */
-int F77_NAME(dysta)(int *nn, int *jpp, double *x, double *dys, int *ndyst,
+void F77_NAME(dysta)(int *nn, int *jpp, double *x, double *dys, int *ndyst,
 		    int *jtmd, double *valmd, int *jhalt);
 /* --------- ./pam.c ------------------*/
 
@@ -171,7 +171,7 @@ void cl_fanny(int *nn, int *jpp, int *kk,
 /* ================= Fortran things (remainder) ======================== */
 
 /* -------- ./daisy.f ---------------------------------- */
-int F77_NAME(cldaisy)(int *nn, int *jpp, double *x,
+void F77_NAME(cldaisy)(int *nn, int *jpp, double *x,
 		       double *valmd, int *jtmd, int *jdat, int *vtype,
 		       int *ndyst, int *mdata, double *disv);
 
@@ -181,7 +181,7 @@ void dysta3(int *nn, int *p, double *x, double *dys,
 	    int *ndyst, int *jtmd, double *valmd, int *jhalt);
 
 /* -------- ./mona.f ---------------------------------- */
-int F77_NAME(clmona)(int *nn, int *pp, int *x, int *jerr,
+void F77_NAME(clmona)(int *nn, int *pp, int *x, int *jerr,
 		      int *nban, int *ner, int *kwan, int *lava, int *jlack);
 
 /* -------- ./twins.c ---------------------------------- */
