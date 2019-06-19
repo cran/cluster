@@ -3,7 +3,7 @@
 \title{Print Method for AGNES Objects}
 \description{
   Prints the call, agglomerative coefficient, ordering of objects and
-  distances between merging clusters (`Height') of an \code{agnes} object.
+  distances between merging clusters ('Height') of an \code{agnes} object.
 
   This is a method for the generic \code{\link{print}()} function for objects
   inheriting from class \code{agnes}, see \code{\link{agnes.object}}.

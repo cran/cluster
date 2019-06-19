@@ -75,7 +75,7 @@ ellipsoidhull(x, tol=0.01, maxit=5000,
 }
 
 \author{Martin Maechler did the present class implementation; Rousseeuw
-  et al did the underlying code.}
+  et al did the underlying original code.}
 \seealso{\code{\link{predict.ellipsoid}} which is also the
   \code{\link{predict}} method for \code{ellipsoid} objects.
   \code{\link{volume.ellipsoid}} for an example of \sQuote{manual}
@@ -89,15 +89,15 @@ ellipsoidhull(x, tol=0.01, maxit=5000,
 \examples{
 x <- rnorm(100)
 xy <- unname(cbind(x, rnorm(100) + 2*x + 10))
-exy <- ellipsoidhull(xy)
-exy # >> calling print.ellipsoid()
+exy. <- ellipsoidhull(xy)
+exy. # >> calling print.ellipsoid()
 
 plot(xy, main = "ellipsoidhull(<Gauss data>) -- 'spanning points'")
-lines(predict(exy), col="blue")
-points(rbind(exy$loc), col = "red", cex = 3, pch = 13)
+lines(predict(exy.), col="blue")
+points(rbind(exy.$loc), col = "red", cex = 3, pch = 13)
 
 exy <- ellipsoidhull(xy, tol = 1e-7, ret.wt = TRUE, ret.sq = TRUE)
-str(exy) # had small `tol', hence many iterations
+str(exy) # had small 'tol', hence many iterations
 (ii <- which(zapsmall(exy $ wt) > 1e-6))
 ## --> only about 4 to 6  "spanning ellipsoid" points
 round(exy$wt[ii],3); sum(exy$wt[ii]) # weights summing to 1

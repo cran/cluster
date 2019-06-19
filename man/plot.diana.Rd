@@ -18,7 +18,7 @@
   \item{which.plots}{integer vector or NULL (default), the latter
     producing both plots.  Otherwise, \code{which.plots}
     must contain integers of \code{1} for a \emph{banner} plot or \code{2} for a
-    dendrogram or ``clustering tree''.}
+    dendrogram or \dQuote{clustering tree}.}
   \item{main, sub}{main and sub title for the plot, each with a convenient
     default.  See documentation for these arguments in
     \code{\link{plot.default}}.}

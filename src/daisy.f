@@ -1,6 +1,6 @@
 
-      subroutine cldaisy(nn,jpp,x,valmd,weights,
-     +     jtmd,jdat,vtype,ndyst,mdata,disv)
+      subroutine cldaisy(nn,jpp, x, valmd,weights,
+     +     jtmd,jdat,vtype,ndyst,mdata, disv)
 c     c
 c     c  Calculating dissimilarities between objects or variables
 c     c
@@ -12,8 +12,8 @@ c     c          jpp = number of variables used for the calculations
 c     c  The following vectors and matrices must be dimensioned in the
 c     c  main program :
       double precision x(nn,jpp), valmd(jpp), weights(jpp)
-      double precision disv(1+nn*(nn-1)/2)
       integer jtmd(jpp), jdat, vtype(jpp), ndyst, mdata
+      double precision disv(1+nn*(nn-1)/2)
 
 c       vtype was character originally
 c       vtype(j) is the type of variable j:
@@ -89,9 +89,9 @@ c Case II : jdat != 1:  all variables are interval scaled
 c -------   ~~~~~~~~~ { basically === dysta() in ./dysta.f
 c                       FIXME: common code! }
          pp=jpp
-         do 600 l=2,nn
+         do l=2,nn
             lsubt=l-1
-            do 520 k=1,lsubt
+            do k=1,lsubt
                clk=0.0
                nlk=nlk+1
                npres=0
@@ -117,8 +117,8 @@ c                       FIXME: common code! }
                else
                   disv(nlk)=clk*(pp/rpres)
                endif
- 520        continue
- 600     continue
+            end do
+         end do
       endif
 
       end

@@ -15,7 +15,7 @@
     [ , 5] \tab gro \tab live in groups \cr
     [ , 6] \tab hai \tab have hair \cr
   }
-  All variables are encoded as 1 = `no', 2 = `yes'.
+  All variables are encoded as 1 = 'no', 2 = 'yes'.
 }
 \source{
   Leonard Kaufman and Peter J. Rousseeuw (1990):

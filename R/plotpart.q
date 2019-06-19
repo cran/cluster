@@ -1,4 +1,4 @@
-### $Id: plotpart.q 7201 2016-04-28 14:19:06Z maechler $
+### $Id: plotpart.q 7668 2019-05-15 17:07:45Z maechler $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
 	 nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
@@ -301,7 +301,7 @@ function(x, clus, diss = FALSE, s.x.2d = mkCheckX(x, diss),
 			  ierr = integer(1))
 		if(res$ierr != 0)
 		    ## MM : exactmve not available here !
-		    warning("Error in Fortran routine for the spanning ellipsoid,\n rank problem??")
+		    warning("Error in C routine for the spanning ellipsoid,\n rank problem??")
 
 		cov <- cov.wt(x, res$prob)
 		loc[i, ] <- cov$center

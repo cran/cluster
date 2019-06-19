@@ -172,7 +172,8 @@ void cl_fanny(int *nn, int *jpp, int *kk,
 
 /* -------- ./daisy.f ---------------------------------- */
 void F77_NAME(cldaisy)(int *nn, int *jpp, double *x,
-		       double *valmd, int *jtmd, int *jdat, int *vtype,
+		       double *valmd, double *weights,
+		       int *jtmd, int *jdat, int *vtype,
 		       int *ndyst, int *mdata, double *disv);
 
 /* -------- ./fanny.c ---------------------------------- */

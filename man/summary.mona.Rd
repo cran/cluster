@@ -1,7 +1,7 @@
 \name{summary.mona}
 \alias{summary.mona}
 \alias{print.summary.mona}
-\title{Summary Method for `mona' Objects}
+\title{Summary Method for 'mona' Objects}
 \description{Returns (and prints) a summary list for a \code{mona} object.}
 \usage{
 \method{summary}{mona}(object, \dots)

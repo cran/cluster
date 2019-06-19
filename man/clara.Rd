@@ -136,7 +136,8 @@ clara(x, k, metric = c("euclidean", "manhattan", "jaccard"),
 }
 \author{
   Kaufman and Rousseeuw (see \code{\link{agnes}}), originally.
-  Metric \code{"jaccard"}: Kamil Kozlowski and Kamil Jadeszko (from \url{ownedoutcomes.com}).
+  Metric \code{"jaccard"}: Kamil Kozlowski (\code{@ownedoutcomes.com})
+  and Kamil Jadeszko.
   All arguments from \code{trace} on, and most \R documentation and all
   tests by Martin Maechler.
 }
@@ -157,7 +158,7 @@ all.equal(clarax[-8],
           clara(x, 2, samples=50, pamLike = TRUE)[-8])
 plot(clarax)
 
-## `xclara' is an artificial data set with 3 clusters of 1000 bivariate
+## 'xclara' is an artificial data set with 3 clusters of 1000 bivariate
 ## objects each.
 data(xclara)
 (clx3 <- clara(xclara, 3))

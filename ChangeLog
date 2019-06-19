@@ -1373,8 +1373,6 @@
 	  is TRUE therefore for dissimilarity or dist objects.
 
 2002-01-12  Martin Maechler  <maechler@stat.math.ethz.ch>
-	 |
-2002-01-18  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* R/agnes.q, R/diana.q : a bit of cleanup in the two twins
 	calling functions.

@@ -1,7 +1,7 @@
 \name{summary.clara}
 \alias{summary.clara}
 \alias{print.summary.clara}
-\title{Summary Method for `clara' Objects}
+\title{Summary Method for 'clara' Objects}
 \description{
   Returns (and prints) a summary list for a \code{clara} object.
   Printing gives more output than the corresponding
@@ -26,7 +26,7 @@ x <- rbind(cbind(rnorm(400, 0,4), rnorm(400, 0,4)),
            cbind(rnorm(400,50,4), rnorm(400,50,4))
 )
 clx5 <- clara(x, 5)
-## Mis`classification' table:
+## Mis'classification' table:
 % R version >= 1.5 :
 % table(rep(1:5, each = 400), clx5$clust) # -> 1 "error"
 table(rep(1:5, rep(400,5)), clx5$clust) # -> 1 "error"

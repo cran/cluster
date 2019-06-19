@@ -256,7 +256,7 @@ clusplot(iris.x, cl3, color = TRUE, xlim = c(0,2), ylim = c(-1,1))
 box(col="orange",lwd=2); mtext("sub region", font = 4, cex = 2)
 ##  or zoom out :
 clusplot(iris.x, cl3, color = TRUE, xlim = c(-4,4), ylim = c(-4,4))
-mtext("`super' region", font = 4, cex = 2)
+mtext("'super' region", font = 4, cex = 2)
 rect(U[1],U[3], U[2],U[4], lwd=2, lty = 3)
 
 # reset graphics

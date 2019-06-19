@@ -7,7 +7,34 @@
 %% NB: The date (yyyy-mm-dd) is the "Packaged:" date in ../DESCRIPTION
 
 
-\section{Changes in version 2.0.8 (2019-04-02, svn r7641)}{
+\section{Changes in version 2.1.0 (2019-06-07, svn r7674)}{
+  \subsection{Bug Fixes}{
+    \itemize{
+      \item \code{volume(obj)} is now correct also for ellipsoids of
+      dimension \eqn{d > 2}.
+
+      \item \command{--enable-lto} compilation revealed missing
+      \code{weights} argument in \file{src/cluster.h}'s declaration of
+      \code{cldaisy()}.
+    }
+  }
+  \subsection{Tweaks}{
+    \itemize{
+      \item Replaced many \dQuote{old style} \verb{`<word>'} quotations.
+    }
+  }
+}
+
+\section{Changes in version 2.0.9 (2019-05-01, svn r7663)}{
+  \subsection{Tweaks}{
+    \itemize{
+      \item \file{src/mona.c} now uses correct \emph{void} \code{F77_NAME}
+      and source cleaned.
+    }
+  }
+}
+
+\section{Changes in version 2.0.8 (2019-04-02, svn r7643)}{
   \subsection{New Features}{
     \itemize{
       \item \code{pam()} gets new \code{pamonce} options, for values 3,
@@ -363,7 +390,8 @@
   \subsection{Versions 1.2-1, ...  1.13-3}{
     \itemize{
       \item 60 more CRAN releases of the package \pkg{cluster}
-      from Dec 1999 to Feb 2011.
+      from Dec 1999 to Feb 2011, see also the \file{ChangeLog} file and
+      \command{svn log}.
     }
   }
 }

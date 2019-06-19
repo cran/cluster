@@ -24,7 +24,7 @@
   (and typically more) components:
   \item{clustering}{
     the clustering vector.  An integer vector of length \eqn{n}, the number of
-    observations, giving for each observation the number (`id') of the
+    observations, giving for each observation the number ('id') of the
     cluster to which it belongs.}
   \item{call}{the matched \code{\link{call}} generating the object.}
   \item{silinfo}{

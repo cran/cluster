@@ -6,7 +6,7 @@
   Compute points on the ellipsoid boundary, mostly for drawing.
 }
 \usage{
-% method *and* stand alone on purpose :
+% method *and* stand alone function on purpose :
 predict.ellipsoid(object, n.out=201, \dots)
 \method{predict}{ellipsoid}(object, n.out=201, \dots)
 ellipsoidPoints(A, d2, loc, n.half = 201)
@@ -27,7 +27,7 @@ ellipsoidPoints(A, d2, loc, n.half = 201)
    The class of \code{object} is not checked; it must solely have valid
    components \code{loc} (length \eqn{p}), the \eqn{p \times p}{p x p}
    matrix \code{cov} (corresponding to \code{A}) and \code{d2} for the
-   center, the shape (``covariance'') matrix and the squared average
+   center, the shape (\dQuote{covariance}) matrix and the squared average
    radius (or distance) or \code{\link{qchisq}(*, p)} quantile.
 
    Unfortunately, this is only implemented for \eqn{p = 2}, currently;

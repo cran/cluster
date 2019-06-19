@@ -57,10 +57,10 @@ ellipsoidhull <-
                 maxit= maxit,
                 ierr = res$ierr,
                 conv = conv)
-
     class(res) <- "ellipsoid"
     res
 }
+
 
 print.ellipsoid <- function(x, digits = max(1, getOption("digits") - 2), ...)
 {
@@ -70,8 +70,12 @@ print.ellipsoid <- function(x, digits = max(1, getOption("digits") - 2), ...)
         "); squared ave.radius d^2 = ", format(x$d2, digits=digits),
         "\n and shape matrix =\n")
     print(x$cov, digits = digits, ...)
-    cat("  hence,",if(d==2)"area" else "volume"," = ",
-        format(volume(x), digits=digits),"\n")
+    Vx <- volume(x)
+    chV <- if(!is.finite(Vx))
+        paste0("exp(", format(volume(x, log=TRUE), digits=digits),")")
+    else
+        format(Vx, digits=digits)
+    cat("  hence,", if(d==2) "area" else "volume", " = ", chV, "\n")
     if(!is.null(x$conv) && !x$conv) {
         cat("\n** Warning: ** the algorithm did not terminate reliably!\n  ",
             if(x$ierr) "most probably because of collinear data"
@@ -80,11 +84,22 @@ print.ellipsoid <- function(x, digits = max(1, getOption("digits") - 2), ...)
     invisible(x)
 }
 
-volume <- function(object) UseMethod("volume")
+volume <- function(object, ...) UseMethod("volume")
+
+if(FALSE) ## correct only for dimension d = 2  -- was used up to May 2019 :
 volume.ellipsoid <- function(object) {
     A <- object$cov
     pi * object$d2 * sqrt(det(A))
 }
+
+## modified MM from a proposal by Keefe Murphy, e-mail 2019-05-15
+volume.ellipsoid <- function(object, log=FALSE, ...) {
+    stopifnot((p <- length(object$loc)) >= 1)
+    lDet2 <- as.numeric(determinant(object$cov)$modulus) / 2 # = log(sqrt(det(.)))
+    lV <- p/2 * log(pi * object$d2) + lDet2 - lgamma(p/2 + 1)
+    if(log) lV else exp(lV)
+}
+
 
 ## For p = 2 :
 ##   Return (x[i],y[i]) points, i = 1:n, on boundary of ellipse, given
