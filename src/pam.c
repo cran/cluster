@@ -317,7 +317,7 @@ void bswap(int kk, int n, int *nrepr,
 	dysma[i] = s;
 
     if(med_given) {
-	if(trace_lev) Rprintf("medoids given\n");
+	if(trace_lev) Rprintf("medoids given; ");
 
 	/* compute dysma[] : dysma[j] = D(j, nearest_representative) */
 	for (i = 1; i <= n; ++i) {
@@ -329,9 +329,7 @@ void bswap(int kk, int n, int *nrepr,
 		}
 	}
     }
-    else {
-
-/*  ====== first algorithm: BUILD. ====== */
+    else { // ====== first algorithm: BUILD. ======================
 
 	if(trace_lev) Rprintf("build %d medoids:\n", kk);
 
@@ -400,7 +398,7 @@ void bswap(int kk, int n, int *nrepr,
 
 	double dzsky;
 	int hbest = -1, nbest = -1, kbest= -1; // -Wall
-	int *medoids, *clustmembership;
+	int *medoids, *clustmembership, *clustmembershipb;
 	double *fvect;
 	if(pamonce) {
 	    // +1 --> use 1-based indices (as R)
@@ -415,6 +413,7 @@ void bswap(int kk, int n, int *nrepr,
 	    }
 	} else { // -Wall :
 	    clustmembership = medoids = (int*) NULL;
+	    clustmembershipb = medoids = (int*) NULL;
 	    fvect = (double*) NULL;
 	}
 	int *best_h = NULL; double *best_d = NULL;
@@ -422,15 +421,24 @@ void bswap(int kk, int n, int *nrepr,
 	    best_h = (int*) R_alloc(kk+1, sizeof(int));
 	    best_d = (double*) R_alloc(kk+1, sizeof(double));
 	}
+	// Improvement part of Schubert and Rousseeuw 2021 FasterPAM
+	double *remove_loss = NULL;
+	if (pamonce >= 3 && pamonce <= 6) {
+	    remove_loss = (double*) R_alloc(kk+1, sizeof(double));
+	    clustmembershipb = (int*) R_alloc(n+1, sizeof(int));
+	}
 
 /* ====== second algorithm: SWAP. ====== */
 
 	/* Hmm: In the following, we RE-compute dysma[];
 	 *      don't need it first time; then only need *update* after swap */
 
+	// Used by FasterPAM only (Schubert and Rousseeuw 2021, pamonce = 6)
+	int lastswap = 0;
+
 /*--   Loop : */
     L60:
-	if(pamonce == 0) { // original algorihtm
+	if(pamonce == 0) { // original algorithm
 	    for (j = 1; j <= n; ++j) {
 		/*  dysma[j] := D_j  d(j, <closest medi>)  [KR p.102, 104]
 		 *  dysmb[j] := E_j  d(j, <2-nd cl.medi>)  [p.103] */
@@ -448,24 +456,25 @@ void bswap(int kk, int n, int *nrepr,
 		    }
 		}
 	    }
-	} else if (pamonce >= 3 && pamonce <= 5) { // Schubert and Rousseeuw 2019 FastPAM1/2
+	} else if (pamonce >= 3 && pamonce <= 6) { // Schubert and Rousseeuw 2019 FastPAM1/2
 	    for (j = 1; j <= n; ++j) {
 		/*  dysma[j] := D_j  d(j, <closest medi>)  [KR p.102, 104]
 		 *  dysmb[j] := E_j  d(j, <2-nd cl.medi>)  [p.103] */
-		dysma[j] = s;
-		dysmb[j] = s;
+		double dysmaj = s, dysmbj = s;
 		for(k = 1; k <= kk; k++) {
-		    i = medoids[k];
-		    ij = ind_2(i, j);
-		    if (dysma[j] > dys[ij]) {
-			//store cluster membership
+		    double dysij = dys[ind_2(medoids[k], j)];
+		    if (dysmaj > dysij) {
+			clustmembershipb[j] = clustmembership[j];
+			dysmbj = dysmaj;
 			clustmembership[j] = k; // Use medoid k, not i
-			dysmb[j] = dysma[j];
-			dysma[j] = dys[ij];
-		    } else if (dysmb[j] > dys[ij]) {
-			dysmb[j] = dys[ij];
+			dysmaj = dysij;
+		    } else if (dysmbj > dysij) {
+			clustmembershipb[j] = k;
+			dysmbj = dysij;
 		    }
 		}
+		dysma[j] = dysmaj;
+		dysmb[j] = dysmbj;
 	    }
 	} else { // pamonce == 1 or == 2 :
 	    for (j = 1; j <= n; ++j) {
@@ -488,9 +497,11 @@ void bswap(int kk, int n, int *nrepr,
 	    }
 	}
 
+// FasterPAM improvement: do not recompute the nearest, but update it in the end as necessary
+L60b:
 	dzsky = 1.; /* 1 is arbitrary > 0; only dzsky < 0 matters in the end */
 
-	if(pamonce == 0) { // original algorihtm
+	if(pamonce == 0) { // original algorithm
 	    for (h = 1; h <= n; ++h) if (!nrepr[h]) {
 		    R_CheckUserInterrupt();
 		    for (i = 1; i <= n; ++i) if (nrepr[i]) {
@@ -573,152 +584,201 @@ void bswap(int kk, int n, int *nrepr,
 			}
 		}
 	    }
-	} else if (pamonce == 3) { // Schubert and Rousseeuw 2019 FastPAM1
-	    // Now check possible new medoids h
-	    for (h = 1; h <= n; ++h) if (!nrepr[h]) {
-		R_CheckUserInterrupt();
-		{ /* Cost for making point h a medoid:*/
-		    double dist_h = dysma[h];
+	} else if (pamonce >= 3 && pamonce <= 6) { // Schubert and Rousseeuw variants
+	    // cost of removing current medoids
+	    for(k = 1; k <= kk; k++)
+		remove_loss[k] = 0;
+	    for (j = 1; j <= n; ++j)
+		remove_loss[clustmembership[j]] += dysmb[j] - dysma[j];
+
+	    if (pamonce == 3) { // Schubert and Rousseeuw 2019 FastPAM1 -- improved 2021 version
+		// Now check possible new medoids h
+		for (h = 1; h <= n; ++h) if (!nrepr[h]) {
+		    R_CheckUserInterrupt();
 		    for(k = 1; k <= kk; k++)
-			beter[k] = -dist_h;
-		}
-		// Compute gain of substituting h for each other medoid:
-		for (j = 1; j <= n; ++j) if (j != h) {
+			beter[k] = 0;
+		    double acc = 0;
+		    // Compute gain of substituting h for each other medoid:
+		    for (j = 1; j <= n; ++j) {
 			double dist_h = dys[ind_2(h, j)]; // New medoid
 			int memb = clustmembership[j]; // Medoid nr of nearest
 			double distcur = dysma[j]; // Nearest
 			double distsec = dysmb[j]; // Second nearest
-			// Old closest was removed:
-			beter[memb] += (dist_h < distsec ? dist_h : distsec) - distcur;
 			// New medoid is new best:
-			if (dist_h < distcur) { // O(1/k)*k => O(1) total runtime :-)
-			    double delta = dist_h - distcur;
-			    for(int k = 1; k <= kk; k++) if (k != memb) {
-				beter[k] += delta;
-			    }
+			if (dist_h < distcur) {
+			    acc += dist_h - distcur;
+			    beter[memb] += distcur - distsec;
+			} else if (dist_h < distsec) {
+			    beter[memb] += dist_h - distsec;
+			}
+		    }
+		    for(k = 1; k <= kk; k++) {
+			double loss = beter[k] + acc + remove_loss[k];
+			if (loss < dzsky) {
+			    dzsky = loss;
+			    hbest = h;
+			    nbest = medoids[k];
+			    kbest = k;
+			}
 		    }
 		}
-		for(k = 1; k <= kk; k++)
-		    if (beter[k] < dzsky) {
-			dzsky = beter[k];
-			hbest = h;
-			nbest = medoids[k];
+	    } else if (pamonce == 4) { // Schubert and Rousseeuw 2019 FastPAM2
+		for(k = 1; k <= kk; k++) {
+		    best_d[k] = 1.; // arbitrary > 0
+		}
+		// Now check possible new medoids h
+		for (h = 1; h <= n; ++h) if (!nrepr[h]) {
+		    R_CheckUserInterrupt();
+		    for(k = 1; k <= kk; k++)
+			beter[k] = 0;
+		    // Compute gain of substituting h for each other medoid:
+		    double acc = 0;
+		    for (j = 1; j <= n; ++j) {
+			double dist_h = dys[ind_2(h, j)]; // New medoid
+			int memb = clustmembership[j]; // Medoid nr of nearest
+			double distcur = dysma[j]; // Nearest
+			double distsec = dysmb[j]; // Second nearest
+			// New medoid is new best:
+			if (dist_h < distcur) {
+			    acc += dist_h - distcur;
+			    beter[memb] += distcur - distsec;
+			} else if (dist_h < distsec) {
+			    beter[memb] += dist_h - distsec;
+			}
+		    }
+		    for(k = 1; k <= kk; k++) {
+			double loss = beter[k] + acc + remove_loss[k];
+			if (loss < best_d[k]) {
+			    best_d[k] = loss;
+			    best_h[k] = h;
+			}
+		    }
+		}
+		// Pick one best medoid at the end (additional swaps come later).
+		for(k = 1; k <= kk; k++) {
+		    if (best_d[k] < dzsky) {
+			dzsky = best_d[k];
 			kbest = k;
 		    }
-	    }
-	} else if (pamonce == 4) { // Schubert and Rousseeuw 2019 FastPAM2
-	    for(k = 1; k <= kk; k++) {
-		best_d[k] = 1.; // arbitrary > 0
-	    }
-	    // Now check possible new medoids h
-	    for (h = 1; h <= n; ++h) if (!nrepr[h]) {
-		R_CheckUserInterrupt();
-		{ /* Cost for making point h a medoid:*/
-		    double dist_h = dysma[h];
-		    for(k = 1; k <= kk; k++)
-			beter[k] = -dist_h;
 		}
-		// Compute gain of substituting h for each other medoid:
-		for (j = 1; j <= n; ++j) if (j != h) {
-		    double dist_h = dys[ind_2(h, j)]; // New medoid
-		    int memb = clustmembership[j]; // Medoid nr of nearest
-		    double distcur = dysma[j]; // Nearest
-		    double distsec = dysmb[j]; // Second nearest
-		    // Old closest was removed:
-		    beter[memb] += (dist_h < distsec ? dist_h : distsec) - distcur;
-		    // New medoid is new best:
-		    if (dist_h < distcur) { // O(1/k)*k => O(1) total runtime :-)
-			double delta = dist_h - distcur;
-			for(int k = 1; k <= kk; k++) if (k != memb) {
-			    beter[k] += delta;
-			}
-		    }
-		}
+		hbest = best_h[kbest];
+		nbest = medoids[kbest];
+	    } else if (pamonce == 5) { // Schubert and Rousseeuw 2019 FastPAM2,
+		// with linearized memory access as in Reynolds 2
 		for(k = 1; k <= kk; k++) {
-		    if (beter[k] < best_d[k]) {
-			best_d[k] = beter[k];
-			best_h[k] = h;
-		    }
+		    best_d[k] = 1.; // arbitrary > 0
 		}
-	    }
-	    // Pick one best medoid at the end (additional swaps come later).
-	    for(k = 1; k <= kk; k++) {
-		if (best_d[k] < dzsky) {
-		    dzsky = best_d[k];
-		    kbest = k;
-		}
-	    }
-	    hbest = best_h[kbest];
-	    nbest = medoids[kbest];
-	} else if (pamonce == 5) { // Schubert and Rousseeuw 2019 FastPAM2,
-	    // with linearized memory access as in Reynolds 2
-	    for(k = 1; k <= kk; k++) {
-		best_d[k] = 1.; // arbitrary > 0
-	    }
-	    // Now check possible new medoids h
-	    for (h = 1; h <= n; ++h) if (!nrepr[h]) {
-		R_CheckUserInterrupt();
-		{ /* Cost for making point h a medoid:*/
-		    double dist_h = dysma[h];
+		// Now check possible new medoids h
+		for (h = 1; h <= n; ++h) if (!nrepr[h]) {
+		    R_CheckUserInterrupt();
 		    for(k = 1; k <= kk; k++)
-			beter[k] = -dist_h;
-		}
-		// Compute gain of substituting h for each other medoid:
-		int ijbase = (h-2)*(h-1)/2;
-		for (j = 1; j < h; ++j) {
-		    double dist_h = dys[ijbase+j]; // New medoid
-		    int memb = clustmembership[j]; // Medoid nr of nearest
-		    double distcur = dysma[j]; // Nearest
-		    double distsec = dysmb[j]; // Second nearest
-		    // Old closest was removed:
-		    beter[memb] += (dist_h < distsec ? dist_h : distsec) - distcur;
-		    // New medoid is new best:
-		    if (dist_h < distcur) { // O(1/k)*k => O(1) total runtime :-)
-			double delta = dist_h - distcur;
-			for(int k = 1; k < memb; k++) {
-			    beter[k] += delta;
+			beter[k] = 0;
+		    double acc = -dysma[h];
+		    beter[clustmembership[h]] = dysma[h] - dysmb[h];
+		    // Compute gain of substituting h for each other medoid:
+		    int ijbase = (h-2)*(h-1)/2;
+		    for (j = 1; j < h; ++j) {
+			double dist_h = dys[ijbase+j]; // New medoid
+			int memb = clustmembership[j]; // Medoid nr of nearest
+			double distcur = dysma[j]; // Nearest
+			double distsec = dysmb[j]; // Second nearest
+			// New medoid is new best:
+			if (dist_h < distcur) {
+			    acc += dist_h - distcur;
+			    beter[memb] += distcur - distsec;
+			} else if (dist_h < distsec) {
+			    beter[memb] += dist_h - distsec;
 			}
-			for(int k = memb + 1; k <= kk; k++) {
-			    beter[k] += delta;
+		    }
+		    ijbase += h;// = (h-2)*(h-1)/2 + h
+		    for (j = h+1; j <= n; ++j) {
+			ijbase += j-2;
+			double dist_h = dys[ijbase]; // New medoid
+			int memb = clustmembership[j]; // Medoid nr of nearest
+			double distcur = dysma[j]; // Nearest
+			double distsec = dysmb[j]; // Second nearest
+			// New medoid is new best:
+			if (dist_h < distcur) {
+			    acc += dist_h - distcur;
+			    beter[memb] += distcur - distsec;
+			} else if (dist_h < distsec) {
+			    beter[memb] += dist_h - distsec;
+			}
+		    }
+		    for(k = 1; k <= kk; k++) {
+			double loss = beter[k] + acc + remove_loss[k];
+			if (loss < best_d[k]) {
+			    best_d[k] = loss;
+			    best_h[k] = h;
 			}
 		    }
 		}
-		ijbase += h;// = (h-2)*(h-1)/2 + h
-		for (j = h+1; j <= n; ++j) {
-		    ijbase += j-2;
-		    double dist_h = dys[ijbase]; // New medoid
-		    int memb = clustmembership[j]; // Medoid nr of nearest
-		    double distcur = dysma[j]; // Nearest
-		    double distsec = dysmb[j]; // Second nearest
-		    // Old closest was removed:
-		    beter[memb] += (dist_h < distsec ? dist_h : distsec) - distcur;
-		    // New medoid is new best:
-		    if (dist_h < distcur) { // O(1/k)*k => O(1) total runtime :-)
-			double delta = dist_h - distcur;
-			for(int k = 1; k < memb; k++) {
-			    beter[k] += delta;
-			}
-			for(int k = memb + 1; k <= kk; k++) {
-			    beter[k] += delta;
-			}
-		    }
-		}
+		// Pick one best medoid at the end (additional swaps come later).
 		for(k = 1; k <= kk; k++) {
-		    if (beter[k] < best_d[k]) {
-			best_d[k] = beter[k];
-			best_h[k] = h;
+		    if (best_d[k] < dzsky) {
+			dzsky = best_d[k];
+			kbest = k;
+		    }
+		}
+		hbest = best_h[kbest];
+		nbest = medoids[kbest];
+	    } else { // Schubert and Rousseeuw, 2021, FasterPAM
+		// Check possible new medoids h
+		// Beginning at the last swap performed
+		int h2 = 1;
+		for (h = lastswap + 1; h2 <= n; ++h, ++h2) {
+		    if (h == n+1) h = 1; // wrap around
+		    if (nrepr[h]) continue;
+		    R_CheckUserInterrupt();
+		    for(k = 1; k <= kk; k++)
+			beter[k] = 0;
+		    double acc = -dysma[h];
+		    beter[clustmembership[h]] += dysma[h] - dysmb[h];
+		    // Compute gain of substituting h for each other medoid:
+		    int ijbase = (h-2)*(h-1)/2;
+		    for (j = 1; j < h; ++j) {
+			double dist_h = dys[ijbase+j]; // New medoid
+			int memb = clustmembership[j]; // Medoid nr of nearest
+			double distcur = dysma[j]; // Nearest
+			double distsec = dysmb[j]; // Second nearest
+			// New medoid is new best:
+			if (dist_h < distcur) {
+			    acc += dist_h - distcur;
+			    beter[memb] += distcur - distsec;
+			} else if (dist_h < distsec) {
+			    beter[memb] += dist_h - distsec;
+			}
+		    }
+		    ijbase += h;// = (h-2)*(h-1)/2 + h
+		    for (j = h+1; j <= n; ++j) {
+			ijbase += j-2;
+			double dist_h = dys[ijbase]; // New medoid
+			int memb = clustmembership[j]; // Medoid nr of nearest
+			double distcur = dysma[j]; // Nearest
+			double distsec = dysmb[j]; // Second nearest
+			// New medoid is new best:
+			if (dist_h < distcur) {
+			    acc += dist_h - distcur;
+			    beter[memb] += distcur - distsec;
+			} else if (dist_h < distsec) {
+			    beter[memb] += dist_h - distsec;
+			}
+		    }
+		    for(k = 1; k <= kk; k++) {
+			double loss = beter[k] + acc + remove_loss[k];
+			if (loss < dzsky) {
+			    dzsky = loss;
+			    hbest = h;
+			    nbest = medoids[k];
+			    kbest = k;
+			}
+		    }
+		    // Execute the first swap found.
+		    if (dzsky < 0) {
+			break;
 		    }
 		}
 	    }
-	    // Pick one best medoid at the end (additional swaps come later).
-	    for(k = 1; k <= kk; k++) {
-		if (best_d[k] < dzsky) {
-		    dzsky = best_d[k];
-		    kbest = k;
-		}
-	    }
-	    hbest = best_h[kbest];
-	    nbest = medoids[kbest];
 	} else {
 	    Rprintf("Invalid pamonce value: %d\n", pamonce);
 	    return;
@@ -735,8 +795,72 @@ void bswap(int kk, int n, int *nrepr,
 	    nrepr[nbest] = 0;
 	    if(pamonce)
 		medoids[kbest]=hbest;
+	    if(pamonce == 6)
+		lastswap = hbest;
 
 	    sky += dzsky;
+	    if (pamonce == 3 || pamonce == 6) { // FasterPAM improvement, Schubert and Rousseeuw 2021
+		// Update dysma, dysmb rather than recomputing it
+		double newloss = 0;
+		for (j = 1; j <= n; ++j) {
+		    /*  dysma[j] := D_j  d(j, <closest medi>)  [KR p.102, 104]
+		     *  dysmb[j] := E_j  d(j, <2-nd cl.medi>)  [p.103] */
+		    double dnew = dys[ind_2(hbest, j)];
+		    if (clustmembership[j] == kbest) {
+			if (dnew < dysmb[j]) {
+			    // Clustmembership already kbest
+			    dysma[j] = dnew;
+			} else {
+			    double dysmaj = s, dysmbj = s;
+			    for(k = 1; k <= kk; k++) {
+				double dysij = dys[ind_2(medoids[k], j)];
+				if (dysmaj > dysij) {
+				    clustmembershipb[j] = clustmembership[j];
+				    dysmbj = dysmaj;
+				    //store cluster membership
+				    clustmembership[j] = k; // Use medoid k, not i
+				    dysmaj = dysij;
+				} else if (dysmbj > dysij) {
+				    clustmembershipb[j] = k; // Use medoid k, not i
+				    dysmbj = dysij;
+				}
+			    }
+			    dysma[j] = dysmaj;
+			    dysmb[j] = dysmbj;
+			}
+		    } else {
+			if (dnew < dysma[j]) {
+			    clustmembershipb[j] = clustmembership[j]; // not kbest
+			    dysmb[j] = dysma[j];
+			    clustmembership[j] = kbest; // Use medoid k, not i
+			    dysma[j] = dnew;
+			} else if (clustmembershipb[j] == kbest) {
+			    double dysmaj = s, dysmbj = s;
+			    for(k = 1; k <= kk; k++) {
+				double dysij = dys[ind_2(medoids[k], j)];
+				if (dysmaj > dysij) {
+				    clustmembershipb[j] = clustmembership[j];
+				    dysmbj = dysmaj;
+				    //store cluster membership
+				    clustmembership[j] = k; // Use medoid k, not i
+				    dysmaj = dysij;
+				} else if (dysmbj > dysij) {
+				    clustmembershipb[j] = k; // Use medoid k, not i
+				    dysmbj = dysij;
+				}
+			    }
+			    dysma[j] = dysmaj;
+			    dysmb[j] = dysmbj;
+			} else if (dnew < dysmb[j]) {
+			    clustmembershipb[j] = kbest; // Use medoid k, not i
+			    dysmb[j] = dnew;
+			}
+		    }
+		    newloss += dysma[j];
+		}
+		sky = newloss; // more accurate than accumulating changes
+		goto L60b;
+	    }
 	    // FastPAM2, Schubert and Rousseeuw 2019
 	    if (pamonce == 4 || pamonce == 5)
 		do {

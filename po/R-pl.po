@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cluster 1.15.1\n"
 "Report-Msgid-Bugs-To: bugs.r-project.org\n"
-"POT-Creation-Date: 2018-04-06 23:26\n"
+"POT-Creation-Date: 2021-01-30 22:00\n"
 "PO-Revision-Date: 2014-03-27 17:34+0100\n"
 "Last-Translator: Łukasz Daniel <lukasz.daniel@gmail.com>\n"
 "Language-Team: Łukasz Daniel <lukasz.daniel@gmail.com>\n"
@@ -385,6 +385,9 @@ msgid "Number of clusters 'k' must be in {1,2, .., n-1}; hence n >= 2"
 msgstr ""
 "Liczba grup 'k' musi zawierać się w zbiorze {1,2, .., n-1}; tak więc n >= 2"
 
+msgid "Set either 'variant' or 'pamonce', but not both"
+msgstr ""
+
 # cluster/R/pam.R: 64
 # stop(gettextf("'medoids' must be NULL or vector of %d distinct indices in {1,2, .., n}, n=%d", k, n))
 msgid ""
@@ -463,8 +466,9 @@ msgstr "wartości NA są niedozwolone w wektorze grupującym"
 
 # cluster/R/plotpart.R: 303
 # warning("Error in Fortran routine for the spanning ellipsoid,\n rank problem??")
+#, fuzzy
 msgid ""
-"Error in Fortran routine for the spanning ellipsoid,\n"
+"Error in C routine for the spanning ellipsoid,\n"
 " rank problem??"
 msgstr ""
 "Błąd w procedurze Fortran dla elipsoidy obejmującej,\n"
@@ -497,6 +501,12 @@ msgid ""
 "full silhouette is only available for results of 'clara(*, keep.data = TRUE)'"
 msgstr ""
 "pełna sylwetka jest dostępna jedynie dla wyników 'clara(*, keep.data = TRUE)'"
+
+msgid "specified both 'full' and 'subset'; will use 'subset'"
+msgstr ""
+
+msgid "'full' must be FALSE, TRUE, or a number in [0, 1]"
+msgstr ""
 
 # cluster/R/silhouette.R: 35
 # stop("'x' must only have integer codes")

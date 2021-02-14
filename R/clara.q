@@ -4,7 +4,7 @@
 
 clara <- function(x, k,
 		  metric = c("euclidean", "manhattan", "jaccard"),
-                  stand = FALSE,
+                  stand = FALSE, cluster.only = FALSE,
 		  samples = 5, sampsize = min(n, 40 + 2 * k), trace = 0,
                   medoids.x = TRUE, keep.data = medoids.x, rngR = FALSE,
                   pamLike = FALSE, correct.d = TRUE)
@@ -90,7 +90,8 @@ to suppress this warning.")
 	      jstop = integer(1),
 	      as.integer(trace),	# = trace_lev
 	      double (3 * sampsize),	# = tmp			## 33
-	      integer(6 * sampsize))	# = itmp
+	      integer(6 * sampsize)	# = itmp
+	      )[if(cluster.only) c("clu", "jstop") else substitute()] # empty index: <all>
     ## give a warning when errors occured
     ## res[] components really used below:
     ## jstop, clu, silinf, dis, sample, med, imed, obj, size, maxis, avdis, ratdis,
@@ -118,8 +119,11 @@ to suppress this warning.")
 	## else {cannot happen}
 	stop("invalid 'jstop' from .C(cl_clara,.): ", res$jstop)
     }
-    ## 'res$clu' is still large; cut down ASAP
-    res$clu <- as.integer(res$clu[1:n])
+    ## 'res$clu' is potentially too large; cut down ASAP
+    clustering <- as.integer(res$clu[1:n])
+    if(!is.null(namx)) names(clustering) <- namx
+    if(cluster.only)
+        return(clustering)
     sildim <- res$silinf[, 4]
     ## adapt C output to S:
     ## convert lower matrix, read by rows, to upper matrix, read by rows.
@@ -133,12 +137,11 @@ to suppress this warning.")
     res$med <- if(medoids.x) ox[res$imed, , drop = FALSE]
     ## add labels to C output
     if(!is.null(namx)) {
-	sildim <- namx[sildim]
+	sildim     <- namx[sildim]
 	res$sample <- namx[res$sample]
-	names(res$clu) <- namx
     }
     r <- list(sample = res$sample, medoids = res$med, i.med = res$imed,
-	      clustering = res$clu, objective = res$obj,
+	      clustering = clustering, objective = res$obj,
 	      clusinfo = cbind(size = res$size, "max_diss" = res$maxdis,
 	      "av_diss" = res$avdis, isolation = res$ratdis),
 	      diss = disv, call = match.call())

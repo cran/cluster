@@ -11,19 +11,36 @@ silhouette.partition <- function(x, ...) {
     r
 }
 
-silhouette.clara <- function(x, full = FALSE, ...)
+silhouette.clara <- function(x, full = FALSE, subset = NULL, ...)
 {
-    if(!full)
+    cll <- sys.call()
+    n <- length(x$clustering)
+    sampsize <- length(x$sample) ## == attr(x$diss, "Size")
+    if(is.null(subset) && full < sampsize / n) # use the (sub) sample in clara()
 	return(NextMethod()) ##-> silh*.partition()
 
-    ## else : full = TRUE
+    ## else : full = TRUE  or  full is number in  (0, 1]
     if(is.null(x$data))
 	stop("full silhouette is only available for results of 'clara(*, keep.data = TRUE)'")
-    ## Compute "full" silhouette -- from clustering + full distances:
-    r <- silhouette(x$clustering,
-		    daisy(x$data, metric = attr(x, "Metric")))
-    attr(r, "call") <-
-	substitute(silhouette(CL, full = TRUE), list(CL = x$call))
+    use.subset <- length(subset) >= min(10, n) && all(1 <= subset & subset <= n)
+    if(use.subset && !missing(full))
+        warning("specified both 'full' and 'subset'; will use 'subset'")
+    else if(!isTRUE(full) &&
+            !(is.numeric(full) && length(full) == 1 && 0 < full && full <= 1))
+        stop("'full' must be FALSE, TRUE, or a number in [0, 1]")
+    ## Compute "full" or 'subset' silhouette -- from clustering + full distances:
+    if(!use.subset && !isTRUE(full)) ## choose random
+        subset <- sample.int(n, size = full*n)
+    r <-
+        if(isTRUE(full))
+            silhouette(x$clustering, daisy(x$data, metric = attr(x, "Metric")))
+        else
+            silhouette(x$clustering[subset], daisy(x$data[subset, ,drop=FALSE],
+                                                   metric = attr(x, "Metric")))
+    cll[[2]] <- x$call
+    attr(r, "call") <- cll
+	## substitute(silhouette(CL, full = FULL, subset = SUBS),
+        ##            list(CL = x$call, FULL = full, SUBS = subset))
     r
 }
 

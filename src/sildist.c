@@ -30,7 +30,9 @@ void sildist(double *d,		/* distance : in matrix or dist format; i.e.,
 
 	for(j = i+1; j < *n; j++, l++) {
 	    int cj = clustering[j]-1;
-
+	    /* TODO:  d_ij += dist(x_i, x_j) -- computed "on the fly",
+	     * ----           but not stored in a length n(n-1)/2 = O(n^2)
+	     *        distance object */
 	    diC[(*k)*i + cj] += d[l];
 	    diC[(*k)*j + ci] += d[l];
 	}

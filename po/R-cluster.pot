@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: cluster 2.0.8\n"
-"POT-Creation-Date: 2019-04-02 17:09\n"
+"Project-Id-Version: cluster 2.1.1\n"
+"POT-Creation-Date: 2021-01-30 22:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -199,6 +199,9 @@ msgstr ""
 msgid "Number of clusters 'k' must be in {1,2, .., n-1}; hence n >= 2"
 msgstr ""
 
+msgid "Set either 'variant' or 'pamonce', but not both"
+msgstr ""
+
 msgid "'medoids' must be NULL or vector of %d distinct indices in {1,2, .., n}, n=%d"
 msgstr ""
 
@@ -241,7 +244,7 @@ msgstr ""
 msgid "NA-values are not allowed in clustering vector"
 msgstr ""
 
-msgid "Error in Fortran routine for the spanning ellipsoid,\n rank problem??"
+msgid "Error in C routine for the spanning ellipsoid,\n rank problem??"
 msgstr ""
 
 msgid "'col.clus' should have length 4 when color is TRUE"
@@ -257,6 +260,12 @@ msgid "invalid partition object"
 msgstr ""
 
 msgid "full silhouette is only available for results of 'clara(*, keep.data = TRUE)'"
+msgstr ""
+
+msgid "specified both 'full' and 'subset'; will use 'subset'"
+msgstr ""
+
+msgid "'full' must be FALSE, TRUE, or a number in [0, 1]"
 msgstr ""
 
 msgid "'x' must only have integer codes"

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: R 3.6.0 cluster 2.0.8\n"
 "Report-Msgid-Bugs-To: bugs.r-project.org\n"
-"POT-Creation-Date: 2018-04-06 23:26\n"
+"POT-Creation-Date: 2021-01-30 22:00\n"
 "PO-Revision-Date: 2019-04-02 13:23+0200\n"
 "Last-Translator: Detlef Steuer <steuer@hsu-hh.de>\n"
 "Language-Team: R Core Team <r-core@r-project.org\n"
@@ -203,10 +203,13 @@ msgstr "x muss eine Matrix oder Dataframe sein"
 
 msgid ""
 "All variables must be binary (e.g., a factor with 2 levels, both present)."
-msgstr "Alle Variablen müssen binär sein (z.B. Faktor mit 2 vorhandenen Stufen)."
+msgstr ""
+"Alle Variablen müssen binär sein (z.B. Faktor mit 2 vorhandenen Stufen)."
 
 msgid "mona() needs at least p >= 2 variables (in current implementation)"
-msgstr "mona() (in der aktuellen Implementierung) benötigt mindestens p >= 2 Variablen"
+msgstr ""
+"mona() (in der aktuellen Implementierung) benötigt mindestens p >= 2 "
+"Variablen"
 
 msgid "No clustering performed, an object was found with all values missing."
 msgstr ""
@@ -240,6 +243,9 @@ msgstr "habe %d Beobachtungen, aber mehr als %d nicht erlaubt"
 
 msgid "Number of clusters 'k' must be in {1,2, .., n-1}; hence n >= 2"
 msgstr "Anzahl der Cluster 'k' muss auch {1, 2, ..., n-1} sein; deshalb n >= 2"
+
+msgid "Set either 'variant' or 'pamonce', but not both"
+msgstr ""
 
 msgid ""
 "'medoids' must be NULL or vector of %d distinct indices in {1,2, .., n}, n=%d"
@@ -292,8 +298,9 @@ msgstr "Der Clustervektor hat eine falsche Länge"
 msgid "NA-values are not allowed in clustering vector"
 msgstr "NAs im Clustervektor nicht erlaubt"
 
+#, fuzzy
 msgid ""
-"Error in Fortran routine for the spanning ellipsoid,\n"
+"Error in C routine for the spanning ellipsoid,\n"
 " rank problem??"
 msgstr "Fehler im Fortran-Kode für den aufspannenden Ellipsoiden, Rangproblem?"
 
@@ -315,6 +322,12 @@ msgid ""
 msgstr ""
 "die volle Silhoutte ist nur verfügbar für Resultate von 'clara(*, keep."
 "data=TRUE)'"
+
+msgid "specified both 'full' and 'subset'; will use 'subset'"
+msgstr ""
+
+msgid "'full' must be FALSE, TRUE, or a number in [0, 1]"
+msgstr ""
 
 msgid "'x' must only have integer codes"
 msgstr "'x' darf nur ganzzahlige Kodes enthalten"

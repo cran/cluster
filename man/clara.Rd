@@ -2,12 +2,12 @@
 \alias{clara}
 \title{Clustering Large Applications}
 \description{
-  Computes a \code{"clara"} object, a list representing a clustering of
-  the data into \code{k} clusters.
+  Computes a \code{"clara"} object, a \code{\link{list}} representing a
+  clustering of the data into \code{k} clusters.
 }
 \usage{
 clara(x, k, metric = c("euclidean", "manhattan", "jaccard"),
-      stand = FALSE, samples = 5,
+      stand = FALSE, cluster.only = FALSE, samples = 5,
       sampsize = min(n, 40 + 2 * k), trace = 0, medoids.x = TRUE,
       keep.data = medoids.x, rngR = FALSE, pamLike = FALSE, correct.d = TRUE)
 }
@@ -34,6 +34,8 @@ clara(x, k, metric = c("euclidean", "manhattan", "jaccard"),
     variable's mean value and dividing by the variable's mean absolute
     deviation.
   }
+  \item{cluster.only}{logical; if true, only the clustering will be
+    computed and returned, see details.}
   \item{samples}{integer, say \eqn{N}, the number of samples to be drawn from the
     dataset.  The default, \code{N = 5}, is rather small for historical (and
     now back compatibility) reasons and we \emph{recommend to set
@@ -41,7 +43,7 @@ clara(x, k, metric = c("euclidean", "manhattan", "jaccard"),
   }
   \item{sampsize}{integer, say \eqn{j}, the number of observations in each
     sample.  \code{sampsize} should be higher than the number of clusters
-    (\code{k}) and at most the number of observations (n =
+    (\code{k}) and at most the number of observations (\eqn{n =}
     \code{nrow(x)}).  While computational effort is proportional to \eqn{j^2},
     see note below, it may still be advisable to set
     \eqn{j = }\code{sampsize} to a \emph{larger} value than the (historical) default.}
@@ -82,8 +84,12 @@ clara(x, k, metric = c("euclidean", "manhattan", "jaccard"),
     specifies \code{correct.d}.}
 }
 \value{
+  If \code{cluster.only} is false (as by default),
   an object of class \code{"clara"} representing the clustering.  See
   \code{\link{clara.object}} for details.
+
+  If \code{cluster.only} is true, the result is the "clustering", an
+  integer vector of length \eqn{n} with entries from \code{1:k}.
 }
 \details{
   \code{clara} is fully described in chapter 3 of Kaufman and Rousseeuw (1990).
@@ -107,6 +113,11 @@ clara(x, k, metric = c("euclidean", "manhattan", "jaccard"),
   Each sub-dataset is forced to contain the medoids obtained from the
   best sub-dataset until then.  Randomly drawn observations are added to
   this set until \code{sampsize} has been reached.
+
+  When \code{cluster.only} is true, the result is simply a (possibly
+  named) integer vector specifying the clustering, i.e.,\cr
+  \code{clara(x,k, cluster.only=TRUE)} is the same as \cr
+  \code{clara(x,k)$clustering} but computed more efficiently.
 }
 \note{
 %% mostly by Martin Maechler :
@@ -157,6 +168,11 @@ clarax$clusinfo
 all.equal(clarax[-8],
           clara(x, 2, samples=50, pamLike = TRUE)[-8])
 plot(clarax)
+
+## cluster.only = TRUE -- save some memory/time :
+clclus <- clara(x, 2, samples=50, cluster.only = TRUE)
+stopifnot(identical(clclus, clarax$clustering))
+
 
 ## 'xclara' is an artificial data set with 3 clusters of 1000 bivariate
 ## objects each.

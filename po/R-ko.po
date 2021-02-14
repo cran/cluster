@@ -13,7 +13,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: cluster 1.15.2\n"
-"POT-Creation-Date: 2018-04-06 23:26\n"
+"POT-Creation-Date: 2021-01-30 22:00\n"
 "PO-Revision-Date: 2015-02-06 21:56-0600\n"
 "Last-Translator:Chel Hee Lee  <chl948@mail.usask.ca>\n"
 "Language-Team: Chel Hee Lee  <chl948@mail.usask.ca>\n"
@@ -272,6 +272,9 @@ msgstr ""
 "군집(clusters)의 개수 'k'는 반드시 {1,2, .., n-1}내에 존재해야 하므로 n >= 2 "
 "입니다."
 
+msgid "Set either 'variant' or 'pamonce', but not both"
+msgstr ""
+
 msgid ""
 "'medoids' must be NULL or vector of %d distinct indices in {1,2, .., n}, n=%d"
 msgstr ""
@@ -324,8 +327,9 @@ msgstr "군집벡터(clustering vector)의 길이가 올바르지 않습니다."
 msgid "NA-values are not allowed in clustering vector"
 msgstr "군집벡터(clustering vector)에서는 NA가 허용되지 않습니다."
 
+#, fuzzy
 msgid ""
-"Error in Fortran routine for the spanning ellipsoid,\n"
+"Error in C routine for the spanning ellipsoid,\n"
 " rank problem??"
 msgstr ""
 "스패닝 타원(spanning ellipsoid)를 생성하는 포트란 루틴(Fortran routine)에서 "
@@ -351,6 +355,12 @@ msgid ""
 msgstr ""
 "full silhouette는 'clara(*, keep.data = TRUE)'의 결과만에 오로지 사용할 수 있"
 "습니다."
+
+msgid "specified both 'full' and 'subset'; will use 'subset'"
+msgstr ""
+
+msgid "'full' must be FALSE, TRUE, or a number in [0, 1]"
+msgstr ""
 
 msgid "'x' must only have integer codes"
 msgstr "'x'는 오로지 정수형 코드(codes)만을 가질 수 있습니다."

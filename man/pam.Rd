@@ -8,10 +8,13 @@
 \usage{
 pam(x, k, diss = inherits(x, "dist"),
     metric = c("euclidean", "manhattan"), %% FIXME: add "jaccard"
-    medoids = NULL, stand = FALSE, cluster.only = FALSE,
+    medoids = if(is.numeric(nstart)) "random",
+    nstart = if(variant == "faster") 1 else NA,
+    stand = FALSE, cluster.only = FALSE,
     do.swap = TRUE,
     keep.diss = !diss && !cluster.only && n < 100,
     keep.data = !diss && !cluster.only,
+    variant = c("original", "o_1", "o_2", "f_3", "f_4", "f_5", "faster"),
     pamonce = FALSE, trace.lev = 0)
 }
 \arguments{
@@ -52,6 +55,9 @@ pam(x, k, diss = inherits(x, "dist"),
   \item{medoids}{NULL (default) or length-\code{k} vector of integer
     indices (in \code{1:n}) specifying initial medoids instead of using
     the \sQuote{\emph{build}} algorithm.}
+  \item{nstart}{used only when \code{medoids = "random"}: specifies the
+    \emph{number} of random \dQuote{starts};  this argument corresponds to
+    the one of \code{\link{kmeans}()} (from \R's package \pkg{stats}).}
   \item{stand}{logical; if true, the measurements in \code{x} are
     standardized before calculating the dissimilarities.  Measurements
     are standardized for each variable (column), by subtracting the
@@ -69,9 +75,14 @@ pam(x, k, diss = inherits(x, "dist"),
     and/or input data \code{x} should be kept in the result.  Setting
     these to \code{FALSE} can give much smaller results and hence even save
     memory allocation \emph{time}.}
-  \item{pamonce}{logical or integer in \code{0:5} specifying algorithmic
+  \item{pamonce}{logical or integer in \code{0:6} specifying algorithmic
     short cuts as proposed by Reynolds et al. (2006), and
-    Schubert and Rousseeuw (2019) see below.}
+    Schubert and Rousseeuw (2019, 2021) see below.}
+  \item{variant}{a \code{\link{character}} string denoting the variant of
+    PAM algorithm to use; a more self-documenting version of \code{pamonce}
+    which should be used preferably; note that \code{"faster"} not only
+    uses \code{pamonce = 6} but also \code{nstart = 1} and hence
+    \code{medoids = "random"} by default.}
   \item{trace.lev}{integer specifying a trace level for printing
     diagnostics during the build and swap phase of the algorithm.
     Default \code{0} does not print anything; higher values print
@@ -111,10 +122,10 @@ pam(x, k, diss = inherits(x, "dist"),
   looks for a good initial set of medoids (this is called the
   \bold{build} phase).  Then it finds a local minimum for the
   objective function, that is, a solution such that there is no single
-  switch of an observation with a medoid that will decrease the
-  objective (this is called the \bold{swap} phase).
+  switch of an observation with a medoid (i.e. a \sQuote{swap}) that will
+  decrease the objective (this is called the \bold{swap} phase).
 
-  When the \code{medoids} are specified, their order does \emph{not}
+  When the \code{medoids} are specified (or randomly generated), their order does \emph{not}
   matter; in general, the algorithms have been designed to not depend on
   the order of the observations.
 
@@ -129,7 +140,7 @@ pam(x, k, diss = inherits(x, "dist"),
   and \code{pamonce = 2} additionally implements the second proposal as
   well. % FIXME more details
 
-  The key ideas of FastPAM (Schubert and Rousseeuw, 2019) are implemented
+  The key ideas of \sQuote{FastPAM} (Schubert and Rousseeuw, 2019) are implemented
   except for the linear approximate build as follows:
   \describe{
     \item{\code{pamonce = 3}:}{
@@ -138,9 +149,25 @@ pam(x, k, diss = inherits(x, "dist"),
     \item{\code{pamonce = 4}:}{ additionally allows executing multiple swaps
       per iteration, usually reducing the number of iterations.}
     \item{\code{pamonce = 5}:}{ adds minor optimizations copied from the
-      \code{pamonce = 2} approach, and is expected to be the fastest
-      variant.}
+      \code{pamonce = 2} approach, and is expected to be the fastest of the
+      \sQuote{FastPam} variants included.}
   }
+  \sQuote{FasterPAM} (Schubert and Rousseeuw, 2021) is implemented via
+  \describe{
+    \item{\code{pamonce = 6}:}{execute each swap which improves results
+      immediately, and hence typically multiple swaps per iteration;
+      this swapping algorithm runs in \eqn{O(n^2)} rather than
+      \eqn{O(n(n-k)k)} time which is much faster for all but small \eqn{k}.}
+  }
+
+  In addition, \sQuote{FasterPAM} uses \emph{random} initialization of the
+  medoids (instead of the \sQuote{\emph{build}} phase) to avoid the
+  \eqn{O(n^2 k)} initialization cost of the build algorithm.  In particular
+  for large k, this yields a much faster algorithm, while preserving a
+  similar result quality.
+
+  One may decide to use \emph{repeated} random initialization by setting
+  \code{nstart > 1}.%% FIXME(also above) THOUGH we have said the *order* should really not matter.
 }
 \note{
   For large datasets, \code{pam} may need too much memory or too much
@@ -157,6 +184,9 @@ pam(x, k, diss = inherits(x, "dist"),
   \cr
   Matthias Studer, Univ.Geneva provided the \code{pamonce} (\code{1} and \code{2})
   implementation.
+  \cr
+  Erich Schubert, TU Dortmund contributed the \code{pamonce} (\code{3} to \code{6})
+  implementation.
 }
 \references{
 %% the pamonce=1,2 options :
@@ -170,7 +200,13 @@ pam(x, k, diss = inherits(x, "dist"),
   Erich Schubert and Peter J. Rousseeuw (2019)
   Faster k-Medoids Clustering:
   Improving the PAM, CLARA, and CLARANS Algorithms;
-  Preprint, (\url{https://arxiv.org/abs/1810.05691}).
+  SISAP 2020, 171--187. \doi{10.1007/978-3-030-32047-8_16}.
+
+%% improvements to FastPAM, and FasterPAM:
+  Erich Schubert and Peter J. Rousseeuw (2021)
+  Fast and Eager k-Medoids Clustering:
+  O(k) Runtime Improvement of the PAM, CLARA, and CLARANS Algorithms;
+  Preprint, to appear in Information Systems (\url{https://arxiv.org/abs/2008.05171}).
 }
 \seealso{
   \code{\link{agnes}} for background and references;

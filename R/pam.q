@@ -1,11 +1,13 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q 7509 2018-03-29 14:44:04Z maechler $
+#### --- $Id: pam.q 7920 2021-01-30 21:27:20Z maechler $
 pam <- function(x, k, diss = inherits(x, "dist"),
 		metric = c("euclidean", "manhattan"), ## FIXME: add "jaccard"
-                medoids = NULL,
+                medoids = if(is.numeric(nstart)) "random",
+                nstart = if(variant == "faster") 1L else NA,
                 stand = FALSE, cluster.only = FALSE, do.swap = TRUE,
                 keep.diss = !diss && !cluster.only && n < 100,
                 keep.data = !diss && !cluster.only,
+                variant = c("original", "o_1", "o_2", "f_3", "f_4", "f_5", "faster"),
 		pamonce = FALSE, trace.lev = 0)
 {
     stopifnot(length(cluster.only) == 1, length(trace.lev) == 1)
@@ -64,8 +66,21 @@ pam <- function(x, k, diss = inherits(x, "dist"),
         storage.mode(x2) <- "double"
     }
     if((k <- as.integer(k)) < 1 || k >= n)
-	stop("Number of clusters 'k' must be in {1,2, .., n-1}; hence n >= 2")
-    if(!is.null(medoids)) { # non-default: check provided medoids
+        stop("Number of clusters 'k' must be in {1,2, .., n-1}; hence n >= 2")
+    missVari <- missing(variant)
+    variant <- match.arg(variant) # incl. validity check
+    if(!missVari) {
+        if(!missing(pamonce))
+            stop("Set either 'variant' or 'pamonce', but not both")
+        pamonce <- -1L +   ##  0            1      2      3      4      5       6
+            match(variant, c("original", "o_1", "o_2", "f_3", "f_4", "f_5", "faster"))
+        if(missing(medoids) && variant == "faster")
+            medoids <- "random"
+    } ## else if(!missing(pamonce)) Deprecated("use 'variant' instead")
+
+    if(randIni <- identical("random", medoids))
+        medoids <- sample.int(n, k)
+    else if(!is.null(medoids)) { # non-default: check provided medoids
         ## 'fixme': consider  sort(medoids) {and rely on it in ../src/pam.c }
         if(!is.integer(medoids))
             medoids <- as.integer(medoids)
@@ -79,7 +94,8 @@ pam <- function(x, k, diss = inherits(x, "dist"),
     nisol <- integer(if(cluster.only) 1 else k)
     if(do.swap) nisol[1] <- 1L
 
-    res <- .Call(cl_Pam, k, n,
+    pamDo <- function(medoids) {
+        .Call(cl_Pam, k, n,
                  !diss, # == do_diss: compute d[i,j] them from x2[] and allocate in C
                  if(diss) dv else x2,
                  !cluster.only, ## == all_stats == "old"  obj[1+ 0] == 0
@@ -89,10 +105,29 @@ pam <- function(x, k, diss = inherits(x, "dist"),
                  if(mdata) rep(valmisdat, jp) else double(1), # valmd
                  if(mdata) jtmd else integer(jp),	      # jtmd
                  ndyst)	                                      # dist_kind
+    }
 
-    ## Error if have NA's in diss:
-    if(!diss && is.integer(res))
-	stop("No clustering performed, NAs in the computed dissimilarity matrix.")
+    if(randIni && nstart >= 2) {
+        it <- 0L
+        res <- pamDo(medoids)
+        ## Error if have NA's in diss:
+        if(!diss && is.integer(res))
+            stop("No clustering performed, NAs in the computed dissimilarity matrix.")
+        for(it in 2:nstart) {
+            r <- pamDo(medoids = sample.int(n, k))
+            if(r$obj[2] < res$obj[2]) {
+                if(trace.lev)
+                    cat(sprintf("Found better objective, %g < %g (it=%d)\n",
+                                r$obj[2], res$obj[2], it))
+                res <- r
+            }
+        }
+    } else { # just once
+        res <- pamDo(medoids)
+        ## Error if have NA's in diss:
+        if(!diss && is.integer(res))
+            stop("No clustering performed, NAs in the computed dissimilarity matrix.")
+    }
 
     xLab <- if(diss) attr(x, "Labels") else dimnames(x)[[1]]
     r.clu <- res$clu
@@ -160,6 +195,32 @@ pam <- function(x, k, diss = inherits(x, "dist"),
     class(r) <- c("pam", "partition")
     r
 }
+
+### From Schubert, Dec 2020 --- but MM decides to rather implement  pam(*,  variant = "faster")
+if(FALSE) ## FasterPAM : Faster Partitioning Around Medoids
+fasterpam <- function(x, k, diss = inherits(x, "dist"),
+		metric = c("euclidean", "manhattan"), ## FIXME: add "jaccard"
+                medoids = NULL,
+                stand = FALSE, cluster.only = FALSE, # do.swap = TRUE, ## (not here)
+                keep.diss = !diss && !cluster.only && n < 100,
+                keep.data = !diss && !cluster.only,
+                ## pamonce = FALSE, ## (not here)
+		trace.lev = 0)
+{
+	if((diss <- as.logical(diss))) {
+		n <- attr(x, "Size")
+	} else {
+		n <- nrow(x)
+	}
+	if (is.null(medoids)) {
+		medoids = sample.int(n, k)
+	}
+	pam(x = x, k = k, diss = diss, metric = metric, medoids = medoids,
+            stand = stand, cluster.only = cluster.only, do.swap = TRUE,
+            keep.diss = keep.diss, keep.data = keep.data, pamonce = 6, trace.lev = trace.lev)
+}
+
+
 
 ## non-exported:
 .print.pam <- function(x, ...) {

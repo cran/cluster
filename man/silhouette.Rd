@@ -16,7 +16,7 @@
 silhouette(x, \dots)
 \method{silhouette}{default}  (x, dist, dmatrix, \dots)
 \method{silhouette}{partition}(x, \dots)
-\method{silhouette}{clara}(x, full = FALSE, \dots)
+\method{silhouette}{clara}(x, full = FALSE, subset = NULL, \dots)
 
 sortSilhouette(object, \dots)
 \method{summary}{silhouette}(object, FUN = mean, \dots)
@@ -36,10 +36,15 @@ sortSilhouette(object, \dots)
     \code{dmatrix} must be.}
   \item{dmatrix}{a symmetric dissimilarity matrix (\eqn{n \times n}{n x n}),
     specified instead of \code{dist}, which can be more efficient.}
-  \item{full}{logical specifying if a \emph{full} silhouette should be
-    computed for \code{\link{clara}} object.  Note that this requires
-    \eqn{O(n^2)} memory, since the full dissimilarity (see
-    \code{\link{daisy}}) is needed internally.}
+  \item{full}{logical or number in \eqn{[0,1]} specifying if a \emph{full}
+    silhouette should be computed for \code{\link{clara}} object.  When a
+    number, say \eqn{f}, for a random \code{\link{sample.int}(n, size = f*n)}
+    of the data the silhouette values are computed.
+    This requires \eqn{O((f*n)^2)} memory, since the full dissimilarity of
+    the (sub)sample (see \code{\link{daisy}}) is needed internally.}
+  \item{subset}{a subset from \code{1:n}, specified instead of \code{full}
+    to specify the indices of the observations to be used for the silhouette
+    computations.}
   \item{object}{an object of class \code{silhouette}.}
   \item{\dots}{further arguments passed to and from methods.}
   \item{FUN}{function used to summarize silhouette widths.}
