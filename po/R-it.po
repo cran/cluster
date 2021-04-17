@@ -1,7 +1,7 @@
 # R Italian translation                                                                    
 # Copyright (C) The R Foundation
 # This file is distributed under the same license as the R package.
-# Daniele Medri <dmedri@gmail.com>, 2005-2020.
+# Daniele Medri <dmedri@gmail.com>, 2005-2021.
 #
 msgid ""
 msgstr ""
@@ -227,11 +227,11 @@ msgid ""
 "identical."
 msgstr ""
 "Nessun cluster generato, una variabile è stata trovata con tutti i valori "
-"non mancanti identici."
+"non-mancanti identici."
 
 msgid "No clustering performed, all variables have at least one missing value."
 msgstr ""
-"Nessun cluster generato, tutte le variabili hanno almeno un valore mancante."
+"Clustering interrotto, tutte le variabili hanno almeno un valore mancante."
 
 msgid "Cannot keep data when 'x' is a dissimilarity!"
 msgstr "Non è possibile conservare i dati quando 'x' è una dissomiglianza!"
@@ -243,7 +243,7 @@ msgid "Number of clusters 'k' must be in {1,2, .., n-1}; hence n >= 2"
 msgstr "Il numero di cluster 'k' dev'essere in {1,2, .., n-1}; perciò n >= 2"
 
 msgid "Set either 'variant' or 'pamonce', but not both"
-msgstr ""
+msgstr "Imposta \"variant\" o \"pamonce\", ma non entrambi"
 
 msgid ""
 "'medoids' must be NULL or vector of %d distinct indices in {1,2, .., n}, n=%d"
@@ -281,7 +281,7 @@ msgstr "una o più variabili contiene solo valori mancanti"
 msgid ""
 "Missing values were displaced by the median of the corresponding variable(s)"
 msgstr ""
-"I valori mancanti sono stati spostati dalla mediana delle variabili "
+"I valori mancanti sono stati sostituiti con la mediana delle variabili "
 "corrispondenti"
 
 msgid "x is not numeric"
@@ -293,12 +293,11 @@ msgstr "Il vettore di clustering è di lunghezza incorretta"
 msgid "NA-values are not allowed in clustering vector"
 msgstr "I valori NA non sono ammessi in un vettore di clustering"
 
-#, fuzzy
 msgid ""
 "Error in C routine for the spanning ellipsoid,\n"
 " rank problem??"
 msgstr ""
-"Errore nella routine Fortran per l'ellissoide di spanning,\n"
+"Errore nella routine C per l'ellissoide di spanning,\n"
 " problema di rango?"
 
 msgid "'col.clus' should have length 4 when color is TRUE"
@@ -320,10 +319,10 @@ msgstr ""
 "= TRUE)'"
 
 msgid "specified both 'full' and 'subset'; will use 'subset'"
-msgstr ""
+msgstr "specificati 'full' e 'subset'; si utilizzerà 'subset'"
 
 msgid "'full' must be FALSE, TRUE, or a number in [0, 1]"
-msgstr ""
+msgstr "'full' dev'essere FALSE, TRUE, o un numero nell'intervallo [0, 1]"
 
 msgid "'x' must only have integer codes"
 msgstr "'x' deve avere unicamente codici interi"
