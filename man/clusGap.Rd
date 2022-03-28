@@ -165,11 +165,12 @@ maxSE(f, SE.f,
   R package version 1.9.7.% moved to Bioconductor sometime after 2006
   % Martin Morgan (2018-10-15): Last change was in 2011
   % URL <= ~2018: \url{http://home.swipnet.se/pibroberg/expression_hemsida1.html}
-  \url{http://www.bioconductor.org/packages/release/bioc/html/SAGx.html}
+  % deprecated Bioc 3.13, removed in Bioc 3.14 (~2022): hence this is "last":
+  \url{http://bioconductor.org/packages/3.12/bioc/html/SAGx.html}
 }
 \author{
   This function is originally based on the functions \code{gap} of
-  (Bioconductor) package \pkg{SAGx} by Per Broberg,
+  former (Bioconductor) package \pkg{SAGx} by Per Broberg,
   \code{gapStat()} from former package \pkg{SLmisc} by Matthias Kohl
   and ideas from \code{gap()} and its methods of package \pkg{lga} by
   Justin Harrington.

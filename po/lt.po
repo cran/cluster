@@ -1,5 +1,5 @@
 # Lithuanian translations for cluster package.
-# Copyright (C) 2020 THE PACKAGE'S COPYRIGHT HOLDER
+# Copyright (C) 2020--2021 The R Foundation
 # This file is distributed under the same license as the cluster package.
 # Gabrielė Stupurienė <gabriele.stupuriene@mif.vu.lt>, 2020.
 #
@@ -11,7 +11,7 @@ msgstr ""
 "PO-Revision-Date: 2021-02-12 11:04+0200\n"
 "Last-Translator: Gabrielė Stupurienė <gabriele.stupuriene@mif.vu.lt>\n"
 "Language-Team: none\n"
-"Language: \n"
+"Language: LT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"

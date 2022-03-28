@@ -190,6 +190,7 @@ plot(sf, col = 2+ as.integer(names(cl3$clustering) ) \%/\% 1000,
 ar <- agnes(ruspini)
 si3 <- silhouette(cutree(ar, k = 5), # k = 4 gave the same as pam() above
     	           daisy(ruspini))
+stopifnot(is.data.frame(di3 <- as.data.frame(si3))) 
 plot(si3, nmax = 80, cex.names = 0.5)
 ## 2 groups: Agnes() wasn't too good:
 si4 <- silhouette(cutree(ar, k = 2), daisy(ruspini))

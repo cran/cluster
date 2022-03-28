@@ -143,6 +143,8 @@ silhouette.default <- function(x, dist, dmatrix, ...) {
     wds
 }
 
+## copy from base; unfortunately needed for  S3method(fn, cl, meth) in ../NAMESPACE :
+as.data.frame.matrix <- as.data.frame.matrix
 
 sortSilhouette <- function(object, ...)
 {

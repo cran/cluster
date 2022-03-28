@@ -375,7 +375,7 @@ void bswap(int kk, int n, int *nrepr,
     }
 
     if(trace_lev) /* >= 2 (?) */ {
-	dig_n = 1+floor(log10(n));
+	dig_n = 1+(int) log10(n); // = 1 + floor(log10(n))
 	Rprintf("  after build: medoids are");
 	for (i = 1; i <= n; ++i)
 	    if(nrepr[i] == 1) Rprintf(" %*d", dig_n, i);
