@@ -1,4 +1,4 @@
-### $Id: plotpart.q 7668 2019-05-15 17:07:45Z maechler $
+### $Id: plotpart.q 8117 2022-08-19 13:26:09Z maechler $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
 	 nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
@@ -149,7 +149,7 @@ function(x, clus, diss = FALSE, s.x.2d = mkCheckX(x, diss),
 	 col.txt = col.p, col.clus = if(color) c(2, 4, 6, 3) else 5,
 	 cex = 1, cex.txt = cex,
 	 span = TRUE, add = FALSE,  xlim = NULL, ylim = NULL,
-	 main = paste("CLUSPLOT(", deparse(substitute(x)),")"),
+	 main = paste("CLUSPLOT(", deparse1(substitute(x)),")"),
 	 sub = paste("These two components explain",
 	       round(100 * var.dec, digits = 2), "% of the point variability."),
 	 xlab = "Component 1", ylab = "Component 2",
@@ -496,7 +496,7 @@ function(x, clus, diss = FALSE, s.x.2d = mkCheckX(x, diss),
 clusplot.partition <- function(x, main = NULL, dist = NULL, ...)
 {
     if(is.null(main) && !is.null(x$call))
-	main <- paste("clusplot(",format(x$call),")", sep="")
+	main <- paste0("clusplot(",format(x$call),")")
     if(length(x$data) != 0 &&
        (!anyNA(x$data) || data.class(x) == "clara"))
 	clusplot.default(x$data, x$clustering, diss = FALSE, main = main, ...)
@@ -509,10 +509,10 @@ clusplot.partition <- function(x, main = NULL, dist = NULL, ...)
 	    xD <- try(eval(x$call[[2]], envir = parent.frame()))
 	    if(inherits(xD, "try-error") || !inherits(xD, "dist"))
 		stop(gettextf("no diss nor data found, nor the original argument of %s",
-			      deparse(x$call)))
+			      deparse1(x$call)))
 	    ## else
 	    ## warning("both 'x$diss' and 'dist' are empty; ",
-	    ##	       "trying to find the first argument of ", deparse(x$call))
+	    ##	       "trying to find the first argument of ", deparse1(x$call))
 	    clusplot.default(xD, x$clustering, diss = TRUE, main = main, ...)
 	}
 	else stop("no diss nor data found for clusplot()'")

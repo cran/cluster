@@ -1,7 +1,12 @@
 ## Ensure consistent "diss.." class --- make "namespace-private-global !
 dissiCl <- c("dissimilarity", "dist")
 
-if((Rv <- getRversion()) < "3.2.1") {
+if((Rv <- getRversion()) < "4.0.0") {
+    ## deparse(.) returning *one* string
+    deparse1 <- function(expr, collapse = " ", width.cutoff = 500L, ...)
+        paste(deparse(expr, width.cutoff, ...), collapse=collapse)
+
+  if(Rv < "3.2.1") {
     lengths <- function (x, use.names = TRUE) vapply(x, length, 1L, USE.NAMES = use.names)
     if(Rv < "3.1.0") {
         anyNA <- function(x) any(is.na(x))
@@ -11,6 +16,7 @@ if((Rv <- getRversion()) < "3.2.1") {
         ##     ##     paste0 <- function(...) paste(..., sep = '')
         ## }
     }
+  } # < 3.2.1
 }; rm(Rv)
 
 ##' Not exported, useful to run CRAN checks faster

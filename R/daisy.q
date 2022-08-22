@@ -30,21 +30,20 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
 	}
 	tA <- type$asymm
 	tS <- type$symm
-	if(!is.null(tA) || !is.null(tS)) {
+	if(!is.null(tA) || !is.null(tS)) { ## check binary columns:
 	    ## tA and tS might be character and integer!
 	    d.bin <- cbind(as.data.frame(x[, tA, drop= FALSE]),
 					 x[, tS, drop= FALSE])
-	    lenB <- sapply(lapply(d.bin, function(y)
-				 levels(as.factor(y))), length)
+	    lenB <- lengths(lapply(d.bin, function(y) levels(as.factor(y))))
 	    if(any(lenB > 2))
 		stop("at least one binary variable has more than 2 levels.")
 	    if(any(lenB < 2))
 		warning("at least one binary variable has not 2 different levels.")
 	    ## Convert factors to integer, such that ("0","1") --> (0,1):
-	    if(any(is.f <- sapply(d.bin, is.factor)))
+	    if(any(is.f <- vapply(d.bin, is.factor, NA)))
 		d.bin[is.f] <- lapply(d.bin[is.f],
 				      function(f) as.integer(as.character(f)))
-	    if(!all(sapply(d.bin, function(y)
+	    if(!all(vapply(d.bin, FUN.VALUE=NA, function(y)
 			   is.logical(y) ||
 			   all(sort(unique(as.numeric(y[!is.na(y)])))%in% 0:1))))
 		stop("at least one binary variable has values not in {0,1,NA}")
@@ -52,7 +51,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     }
     ## transform variables and construct 'type' vector
     if(is.data.frame(x)) {
-	type2 <- sapply(x, data.class)
+	type2 <- vapply(x, data.class, "<class>")
 	x <- data.matrix(x)
     } else { ## matrix
         type2 <- rep("numeric", p)
@@ -60,7 +59,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     }
     if(length(type)) {
 	tT <- type$ ordratio
-	tL <- type$ logratio
+	tL <- type$ logratio # lg-transformed, staying numeric, -> treated as "I"
 	x[, names(type2[tT])] <- unclass(as.ordered(x[, names(type2[tT])]))
 	x[, names(type2[tL])] <- log10(		    x[, names(type2[tL])])
 	type2[tA] <- "A"
@@ -75,7 +74,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
 			 pColl(which(tI)[iBin])))
 
     type2[type2 == "ordered"] <- "O"
-    type2[type2 == "factor"] <- "N"
+    type2[type2 == "factor"]  <- "N"
     if(any(ilog <- type2 == "logical")) {
 	if(warnAsym) warning(sprintf(ngettext(sum(ilog),
 				 "setting 'logical' variable %s to type 'asymm'",
@@ -86,7 +85,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     ## Note: We have 2 status codings:  ndyst = (0,1,2) and jdat = (1,2);
     ##       the latter is superfluous in principle
 
-    ## standardize, if necessary
+    ## standardize, if necessary, i.e., *iff* all vars are "I"nterval scaled:
     all.I <- all(type2 == "I")
     if(all.I && { metric <- match.arg(metric); metric != "gower" }) {
 	if(stand) {

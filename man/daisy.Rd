@@ -57,14 +57,32 @@ daisy(x, metric = c("euclidean", "manhattan", "gower"),
   }
   \item{type}{list for specifying some (or all) of the types of the
     variables (columns) in \code{x}.  The list may contain the following
-    components: \code{"ordratio"} (ratio scaled variables to be treated as
-    ordinal variables), \code{"logratio"} (ratio scaled variables that
-    must be logarithmically transformed), \code{"asymm"} (asymmetric
-    binary) and \code{"symm"} (symmetric binary variables).  Each
-    component's value is a vector, containing the names or the numbers
-    of the corresponding columns of \code{x}.
-    Variables not mentioned in the \code{type} list are interpreted as
-    usual (see argument \code{x}).
+    components:
+    \describe{
+      \item{\code{"asymm"}  }{\bold{A}symmetric binary variable, aka
+	\code{"A"} in result \code{Types}, see \code{\link{dissimilarity.object}}.}
+      \item{\code{"symm"}   }{\bold{S}ymmetric  binary variable, aka \code{"S"}.}
+      \item{\code{"factor"} }{\bold{N}ominal -- the default for \code{\link{factor}}
+	variables, aka \code{"N"}.}
+      \item{\code{"ordered"}}{\bold{O}rdinal -- the default for \code{\link{ordered}}
+	(factor) variables, aka \code{"O"}, see \code{\link{dissimilarity.object}}.}
+      \item{\code{"logratio"}}{ratio scaled numeric variables that are to
+	be logarithmically transformed (\code{\link{log10}}) and then
+	treated as numeric (\code{"I"}): must be \emph{positive} numeric variable.}
+      \item{\code{"ordratio"}}{\dQuote{ra\bold{T}io}-like
+	variable to be treated as \code{\link{ordered}} (using the factor
+	codes \code{unclass(\link{as.ordered}(x[,j]))}), aka \code{"T"}.}
+      \item{\code{"numeric"}/\code{"integer"}}{\bold{I}nterval
+	scaled -- the \bold{default} for all numeric (incl \code{integer})
+	columns of \code{x}, aka \code{"I"} in result \code{Types}, see
+	\code{\link{dissimilarity.object}}.}
+    }
+    Each component is a (character or numeric) vector, containing either
+    the names or the numbers of the corresponding columns of \code{x}.
+
+    Variables not mentioned in \code{type} are interpreted as usual, see
+    argument \code{x}, and also \sQuote{default} above.  Consequently,
+    the default \code{type = list()} may often be sufficient.
   }
   \item{weights}{an optional numeric vector of length \eqn{p}(=\code{ncol(x)}); to
     be used in \dQuote{case 2} (mixed variables, or \code{metric = "gower"}),
@@ -195,7 +213,7 @@ daisy(x, metric = c("euclidean", "manhattan", "gower"),
   \code{\link{pam}}, \code{\link{fanny}}, \code{\link{clara}},
   \code{\link{agnes}}, \code{\link{diana}}.
 }
-\examples{
+\examples{% NB: >>> ../tests/daisy-ex.R  <<<<
 data(agriculture)
 ## Example 1 in ref:
 ##  Dissimilarities using Euclidean metric and without standardization

@@ -190,12 +190,11 @@ summary.silhouette <- function(object, FUN = mean, ...)
 print.summary.silhouette <- function(x, ...)
 {
     k <- length(csiz <- x$clus.sizes)
-    cls <- paste("Cluster sizes",
+    cls <- paste0("Cluster sizes",
                  if(!is.null(x$codes))
-                 paste(", ids = (",paste(x$codes, collapse=", "),"),", sep=""),
-                 sep="")
+                 paste0(", ids = (",paste(x$codes, collapse=", "),"),"))
     cat("Silhouette of", sum(csiz), "units in", k, "clusters",
-        if(!is.null(x$call)) paste("from", deparse(x$call)), ":\n",
+        if(!is.null(x$call)) paste("from", deparse1(x$call)), ":\n",
         cls, "and average silhouette widths:\n")
     cwid <- x$clus.avg.widths
     names(cwid) <- csiz
@@ -228,9 +227,9 @@ plot.silhouette <-
     if(is.null(main)) {
 	main <- "Silhouette plot"
 	if(!is.null(cll <- attr(x,"call"))) { # drop initial "silhouette":
-	    if(!is.na(charmatch("silhouette", deparse(cll[[1]]))))
+	    if(!is.na(charmatch("silhouette", deparse1(cll[[1]]))))
 		cll[[1]] <- as.name("FF")
-	    main <-  paste(main, "of", sub("^FF","", deparse(cll)))
+	    main <-  paste(main, "of", sub("^FF","", deparse1(cll)))
 	}
     }
     smry <- summary(x)

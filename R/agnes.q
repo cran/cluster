@@ -1,4 +1,4 @@
-#### $Id: agnes.q 6953 2015-06-18 09:30:24Z maechler $
+#### $Id: agnes.q 8117 2022-08-19 13:26:09Z maechler $
 
 agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		  stand = FALSE, method = "average", par.method,
@@ -152,7 +152,7 @@ summary.agnes <- function(object, ...)
 
 print.agnes <- function(x, ...)
 {
-    cat("Call:	", deparse(x$call),
+    cat("Call:	", deparse1(x$call),
 	"\nAgglomerative coefficient: ", format(x$ac, ...),
 	"\nOrder of objects:\n")
     print(if(length(x$order.lab) != 0) x$order.lab else x$order,
@@ -165,7 +165,7 @@ print.agnes <- function(x, ...)
 print.summary.agnes <- function(x, ...)
 {
     ## a bit more than print.agnes() ..
-    cat("Object of class 'agnes' from call:\n", deparse(x$call),
+    cat("Object of class 'agnes' from call:\n", deparse1(x$call),
 	"\nAgglomerative coefficient: ", format(x$ac, ...),
 	"\nOrder of objects:\n")
     print(if(length(x$order.lab) != 0) x$order.lab else x$order,

@@ -1,9 +1,9 @@
-### $Id: plothier.q 6800 2014-09-04 08:29:53Z maechler $
+### $Id: plothier.q 8117 2022-08-19 13:26:09Z maechler $
 
 pltree <- function(x, ...) UseMethod("pltree")
 
 ## note: pltree() can have an 'xlab' in "..." (plot.hclust has an explicit one)
-pltree.twins <- function(x, main = paste("Dendrogram of ", deparse(x$call)),
+pltree.twins <- function(x, main = paste("Dendrogram of ", deparse1(x$call)),
 			 labels = NULL, ylab = "Height", ...)
 {
 
@@ -92,7 +92,7 @@ function(x, ask = FALSE, which.plots = NULL, main = NULL,
          adj = 0, nmax.lab = 35, max.strlen = 5, xax.pretty = TRUE, ...)
 {
     if(is.null(main)) {
-	cl <- paste(strwrap(deparse(x$call, 150)[1], width = 60, exdent = 7),
+	cl <- paste(strwrap(deparse1(x$call, width.cutoff=150), width = 60, exdent = 7),
 		    collapse="\n")
 	## Different default for banner & pltree:
 	main1 <- paste("Banner of ", cl)
@@ -148,7 +148,7 @@ function(x, ask = FALSE, which.plots = NULL, main = NULL,
 	 adj = 0, nmax.lab = 35, max.strlen = 5, xax.pretty = TRUE, ...)
 {
     if(is.null(main)) {
-	cl <- paste(strwrap(deparse(x$call, 150)[1], width = 60, exdent = 7),
+	cl <- paste(strwrap(deparse1(x$call, width.cutoff=150), width = 60, exdent = 7),
 		    collapse="\n")
 	## Different default for banner & pltree:
 	main1 <- paste("Banner of ", cl)
@@ -197,7 +197,7 @@ function(x, ask = FALSE, which.plots = NULL, main = NULL,
     invisible()
 }
 
-plot.mona <- function(x, main = paste("Banner of ", deparse(x$call)),
+plot.mona <- function(x, main = paste("Banner of ", deparse1(x$call)),
 		      sub = NULL, xlab = "Separation step",
 		      col = c(2,0), axes = TRUE, adj = 0,
 		      nmax.lab = 35, max.strlen = 5, ...)

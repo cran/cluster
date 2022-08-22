@@ -10,7 +10,7 @@
 }
 \usage{
 pltree(x, \dots)
-\method{pltree}{twins}(x, main = paste("Dendrogram of ", deparse(x$call)),
+\method{pltree}{twins}(x, main = paste("Dendrogram of ", deparse1(x$call)),
              labels = NULL, ylab = "Height", \dots)
 }
 \arguments{

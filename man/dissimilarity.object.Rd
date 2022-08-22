@@ -41,15 +41,17 @@
     computed, because of too many missing values for some observations
     of the dataset.}
   \item{Types}{when a mixed metric was used, the types for each
-    variable as one-letter codes (as in the book, e.g. p.54):
+    variable as one-letter codes, see also \code{type} in \code{\link{daisy}()}:
+    % that was confusing with its "T": (as in the book, e.g. p.54):
     \describe{
-      \item{A}{Asymmetric binary}
-      \item{S}{Symmetric  binary}
-      \item{N}{Nominal (factor)}
-      \item{O}{Ordinal (ordered factor)}
-      \item{I}{Interval scaled (numeric)}
-      \item{T}{raTio to be log transformed (positive numeric)}
-      }.}
+      \item{\code{A}: }{Asymmetric binary}
+      \item{\code{S}: }{Symmetric  binary}
+      \item{\code{N}: }{Nominal (factor)}
+      \item{\code{O}: }{Ordinal (ordered factor)}
+      \item{\code{I}: }{Interval scaled, possibly after log transform
+	\code{"logratio"} (numeric)}
+      \item{\code{T}: }{ra\bold{T}io treated as \code{\link{ordered}}}
+    }}
 }
 \seealso{
   \code{\link{daisy}}, \code{\link{dist}},

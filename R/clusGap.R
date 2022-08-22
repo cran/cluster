@@ -141,7 +141,7 @@ print.clusGap <- function(x, method="firstSEmax", SE.factor = 1, ...)
 {
     method <- match.arg(method, choices = eval(formals(maxSE)$method))
     stopifnot((K <- nrow(T <- x$Tab)) >= 1, SE.factor >= 0)
-    cat("Clustering Gap statistic [\"clusGap\"] from call:\n", deparse(x$call),
+    cat("Clustering Gap statistic [\"clusGap\"] from call:\n", deparse1(x$call),
         sprintf("\nB=%d simulated reference sets, k = 1..%d; spaceH0=\"%s\"\n",
                 x$B, K, x$spaceH0), sep="")
     nc <- maxSE(f = T[,"gap"], SE.f = T[,"SE.sim"],
@@ -163,7 +163,7 @@ plot.clusGap <- function(x, type="b", xlab = "k", ylab = expression(Gap[k]),
     K <- nrow(Tab)
     k <- seq_len(K) # == 1,2,... k
     if(is.null(main))
-	main <- paste(strwrap(deparse(x$call, 150)[1], width = 60, exdent = 7),
+	main <- paste(strwrap(deparse1(x$call), width = 60, exdent = 7),
 		      collapse="\n")
     gap <- Tab[, "gap"]
     plot(k, gap, type=type, xlab=xlab, ylab=ylab, main=main, ...)

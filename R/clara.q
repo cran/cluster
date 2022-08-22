@@ -160,7 +160,7 @@ to suppress this warning.")
 
 print.clara <- function(x, ...)
 {
-    cat("Call:	", deparse(x$call),
+    cat("Call:	", deparse1(x$call),
 	"\nMedoids:\n");		print(x$medoids, ...)
     cat("Objective function:\t ", format(x$objective, ...),"\n",
 	"Clustering vector: \t", sep=""); str(x$clustering, vec.len = 7)
@@ -178,7 +178,7 @@ summary.clara <- function(object, ...)
 
 print.summary.clara <- function(x, ...)
 {
-    cat("Object of class 'clara' from call:\n", deparse(x$call),
+    cat("Object of class 'clara' from call:\n", deparse1(x$call),
 	"\nMedoids:\n");		print(x$medoids, ...)
     cat("Objective function:\t ", format(x$objective, ...),
 	"\nNumerical information per cluster:\n")

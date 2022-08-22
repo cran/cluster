@@ -1,5 +1,5 @@
 #### PAM : Partitioning Around Medoids
-#### --- $Id: pam.q 7920 2021-01-30 21:27:20Z maechler $
+#### --- $Id: pam.q 8118 2022-08-19 13:29:32Z maechler $
 pam <- function(x, k, diss = inherits(x, "dist"),
 		metric = c("euclidean", "manhattan"), ## FIXME: add "jaccard"
                 medoids = if(is.numeric(nstart)) "random",
@@ -15,7 +15,8 @@ pam <- function(x, k, diss = inherits(x, "dist"),
     if((diss <- as.logical(diss))) {
 	## check type of input vector
 	if(anyNA(x)) stop("NA values in the dissimilarity matrix not allowed.")
-	if(data.class(x) != "dissimilarity") { # try to convert to
+        if(keep.data) stop("Cannot keep data when 'x' is a dissimilarity!")
+	if(!inherits(x, "dissimilarity")) { # try to convert to
 	    if(!is.null(dim(x))) {
 		x <- as.dist(x) # or give an error
 	    } else {
@@ -27,7 +28,6 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	    class(x) <- dissiCl
 	    if(is.null(attr(x,"Metric"))) attr(x, "Metric") <- "unspecified"
 	}
-        if(keep.data) stop("Cannot keep data when 'x' is a dissimilarity!")
 	## adapt S dissimilarities to Fortran:
 	## convert upper matrix, read by rows, to lower matrix, read by rows.
 	n <- attr(x, "Size")
@@ -45,7 +45,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
     else {
 	## check input matrix and standardize, if necessary
 	x <- data.matrix(x)# dropping "automatic rownames" compatibly with daisy()
-	if(!is.numeric(x)) stop("x is not a numeric dataframe or matrix.")
+	if(!is.numeric(x)) stop("'x' is not a numeric dataframe or matrix.")
 	x2 <- x ; dimnames(x2) <- NULL
 	n <- nrow(x2)
 	if(n > nMax)
@@ -107,12 +107,12 @@ pam <- function(x, k, diss = inherits(x, "dist"),
                  ndyst)	                                      # dist_kind
     }
 
+    res <- pamDo(medoids)
+    ## Error if have NA's in diss:
+    if(!diss && is.integer(res))
+        stop("No clustering performed, NAs in the computed dissimilarity matrix.")
     if(randIni && nstart >= 2) {
         it <- 0L
-        res <- pamDo(medoids)
-        ## Error if have NA's in diss:
-        if(!diss && is.integer(res))
-            stop("No clustering performed, NAs in the computed dissimilarity matrix.")
         for(it in 2:nstart) {
             r <- pamDo(medoids = sample.int(n, k))
             if(r$obj[2] < res$obj[2]) {
@@ -122,12 +122,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
                 res <- r
             }
         }
-    } else { # just once
-        res <- pamDo(medoids)
-        ## Error if have NA's in diss:
-        if(!diss && is.integer(res))
-            stop("No clustering performed, NAs in the computed dissimilarity matrix.")
-    }
+    } ## else just once
 
     xLab <- if(diss) attr(x, "Labels") else dimnames(x)[[1]]
     r.clu <- res$clu

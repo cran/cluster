@@ -17,7 +17,7 @@
           span = TRUE,
           add = FALSE,
           xlim = NULL, ylim = NULL,
-          main = paste("CLUSPLOT(", deparse(substitute(x)),")"),
+          main = paste("CLUSPLOT(", deparse1(substitute(x)),")"),
           sub = paste("These two components explain",
              round(100 * var.dec, digits = 2), "\% of the point variability."),
           xlab = "Component 1", ylab = "Component 2",

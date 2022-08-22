@@ -25,7 +25,7 @@ msgstr ""
 msgid "'x' is not and cannot be converted to class \"dissimilarity\""
 msgstr ""
 
-msgid "x is not a numeric dataframe or matrix."
+msgid "'x' is not a numeric dataframe or matrix."
 msgstr ""
 
 msgid "need at least 2 objects to cluster"

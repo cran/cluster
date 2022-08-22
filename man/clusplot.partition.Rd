@@ -44,8 +44,8 @@ clusplot(x, \dots)
   data matrix contains missing values and the clustering is performed
   with \code{\link{pam}} or \code{\link{fanny}}, the dissimilarity
   matrix will be given as input to \code{clusplot}.  When the clustering
-  algorithm \code{\link{clara}} was applied to a data matrix with NAs
-  then clusplot will replace the missing values as described in
+  algorithm \code{\link{clara}} was applied to a data matrix with \code{\link{NA}}s
+  then \code{clusplot()} will replace the missing values as described in
   \code{\link{clusplot.default}}, because a dissimilarity matrix is not
   available.
 }
