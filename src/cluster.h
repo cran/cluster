@@ -16,6 +16,9 @@ typedef enum {
     EUCLIDEAN = 1,
     MANHATTAN = 2,
     JACCARD = 3
+  , ZJACCARD  = 4
+  , SMATCHING = 5
+  , GOWER = 6
 } DISS_KIND;
 
 /* --------- ./clara.c ------------------*/
@@ -35,7 +38,7 @@ void cl_clara(int *n,  /* = number of objects */
 	      int *mdata,	/*= {0,1}; 1: min(x) is missing value (NA);  0: no NA */
 	      double *valmd,/*[j]= missing value code (instead of NA) for x[,j]*/
 	      int *jtmd,	/* [j]= {-1,1};	 -1: x[,j] has NA; 1: no NAs in x[,j] */
-	      DISS_KIND *diss_kind, // = {EUCLIDEAN, MANHATTAN, JACCARD}
+	      DISS_KIND *diss_kind, // = {EUCLIDEAN, MANHATTAN, ....}
 	      int/*logical*/ *rng_R,/*= {0,1};  0 : use clara's internal weak RNG;
 				     *	        1 : use R's RNG (and seed) */
 	      int/*logical*/ *pam_like,/* if (1), we do "swap()" as in pam(), otherwise
@@ -194,5 +197,3 @@ void twins(int *nn, int *jpp, double *x,
 	   int *jtmd, int *ndyst, int *jalg, int *method,
 	   int *kwan, int *ner, double *ban, double *coef,
 	   double *alpha, int *merge, int *trace_lev);
-
-

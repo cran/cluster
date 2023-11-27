@@ -24,7 +24,7 @@ pam(x, k, diss = inherits(x, "dist"),
 
     In case of a matrix or data frame, each row corresponds to an
     observation, and each column corresponds to a variable.  All
-    variables must be numeric.  Missing values (\code{\link{NA}}s)
+    variables must be numeric (or logical).  Missing values (\code{\link{NA}}s)
     \emph{are} allowed---as long as every pair of observations has at
     least one case not missing.
 

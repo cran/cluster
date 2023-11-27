@@ -44,8 +44,8 @@ silhouette.clara <- function(x, full = FALSE, subset = NULL, ...)
     r
 }
 
-## R-only implementation -- no longer used nor exported:
-silhouette.default.R <- function(x, dist, dmatrix, ...) {
+## R-only implementation -- no longer used nor exported, was silhouette.default.R() till 2023
+silhouetteR <- function(x, dist, dmatrix, ...) {
     cll <- match.call()
     if(is.list(x) && !is.null(cl <- x$clustering)) x <- cl
     n <- length(x)
@@ -90,7 +90,7 @@ silhouette.default.R <- function(x, dist, dmatrix, ...) {
     attr(wds, "call") <- cll
     class(wds) <- "silhouette"
     wds
-} ## silhouette.default.R
+} ## silhouetteR (was silhouette.default.R}
 
 silhouette.default <- function(x, dist, dmatrix, ...) {
     cll <- match.call()

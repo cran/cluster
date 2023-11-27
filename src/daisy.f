@@ -35,16 +35,17 @@ c               = -1 if variable j is not binary and has missing values
 c               = +1 if variable j is not binary and has no missing values
 c VAR
       double precision clk,dlk, pp,ppa, rpres
-      integer j,k,l,la, lsubt, nlk, nbad, npres
+      integer j,k,l,la, lsubt, nlk, npres
+c     integer nbad
       logical hasNA
 
       hasNA = (mdata .ne. 0)
 
 c         calculation of the dissimilarities
       nlk=0
-      if(jdat .eq. 1) then
+      if(jdat .eq. 1) then ! <==> ndyst == 0
 c Case I: `mixed' type variables
-         nbad=0
+c        nbad=0
          do 450 l=2,nn
             la=l-1
             do 440 k=1,la
@@ -61,22 +62,23 @@ c               Dissimilarity between obs.  l & k
                         endif
                      endif
                      ppa=ppa + weights(j)
-                     if(vtype(j).eq.3) then
+                     if(vtype(j).eq.3) then ! type = "N"ominal
                         if(x(l,j).ne.x(k,j)) dlk=dlk+ weights(j)
-                     else
+                     else ! type in {"O", "I", "T"}
                         dlk=dlk+ weights(j)*dabs(x(l,j)-x(k,j))
                      endif
                   else
 c               binary variable x(*,j)
                      if(x(l,j).ne.0..and.x(l,j).ne.1.) goto 420
                      if(x(k,j).ne.0..and.x(k,j).ne.1.) goto 420
-                     if(vtype(j).eq.2.or.x(l,j).ne.0.or.x(k,j).ne.0)
+                     if(vtype(j).eq.2 .or. x(l,j).ne.0.or.x(k,j).ne.0) ! "S" or {"A" *and* has '1'}
      *                    ppa=ppa+weights(j)
                      if(x(l,j).ne.x(k,j)) dlk=dlk+ weights(j)
                   endif
  420           continue
-               if(ppa.le.0.5) then
-                  nbad=nbad+1
+               if(ppa .eq. 0.) then
+c was          if(ppa.le.0.5) then
+c                 nbad=nbad+1
                   disv(nlk)=-1
                else
                   disv(nlk)=dlk/ppa
@@ -103,14 +105,14 @@ c                       FIXME: common code! }
                      endif
                   endif
                   npres=npres+1
-                  if(ndyst.eq.1) then
+                  if(ndyst.eq.1) then ! euclidean
                      clk=clk+ (x(l,j)-x(k,j))*(x(l,j)-x(k,j))
-                  else
+                  else          ! manhattan
                      clk=clk+ dabs(x(l,j)-x(k,j))
                   endif
  530           continue
                rpres=npres
-               if(npres.eq.0)then
+               if(npres.eq.0)then ! all missing
                   disv(nlk)=-1.0
                else if(ndyst.eq.1) then
                   disv(nlk)=dsqrt(clk*(pp/rpres))

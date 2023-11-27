@@ -63,7 +63,8 @@ daisy(x, metric = c("euclidean", "manhattan", "gower"),
 	\code{"A"} in result \code{Types}, see \code{\link{dissimilarity.object}}.}
       \item{\code{"symm"}   }{\bold{S}ymmetric  binary variable, aka \code{"S"}.}
       \item{\code{"factor"} }{\bold{N}ominal -- the default for \code{\link{factor}}
-	variables, aka \code{"N"}.}
+	variables, aka \code{"N"}.  When the factor has 2 levels, this is
+	equivalent to \code{type = "S"} for a (symmetric) binary variable.}
       \item{\code{"ordered"}}{\bold{O}rdinal -- the default for \code{\link{ordered}}
 	(factor) variables, aka \code{"O"}, see \code{\link{dissimilarity.object}}.}
       \item{\code{"logratio"}}{ratio scaled numeric variables that are to
@@ -223,14 +224,29 @@ as.matrix(d.agr)[,"DK"] # via as.matrix.dist(.)
 ## compare with
 as.matrix(daisy(agriculture, metric = "gower"))
 
-data(flower)
-## Example 2 in ref
-summary(dfl1 <- daisy(flower, type = list(asymm = 3)))
-summary(dfl2 <- daisy(flower, type = list(asymm = c(1, 3), ordratio = 7)))
-## this failed earlier:
-summary(dfl3 <- daisy(flower,
-        type = list(asymm = c("V1", "V3"), symm= 2,
-                    ordratio= 7, logratio= 8)))
+## Example 2 in reference, extended  ---  different ways of "mixed" / "gower":
 
+example(flower) # -> data(flower) *and* provide 'flowerN'
+
+summary(d0    <- daisy(flower))  # -> the first 3 {0,1} treated as *N*ominal
+summary(dS123 <- daisy(flower,  type = list(symm = 1:3))) # first 3 treated as *S*ymmetric
+stopifnot(dS123 == d0) # i.e.,  *S*ymmetric <==> *N*ominal {for 2-level factor}
+summary(dNS123<- daisy(flowerN, type = list(symm = 1:3)))
+stopifnot(dS123 == d0)
+## by default, however ...
+summary(dA123 <- daisy(flowerN)) # .. all 3 logicals treated *A*symmetric binary (w/ warning)
+summary(dA3  <- daisy(flower, type = list(asymm = 3)))
+summary(dA13 <- daisy(flower, type = list(asymm = c(1, 3), ordratio = 7)))
+## Mixing variable *names* and column numbers (failed in the past):
+summary(dfl3 <- daisy(flower, type = list(asymm = c("V1", "V3"), symm= 2,
+                                          ordratio= 7, logratio= 8)))
+
+## If we'd treat the first 3 as simple {0,1}
+Nflow <- flower
+Nflow[,1:3] <- lapply(flower[,1:3], \(f) as.integer(as.character(f)))
+summary(dN <- daisy(Nflow)) # w/ warning: treated binary .. 1:3 as interval
+## Still, using Euclidean/Manhattan distance for {0-1} *is* identical to treating them as "N" :
+stopifnot(dN == d0)
+stopifnot(dN == daisy(Nflow, type = list(symm = 1:3))) # or as "S"
 }
 \keyword{cluster}

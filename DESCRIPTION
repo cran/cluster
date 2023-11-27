@@ -1,6 +1,6 @@
 Package: cluster
-Version: 2.1.4
-Date: 2022-08-19
+Version: 2.1.5
+Date: 2023-11-27
 Priority: recommended
 Title: "Finding Groups in Data": Cluster Analysis Extended Rousseeuw et
         al.
@@ -25,12 +25,15 @@ Authors@R: c(person("Martin","Maechler", role = c("aut","cre"),
  ,person("Erich",  "Schubert", role="ctb", comment = c("fastpam options for pam()",
                                                        ORCID = "0000-0001-9143-4880"))
  ,person("Keefe",  "Murphy", role="ctb", comment = "volume.ellipsoid({d >= 3})")
+ ,person("Fischer-Rasmussen", "Kasper", role = "ctb", comment = "Gower distance for CLARA")
  )
 Depends: R (>= 3.5.0)
 Imports: graphics, grDevices, stats, utils
 Suggests: MASS, Matrix
 SuggestsNote: MASS: two examples using cov.rob() and mvrnorm(); Matrix
         tools for testing
+Enhances: mvoutlier, fpc, ellipse, sfsmisc
+EnhancesNote: xref-ed in man/*.Rd
 LazyLoad: yes
 LazyData: yes
 ByteCompile: yes
@@ -38,7 +41,7 @@ BuildResaveData: no
 License: GPL (>= 2)
 URL: https://svn.r-project.org/R-packages/trunk/cluster/
 NeedsCompilation: yes
-Packaged: 2022-08-19 13:31:31 UTC; maechler
+Packaged: 2023-11-27 15:04:10 UTC; maechler
 Author: Martin Maechler [aut, cre] (<https://orcid.org/0000-0002-8685-9910>),
   Peter Rousseeuw [aut] (Fortran original,
     <https://orcid.org/0000-0002-3807-5353>),
@@ -52,6 +55,7 @@ Author: Martin Maechler [aut, cre] (<https://orcid.org/0000-0002-8685-9910>),
   Kamil Kozlowski [ctb],
   Erich Schubert [ctb] (fastpam options for pam(),
     <https://orcid.org/0000-0001-9143-4880>),
-  Keefe Murphy [ctb] (volume.ellipsoid({d >= 3}))
+  Keefe Murphy [ctb] (volume.ellipsoid({d >= 3})),
+  Fischer-Rasmussen Kasper [ctb] (Gower distance for CLARA)
 Repository: CRAN
-Date/Publication: 2022-08-22 10:10:02 UTC
+Date/Publication: 2023-11-27 19:20:15 UTC

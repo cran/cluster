@@ -46,8 +46,18 @@
 }
 \examples{
 data(flower)
-## Example 2 in ref
-daisy(flower, type = list(asymm = 3))
-daisy(flower, type = list(asymm = c(1, 3), ordratio = 7))
+str(flower) # factors, ordered, numeric
+
+## "Nicer" version (less numeric more self explainable) of 'flower':
+flowerN <- flower
+colnames(flowerN) <- c("winters", "shadow", "tubers", "color",
+                       "soil", "preference", "height", "distance")
+for(j in 1:3) flowerN[,j] <- (flowerN[,j] == "1")
+levels(flowerN$color) <- c("1" = "white", "2" = "yellow", "3" = "pink",
+                           "4" = "red", "5" = "blue")[levels(flowerN$color)]
+levels(flowerN$soil)  <- c("1" = "dry", "2" = "normal", "3" = "wet")[levels(flowerN$soil)]
+flowerN
+
+## ==> example(daisy)  on how it is used
 }
 \keyword{datasets}

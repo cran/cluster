@@ -166,7 +166,8 @@ maxSE(f, SE.f,
   % Martin Morgan (2018-10-15): Last change was in 2011
   % URL <= ~2018: \url{http://home.swipnet.se/pibroberg/expression_hemsida1.html}
   % deprecated Bioc 3.13, removed in Bioc 3.14 (~2022): hence this is "last":
-  \url{http://bioconductor.org/packages/3.12/bioc/html/SAGx.html}
+  \url{https://bioconductor.org/packages/3.12/bioc/html/SAGx.html}
+  Deprecated and removed from Bioc ca. 2022
 }
 \author{
   This function is originally based on the functions \code{gap} of

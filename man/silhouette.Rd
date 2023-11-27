@@ -83,8 +83,7 @@ sortSilhouette(object, \dots)
       s(i) := ( b(i) - a(i) ) / max( a(i), b(i) ).}
 
     \code{silhouette.default()} is now based on C code donated by Romain
-    Francois (the R version being still available as
-    \code{cluster:::silhouette.default.R}).
+    Francois (the R version being still available as \code{cluster:::silhouetteR}).
 
     Observations with a large \eqn{s(i)} (almost 1) are very well
     clustered, a small \eqn{s(i)} (around 0) means that the observation
@@ -190,7 +189,7 @@ plot(sf, col = 2+ as.integer(names(cl3$clustering) ) \%/\% 1000,
 ar <- agnes(ruspini)
 si3 <- silhouette(cutree(ar, k = 5), # k = 4 gave the same as pam() above
     	           daisy(ruspini))
-stopifnot(is.data.frame(di3 <- as.data.frame(si3))) 
+stopifnot(is.data.frame(di3 <- as.data.frame(si3)))
 plot(si3, nmax = 80, cex.names = 0.5)
 ## 2 groups: Agnes() wasn't too good:
 si4 <- silhouette(cutree(ar, k = 2), daisy(ruspini))

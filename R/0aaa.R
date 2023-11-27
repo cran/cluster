@@ -19,7 +19,7 @@ if((Rv <- getRversion()) < "4.0.0") {
   } # < 3.2.1
 }; rm(Rv)
 
-##' Not exported, useful to run CRAN checks faster
+##' Not exported, useful to run checks faster, e.g., on CRAN:
 doExtras <- function() {
     interactive() || nzchar(Sys.getenv("R_CLUSTER_CHECK_EXTRA")) ||
         identical("true", unname(Sys.getenv("R_PKG_CHECKING_doExtras")))

@@ -3,7 +3,7 @@
 #### Note that the algorithm is O(n), but O(ns^2) where ns == sampsize
 
 clara <- function(x, k,
-		  metric = c("euclidean", "manhattan", "jaccard"),
+		  metric = c("euclidean", "manhattan", "jaccard", "gower"),
                   stand = FALSE, cluster.only = FALSE,
 		  samples = 5, sampsize = min(n, 40 + 2 * k), trace = 0,
                   medoids.x = TRUE, keep.data = medoids.x, rngR = FALSE,
@@ -12,11 +12,12 @@ clara <- function(x, k,
     ## check type of input matrix and values of input numbers
     if(inherits(x, "dist"))# catch user error
 	stop("'x' is a \"dist\" object, but should be a data matrix or frame")
+    ## for "gower" we should allow 'type'  as in daisy() --> use that code in a *modular* way
     x <- data.matrix(x)
-    if(!is.numeric(x)) stop("x is not a numeric dataframe or matrix.")
+    if(!(is.numeric(x) || is.logical(x))) stop("x is not a numeric dataframe or matrix.")
     n <- nrow(x)
     if((k <- as.integer(k)) < 1 || k > n - 1)
-	stop("The number of cluster should be at least 1 and at most n-1." )
+	stop("The number of cluster should be at least 1 and at most n-1." ) # ==> n >= 2
     if((sampsize <- as.integer(sampsize)) < max(2,k+1))
 	stop(gettextf("'sampsize' should be at least %d = max(2, 1+ number of clusters)",
                       max(2,k+1)), domain=NA)
@@ -66,7 +67,7 @@ to suppress this warning.")
 	      as.integer(mdata),	# = mdata
 	      valmd = if(mdata) rep(valmisdat, jp) else -1.,	## 9
 	      jtmd  = if(mdata) jtmd else integer(1),
-	      c("euclidean" = 1L, "manhattan" = 2L, "jaccard" = 3L)[[metric]],
+	      c("euclidean" = 1L, "manhattan" = 2L, "jaccard" = 3L, "gower" = 6L)[[metric]],
 					# =  diss_kind (DISS_KIND : ../src/cluster.h)
 	      as.logical(rngR[1]), 	# = rng_R		## 12
 	      as.logical(pamLike[1]),	# = pam_like
@@ -92,10 +93,10 @@ to suppress this warning.")
 	      double (3 * sampsize),	# = tmp			## 33
 	      integer(6 * sampsize)	# = itmp
 	      )[if(cluster.only) c("clu", "jstop") else substitute()] # empty index: <all>
-    ## give a warning when errors occured
     ## res[] components really used below:
     ## jstop, clu, silinf, dis, sample, med, imed, obj, size, maxis, avdis, ratdis,
     ## avsil, ttsil
+    ## give a warning when errors occured:
     if(res$jstop) {
 	if(mdata && any(aNA <- apply(inax,1, all))) {
 	    i <- which(aNA)
@@ -124,7 +125,6 @@ to suppress this warning.")
     if(!is.null(namx)) names(clustering) <- namx
     if(cluster.only)
         return(clustering)
-    sildim <- res$silinf[, 4]
     ## adapt C output to S:
     ## convert lower matrix, read by rows, to upper matrix, read by rows.
     disv <- res$dis[-1]
@@ -136,6 +136,7 @@ to suppress this warning.")
     attr(disv, "Labels") <- namx[res$sample]
     res$med <- if(medoids.x) ox[res$imed, , drop = FALSE]
     ## add labels to C output
+    sildim <- res$silinf[, 4]
     if(!is.null(namx)) {
 	sildim     <- namx[sildim]
 	res$sample <- namx[res$sample]
@@ -149,9 +150,9 @@ to suppress this warning.")
     if(k > 1) {
 	dimnames(res$silinf) <- list(sildim,
 				     c("cluster", "neighbor", "sil_width", ""))
-	r$silinfo <- list(widths = res$silinf[, -4],
+	r$silinfo <- list(widths          = res$silinf[, -4],
 			  clus.avg.widths = res$avsil,
-			  avg.width = res$ttsil)
+			       avg.width  = res$ttsil)
     }
     if(keep.data) r$data <- data
     class(r) <- c("clara", "partition")

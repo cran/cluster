@@ -29,6 +29,9 @@ summary(fanny(x,3))# one extra cluster
 (fanny(x,2, memb.exp = 1.2))
 (fanny(x,2, memb.exp = 1.1))
 (fanny(x,2, memb.exp = 3))
+## for subsetting, when compairing:
+not.conv <- setdiff(names(fannyx),               c("convergence", "call"))
+notMconv <- setdiff(names(fannyx), c("membership", "convergence", "call"))
 
 data(ruspini) # < to run under R 1.9.1
 summary(fanny(ruspini, 3), digits = 9)
@@ -39,28 +42,35 @@ cat('Time elapsed: ', proc.time() - .proctime00,'\n')
 data(chorSub)
 p4cl <- pam(chorSub, k = 4, cluster.only = TRUE)
 ## The first two are "completely fuzzy" -- and now give a warnings
-f4.20 <- fanny(chorSub, k = 4, trace.lev = 1) ; f4.20$coef
+f4.20  <- fanny(chorSub, k = 4, trace.lev = 1) ; f4.20$coef
 f4.18  <- fanny(chorSub, k = 4,   memb.exp = 1.8) # same problem
 f4.18. <- fanny(chorSub, k = 4,   memb.exp = 1.8,
                 iniMem.p = f4.20$membership) # very quick convergence
-stopifnot(all.equal(f4.18[-c(7,9)], f4.18.[-c(7,9)], tol = 5e-7))
+stopifnot(all.equal(f4.18[not.conv], f4.18.[not.conv], tol = 5e-7))
 
 f4.16  <- fanny(chorSub, k = 4, memb.exp = 1.6) # now gives 4 crisp clusters
+## IGNORE_RDIFF_BEGIN
 f4.16. <- fanny(chorSub, k = 4, memb.exp = 1.6,
-                iniMem.p = f4.18$membership, trace.lev = 2)# "converges" immediately - WRONGLY!
-f4.16.2 <- fanny(chorSub, k = 4, memb.exp = 1.6,
-                 iniMem.p = cluster:::as.membership(p4cl),
-                 tol = 1e-10, trace.lev = 2)## looks much better:
-stopifnot(f4.16$clustering == f4.16.2$clustering,
-          all.equal(f4.16[-c(1,7,9)], f4.16.2[-c(1,7,9)], tol = 1e-7),
-          all.equal(f4.16$membership, f4.16.2$membership, tol = 0.001))
-## the memberships are quite close but have only converged to precision 0.000228
+                iniMem.p = f4.18$membership, trace.lev = 2)# wrongly "converged" immediately; no longer!
+f4.16.2<- fanny(chorSub, k = 4, memb.exp = 1.6,
+                iniMem.p = cluster:::as.membership(p4cl), tol = 1e-10, trace.lev = 2)
+all.equal((m1 <- f4.16  $membership),
+          (m2 <- f4.16.2$membership))
+## IGNORE_RDIFF_END
+stopifnot(identical(dimnames(m1), dimnames(m2)),
+          0 < m1,m1 < 1,  0 < m2,m2 < 1,
+          ## the memberships are quite close but have only converged to precision 0.000228
+          all.equal(m1, m2, tol = 0.001))
+stopifnot(exprs = {
+    f4.16$clustering == f4.16.2$clustering
+    all.equal(f4.16[notMconv],  f4.16.2[notMconv],  tol = 1e-7)
+})
 
 f4.14 <- fanny(chorSub, k = 4,                memb.exp = 1.4)
 f4.12 <- fanny(chorSub, k = 4,                memb.exp = 1.2)
 
 table(f4.12$clustering, f4.14$clustering)# close but different
-table(f4.16$clustering, f4.14$clustering)# dito
+table(f4.16$clustering, f4.14$clustering)# ditto
 table(f4.12$clustering, f4.16$clustering)# hence differ even more
 
 symnum(cbind(f4.16$membership, 1, f4.12$membership),

@@ -6,7 +6,7 @@
   clustering of the data into \code{k} clusters.
 }
 \usage{
-clara(x, k, metric = c("euclidean", "manhattan", "jaccard"),
+clara(x, k, metric = c("euclidean", "manhattan", "jaccard", "gower"),
       stand = FALSE, cluster.only = FALSE, samples = 5,
       sampsize = min(n, 40 + 2 * k), trace = 0, medoids.x = TRUE,
       keep.data = medoids.x, rngR = FALSE, pamLike = FALSE, correct.d = TRUE)
@@ -14,7 +14,8 @@ clara(x, k, metric = c("euclidean", "manhattan", "jaccard"),
 \arguments{
   \item{x}{
     data matrix or data frame, each row corresponds to an observation,
-    and each column corresponds to a variable.  All variables must be numeric.
+    and each column corresponds to a variable.  All variables must be
+    numeric (or logical).
     Missing values (NAs) are allowed.}
   \item{k}{integer, the number of clusters.
     It is required that \eqn{0 < k < n} where \eqn{n} is the number of
@@ -22,8 +23,8 @@ clara(x, k, metric = c("euclidean", "manhattan", "jaccard"),
   \item{metric}{
     character string specifying the metric to be used for calculating
     dissimilarities between observations.
-    The currently available options are "euclidean", "manhattan", and
-    "jaccard".
+    The currently available options are "euclidean", "manhattan", 
+    "jaccard", and "gower".  For the latter, see \code{\link{daisy}()}.
 
     Euclidean distances are root sum-of-squares of differences, and
     manhattan distances are the sum of absolute differences.
@@ -92,7 +93,8 @@ clara(x, k, metric = c("euclidean", "manhattan", "jaccard"),
   integer vector of length \eqn{n} with entries from \code{1:k}.
 }
 \details{
-  \code{clara} is fully described in chapter 3 of Kaufman and Rousseeuw (1990).
+  \code{clara} (for "euclidean" and "manhattan") is fully described in
+  chapter 3 of Kaufman and Rousseeuw (1990).
   Compared to other partitioning methods such as \code{pam}, it can deal with
   much larger datasets.  Internally, this is achieved by considering
   sub-datasets of fixed size (\code{sampsize}) such that the time and
@@ -151,6 +153,8 @@ clara(x, k, metric = c("euclidean", "manhattan", "jaccard"),
   and Kamil Jadeszko.
   All arguments from \code{trace} on, and most \R documentation and all
   tests by Martin Maechler.
+
+  Kasper Fischer-Rasmussen provided \R and C code for \code{metric = "gower"}.
 }
 \seealso{
   \code{\link{agnes}} for background and references;

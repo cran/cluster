@@ -35,5 +35,10 @@ upper.to.lower.tri.inds <- function(n)
 	unlist(lapply(0:n2, function(k) cumsum(k:n2)))
 }
 
-
+## has been exported "for ever"
 meanabsdev <- function(y) mean(abs(y - mean(y, na.rm = TRUE)), na.rm = TRUE)
+##
+## if serious, it should be
+##   function(y, na.rm=FALSE) mean(abs(y - mean(y, na.rm=na.rm)), na.rm=na.rm)
+
+
