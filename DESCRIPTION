@@ -1,6 +1,6 @@
 Package: cluster
-Version: 2.1.5
-Date: 2023-11-27
+Version: 2.1.6
+Date: 2023-11-30
 Priority: recommended
 Title: "Finding Groups in Data": Cluster Analysis Extended Rousseeuw et
         al.
@@ -25,7 +25,7 @@ Authors@R: c(person("Martin","Maechler", role = c("aut","cre"),
  ,person("Erich",  "Schubert", role="ctb", comment = c("fastpam options for pam()",
                                                        ORCID = "0000-0001-9143-4880"))
  ,person("Keefe",  "Murphy", role="ctb", comment = "volume.ellipsoid({d >= 3})")
- ,person("Fischer-Rasmussen", "Kasper", role = "ctb", comment = "Gower distance for CLARA")
+ #not yet ,person("Fischer-Rasmussen", "Kasper", role = "ctb", comment = "Gower distance for CLARA")
  )
 Depends: R (>= 3.5.0)
 Imports: graphics, grDevices, stats, utils
@@ -41,7 +41,7 @@ BuildResaveData: no
 License: GPL (>= 2)
 URL: https://svn.r-project.org/R-packages/trunk/cluster/
 NeedsCompilation: yes
-Packaged: 2023-11-27 15:04:10 UTC; maechler
+Packaged: 2023-11-30 17:52:28 UTC; maechler
 Author: Martin Maechler [aut, cre] (<https://orcid.org/0000-0002-8685-9910>),
   Peter Rousseeuw [aut] (Fortran original,
     <https://orcid.org/0000-0002-3807-5353>),
@@ -55,7 +55,6 @@ Author: Martin Maechler [aut, cre] (<https://orcid.org/0000-0002-8685-9910>),
   Kamil Kozlowski [ctb],
   Erich Schubert [ctb] (fastpam options for pam(),
     <https://orcid.org/0000-0001-9143-4880>),
-  Keefe Murphy [ctb] (volume.ellipsoid({d >= 3})),
-  Fischer-Rasmussen Kasper [ctb] (Gower distance for CLARA)
+  Keefe Murphy [ctb] (volume.ellipsoid({d >= 3}))
 Repository: CRAN
-Date/Publication: 2023-11-27 19:20:15 UTC
+Date/Publication: 2023-12-01 22:10:03 UTC

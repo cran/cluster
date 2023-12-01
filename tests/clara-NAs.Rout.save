@@ -1,5 +1,5 @@
 
-R Under development (unstable) (2023-10-18 r85349) -- "Unsuffered Consequences"
+R Under development (unstable) (2023-11-29 r85646) -- "Unsuffered Consequences"
 Copyright (C) 2023 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu
 
@@ -633,15 +633,6 @@ C clara(): (nsam,nran,n) = (44,12,87); 'large_sample',
 - clara sample 11  [ntt=43, nunfs=0]  -> dysta2();  obj= 8.0873
 - clara sample 12  [ntt=43, nunfs=0]  -> dysta2();  obj= 7.91099
 C clara() -> best sample _found_  resul(),  black() and return() from C.
-> c2g <- clara(x, 2, samples = 12, sampsize=nrow(x), trace = 2, metric = "gower", pamLike=TRUE, correct.d=TRUE)
-C clara(): (nsam,nran,n) = (87,12,87); 'full_sample',
- -> dysta2();
- clara -> s:= max{dys[1..3741]} = 1;
- bswap2(), 1. BUILD: 37 29  after build: medoids are 29 37
- --> sky = sum_j D_j= 8.13561
- end{bswap2}: sky = 8.13561
-1st proper sample obj= 13.5632
- resul(),  black() and return() from C.
 > p2g <- pam(daisy(x,"gower"), k=2, trace = 3)
 pam()'s bswap(*, s=0.785, pamonce=0): build 2 medoids:
     new repr. 37
@@ -658,22 +649,20 @@ pam()'s bswap(*, s=0.785, pamonce=0): build 2 medoids:
       0   0.32   0.04 0.0798  0.096      0  0.076 0.0398   0.02   0.24
  0.0676   0.02   0.24    0.3   0.02    0.1   0.18
 end{bswap()}, end{cstat()}
-> (icall <- which(names(c2) == "call"))
-[1] 8
-> ## c2g and p2g  are *quite* different !
-> table(c2g$clustering,
+> if(FALSE) { ## disabled clara(*, "gower") for now (2023-11-30):
++ c2g <- clara(x, 2, samples = 12, sampsize=nrow(x), trace = 2, metric = "gower", pamLike=TRUE, correct.d=TRUE)
++ (icall <- which(names(c2) == "call"))
++ ## c2g and p2g  are *quite* different !
++ table(c2g$clustering,
 +       p2g$clustering)
-   
-     1  2
-  1 40 32
-  2 15  0
-> ##    1  2
-> ## 1 40 32
-> ## 2 15  0  <<  not *one* pair of  {2,2}   !?!
-> 
-> stopifnot(exprs = {
++ ##    1  2
++ ## 1 40 32
++ ## 2 15  0  <<  not *one* pair of  {2,2}   !?!
++ 
++ stopifnot(exprs = {
 +     all.equal(c2[-icall], c2.[-icall])
 + })
++ }# no "gower" for now
 > 
 > data(xclara)
 > suppressWarnings(RNGversion("3.5.0")) # back compatibility of results
@@ -693,4 +682,4 @@ to suppress this warning.
 > 
 > proc.time()
    user  system elapsed 
-  0.166   0.056   0.248 
+  0.149   0.039   0.205 

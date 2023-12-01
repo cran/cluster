@@ -40,8 +40,9 @@ x <- x[-33,]
 ## still had the ** dysta2() .. OUT" problem {no longer!}
 c2  <- clara(x, 2, samples = 12, trace = 3)
 c2. <- clara(x, 2, samples = 12, trace = 1, correct.d=TRUE)
-c2g <- clara(x, 2, samples = 12, sampsize=nrow(x), trace = 2, metric = "gower", pamLike=TRUE, correct.d=TRUE)
 p2g <- pam(daisy(x,"gower"), k=2, trace = 3)
+if(FALSE) { ## disabled clara(*, "gower") for now (2023-11-30):
+c2g <- clara(x, 2, samples = 12, sampsize=nrow(x), trace = 2, metric = "gower", pamLike=TRUE, correct.d=TRUE)
 (icall <- which(names(c2) == "call"))
 ## c2g and p2g  are *quite* different !
 table(c2g$clustering,
@@ -53,6 +54,7 @@ table(c2g$clustering,
 stopifnot(exprs = {
     all.equal(c2[-icall], c2.[-icall])
 })
+}# no "gower" for now
 
 data(xclara)
 suppressWarnings(RNGversion("3.5.0")) # back compatibility of results

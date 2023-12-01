@@ -1,4 +1,6 @@
+## IGNORE_RDIFF_BEGIN
 .libPaths() # show full library tree {also as check of R CMD check!}
+## IGNORE_RDIFF_END
 library(cluster)
 
 ####---------- Tests for FANNY  i.e., fanny() --------------------------
@@ -42,7 +44,11 @@ cat('Time elapsed: ', proc.time() - .proctime00,'\n')
 data(chorSub)
 p4cl <- pam(chorSub, k = 4, cluster.only = TRUE)
 ## The first two are "completely fuzzy" -- and now give a warnings
-f4.20  <- fanny(chorSub, k = 4, trace.lev = 1) ; f4.20$coef
+f4.20  <- fanny(chorSub, k = 4, trace.lev = 1)
+## IGNORE_RDIFF_BEGIN
+f4.20$coef
+## IGNORE_RDIFF_END
+stopifnot(all.equal(f4.20$coef, c(dunn_coeff = 0.25, normalized = 3.330669e-15)))
 f4.18  <- fanny(chorSub, k = 4,   memb.exp = 1.8) # same problem
 f4.18. <- fanny(chorSub, k = 4,   memb.exp = 1.8,
                 iniMem.p = f4.20$membership) # very quick convergence

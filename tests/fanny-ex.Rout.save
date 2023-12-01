@@ -1,5 +1,5 @@
 
-R version 4.3.1 Patched (2023-10-18 r85356) -- "Beagle Scouts"
+R version 4.3.2 Patched (2023-11-30 r85647) -- "Eye Holes"
 Copyright (C) 2023 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -15,9 +15,11 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+> ## IGNORE_RDIFF_BEGIN
 > .libPaths() # show full library tree {also as check of R CMD check!}
 [1] "/tmp/RtmpeWFqQT/RLIBS_28dee75f47fb34"         
 [2] "/u/maechler/R/D/r-patched/F38-64-inst/library"
+> ## IGNORE_RDIFF_END
 > library(cluster)
 > 
 > ####---------- Tests for FANNY  i.e., fanny() --------------------------
@@ -1068,7 +1070,7 @@ Time elapsed:  0.042 0.008 0.052 0 0
 > data(chorSub)
 > p4cl <- pam(chorSub, k = 4, cluster.only = TRUE)
 > ## The first two are "completely fuzzy" -- and now give a warnings
-> f4.20  <- fanny(chorSub, k = 4, trace.lev = 1) ; f4.20$coef
+> f4.20  <- fanny(chorSub, k = 4, trace.lev = 1)
 fanny()'s fuzzy(n = 61, k = 4):
 fuzzy(): initial obj = 8277.57
 Converged after 44 iterations,  obj =             2665.982
@@ -1077,8 +1079,12 @@ fanny()'s caddy(*, k = 4):
 Warning message:
 In fanny(chorSub, k = 4, trace.lev = 1) :
   the memberships are all very close to 1/k. Maybe decrease 'memb.exp' ?
+> ## IGNORE_RDIFF_BEGIN
+> f4.20$coef
   dunn_coeff   normalized 
 2.500000e-01 3.330669e-15 
+> ## IGNORE_RDIFF_END
+> stopifnot(all.equal(f4.20$coef, c(dunn_coeff = 0.25, normalized = 3.330669e-15)))
 > f4.18  <- fanny(chorSub, k = 4,   memb.exp = 1.8) # same problem
 Warning message:
 In fanny(chorSub, k = 4, memb.exp = 1.8) :
@@ -1093,7 +1099,7 @@ In fanny(chorSub, k = 4, memb.exp = 1.8, iniMem.p = f4.20$membership) :
 > f4.16  <- fanny(chorSub, k = 4, memb.exp = 1.6) # now gives 4 crisp clusters
 > ## IGNORE_RDIFF_BEGIN
 > f4.16. <- fanny(chorSub, k = 4, memb.exp = 1.6,
-+                 iniMem.p = f4.18$membership, trace.lev = 2)# "converged" immediately - wrongly; no longer!
++                 iniMem.p = f4.18$membership, trace.lev = 2)# wrongly "converged" immediately; no longer!
 fanny()'s fuzzy(n = 61, k = 4):
 fuzzy(): initial obj = 4641.75
 	    ef[]= ( 15405.8, 15405.8, 15405.8, 15405.8)
@@ -1720,8 +1726,8 @@ attr(,"legend")
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  0.153 0.01 0.166 0 0 
+Time elapsed:  0.141 0.013 0.158 0 0 
 > 
 > proc.time()
    user  system elapsed 
-  0.262   0.042   0.323 
+  0.251   0.049   0.321 

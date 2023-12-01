@@ -18,90 +18,6 @@
 
 // carries out a clustering using the k-medoid approach
 
-#ifdef _UNUSED_C_pam
-// The .C()  version --- no longer used, since Jan.2015
-void cl_pam(int *nn, int *p, int *kk, double *x, double *dys,
-	    int *jdyss, /* jdyss = 0 : compute distances from x
-			 *	 = 1 : distances provided in x */
-	    double *valmd, int *jtmd, int *ndyst,
-	    int *nsend, int/*logical*/ *nrepr, int *nelem,
-	    double *radus, double *damer, double *avsyl, double *separ,
-	    double *ttsyl, double *obj, int *med, int *ncluv,
-	    double *clusinf, double *sylinf, int *nisol, int* pamonce)
-{
-    int clusinf_dim1 = *kk;
-
-    /* Local variables */
-    Rboolean all_stats = (obj[0] == 0.),// all_stats == !cluster.only
-	med_given = (med[0] != 0),/* if true, med[] contain initial medoids */
-	do_swap = (nisol[0] != 0);
-    int k, i, nhalf, trace_lev = (int) obj[1];
-    double s;
-
-    /* Function Body */
-    nhalf = *nn * (*nn - 1) / 2 + 1; /* nhalf := #{distances}+1 = length(dys) */
-
-    if (*jdyss != 1) {
-	int jhalt = 0;
-	if(trace_lev)
-	    Rprintf("C pam(): computing %d dissimilarities from  %d x %d  matrix: ",
-		    nhalf, *nn, *p);
-	F77_CALL(dysta)(nn, p, x, dys, ndyst, jtmd, valmd, &jhalt);
-	if (jhalt != 0) {
-	    if(trace_lev) Rprintf(" dysta()-error: jhalt=%d\n", jhalt);
-	    *jdyss = -1; return;
-	}
-	// else
-	if(trace_lev) Rprintf("[Ok]\n");
-    }
-
-    /* s := max( dys[.] ), the largest distance */
-    for (i = 1, s = 0.; i < nhalf; ++i) /* dys[0] == 0. not used here */
-	if (s < dys[i])
-	    s = dys[i];
-
-    /* FIXME: work with med[] = (i_1, i_2, ..., i_k)
-     * ----- instead nrepr[] = (b_1, ... b_n)   b_i in {0,1} */
-    for (i = 0; i < *nn; ++i)
-	nrepr[i] = 0;
-    if(med_given) { /* if true, med[] contain initial medoids */
-
-	/* for the moment, translate these to nrepr[] 0/1 :
-	 * not assuming that the med[] indices are sorted */
-	for (k = 0; k < *kk; k++)
-	    nrepr[med[k] - 1] = 1;
-    }
-
-/*     Build + Swap [but no build if(med_given); swap only if(do_swap) : */
-
-    bswap(*kk, *nn, nrepr,
-	  med_given, do_swap, trace_lev,
-	  radus, damer, avsyl, dys, s, obj, *pamonce);
-
-    if(trace_lev) Rprintf("end{bswap()}, ");
-/*     Compute Clustering & STATs if(all_stats): */
-    cstat(*kk, *nn, nsend, nrepr, all_stats,
-	  radus, damer, avsyl, separ, &s, dys, ncluv, nelem, med, nisol);
-    if(trace_lev) Rprintf("end{cstat()}\n");
-    if(all_stats) {
-	for (k = 0; k < *kk; ++k) {
-	    clusinf[k]=		(double)       nrepr[k];
-	    clusinf[k + clusinf_dim1]	     = radus[k];
-	    clusinf[k + (clusinf_dim1 << 1)] = avsyl[k];
-	    clusinf[k + clusinf_dim1 * 3]    = damer[k];
-	    clusinf[k + (clusinf_dim1 << 2)] = separ[k];
-	}
-	if (1 < *kk && *kk < *nn) {
-	    /* Compute Silhouette info : */
-	    dark(*kk, *nn, ncluv, dys, s,
-		 // -->
-		 nsend, nelem, nrepr, radus, damer, avsyl, ttsyl, sylinf);
-	}
-    }
-} /* cl_pam */
-#endif
-
-// The .Call() version
 SEXP cl_Pam(SEXP k_, SEXP n_,
 	    SEXP do_diss_, /* == !diss;  if true, compute distances from x (= x_or_diss);
 			      otherwise distances provided by x_or_diss */
@@ -192,7 +108,7 @@ SEXP cl_Pam(SEXP k_, SEXP n_,
 		   : allocVector(REALSXP, 1));
     SET_STRING_ELT(nms, 3, mkChar("obj"));
     SET_VECTOR_ELT(ans, 3,         obj_ = allocVector(REALSXP, 2));
-    SET_STRING_ELT(nms, 4, mkChar("isol"));
+    SET_STRING_ELT(nms, 4, mkChar("isol")); // 'isolation' {0,1,2}:  L=1, L*=2 - clusters
     SET_VECTOR_ELT(ans, 4,         nisol_ = allocVector(INTSXP, all_stats ? kk : 1));
     SET_STRING_ELT(nms, 5, mkChar("clusinf"));
     SET_VECTOR_ELT(ans, 5,         clusinf_ = all_stats ? allocMatrix(REALSXP, kk, 5)
@@ -983,7 +899,7 @@ void cstat(int kk, int nn, int *nsend, int *nrepr, Rboolean all_stats,
     }
 
     if(all_stats) { /*	   analysis of the clustering. */
-	int numl;
+	/* int numl; */
 	--avsyl; // <-> [1]-indexing
 	--damer;
 	--med;
@@ -1023,7 +939,7 @@ void cstat(int kk, int nn, int *nsend, int *nrepr, Rboolean all_stats,
 	/*  ELSE	  kk > 1 : */
 
 	/* numl = number of L-clusters. */
-	numl = 0;
+	/* numl = 0; */
 	for (k = 1; k <= kk; ++k) {
 	    /*
 	      identification of cluster k:
@@ -1055,8 +971,8 @@ void cstat(int kk, int nn, int *nsend, int *nrepr, Rboolean all_stats,
 		/* Is cluster k
 		   1) an L-cluster	 or
 		   2) an L*-cluster ? */
-		if (separ[k] == 0.)
-		    ++numl;
+		/* if (separ[k] == 0.) */
+		/*     ++numl; */
 
 	    }
 	    else { /*	       nel != 1 : */
@@ -1085,7 +1001,7 @@ void cstat(int kk, int nn, int *nsend, int *nrepr, Rboolean all_stats,
 		separ[k] = sep;
 		damer[k] = dam;
 		if (kand) {
-		    ++numl;
+		    /* ++numl; */
 		    if (dam >= sep) /*	L-cluster */
 			nisol[k] = 1;
 		    else/*		L*-cluster */

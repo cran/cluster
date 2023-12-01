@@ -33,6 +33,7 @@ void cl_clara(int *n,  /* = number of objects */
 	      double *valmd,/*[j]= missing value code (instead of NA) for x[,j]*/
 	      int *jtmd,	/* [j]= {-1,1};	 -1: x[,j] has NA; 1: no NAs in x[,j] */
 	      DISS_KIND *diss_kind, // aka 'metric' \in {EUCLIDEAN, MANHATTAN, JACCARD, GOWER}
+// NB: GOWER is *buggy* (<--> ../tests/clara-gower_valgrind.Rout ; ---*AND* disabled from R 2023-11-30
 	      int/*logical*/ *rng_R,/*= {0,1};  0 : use clara's internal weak RNG;
 				     *	        1 : use R's RNG (and seed) */
 	      int/*logical*/ *pam_like,/* if (1), we do "swap()" as in pam(), otherwise
@@ -382,6 +383,7 @@ void dysta2(int nsam, int jpp, int *nsel,
 		}
                 else if (diss_kind == MANHATTAN)
                     clk += fabs(x[lj] - x[kj]);
+// NB: GOWER is *buggy* (<--> ../tests/clara-gower_valgrind.Rout ; ---*AND* disabled from R 2023-11-30
                 else if (diss_kind == GOWER) {
                     if (x[lj] == x[kj]) {
                         continue /* next j */;

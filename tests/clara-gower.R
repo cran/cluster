@@ -1,3 +1,5 @@
+quit("no") ## retracted metric = "gower":  bad memory leakage  -- see  ./clara-gower_valgrind.Rout  <<<<<
+
 ## Originally inspired by  Kasper Fischer-Rasmussen 's  clara_gower.html  [html from Rmd]
 
 library(cluster)

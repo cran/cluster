@@ -3,7 +3,7 @@
 #### Note that the algorithm is O(n), but O(ns^2) where ns == sampsize
 
 clara <- function(x, k,
-		  metric = c("euclidean", "manhattan", "jaccard", "gower"),
+		  metric = c("euclidean", "manhattan", "jaccard"), # "gower"),
                   stand = FALSE, cluster.only = FALSE,
 		  samples = 5, sampsize = min(n, 40 + 2 * k), trace = 0,
                   medoids.x = TRUE, keep.data = medoids.x, rngR = FALSE,

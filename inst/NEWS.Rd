@@ -6,6 +6,20 @@
 
 %% NB: The date (yyyy-mm-dd) is the "Packaged:" date in ../DESCRIPTION
 
+\section{Changes in version 2.1.6 (2023-11-30, svn r8311)}{
+  \subsection{Bug Fixes}{
+    \itemize{
+      \item \code{clara(*, metric="gower")} is too buggy, and hence
+      \bold{removed} for now, see below (2.1.5).
+    }
+  }
+  \subsection{Misc}{
+    \itemize{
+      \item tweak \file{tests/fanny-ex.\{R,Rout.save\}} for less "diffs".
+    }
+  }
+}
+
 \section{Changes in version 2.1.5 (2023-11-27, svn r8301)}{
   \subsection{New Features}{
     \itemize{
@@ -13,8 +27,8 @@
       \code{\link{logical}} matrix as input.
       \item \code{clara()} gets new \code{metric = "gower"} donated by
       Kasper Fischer-Rasmussen.
-
-      FIXME -- has problems/bugs -- FIXME
+      --- was removed in 2.1.6 because of valgrind-detected memory leaks
+      (and problems/bugs found earlier in R experiments).
     }
   }
   \subsection{Misc}{
