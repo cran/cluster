@@ -216,21 +216,29 @@ pam(x, k, diss = inherits(x, "dist"),
 }
 \examples{
 ## generate 25 objects, divided into 2 clusters.
+set.seed(17) # to get reproducible data:
 x <- rbind(cbind(rnorm(10,0,0.5), rnorm(10,0,0.5)),
            cbind(rnorm(15,5,0.5), rnorm(15,5,0.5)))
 pamx <- pam(x, 2)
-pamx # Medoids: '7' and '25' ...
+pamx # Medoids: '9' and '15' ...
 summary(pamx)
 plot(pamx)
-## use obs. 1 & 16 as starting medoids -- same result (typically)
+stopifnot(pamx$id.med == c(9, 15))
+stopifnot(identical(pamx$clustering, rep(1:2, c(10, 15))))
+
+## use obs. 1 & 16 as starting medoids -- same result (for seed above, *and* typically) :
 (p2m <- pam(x, 2, medoids = c(1,16)))
 ## no _build_ *and* no _swap_ phase: just cluster all obs. around (1, 16):
 p2.s <- pam(x, 2, medoids = c(1,16), do.swap = FALSE)
 p2.s
+keep_nms <- setdiff(names(pamx), c("call", "objective"))# .$objective["build"] differ
+stopifnot(p2.s$id.med == c(1,16), # of course
+          identical(pamx[keep_nms],
+                    p2m[keep_nms]))
 
-p3m <- pam(x, 3, trace = 2)
+p3m <- pam(x, 3, trace.lev = 2)
 ## rather stupid initial medoids:
-(p3m. <- pam(x, 3, medoids = 3:1, trace = 1))
+(p3m. <- pam(x, 3, medoids = 3:1, trace.lev = 1))
 
 \dontshow{
  ii <- pmatch(c("obj","call"), names(pamx))

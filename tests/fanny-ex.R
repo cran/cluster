@@ -25,9 +25,14 @@ str(fannyx)
 ## {70 or 71 iterations}
 ## ==> No "fanny-ex.Rout.save" is distributed !
 ## --------------------------------------------
+## IGNORE_RDIFF_BEGIN
 summary(fanny(x,3))# one extra cluster
+## IGNORE_RDIFF_END
 
+## CRAN-relevant M1 mac: aarch64-apple-darwin24.1.0 / Apple clang version 16.0.0 (clang-1600.0.26.6) / macOS Sequoia 15.1.1
+## IGNORE_RDIFF_BEGIN
 (fanny(x,2, memb.exp = 1.5))
+## IGNORE_RDIFF_END
 (fanny(x,2, memb.exp = 1.2))
 (fanny(x,2, memb.exp = 1.1))
 (fanny(x,2, memb.exp = 3))
@@ -44,11 +49,16 @@ cat('Time elapsed: ', proc.time() - .proctime00,'\n')
 data(chorSub)
 p4cl <- pam(chorSub, k = 4, cluster.only = TRUE)
 ## The first two are "completely fuzzy" -- and now give a warnings
-f4.20  <- fanny(chorSub, k = 4, trace.lev = 1)
 ## IGNORE_RDIFF_BEGIN
+f4.20  <- fanny(chorSub, k = 4, trace.lev = 1)
 f4.20$coef
 ## IGNORE_RDIFF_END
-stopifnot(all.equal(f4.20$coef, c(dunn_coeff = 0.25, normalized = 3.330669e-15)))
+stopifnot(exprs = {
+    all.equal(f4.20$coef, c(dunn_coeff = 0.25, normalized = 3.330669e-15))
+    all.equal(f4.20$objective[["objective"]], 2665.982, tol = 8e-7)
+    all.equal(f4.20$silinfo$avg.width,        0.250643, tol = 2e-6)
+})
+
 f4.18  <- fanny(chorSub, k = 4,   memb.exp = 1.8) # same problem
 f4.18. <- fanny(chorSub, k = 4,   memb.exp = 1.8,
                 iniMem.p = f4.20$membership) # very quick convergence

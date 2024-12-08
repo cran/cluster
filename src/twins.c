@@ -44,12 +44,10 @@ void twins(int *nn, // = maximal number of objects
 	   double *coef,
 	   double *alpha, int *merge, int *trace_lev)
 {
-    if (*jdyss % 10 == 1) {
+    if (*jdyss % 10 == 1) { // have distances; do not access x[]
 	*jpp = 1;
     } else { // compute distances
-	int jhalt = 0;
-	F77_CALL(dysta)(nn, jpp, x, dys, ndyst, jtmd, valmd, &jhalt);
-	/*       ------ in ./dysta.f */
+	int jhalt = dysta(nn, jpp, x, dys, ndyst, jtmd, valmd);/* --> ./dysta.c */
 	if (jhalt != 0) { *jdyss = -1; return; }
     }
     if (*jdyss >= 10) { /*        save distances for S */
@@ -58,7 +56,7 @@ void twins(int *nn, // = maximal number of objects
     if (*jalg != 2) {
 	// AGNES
 	agnes(*nn, kwan, ner, ban, dys, *method, alpha, merge, trace_lev[0]);
-    } else {
+    } else { // *jalg == 2
 	// DIANA
 	splyt(*nn, kwan, ner, ban, dys, *method,        merge, trace_lev[0]);
     }

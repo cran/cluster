@@ -19,6 +19,11 @@
 #include "cluster.h"
 #include "ind_2.h"
 
+static void
+dysta2(int nsam, int jpp, int *nsel,
+       double *x, int n, double *dys, DISS_KIND diss_kind,
+       int *jtmd, double *valmd, Rboolean has_NA, Rboolean *toomany_NA);
+
 void cl_clara(int *n,  /* = number of objects */
 	      int *jpp,/* = number of variables */
 	      int *kk, /* = number of clusters, 1 <= kk <= n-1 */

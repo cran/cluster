@@ -60,11 +60,6 @@ void cl_clara(int *n,  /* = number of objects */
 	      int *itmp	/* = integer[ 6 * nsam ] */
     );
 
-void dysta2(int nsam, int jpp, int *nsel,
-	    double *x, int n, double *dys, DISS_KIND diss_kind,
-	    int *jtmd, double *valmd, Rboolean has_NA, Rboolean *toomany_NA);
-
-
 void bswap2(int kk, int nsam, double s, const double dys[],
 	    Rboolean pam_like, int trace_lev,
 	    // result:
@@ -89,9 +84,9 @@ void black(int kk, int jpp, int nsam, int *nbest,
 	   int *ncluv, int *nsend, int *nelem, int *negbr,
 	   double *syl, double *srank);
 
-/* -------- ./dysta.f --- (was in pam.f) -------------------- */
-void F77_NAME(dysta)(int *nn, int *jpp, double *x, double *dys, int *ndyst,
-		    int *jtmd, double *valmd, int *jhalt);
+/* -------- ./dysta.c --- (dysta.f was in pam.f) -------------------- */
+int dysta(int *nn, int *jpp, double *x, double *dys, int *ndyst,
+	  int *jtmd, double *valmd);
 /* --------- ./pam.c ------------------*/
 
 #ifdef _UNUSED_C_pam
@@ -173,19 +168,14 @@ void cl_fanny(int *nn, int *jpp, int *kk,
 
 /* ================= Fortran things (remainder) ======================== */
 
-/* -------- ./daisy.f ---------------------------------- */
-void F77_NAME(cldaisy)(int *nn, int *jpp, double *x,
+/* -------- ./daisy.c ---------------------------------- */
+void cldaisy(int *nn, int *jpp, double *x,
 		       double *valmd, double *weights,
 		       int *jtmd, int *jdat, int *vtype,
 		       int *ndyst, int *mdata, double *disv);
 
-/* -------- ./fanny.c ---------------------------------- */
-/* R-level: called only from ../tests/dysta-ex.R  (now via .C()): */
-void dysta3(int *nn, int *p, double *x, double *dys,
-	    int *ndyst, int *jtmd, double *valmd, int *jhalt);
-
-/* -------- ./mona.f ---------------------------------- */
-void F77_NAME(clmona)(int *nn, int *pp, int *x, int *jerr,
+/* -------- ./mona.c ---------------------------------- */
+void clmona(int *nn, int *pp, int *x, int *jerr,
 		      int *nban, int *ner, int *kwan, int *lava, int *jlack);
 
 /* -------- ./twins.c ---------------------------------- */

@@ -23,7 +23,7 @@ static int iabs(int j)
     return (j >= 0) ? (j) : -(j);
 }
 
-void clmona_(int *nn, // = number of objects
+void clmona(int *nn, // = number of objects
 	     int *pp, // = number of variables
 	     int *x,  /* x[i,j]: binary (0/1/NA) data  (obs. i, var.j)
 			 where  NA =  missing values, are all values > 1 ;

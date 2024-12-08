@@ -1,7 +1,7 @@
 
-R version 4.3.2 Patched (2023-11-30 r85647) -- "Eye Holes"
-Copyright (C) 2023 The R Foundation for Statistical Computing
-Platform: x86_64-pc-linux-gnu (64-bit)
+R version 4.4.1 Patched (2024-09-30 r87205) -- "Race for Your Life"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -205,6 +205,7 @@ List of 11
 > ## {70 or 71 iterations}
 > ## ==> No "fanny-ex.Rout.save" is distributed !
 > ## --------------------------------------------
+> ## IGNORE_RDIFF_BEGIN
 > summary(fanny(x,3))# one extra cluster
 Fuzzy Clustering object of class 'fanny' :                      
 m.ship.expon.        2
@@ -295,7 +296,10 @@ Available components:
  [1] "membership"  "coeff"       "memb.exp"    "clustering"  "k.crisp"    
  [6] "objective"   "convergence" "diss"        "call"        "silinfo"    
 [11] "data"       
+> ## IGNORE_RDIFF_END
 > 
+> ## CRAN-relevant M1 mac: aarch64-apple-darwin24.1.0 / Apple clang version 16.0.0 (clang-1600.0.26.6) / macOS Sequoia 15.1.1
+> ## IGNORE_RDIFF_BEGIN
 > (fanny(x,2, memb.exp = 1.5))
 Fuzzy Clustering object of class 'fanny' :                      
 m.ship.expon.      1.5
@@ -345,6 +349,7 @@ Available components:
  [1] "membership"  "coeff"       "memb.exp"    "clustering"  "k.crisp"    
  [6] "objective"   "convergence" "diss"        "call"        "silinfo"    
 [11] "data"       
+> ## IGNORE_RDIFF_END
 > (fanny(x,2, memb.exp = 1.2))
 Fuzzy Clustering object of class 'fanny' :                      
 m.ship.expon.      1.2
@@ -1070,6 +1075,7 @@ Time elapsed:  0.042 0.008 0.052 0 0
 > data(chorSub)
 > p4cl <- pam(chorSub, k = 4, cluster.only = TRUE)
 > ## The first two are "completely fuzzy" -- and now give a warnings
+> ## IGNORE_RDIFF_BEGIN
 > f4.20  <- fanny(chorSub, k = 4, trace.lev = 1)
 fanny()'s fuzzy(n = 61, k = 4):
 fuzzy(): initial obj = 8277.57
@@ -1079,12 +1085,16 @@ fanny()'s caddy(*, k = 4):
 Warning message:
 In fanny(chorSub, k = 4, trace.lev = 1) :
   the memberships are all very close to 1/k. Maybe decrease 'memb.exp' ?
-> ## IGNORE_RDIFF_BEGIN
 > f4.20$coef
   dunn_coeff   normalized 
 2.500000e-01 3.330669e-15 
 > ## IGNORE_RDIFF_END
-> stopifnot(all.equal(f4.20$coef, c(dunn_coeff = 0.25, normalized = 3.330669e-15)))
+> stopifnot(exprs = {
++     all.equal(f4.20$coef, c(dunn_coeff = 0.25, normalized = 3.330669e-15))
++     all.equal(f4.20$objective[["objective"]], 2665.982, tol = 8e-7)
++     all.equal(f4.20$silinfo$avg.width,        0.250643, tol = 2e-6)
++ })
+> 
 > f4.18  <- fanny(chorSub, k = 4,   memb.exp = 1.8) # same problem
 Warning message:
 In fanny(chorSub, k = 4, memb.exp = 1.8) :
@@ -1726,8 +1736,8 @@ attr(,"legend")
 > 
 > ## Last Line:
 > cat('Time elapsed: ', proc.time() - .proctime00,'\n')
-Time elapsed:  0.141 0.013 0.158 0 0 
+Time elapsed:  0.136 0.007 0.143 0 0 
 > 
 > proc.time()
    user  system elapsed 
-  0.251   0.049   0.321 
+  0.230   0.038   0.260 

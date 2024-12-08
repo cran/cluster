@@ -25,8 +25,8 @@ mona <- function(x, trace.lev = 0)
 ##     x[is.na(x)] <- "2"
 ##     storage.mode(x) <- "integer"
 
-    ## call Fortran routine
-    res <- .Fortran(cl_mona,
+    ## call C routine (from original fortran) -- ../src/mona.c
+    res <- .C(cl_mona,
                     as.integer(n),
                     as.integer(p),
                     x = x,

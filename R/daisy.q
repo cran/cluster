@@ -140,7 +140,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     }
     ## call Fortran routine
     storage.mode(x) <- "double"
-    disv <- .Fortran(cl_daisy, ## -> ../src/daisy.f
+    disv <- .C(cl_daisy, # -> ../src/daisy.c
 		     n,
 		     p,
 		     x,

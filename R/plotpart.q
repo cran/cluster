@@ -1,4 +1,4 @@
-### $Id: plotpart.q 8117 2022-08-19 13:26:09Z maechler $
+### $Id: plotpart.q 8451 2024-09-16 07:12:37Z maechler $
 plot.partition <-
 function(x, ask = FALSE, which.plots = NULL,
 	 nmax.lab = 40, max.strlen = 5, data = x$data, dist = NULL,
@@ -515,6 +515,6 @@ clusplot.partition <- function(x, main = NULL, dist = NULL, ...)
 	    ##	       "trying to find the first argument of ", deparse1(x$call))
 	    clusplot.default(xD, x$clustering, diss = TRUE, main = main, ...)
 	}
-	else stop("no diss nor data found for clusplot()'")
+	else stop("no diss nor data found for 'clusplot()'")
     }
 }

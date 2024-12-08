@@ -51,6 +51,7 @@ static R_NativePrimitiveArgType sildist_typ[] = {
     /* si: */ REALSXP, INTSXP, LGLSXP
 };
 
+// .C(twins, ..)  called from R's  agnes() and diana():
 static R_NativePrimitiveArgType twins_typ[18] = {
     INTSXP, INTSXP, REALSXP, REALSXP, REALSXP,
     /* jdiss: */ INTSXP, REALSXP,
@@ -67,11 +68,9 @@ static R_NativePrimitiveArgType cl_sweep_typ[5] = {
 static const R_CMethodDef CEntries[]  = {
     CDEF(R_bncoef),
     CDEF(cl_clara),
-    {"dysta3", (DL_FUNC) &dysta3, 8},/* ./fanny.c */
+    {"cl_daisy", (DL_FUNC) &cldaisy, 11},/* ./daisy.c */
     CDEF(cl_fanny),
-#ifdef _UNUSED_C_pam
-    CDEF(cl_pam),
-#endif
+    {"cl_mona", (DL_FUNC) &clmona, 9},/* ./mona.c */
     CDEF(spannel),
     CDEF(cl_sweep),
     CDEF(sildist),
@@ -79,20 +78,13 @@ static const R_CMethodDef CEntries[]  = {
     {NULL, NULL, 0}
 };
 
-static R_CallMethodDef CallEntries[] = {
+static const R_CallMethodDef CallEntries[] = {
     CALLDEF(cl_Pam, 13),
-    {NULL, NULL, 0}
-};
-
-static R_FortranMethodDef FortEntries[] = {
-    {"cl_daisy", (DL_FUNC) &F77_SUB(cldaisy), 11},
-    {"cl_mona",  (DL_FUNC) &F77_SUB(clmona),   9},
-    {"dysta",    (DL_FUNC) &F77_SUB(dysta),    8},
     {NULL, NULL, 0}
 };
 
 void R_init_cluster(DllInfo *dll)
 {
-    R_registerRoutines(dll, CEntries, CallEntries, FortEntries, NULL);
+    R_registerRoutines(dll, CEntries, CallEntries, NULL/*FortEntries*/, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }
