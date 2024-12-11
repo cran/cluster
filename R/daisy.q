@@ -131,7 +131,7 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
     if(any(ina <- is.na(iType)))
 	stop(gettextf("invalid type %s for column numbers %s",
 		      type2[ina], pColl(which(ina))))
-    if((mdata <- any(inax <- is.na(x)))) { # TRUE if x[] has any NAs
+    if((mdata <- any(inax <- is.na(x)))) { # TRUE if x[] has any NAs (hence p >= 1)
 	jtmd <- integer(p)
 	jtmd[apply(inax, 2L, any)] <- -1L
 	## VALue for MISsing DATa
@@ -144,25 +144,28 @@ daisy <- function(x, metric = c("euclidean", "manhattan", "gower"),
 		     n,
 		     p,
 		     x,
-		     if(mdata) rep(valmisdat, p) else double(1),
+		     if(mdata) rep(valmisdat, p) else double(1L),
                      as.double(weights),
-		     if(mdata) jtmd else integer(1),
+		     if(mdata) jtmd else integer(1L),
 		     jdat,
 		     iType,		# vtype
 		     ndyst,
 		     as.integer(mdata),
-		     dis = double((n * (n - 1))/2),
-		     NAOK = TRUE# only to allow "+- Inf"
+		     dis = double(if(n <= 2L) 1L else (n * (n - 1))/2), # at least 1: C has  `disv--`
+		     NAOK = TRUE # only to allow "+- Inf"
 		     )$dis
     ## adapt Fortran output to S:
     ## convert lower matrix, read by rows, to upper matrix, read by rows.
-    disv[disv == -1] <- NA
-    full <- matrix(0, n, n)
-    full[!lower.tri(full, diag = TRUE)] <- disv
-    disv <- t(full)[lower.tri(full)]
-    ## give warning if some dissimilarities are missimg
-    if(anyNA(disv)) attr(disv, "NA.message") <-
-	"NA-values in the dissimilarity matrix !"
+    if(n) {
+        disv[disv == -1] <- NA
+        full <- matrix(0, n, n)
+        full[!lower.tri(full, diag = TRUE)] <- disv
+        disv <- t(full)[lower.tri(full)]
+        ## give warning if some dissimilarities are missimg
+        if(anyNA(disv)) attr(disv, "NA.message") <-
+                            "NA-values in the dissimilarity matrix !"
+    } else # n == 0  {pmax(1,.) above}
+        disv <- double(0L)
     ## construct S object -- "dist" methods are *there* !
     class(disv) <- dissiCl # see ./0aaa.R
     attr(disv, "Labels") <- dimnames(x)[[1]]

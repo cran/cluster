@@ -6,12 +6,19 @@
 
 %% NB: The date (yyyy-mm-dd) is the "Packaged:" date in ../DESCRIPTION
 
+%% NB 2: do not release within 1 year before we have bug fix or new feature.
+
+\section{Changes in version 2.1.8 (2024-12-10, svn r8468)}{
+  \subsection{Bug Fixes}{
+     \itemize{
+       \item C codes underlying \code{agnes()} and \code{daisy()} under
+       \command{UBSAN} and \command{LTO} no longer show pointer expression
+       overflow (of a length 0 vector \code{a} with \code{a--} call).
+     }
+  }
+}
+
 \section{Changes in version 2.1.7 (2024-12-06, svn r8466)}{
-  %% \subsection{Bug Fixes}{
-  %%   \itemize{
-  %%     \item . % do not release within 1 year before we have bug fix or new feature.
-  %%   }
-  %% }
   \subsection{Misc}{
     \itemize{
       \item \file{man/pam.Rd} \code{set.seed()} for \emph{data}, hence

@@ -1,4 +1,4 @@
-#### $Id: agnes.q 8457 2024-10-04 15:42:51Z maechler $
+#### $Id: agnes.q 8468 2024-12-10 15:11:21Z maechler $
 
 agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		  stand = FALSE, method = "average", par.method,
@@ -24,23 +24,24 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
         ## if(any(par.method[1:2]) < 0)
         ##     warning("method \"flexible\": alpha_1 or alpha_2 < 0 can give invalid dendrograms"
     } else if (method == "gaverage") {
-	attr(method,"par") <- par.method <- if (missing(par.method)) {
-	    ## Default par.method: Using beta = -0.1 as advised in Belbin et al. (1992)
-	    beta <- -0.1
-	    c(1-beta, 1-beta, beta, 0)
-	} else {
-	    stopifnot((np <- length(b <- as.numeric(par.method))) >= 1)
-	    if(np == 1)## default (a1= 1-b, a2= 1-b, b= b, c= 0)
+        attr(method,"par") <- par.method <-
+            if (missing(par.method)) {
+                ## Default par.method: Using beta = -0.1 as advised in Belbin et al. (1992)
+                beta <- -0.1
+                c(1-beta, 1-beta, beta, 0)
+            } else {
+                stopifnot((np <- length(b <- as.numeric(par.method))) >= 1)
+                if(np == 1)## default (a1= 1-b, a2= 1-b, b= b, c= 0)
 		c(1-b, 1-b, b, 0)
-	    else if(np == 3)
-		c(b, 0)
-	    else if(np == 4) b
-	    else stop("'par.method' must be of length 1, 3, or 4")
-	}
+                else if(np == 3)
+                    c(b, 0)
+                else if(np == 4) b
+                else stop("'par.method' must be of length 1, 3, or 4")
+            }
         ## if(any(par.method[1:2]) < 0)
         ##     warning("method \"gaverage\": alpha_1 or alpha_2 < 0 can give invalid dendrograms"
-    } else ## dummy (passed to C)
-	par.method <- double()
+    } else ## dummy (passed to C; length >= 1 : using `alpha--` there
+	par.method <- double(1)
 
     if((diss <- as.logical(diss))) {
 	## check type of input vector
@@ -92,9 +93,9 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		    as.integer(jp),
 		    x2,
 		    dv,
-		    dis = double(if(C.keep.diss) length(dv) else 1),
+		    dis = double(if(C.keep.diss) length(dv) else 1L),
 		    jdyss = if(C.keep.diss) diss + 10L else as.integer(diss),
-		    if(mdata) rep(valmisdat, jp) else double(1),
+		    if(mdata && jp) rep(valmisdat, jp) else double(1L),
 		    if(mdata) jtmd else integer(jp),
 		    as.integer(ndyst),
 		    1L,# jalg = 1 <==> AGNES
@@ -102,10 +103,10 @@ agnes <- function(x, diss = inherits(x, "dist"), metric = "euclidean",
 		    integer(n),
 		    ner = integer(n),
 		    ban = double(n),
-		    ac = double(1),
-                    par.method,
+		    ac = double(1), # coef
+                    par.method, # = alpha (of length 1, 3, or 4)
 		    merge = matrix(0L, n - 1, 2), # integer
-                    trace = trace.lev)
+                    trace = trace.lev)[c("dis", "jdyss", "ner", "ban", "ac", "merge")]
     if(!diss) {
 	##give warning if some dissimilarities are missing.
 	if(res$jdyss == -1)

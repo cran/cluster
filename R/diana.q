@@ -1,4 +1,4 @@
-### $Id: diana.q 7237 2016-06-23 00:42:33Z maechler $
+### $Id: diana.q 8468 2024-12-10 15:11:21Z maechler $
 
 diana <- function(x, diss = inherits(x, "dist"),
 		  metric = "euclidean", stand = FALSE,
@@ -21,9 +21,9 @@ diana <- function(x, diss = inherits(x, "dist"),
 	    if(is.null(attr(x,"Metric"))) attr(x, "Metric") <- "unspecified"
 	}
 	n <- as.integer(attr(x, "Size"))
-	dv <- x[lower.to.upper.tri.inds(n)]
+	dv <- x[lower.to.upper.tri.inds(n)] # <==> n >= 2 or error
 	## prepare arguments for the Fortran call
-	dv <- c(0., dv)# double
+	dv <- c(0., dv)# double {FIXME: an allocation waste for large n !!!}
 	jp <- 1L
 	mdata <- FALSE
 	ndyst <- 0
@@ -37,6 +37,7 @@ diana <- function(x, diss = inherits(x, "dist"),
 	ndyst <- if(metric == "manhattan") 2 else 1
 	n <- nrow(x2)
 	jp <- ncol(x2)
+        if(!jp) stop("x has zero columns") # easier to read than later error
 	if((mdata <- any(inax <- is.na(x2)))) { # TRUE if x[] has any NAs
 	    jtmd <- integer(jp)
 	    jtmd[apply(inax, 2L, any)] <- -1L
@@ -54,10 +55,10 @@ diana <- function(x, diss = inherits(x, "dist"),
 		    n,
 		    jp,
 		    as.double(x2),
-		    dv,
-		    dis = double(if(C.keep.diss) length(dv) else 1),
+		    dv, # w/ length >= 1
+		    dis = double(if(C.keep.diss) length(dv) else 1L),
 		    jdyss = if(C.keep.diss) diss + 10L else as.integer(diss),
-		    if(mdata) rep(valmisdat, jp) else double(1),
+		    if(mdata && jp) rep(valmisdat, jp) else double(1L),
 		    if(mdata) jtmd else integer(jp),
 		    as.integer(ndyst),
 		    2L,# jalg = 2 <==> DIANA
@@ -65,10 +66,11 @@ diana <- function(x, diss = inherits(x, "dist"),
 		    integer(n),
 		    ner = integer(n),
 		    ban = double(n),
-		    dc = double(1),
-		    double(1), # { unused for diana() }
-		    merge = matrix(0L, n - 1, 2), # integer
-		    trace = trace.lev)
+		    dc = double(1L),
+		    double(1L), # { unused for diana() }
+		    merge = matrix(0L, n - 1L, 2L), # integer or error if(n == 0) !
+                    trace = trace.lev)[c("dis", "jdyss", "ner", "ban", "dc", "merge")]
+
     if(!diss) {
 	## give warning if some dissimilarities are missing.
 	if(res$jdyss == -1)
@@ -78,7 +80,7 @@ diana <- function(x, diss = inherits(x, "dist"),
             ## convert lower matrix, read by rows, to upper matrix, read by rows.
             disv <- res$dis[-1]
             disv[disv == -1] <- NA
-            disv <- disv[upper.to.lower.tri.inds(n)]
+            disv <- disv[upper.to.lower.tri.inds(n)] # <==> n >= 2 or error
             class(disv) <- dissiCl
             attr(disv, "Size") <- nrow(x)
             attr(disv, "Metric") <- metric
