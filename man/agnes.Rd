@@ -221,7 +221,7 @@ op <- par(mfrow=c(2,2))
 agn2 <- agnes(daisy(votes.repub), diss = TRUE, method = "complete")
 plot(agn2)
 ## alpha = 0.625 ==> beta = -1/4  is "recommended" by some
-agnS <- agnes(votes.repub, method = "flexible", par.meth = 0.625)
+agnS <- agnes(votes.repub, method = "flexible", par.method = 0.625)
 plot(agnS)
 par(op)
 
@@ -257,14 +257,14 @@ aa.a  <- agnes(animals) # default method = "average"
 aa.ga <- agnes(animals, method = "gaverage")
 op <- par(mfcol=1:2, mgp=c(1.5, 0.6, 0), mar=c(.1+ c(4,3,2,1)),
           cex.main=0.8)
-plot(aa.a,  which.plot = 2)
-plot(aa.ga, which.plot = 2)
+plot(aa.a,  which.plots = 2)
+plot(aa.ga, which.plots = 2)
 par(op)
 \dontshow{## equivalence
 stopifnot( ## below show  ave == gave(0); here  ave == gave(c(1,1,0,0)):
-  all.equal(aa.a [iC], agnes(animals, method="gave", par.meth= c(1,1,0,0))[iC]),
-  all.equal(aa.ga[iC], agnes(animals, method="gave", par.meth= -0.1)[iC]),
-  all.equal(aa.ga[iC], agnes(animals, method="gav", par.m= c(1.1,1.1,-0.1,0))[iC]))
+  all.equal(aa.a [iC], agnes(animals, method="gave", par.method= c(1,1,0,0))[iC]),
+  all.equal(aa.ga[iC], agnes(animals, method="gave", par.method= -0.1      )[iC]),
+  all.equal(aa.ga[iC], agnes(animals, method="gav",  par.method=c(1.1,1.1,-0.1,0))[iC]))
 }
 
 ## Show how "gaverage" is a "generalized average":

@@ -245,7 +245,7 @@ plot.silhouette <-
                 col <- rep(col, length = n)
 	col <- rev(col) # was rev(col[attr(x, "iOrd")])
     }
-    y <- barplot(s, space = space, names = names, xlab = xlab,
+    y <- barplot(s, space = space, names.arg = names, xlab = xlab,
 		 xlim = c(min(0, min(s)), 1),
 		 horiz = TRUE, las = 1, mgp = c(2.5, 1, 0),
 		 col = col, border = border, cex.names = cex.names,

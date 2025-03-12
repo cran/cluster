@@ -29,7 +29,7 @@ clx5 <- clara(x, 5)
 ## Mis'classification' table:
 % R version >= 1.5 :
 % table(rep(1:5, each = 400), clx5$clust) # -> 1 "error"
-table(rep(1:5, rep(400,5)), clx5$clust) # -> 1 "error"
+table(rep(1:5, rep(400,5)), clx5$clustering) # -> 1 "error"
 summary(clx5)
 
 ## Graphically:

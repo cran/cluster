@@ -47,7 +47,7 @@ medoids(x, clustering, diss = inherits(x, "dist"), USE.NAMES = FALSE, ...)
 data(votes.repub)
 agn1 <- agnes(votes.repub, metric = "manhattan", stand = TRUE)
 agn2 <- agnes(daisy(votes.repub), diss = TRUE, method = "complete")
-agnS <- agnes(votes.repub, method = "flexible", par.meth = 0.625)
+agnS <- agnes(votes.repub, method = "flexible", par.method = 0.625)
 
 for(k in 2:11) {
   print(table(cl.k <- cutree(agnS, k=k)))

@@ -225,14 +225,14 @@ if(doExtras) {
   ## ---- rather keep the default B = 500 for your analysis!
 
   ## note we can  pass 'nstart = 20' to kmeans() :
-  gskmn <- clusGap(x, FUN = kmeans, nstart = 20, K.max = 8, B = 60)
+  gskmn <- clusGap(x, FUNcluster = kmeans, nstart = 20, K.max = 8, B = 60)
   gskmn #-> its print() method
-  plot(gskmn, main = "clusGap(., FUN = kmeans, n.start=20, B= 60)")
+  plot(gskmn, main = "clusGap(., FUNcluster = kmeans, n.start=20, B= 60)")
   set.seed(12); system.time(
-    gsPam0 <- clusGap(x, FUN = pam, K.max = 8, B = 60)
+    gsPam0 <- clusGap(x, FUNcluster = pam, K.max = 8, B = 60)
   )
   set.seed(12); system.time(
-    gsPam1 <- clusGap(x, FUN = pam1, K.max = 8, B = 60)
+    gsPam1 <- clusGap(x, FUNcluster = pam1, K.max = 8, B = 60)
   )
   ## and show that it gives the "same":
   not.eq <- c("call", "FUNcluster"); n <- names(gsPam0)
@@ -241,11 +241,11 @@ if(doExtras) {
   print(gsPam1, method="globalSEmax")
   print(gsPam1, method="globalmax")
 
-  print(gsHc <- clusGap(x, FUN = hclusCut, K.max = 8, B = 60))
+  print(gsHc <- clusGap(x, FUNcluster = hclusCut, K.max = 8, B = 60))
 
 }# end {doExtras}
 
-gs.pam.RU <- clusGap(ruspini, FUN = pam1, K.max = 8, B = 60)
+gs.pam.RU <- clusGap(ruspini, FUNcluster = pam1, K.max = 8, B = 60)
 gs.pam.RU
 plot(gs.pam.RU, main = "Gap statistic for the 'ruspini' data")
 mtext("k = 4 is best .. and  k = 5  pretty close")
@@ -253,7 +253,7 @@ mtext("k = 4 is best .. and  k = 5  pretty close")
 \donttest{## This takes a minute..
 ## No clustering ==> k = 1 ("one cluster") should be optimal:
 Z <- matrix(rnorm(256*3), 256,3)
-gsP.Z <- clusGap(Z, FUN = pam1, K.max = 8, B = 200)
+gsP.Z <- clusGap(Z, FUNcluster = pam1, K.max = 8, B = 200)
 plot(gsP.Z, main = "clusGap(<iid_rnorm_p=3>)  ==> k = 1  cluster is optimal")
 gsP.Z
 }%end{dont..}

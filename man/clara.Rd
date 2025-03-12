@@ -196,7 +196,7 @@ nCl <- 3 # = no.classes
 set.seed(421)# (reproducibility)
 cl <- matrix(NA,nrow(xclara), nSim)
 for(i in 1:nSim)
-   cl[,i] <- clara(xclara, nCl, medoids.x = FALSE, rngR = TRUE)$cluster
+   cl[,i] <- clara(xclara, nCl, medoids.x = FALSE, rngR = TRUE)$clustering
 tcl <- apply(cl,1, tabulate, nbins = nCl)
 ## those that are not always in same cluster (5 out of 3000 for this seed):
 (iDoubt <- which(apply(tcl,2, function(n) all(n < nSim))))

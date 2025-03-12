@@ -243,7 +243,7 @@ summary(dfl3 <- daisy(flower, type = list(asymm = c("V1", "V3"), symm= 2,
 
 ## If we'd treat the first 3 as simple {0,1}
 Nflow <- flower
-Nflow[,1:3] <- lapply(flower[,1:3], \(f) as.integer(as.character(f)))
+Nflow[,1:3] <- lapply(flower[,1:3], function(f) as.integer(as.character(f)))
 summary(dN <- daisy(Nflow)) # w/ warning: treated binary .. 1:3 as interval
 ## Still, using Euclidean/Manhattan distance for {0-1} *is* identical to treating them as "N" :
 stopifnot(dN == d0)

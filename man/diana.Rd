@@ -147,7 +147,7 @@ is a division of the selected cluster into two new clusters.
 data(votes.repub)
 dv <- diana(votes.repub, metric = "manhattan", stand = TRUE)
 print(dv)
-plot(dv)
+plot(dv) #-> plot.diana()  {w/ its own help + examples}
 
 ## Cut into 2 groups:
 dv2 <- cutree(as.hclust(dv), k = 2)

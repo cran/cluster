@@ -99,7 +99,7 @@ cS[Sp == "setosa"] <- "S"
 cS[Sp == "versicolor"] <- "V"
 cS[Sp == "virginica"] <- "g"
 ai <- agnes(iris[, 1:4])
-plot(ai, labels = cS, nmax = 150)# bannerplot labels are mess
+plot(ai, labels = cS, nmax.lab = 150)# bannerplot labels are mess
 }
 \keyword{cluster}
 \keyword{hplot}
