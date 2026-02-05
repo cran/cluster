@@ -6,7 +6,9 @@ x <- cbind(c(0, -4, -22, -14, 0, NA, -28, 1, 10, -1,
              47, 64, 48, NA, NA, 44, 65))
 x
 (d <- dist(x,'manhattan'))
+## IGNORE_RDIFF_BEGIN
 summary(d, na.rm = TRUE) # max = 270
+## IGNORE_RDIFF_END
 ## First call with "trace" (seg.fault typically later ...):
 try( clara(x, k=2, metric="manhattan", sampsize=10, trace = 3) )
 ## Originally:already shows the problem:  nbest[] = c(0,0,...,0) must be WRONG!!

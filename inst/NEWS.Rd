@@ -8,6 +8,18 @@
 
 %% NB 2: do not release within 1 year before we have bug fix or new feature.
 
+\section{Changes in version 2.1.8.2 (2026-02-03, svn r8503)}{
+  \subsection{Misc}{
+    \itemize{
+      \item Patch \file{../tests/clara-NAs.R} and \file{../tests/mona.R}
+      and their \file{*.Rout.save} to adapt to R-devel (to be R 4.6.0)'s
+      different \code{summary()} using \code{"NAs"} instead of \code{"NA's"}.
+      To get these working in both R \eqn{\le 4.5.x} and R \eqn{\ge 4.6.0},
+      also need to adapt the print width \code{options(width = *)}.
+    }
+  }
+}
+
 \section{Changes in version 2.1.8.1 (2025-03-11, svn r8502)}{
   \subsection{Misc}{
     \itemize{

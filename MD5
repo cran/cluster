@@ -1,5 +1,5 @@
 6da12079996ad0aa5be2f30ee7a9e457 *ChangeLog
-904736b64cd31b4e2435c40562f1a59e *DESCRIPTION
+b2081001bd858fb5843a185ec8619bf7 *DESCRIPTION
 824c6b9820b7fc963b52b185b8284481 *INDEX
 2608df4d8982fd4507474f11d3ff532e *NAMESPACE
 8de82c7d42bd4a27c27c25462ae2a307 *PORTING
@@ -22,7 +22,7 @@ c34b277489cb1ee06bc551c8af1f46e8 *R/plotpart.q
 d463b191ae7a1d1e4681fd14cd8e4f75 *R/silhouette.R
 f1d53c5f24897b5ab0e6014be9be7844 *R/zzz.R
 0d5b196c8cf0ac67c43144fa14ddf275 *README
-f574b7bc08229c73a354bb195d07c7f3 *build/partial.rdb
+d099472a921b18b90eac98e769d07a90 *build/partial.rdb
 ac189f8e6e1314c01a700f6a31ee4506 *data/agriculture.tab
 1046f7a750dbbac2724fd910aff561e7 *data/animals.tab
 c8f60e65b0356698f6b08c23c07e2a94 *data/chorSub.rda
@@ -33,7 +33,7 @@ eda904e011e79ea5a25602125d558d04 *data/ruspini.tab
 e816e6c67444107ab47ff3bf2f6023f2 *data/votes.repub.tab
 be46f45035b177b940393db459789282 *data/xclara.rda
 8ea8fc7e56eda28f71352a336a430c41 *inst/CITATION
-cc886b5d45dfb7ec272ac106d193a792 *inst/NEWS.Rd
+4ead02622ddfada4fc1e558812e79c88 *inst/NEWS.Rd
 b893034dcbb4b4977b53fd19020a0d3c *inst/po/de/LC_MESSAGES/R-cluster.mo
 2ea75383dd4fa4a009b55dea63dbde24 *inst/po/de/LC_MESSAGES/cluster.mo
 840f1f5936dff1331afb6f1e1ceca80b *inst/po/en@quot/LC_MESSAGES/R-cluster.mo
@@ -131,8 +131,8 @@ f42f05132aaf001ddd333e3e109692e0 *src/spannel.c
 6533185f3d4cc5d9bf7306008ebe1a41 *src/twins.c
 3a5f551aa7bf022f970394e5026ff25f *tests/agnes-ex.R
 ac9104069856cd281cd680c840328c02 *tests/agnes-ex.Rout.save
-4f0447578ed53dceaf09a6c20a417348 *tests/clara-NAs.R
-7d4d11e857be342e5cd57be47da4b09f *tests/clara-NAs.Rout.save
+5c4ce963b51c6abeefd3127d884cd7ea *tests/clara-NAs.R
+1c410dd3f02badb5a5eb942a1a26f478 *tests/clara-NAs.Rout.save
 39e1daac5198726c9d921a5d5bb122cb *tests/clara-ex.R
 42f8973d593613ee4ab262bcbfd885f2 *tests/clara-ex.Rout.save
 e0f23aba341da858776391293ecd8811 *tests/clara-gower.R
@@ -149,8 +149,8 @@ b5c8776a732bdeddafa93372e543462a *tests/daisy-ex.Rout.save
 cb6e997786f07076f6a6bcf959cdeb12 *tests/ellipsoid-ex.Rout.save
 98cb2990962a714f816157c3df612151 *tests/fanny-ex.R
 85d898fa81b5e023c13783a71e3f2d26 *tests/fanny-ex.Rout.save
-b0a44d44e3394a7032e56178eab47bbf *tests/mona.R
-9af49d734f91bdb910e058e9bdeefdcd *tests/mona.Rout.save
+cfefc386e7d66dccfdce9e1c8d12efad *tests/mona.R
+3f9f85193c9d7e9d3d89a5b224c6dace *tests/mona.Rout.save
 1602f86b7b3b703a2c20ae545df1bb85 *tests/pam.R
 2de74c28817658f7e2eba1f72939dc57 *tests/pam.Rout.save
 3a29bf13a18b047da2aeae4286a48591 *tests/silhouette-default.R

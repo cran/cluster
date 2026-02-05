@@ -1,7 +1,7 @@
 
-R version 4.3.1 Patched (2023-08-12 r84937) -- "Beagle Scouts"
-Copyright (C) 2023 The R Foundation for Statistical Computing
-Platform: x86_64-pc-linux-gnu (64-bit)
+R Under development (unstable) (2026-01-31 r89359) -- "Unsuffered Consequences"
+Copyright (C) 2026 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -220,37 +220,40 @@ Available components:
 +     stopifnot(is.finite(M))
 +     plantT2[,n] <- (v <= M)
 + }
-> summary(plantT2)
+> spl <- summary(plantT2)
+> op <- options(width = if(R46 <- getRversion() >= "4.6.0") 75 else 80)
+> gsub("NA's", "NAs ", spl) # no longer once we require R >= 4.6.0
    pdias         longindex        durflow          height       
  Mode :logical   Mode :logical   Mode :logical   Mode :logical  
  FALSE:50        FALSE:54        FALSE:39        FALSE:52       
  TRUE :50        TRUE :57        TRUE :97        TRUE :84       
- NA's :36        NA's :25                                       
+ NAs  :36        NAs  :25                                       
   begflow          mycor           vegaer         vegsout       
  Mode :logical   Mode :logical   Mode :logical   Mode :logical  
  FALSE:58        FALSE:87        FALSE:17        FALSE:38       
  TRUE :78        TRUE :10        TRUE :117       TRUE :96       
-                 NA's :39        NA's :2         NA's :2        
-  autopoll        insects           wind         lign   piq       ros     
- Mode :logical   Mode :logical   Mode :logical   0:93   0:119   0   :120  
- FALSE:63        FALSE:84        FALSE:39        1:43   1: 17   1   : 12  
- TRUE :73        TRUE :52        TRUE :97                       NA's:  4  
-                                                                          
- semiros    leafy    suman   winan   monocarp polycarp seasaes   seashiv   
- 0   :97   0   :47   0:117   0:124   0:127    0: 19    0   :85   0   :128  
- 1   :35   1   :85   1: 19   1: 12   1:  9    1:117    1   :47   1   :  4  
- NA's: 4   NA's: 4                                     NA's: 4   NA's:  4  
-                                                                           
- seasver    everalw   everparti   elaio     endozoo    epizoo     aquat    
- 0   :126   0   :78   0   :112   0   :119   0   :93   0   :109   0   :128  
- 1   :  6   1   :54   1   : 20   1   : 12   1   :38   1   : 22   1   :  3  
- NA's:  4   NA's: 4   NA's:  4   NA's:  5   NA's: 5   NA's:  5   NA's:  5  
-                                                                           
-  windgl      unsp   
- 0   :108   0   :93  
- 1   : 23   1   :38  
- NA's:  5   NA's: 5  
-                     
+                 NAs  :39        NAs  :2         NAs  :2        
+  autopoll        insects           wind         lign   piq      ros     
+ Mode :logical   Mode :logical   Mode :logical   0:93   0:119   0  :120  
+ FALSE:63        FALSE:84        FALSE:39        1:43   1: 17   1  : 12  
+ TRUE :73        TRUE :52        TRUE :97                       NAs:  4  
+                                                                         
+ semiros  leafy    suman   winan   monocarp polycarp seasaes  seashiv  
+ 0  :97   0  :47   0:117   0:124   0:127    0: 19    0  :85   0  :128  
+ 1  :35   1  :85   1: 19   1: 12   1:  9    1:117    1  :47   1  :  4  
+ NAs: 4   NAs: 4                                     NAs: 4   NAs:  4  
+                                                                       
+ seasver   everalw  everparti elaio     endozoo  epizoo    aquat    
+ 0  :126   0  :78   0  :112   0  :119   0  :93   0  :109   0  :128  
+ 1  :  6   1  :54   1  : 20   1  : 12   1  :38   1  : 22   1  :  3  
+ NAs:  4   NAs: 4   NAs:  4   NAs:  5   NAs: 5   NAs:  5   NAs:  5  
+                                                                    
+ windgl     unsp   
+ 0  :108   0  :93  
+ 1  : 23   1  :38  
+ NAs:  5   NAs: 5  
+         
+> options(op)
 > 
 > (mon.pl2 <- mona(plantT2, trace = TRUE))
 Loop npass = 1: (ka,kb) = (1,136)

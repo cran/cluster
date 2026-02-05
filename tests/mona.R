@@ -23,7 +23,10 @@ for(n in names(plantTraits)[not2]) {
     stopifnot(is.finite(M))
     plantT2[,n] <- (v <= M)
 }
-summary(plantT2)
+spl <- summary(plantT2)
+op <- options(width = if(R46 <- getRversion() >= "4.6.0") 75 else 80)
+gsub("NA's", "NAs ", spl) # no longer once we require R >= 4.6.0
+options(op)
 
 (mon.pl2 <- mona(plantT2, trace = TRUE))
 
