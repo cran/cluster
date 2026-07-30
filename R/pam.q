@@ -162,7 +162,7 @@ pam <- function(x, k, diss = inherits(x, "dist"),
 	    sildim <- xLab[sildim]
     }
     ## add names & dimnames to Fortran output
-    r.obj <- structure(res$obj, .Names = c("build", "swap"))
+    r.obj <- structure(res$obj, names = c("build", "swap"))
     r.isol <- factor(res$isol, levels = 0:2, labels = c("no", "L", "L*"))
     names(r.isol) <- 1:k
     r.clusinf <- res$clusinf

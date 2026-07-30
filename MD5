@@ -1,5 +1,5 @@
 6da12079996ad0aa5be2f30ee7a9e457 *ChangeLog
-b2081001bd858fb5843a185ec8619bf7 *DESCRIPTION
+bff5da85457803efaae23ee364e2a78e *DESCRIPTION
 824c6b9820b7fc963b52b185b8284481 *INDEX
 2608df4d8982fd4507474f11d3ff532e *NAMESPACE
 8de82c7d42bd4a27c27c25462ae2a307 *PORTING
@@ -16,13 +16,13 @@ c2b2ec71b0b89e5b3e359f28f414edaa *R/daisy.q
 df15a742d85b586d51bd4b031cb08cb6 *R/internal.R
 4012a3c0301944867bf595d25fcf30df *R/medoids.R
 4b26b60ba9fa843ec62c7164c52f5d97 *R/mona.q
-e41c1e99c0ab0a0f7fdb917a9009714c *R/pam.q
+e05f5b3274f1ff45ee872fcea0fc3d17 *R/pam.q
 dd4bfe2b3eb91cbcf11d2b17719d6977 *R/plothier.q
 c34b277489cb1ee06bc551c8af1f46e8 *R/plotpart.q
 d463b191ae7a1d1e4681fd14cd8e4f75 *R/silhouette.R
 f1d53c5f24897b5ab0e6014be9be7844 *R/zzz.R
 0d5b196c8cf0ac67c43144fa14ddf275 *README
-d099472a921b18b90eac98e769d07a90 *build/partial.rdb
+13065aeaaa13c85464ff9903666dbd06 *build/partial.rdb
 ac189f8e6e1314c01a700f6a31ee4506 *data/agriculture.tab
 1046f7a750dbbac2724fd910aff561e7 *data/animals.tab
 c8f60e65b0356698f6b08c23c07e2a94 *data/chorSub.rda
@@ -33,7 +33,7 @@ eda904e011e79ea5a25602125d558d04 *data/ruspini.tab
 e816e6c67444107ab47ff3bf2f6023f2 *data/votes.repub.tab
 be46f45035b177b940393db459789282 *data/xclara.rda
 8ea8fc7e56eda28f71352a336a430c41 *inst/CITATION
-4ead02622ddfada4fc1e558812e79c88 *inst/NEWS.Rd
+afdf158e74278ea2b501c26b7c2c9a13 *inst/NEWS.Rd
 b893034dcbb4b4977b53fd19020a0d3c *inst/po/de/LC_MESSAGES/R-cluster.mo
 2ea75383dd4fa4a009b55dea63dbde24 *inst/po/de/LC_MESSAGES/cluster.mo
 840f1f5936dff1331afb6f1e1ceca80b *inst/po/en@quot/LC_MESSAGES/R-cluster.mo
